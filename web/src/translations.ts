@@ -42,6 +42,7 @@ export type Translations = {
     gameFeedbackNewRecord: string
     gameFeedbackComplete: string
     gameFeedbackStopped: string
+    gameFeedbackGameOver: string
     gameLevelUp: string
     // HallOfFamePage
     hofTitle: string
@@ -50,7 +51,6 @@ export type Translations = {
     hofColScore: string
     hofColQuestions: string
     hofColMath: string
-    hofColSpeed: string
     hofEmpty: string
     hofPlayNow: string
     // Shared label maps (used in Settings & Hall of Fame)
@@ -124,6 +124,7 @@ export const translations: Record<Language, Translations> = {
         gameFeedbackNewRecord: '🏆 New Record! {score} pts — entering Hall of Fame…',
         gameFeedbackComplete: '🎉 Mission complete! {score} pts — entering Hall of Fame…',
         gameFeedbackStopped: '🛑 Stopped. {score} pts — entering Hall of Fame…',
+        gameFeedbackGameOver: '💀 Game Over! {score} pts — entering Hall of Fame…',
         gameLevelUp: '🔥 Wave {wave}/4 — harder questions, more points!',
         hofTitle: '🏆 BEST SCORES 🏆',
         hofSubtitle: 'Can you make it to the top?',
@@ -131,7 +132,6 @@ export const translations: Record<Language, Translations> = {
         hofColScore: 'Score',
         hofColQuestions: 'Questions',
         hofColMath: 'Math',
-        hofColSpeed: 'Speed',
         hofEmpty: '🚀 Nobody here yet — play a game and be first on the board!',
         hofPlayNow: '🎮 Play Now!',
         operationLabels: {
@@ -183,7 +183,7 @@ export const translations: Record<Language, Translations> = {
         navHome: 'Start',
         navHallOfFame: 'Bestenliste',
         navSettings: 'Einstellungen',
-        homeSubtitle: 'Schiess die richtige Antwort und werde jeden Tag besser in Mathe!',
+        homeSubtitle: 'Triff die richtige Antwort und werde jeden Tag besser in Mathe!',
         homeTagline: 'Kein Login nötig • Immer kostenlos • Funktioniert offline',
         homeProfile: '👤 Wer bist du?',
         homeProfileHint: 'Wähle einen Namen und einen Avatar — deine Punkte werden gespeichert!',
@@ -224,6 +224,7 @@ export const translations: Record<Language, Translations> = {
         gameFeedbackNewRecord: '🏆 Neuer Rekord! {score} Pkt — Hall of Fame…',
         gameFeedbackComplete: '🎉 Mission erfüllt! {score} Pkt — Hall of Fame…',
         gameFeedbackStopped: '🛑 Gestoppt. {score} Pkt — Hall of Fame…',
+        gameFeedbackGameOver: '💀 Verloren! {score} Pkt — Hall of Fame…',
         gameLevelUp: '🔥 Welle {wave}/4 — schwieriger, mehr Punkte!',
         hofTitle: '🏆 BESTENLISTE 🏆',
         hofSubtitle: 'Schaffst du es ganz nach oben?',
@@ -231,7 +232,6 @@ export const translations: Record<Language, Translations> = {
         hofColScore: 'Punkte',
         hofColQuestions: 'Fragen',
         hofColMath: 'Mathe',
-        hofColSpeed: 'Tempo',
         hofEmpty: '🚀 Noch niemand hier — spiel eine Runde und sei der Erste!',
         hofPlayNow: '🎮 Jetzt spielen!',
         operationLabels: {
@@ -324,6 +324,7 @@ export const translations: Record<Language, Translations> = {
         gameFeedbackNewRecord: '🏆 Nuovo record! {score} pt — Hall of Fame…',
         gameFeedbackComplete: '🎉 Missione compiuta! {score} pt — Hall of Fame…',
         gameFeedbackStopped: '🛑 Fermato. {score} pt — Hall of Fame…',
+        gameFeedbackGameOver: '💀 Game Over! {score} pt — Hall of Fame…',
         gameLevelUp: '🔥 Onda {wave}/4 — più difficile, più punti!',
         hofTitle: '🏆 PUNTEGGI MIGLIORI 🏆',
         hofSubtitle: 'Riesci ad arrivare in cima?',
@@ -331,7 +332,6 @@ export const translations: Record<Language, Translations> = {
         hofColScore: 'Punteggio',
         hofColQuestions: 'Domande',
         hofColMath: 'Matematica',
-        hofColSpeed: 'Velocità',
         hofEmpty: '🚀 Nessuno ancora — gioca e sii il primo!',
         hofPlayNow: '🎮 Gioca ora!',
         operationLabels: {
@@ -424,6 +424,7 @@ export const translations: Record<Language, Translations> = {
         gameFeedbackNewRecord: '🏆 Nouveau record ! {score} pts — Hall of Fame…',
         gameFeedbackComplete: '🎉 Mission accomplie ! {score} pts — Hall of Fame…',
         gameFeedbackStopped: '🛑 Arrêté. {score} pts — Hall of Fame…',
+        gameFeedbackGameOver: '💀 Perdu ! {score} pts — Hall of Fame…',
         gameLevelUp: '🔥 Vague {wave}/4 — plus difficile, plus de points !',
         hofTitle: '🏆 MEILLEURS SCORES 🏆',
         hofSubtitle: 'Peux-tu atteindre le sommet ?',
@@ -431,7 +432,6 @@ export const translations: Record<Language, Translations> = {
         hofColScore: 'Score',
         hofColQuestions: 'Questions',
         hofColMath: 'Maths',
-        hofColSpeed: 'Vitesse',
         hofEmpty: '🚀 Personne encore — joue et sois le premier !',
         hofPlayNow: '🎮 Jouer maintenant !',
         operationLabels: {

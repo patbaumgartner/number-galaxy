@@ -1,24 +1,32 @@
 /* ==================== DEEP SPACE NEON THEME ==================== */
 :root {
   /* Vibrant arcade colours on a galaxy-dark canvas */
-  --primary: #00f5ff;        /* laser cyan */
+  --primary: #00f5ff;
+  /* laser cyan */
   --primary-dark: #00ccdd;
-  --secondary: #ff4ddb;      /* hot pink */
+  --secondary: #ff4ddb;
+  /* hot pink */
   --secondary-dark: #cc2bb0;
-  --accent: #ffe600;         /* electric gold */
+  --accent: #ffe600;
+  /* electric gold */
   --accent-dark: #ccb800;
-  --danger: #ff3366;         /* neon coral-red */
-  --success: #00ff88;        /* neon green */
-  --bg: #07001a;             /* galaxy purple-black */
+  --danger: #ff3366;
+  /* neon coral-red */
+  --success: #00ff88;
+  /* neon green */
+  --bg: #07001a;
+  /* galaxy purple-black */
   --bg-light: #11002e;
   --bg-lighter: #1d0a4a;
-  --text: #f0ecff;           /* lavender white */
-  --text-muted: #9970cc;     /* muted purple */
+  --text: #f0ecff;
+  /* lavender white */
+  --text-muted: #9970cc;
+  /* muted purple */
   --border: #3d1a6e;
-  --glow-cyan:    0 0 20px rgba(0, 245, 255, 0.7), 0 0 40px rgba(0, 245, 255, 0.3);
-  --glow-pink:    0 0 20px rgba(255, 77, 219, 0.7), 0 0 40px rgba(255, 77, 219, 0.3);
-  --glow-yellow:  0 0 20px rgba(255, 230, 0, 0.7), 0 0 40px rgba(255, 230, 0, 0.3);
-  --glow-danger:  0 0 20px rgba(255, 51, 102, 0.7);
+  --glow-cyan: 0 0 20px rgba(0, 245, 255, 0.7), 0 0 40px rgba(0, 245, 255, 0.3);
+  --glow-pink: 0 0 20px rgba(255, 77, 219, 0.7), 0 0 40px rgba(255, 77, 219, 0.3);
+  --glow-yellow: 0 0 20px rgba(255, 230, 0, 0.7), 0 0 40px rgba(255, 230, 0, 0.3);
+  --glow-danger: 0 0 20px rgba(255, 51, 102, 0.7);
   --glow-success: 0 0 20px rgba(0, 255, 136, 0.7);
 }
 
@@ -724,10 +732,10 @@ body {
 
 /* ==================== HALL OF FAME ==================== */
 .hall-of-fame-table {
+  overflow: hidden;
   overflow-x: auto;
   margin: 1rem 0;
   border-radius: 8px;
-  overflow: hidden;
 }
 
 .hall-of-fame-table table {

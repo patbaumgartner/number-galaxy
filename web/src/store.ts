@@ -15,6 +15,7 @@ export type HallOfFameEntry = {
     answeredCount: number
     language: Language
     operation: Operation
+    level: Level
     difficulty: Difficulty
     updatedAt: string
 }
@@ -87,6 +88,10 @@ export const store = {
         if (!raw) return []
         try {
             const entries = JSON.parse(raw) as HallOfFameEntry[]
+            // Migrate old entries that predate the level field
+            for (const e of entries) {
+                if (!e.level) e.level = 'starter'
+            }
             return entries.sort((a, b) => b.score - a.score || b.answeredCount - a.answeredCount)
         } catch {
             return []
@@ -96,7 +101,14 @@ export const store = {
     submitScore(entry: HallOfFameEntry): { improved: boolean; entries: HallOfFameEntry[] } {
         const raw = window.localStorage.getItem(HALL_OF_FAME_STORAGE_KEY)
         const all: HallOfFameEntry[] = raw ? (JSON.parse(raw) as HallOfFameEntry[]) : []
-        const existingIndex = all.findIndex((e) => e.playerId === entry.playerId)
+        // Migrate old entries that predate the level field (same as getHallOfFame)
+        for (const e of all) {
+            if (!e.level) e.level = 'starter'
+        }
+        // One best-score entry per player per level+difficulty combination
+        const existingIndex = all.findIndex(
+            (e) => e.playerId === entry.playerId && e.level === entry.level && e.difficulty === entry.difficulty
+        )
         const improved = existingIndex === -1 || all[existingIndex].score < entry.score
 
         if (improved) {
@@ -124,13 +136,14 @@ export const store = {
         const raw = window.localStorage.getItem(SETTINGS_STORAGE_KEY)
         if (!raw) return { ...defaultSettings }
         try {
-            const parsed = JSON.parse(raw) as GameSettings
+            const parsed = JSON.parse(raw) as Partial<GameSettings>
+            const merged: GameSettings = { ...defaultSettings, ...parsed }
             // Migrate old level values that no longer exist
             const validLevels: Level[] = ['starter', 'beginner', 'elementary', 'intermediate', 'advanced', 'expert', 'master']
-            if (!validLevels.includes(parsed.level)) {
-                parsed.level = 'starter'
+            if (!validLevels.includes(merged.level)) {
+                merged.level = 'starter'
             }
-            return parsed
+            return merged
         } catch {
             return { ...defaultSettings }
         }

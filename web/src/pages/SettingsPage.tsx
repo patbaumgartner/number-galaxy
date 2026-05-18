@@ -138,9 +138,11 @@ export default function SettingsPage() {
                 </section>
 
                 <div className="action-buttons">
-                    <button className="btn btn-primary" onClick={() => navigate('/game')}>
-                        {t.settingsPlayBtn}
-                    </button>
+                    {player && (
+                        <button className="btn btn-primary" onClick={() => navigate('/game')}>
+                            {t.settingsPlayBtn}
+                        </button>
+                    )}
                     <button className="btn btn-secondary" onClick={() => navigate('/')}>
                         🏠 {t.navHome}
                     </button>

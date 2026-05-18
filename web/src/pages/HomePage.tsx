@@ -61,7 +61,7 @@ export default function HomePage() {
                             <input
                                 id="nickname"
                                 type="text"
-                                autoComplete="nickname"
+                                autoComplete="off"
                                 placeholder={t.homeNamePlaceholder}
                                 maxLength={24}
                                 minLength={2}

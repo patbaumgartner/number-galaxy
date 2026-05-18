@@ -60,6 +60,7 @@ export default function GamePage() {
             answeredCount: state.answeredCount,
             language: state.language,
             operation: state.operation,
+            level: state.level,
             difficulty: state.difficulty,
             updatedAt: new Date().toISOString(),
         }
@@ -72,7 +73,9 @@ export default function GamePage() {
             ? (result?.improved
                 ? t.gameFeedbackNewRecord.replace('{score}', String(state.score))
                 : t.gameFeedbackComplete.replace('{score}', String(state.score)))
-            : t.gameFeedbackStopped.replace('{score}', String(state.score))
+            : state.lives <= 0
+                ? t.gameFeedbackGameOver.replace('{score}', String(state.score))
+                : t.gameFeedbackStopped.replace('{score}', String(state.score))
         setFeedback(msg)
         setTimeout(() => navigate('/hall-of-fame'), 1800)
     }, [submitScore, navigate, t])

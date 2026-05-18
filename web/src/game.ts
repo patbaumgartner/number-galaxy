@@ -91,8 +91,8 @@ function randomInt(min: number, max: number) {
 }
 
 function createAdditionQuestion(maxValue: number): NumericQuestion {
-    const left = randomInt(2, maxValue)
-    const right = randomInt(2, maxValue)
+    const left = randomInt(2, maxValue - 2)
+    const right = randomInt(2, maxValue - left)
     return {
         prompt: `${left} + ${right} = ?`,
         answerValue: left + right,
@@ -109,8 +109,9 @@ function createSubtractionQuestion(maxValue: number): NumericQuestion {
 }
 
 function createMultiplicationQuestion(maxValue: number): NumericQuestion {
-    const left = randomInt(2, Math.max(3, Math.floor(maxValue / 2)))
-    const right = randomInt(2, Math.max(3, Math.floor(maxValue / 2)))
+    const maxFactor = Math.max(2, Math.floor(Math.sqrt(maxValue)))
+    const left = randomInt(2, maxFactor)
+    const right = randomInt(2, Math.max(2, Math.floor(maxValue / left)))
     return {
         prompt: `${left} × ${right} = ?`,
         answerValue: left * right,
@@ -118,8 +119,9 @@ function createMultiplicationQuestion(maxValue: number): NumericQuestion {
 }
 
 function createDivisionQuestion(maxValue: number): NumericQuestion {
-    const divisor = randomInt(2, Math.max(3, Math.floor(maxValue / 3)))
-    const quotient = randomInt(2, Math.max(4, Math.floor(maxValue / 3)))
+    const maxFactor = Math.max(2, Math.floor(Math.sqrt(maxValue)))
+    const divisor = randomInt(2, maxFactor)
+    const quotient = randomInt(2, Math.max(2, Math.floor(maxValue / divisor)))
     const dividend = divisor * quotient
     return {
         prompt: `${dividend} ÷ ${divisor} = ?`,
@@ -128,9 +130,10 @@ function createDivisionQuestion(maxValue: number): NumericQuestion {
 }
 
 function createRemainderQuestion(language: Language, maxValue: number) {
-    const divisor = randomInt(2, Math.max(3, Math.floor(maxValue / 3)))
-    const quotient = randomInt(2, Math.max(4, Math.floor(maxValue / 4)))
+    const maxFactor = Math.max(2, Math.floor(Math.sqrt(maxValue)))
+    const divisor = randomInt(2, maxFactor)
     const remainder = randomInt(1, divisor - 1)
+    const quotient = randomInt(1, Math.max(1, Math.floor((maxValue - remainder) / divisor)))
     const dividend = divisor * quotient + remainder
     return {
         prompt: `${dividend} ÷ ${divisor} = ?`,
@@ -154,7 +157,7 @@ function buildRemainderOptions(language: Language, answer: string, maxValue: num
     const choices = new Set<string>([answer])
     while (choices.size < 4) {
         const quotient = randomInt(1, Math.max(3, Math.floor(maxValue / 3)))
-        const remainder = randomInt(0, 4)
+        const remainder = randomInt(1, 4)
         choices.add(remainderLabel(language, quotient, remainder))
     }
     return Array.from(choices).sort(() => Math.random() - 0.5)

@@ -1,0 +1,24 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  font-family: 'Courier New', Courier, monospace;
+  line-height: 1.4;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    linear-gradient(#0b1020 1px, transparent 1px),
+    linear-gradient(90deg, #0b1020 1px, transparent 1px),
+    #020617;
+  background-size: 14px 14px;
+  color: #f9fafb;
+}
+
+#root {
+  max-width: 980px;
+  margin: 0 auto;
+}

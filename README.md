@@ -26,8 +26,12 @@
 4. **Aim & shoot** — move rocket 🚀 to target correct answer, then fire
 5. **Complete 20 questions** — finish mission to earn Hall of Fame entry
 
-**Controls:** Arrow keys to move, Spacebar to shoot (or use mouse buttons)  
-**Timer:** 15 seconds per question — time's up counts as a wrong answer
+**Controls:**
+- **Keyboard:** Arrow keys to move, Spacebar to shoot
+- **Touch:** Swipe left/right to move, swipe up to shoot, or tap a lane to select it then tap again to shoot
+- **Mouse:** Click direction buttons, then click Shoot button (or click a selected lane to fire)
+
+**Timer:** Varies by level (5–15 s) and difficulty — time's up counts as a wrong answer
 
 ---
 
@@ -43,7 +47,7 @@
 ### Lives & Streak
 - Start with **3 lives** ❤️❤️❤️
 - Lose 1 life per wrong answer or expired timer
-- **15-second timer** per question — flashes red in the last 5 seconds
+- **Timer per question** depends on level (15 s at Starter → 5 s at Master) and difficulty (Easy +3 s, Normal ±0, Hard −2 s) — minimum 3 s
 - Streak grows with correct answers, resets on wrong or timeout
 - Formula: `10 + (streak × 2)` points per question
 
@@ -57,10 +61,25 @@
 | ➗ Division | `20 ÷ 4 = ?` | Whole number results only |
 | 🔢 Division + Remainder | `23 ÷ 5 = 4 r3` | Quotient + remainder |
 
-### Difficulty Tiers
+### Levels (Number Range & Base Time)
 
-**By complexity:** 😊 Easy < 🎯 Normal < 🔥 Hard  
-**By number range:** 🟢 Starter < 🟡 Advanced < 🔴 Challenge
+| Level | Max Number | Base Time |
+|-------|-----------|----------|
+| 🟢 Starter | ≤ 10 | 15 s |
+| 🔵 Beginner | ≤ 20 | 13 s |
+| 🟡 Elementary | ≤ 50 | 11 s |
+| 🟠 Intermediate | ≤ 100 | 9 s |
+| 🔴 Advanced | ≤ 250 | 7 s |
+| ⭐ Expert | ≤ 500 | 6 s |
+| 💥 Master | ≤ 1000 | 5 s |
+
+### Difficulty (Time Modifier)
+
+| Difficulty | Time Adjustment |
+|------------|----------------|
+| 😊 Easy | +3 s |
+| 🎯 Normal | ±0 s |
+| 🔥 Hard | −2 s |
 
 ### Languages
 
@@ -73,7 +92,8 @@ Each language has its own Hall of Fame leaderboard.
 ## 🏆 Hall of Fame
 
 - **Per language:** Separate leaderboards for each language
-- **Best score only:** Your top score per operation is saved
+- **Best score only:** One entry per player per level + difficulty combination
+- **Grouped view:** Leaderboards are grouped by difficulty then level
 - **No backend:** Scores stored locally on your device
 - **Requires profile:** Create one to save to Hall of Fame
 
@@ -171,7 +191,7 @@ See [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) for details.
 - **Child-safe:** Pure black + neon colors, no hidden patterns
 - **Privacy-first:** All data stays on your device
 - **Offline-capable:** Works without internet after initial load
-- **Accessible:** Keyboard, mouse, and touch support
+- **Accessible:** Keyboard, mouse, and full touch/swipe support
 
 ---
 
@@ -187,7 +207,7 @@ A: Yes, after the initial page load, the app works offline.
 A: Create a player profile. Scores auto-save to localStorage.
 
 **Q: Can I use it on mobile?**  
-A: Yes, fully responsive for phones and tablets.
+A: Yes, fully responsive for phones and tablets. Touch controls are built in: swipe left/right to move your rocket, swipe up or tap the selected lane to shoot.
 
 **Q: How do I reset my data?**  
 A: Settings → Clear All Data to wipe profile and scores.

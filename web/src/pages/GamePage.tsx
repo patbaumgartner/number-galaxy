@@ -261,6 +261,9 @@ export default function GamePage() {
                             selectedLane={selectedLane}
                             blastLane={blastLane}
                             onSelectLane={isPlaying ? setSelectedLane : () => { }}
+                            onShoot={isPlaying ? handleShoot : () => { }}
+                            onSwipeLeft={isPlaying ? () => setSelectedLane(c => (c + 3) % 4) : () => { }}
+                            onSwipeRight={isPlaying ? () => setSelectedLane(c => (c + 1) % 4) : () => { }}
                         />
                     </section>
 

@@ -34,8 +34,7 @@ This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.
 2. **Clone** your fork: `git clone https://github.com/YOUR_USERNAME/math-invaders.git`
 3. **Install** dependencies: `cd web && npm install`
 4. **Run** locally: `npm run dev`
-5. Open [http://localhost:5173/math-invaders](http://localhost:5173/math-invaders)
-
+5. Open [http://localhost:5173/math-invaders](http://localhost:5173/math-invaders)5. **Test touch controls:** open DevTools → toggle device toolbar (or use a real mobile device) and verify swipe gestures and tap-to-shoot work
 ---
 
 ## How to Contribute
@@ -135,6 +134,7 @@ math-invaders/
 - **TypeScript** strictly typed; avoid `any`
 - **React** functional components with hooks only
 - **CSS** use existing CSS variables from `App.css`; no inline styles
+- **Touch support:** all interactive elements must have `touch-action: manipulation` and a minimum touch target of 44×44 px
 - **No new dependencies** without discussion — keep the bundle small
 - Keep files focused; split large components
 

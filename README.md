@@ -85,13 +85,12 @@
 
 🇩🇪 German · 🇮🇹 Italian · 🇬🇧 English · 🇫🇷 French
 
-Each language has its own Hall of Fame leaderboard.
+The UI is fully translated; all players share the same Hall of Fame regardless of language.
 
 ---
 
 ## 🏆 Hall of Fame
 
-- **Per language:** Separate leaderboards for each language
 - **Best score only:** One entry per player per level + difficulty combination
 - **Grouped view:** Leaderboards are grouped by difficulty then level
 - **No backend:** Scores stored locally on your device
@@ -118,7 +117,7 @@ Each language has its own Hall of Fame leaderboard.
 
 ### Tech Stack
 
-- **Frontend:** React 19.2, React Router 7.1, TypeScript 6.0
+- **Frontend:** React 19.2, React Router 7.15, TypeScript 6.0
 - **Build:** Vite 8.0 (fast hot reload)
 - **Styling:** CSS3 deep-space neon theme (cyan / hot-pink / gold on galaxy-purple)
 - **Storage:** Browser localStorage (zero tracking)
@@ -128,17 +127,28 @@ Each language has its own Hall of Fame leaderboard.
 
 ```
 web/
+├── public/
+│   ├── 404.html        # SPA redirect for GitHub Pages
+│   └── favicon.svg     # App icon
 ├── src/
 │   ├── pages/          # 4 main pages
+│   │   ├── HomePage.tsx
+│   │   ├── GamePage.tsx
+│   │   ├── HallOfFamePage.tsx
+│   │   └── SettingsPage.tsx
 │   ├── components/     # Reusable UI
+│   │   ├── GameBoard.tsx
+│   │   └── Navigation.tsx
 │   ├── App.tsx         # Router
 │   ├── App.css         # Neon theme
 │   ├── store.ts        # localStorage API
 │   ├── game.ts         # Game logic
+│   ├── translations.ts # i18n strings
 │   └── constants.ts    # Static data
 ├── index.html          # Entry point
 ├── vite.config.ts      # Vite config
 ├── tsconfig.json       # TypeScript
+├── eslint.config.js    # ESLint config
 └── package.json        # Dependencies
 ```
 

@@ -4,10 +4,11 @@ import { store } from '../store'
 import Navigation from '../components/Navigation'
 import { operationLabels, difficultyLabels } from '../constants'
 import { TOTAL_QUESTIONS_PER_RUN } from '../constants'
+import { translations } from '../translations'
 
 export default function HallOfFamePage() {
     const navigate = useNavigate()
-
+    const t = translations[store.getSettings().language]
     const hallOfFame = useMemo(() => store.getHallOfFame(), [])
 
     return (
@@ -16,14 +17,14 @@ export default function HallOfFamePage() {
 
             <main className="container">
                 <section className="hero">
-                    <h1 className="neon-text">🏆 BEST SCORES 🏆</h1>
-                    <p className="subtitle">Can you make it to the top?</p>
+                    <h1 className="neon-text">{t.hofTitle}</h1>
+                    <p className="subtitle">{t.hofSubtitle}</p>
                 </section>
 
                 <section className="card">
                     {hallOfFame.length === 0 ? (
                         <div className="empty-state">
-                            <p className="empty-message">🚀 Nobody here yet — play a game and be first on the board!</p>
+                            <p className="empty-message">{t.hofEmpty}</p>
                         </div>
                     ) : (
                         <div className="hall-of-fame-table">
@@ -31,12 +32,12 @@ export default function HallOfFamePage() {
                                 <thead>
                                     <tr>
                                         <th>#</th>
-                                        <th>Player</th>
-                                        <th>Avatar</th>
-                                        <th>Score</th>
-                                        <th>Questions</th>
-                                        <th>Math</th>
-                                        <th>Speed</th>
+                                        <th>{t.hofColPlayer}</th>
+                                        <th></th>
+                                        <th>{t.hofColScore}</th>
+                                        <th>{t.hofColQuestions}</th>
+                                        <th>{t.hofColMath}</th>
+                                        <th>{t.hofColSpeed}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -58,11 +59,11 @@ export default function HallOfFamePage() {
                 </section>
 
                 <div className="action-buttons">
-                    <button className="btn btn-primary" onClick={() => navigate('/')}>
-                        🎮 Play Now!
+                    <button className="btn btn-primary" onClick={() => navigate('/game')}>
+                        {t.hofPlayNow}
                     </button>
                     <button className="btn btn-secondary" onClick={() => navigate('/')}>
-                        🏠 Home
+                        {t.hofHome}
                     </button>
                 </div>
             </main>

@@ -5,6 +5,7 @@ import { store } from '../store'
 import Navigation from '../components/Navigation'
 import GameBoard from '../components/GameBoard'
 import { TOTAL_QUESTIONS_PER_RUN } from '../constants'
+import { translations } from '../translations'
 
 const CIRCUMFERENCE = 2 * Math.PI * 28
 
@@ -19,6 +20,8 @@ export default function GamePage() {
     }, [])
 
     if (!player) return null
+
+    const t = translations[store.getSettings().language]
 
     const [gameState, setGameState] = useState<GameState>(() => {
         const s = store.getSettings()
@@ -76,10 +79,10 @@ export default function GamePage() {
         let msg: string
         if (won) {
             msg = result?.improved
-                ? `🏆 New Record! ${state.score} pts — entering Hall of Fame…`
-                : `🎉 Mission complete! ${state.score} pts — entering Hall of Fame…`
+                ? t.gameFeedbackNewRecord.replace('{score}', String(state.score))
+                : t.gameFeedbackComplete.replace('{score}', String(state.score))
         } else {
-            msg = `🛑 Stopped. ${state.score} pts — entering Hall of Fame…`
+            msg = t.gameFeedbackStopped.replace('{score}', String(state.score))
         }
         setFeedback(msg)
         setTimeout(() => navigate('/hall-of-fame'), 1800)
@@ -105,7 +108,7 @@ export default function GamePage() {
         if (sessionEnded) {
             endGame(newState, nextLives > 0)
         } else {
-            setFeedback(`⏰ Time's up! Answer: ${gameState.currentQuestion.answer}`)
+            setFeedback(t.gameFeedbackTimeout.replace('{answer}', gameState.currentQuestion.answer))
         }
     }, [gameState, endGame])
 
@@ -114,11 +117,11 @@ export default function GamePage() {
     }, [countdown, handleTimeExpired])
 
     const startGame = useCallback(() => {
-        const t = getQuestionTime(gameState.level, gameState.difficulty)
-        setMaxTime(t)
-        setCountdown(t)
+        const qt = getQuestionTime(gameState.level, gameState.difficulty)
+        setMaxTime(qt)
+        setCountdown(qt)
         setGameState(s => ({ ...s, status: 'playing' }))
-        setFeedback('⬅️ ➡️ Steer · Space/Tap to Shoot!')
+        setFeedback(t.gameSteering)
     }, [gameState.level, gameState.difficulty])
 
     const stopGame = useCallback(() => {
@@ -130,13 +133,13 @@ export default function GamePage() {
     const resetGame = useCallback(() => {
         const s = store.getSettings()
         const newState = createRound(s.language, s.operations, s.level, s.difficulty)
-        const t = getQuestionTime(newState.level, newState.difficulty)
+        const qt = getQuestionTime(newState.level, newState.difficulty)
         setGameState(newState)
         setSelectedLane(0)
         setBlastLane(null)
         setFeedback('')
-        setMaxTime(t)
-        setCountdown(t)
+        setMaxTime(qt)
+        setCountdown(qt)
     }, [])
 
     const handleShoot = useCallback(() => {
@@ -163,8 +166,8 @@ export default function GamePage() {
         setGameState(nextState)
         if (!sessionEnded) {
             setFeedback(isCorrect
-                ? `✅ Correct!${nextState.streak > 1 ? ` 🔥 Streak ×${nextState.streak}` : ''}`
-                : `❌ Wrong! Answer: ${gameState.currentQuestion.answer}`)
+                ? t.gameFeedbackCorrect + (nextState.streak > 1 ? ' ' + t.gameFeedbackStreak.replace('{streak}', String(nextState.streak)) : '')
+                : t.gameFeedbackWrong.replace('{answer}', gameState.currentQuestion.answer))
         } else {
             endGame(nextState, nextLives > 0)
         }
@@ -195,19 +198,19 @@ export default function GamePage() {
                 <section className="card game-header">
                     <div className="scoreboard">
                         <div className="score-item">
-                            <span className="label">Score</span>
+                            <span className="label">{t.gameScore}</span>
                             <span className="value neon-text">{gameState.score}</span>
                         </div>
                         <div className="score-item">
-                            <span className="label">Lives</span>
+                            <span className="label">{t.gameLives}</span>
                             <span className="value">{'❤️'.repeat(Math.max(0, gameState.lives))}</span>
                         </div>
                         <div className="score-item">
-                            <span className="label">Streak</span>
+                            <span className="label">{t.gameStreak}</span>
                             <span className="value neon-text">{gameState.streak > 0 ? `${gameState.streak}🔥` : '—'}</span>
                         </div>
                         <div className="score-item">
-                            <span className="label">Q</span>
+                            <span className="label">{t.gameQuestion}</span>
                             <span className="value neon-text">{gameState.answeredCount}/{TOTAL_QUESTIONS_PER_RUN}</span>
                         </div>
                     </div>
@@ -236,7 +239,9 @@ export default function GamePage() {
                                 </span>
                             </div>
                             <div className="question-display">
-                                <p className="question-text">{gameState.currentQuestion.prompt}</p>
+                                <p className="question-text">
+                                    {gameState.status === 'ready' ? '🚀 ?' : gameState.currentQuestion.prompt}
+                                </p>
                             </div>
                         </div>
 
@@ -260,7 +265,7 @@ export default function GamePage() {
                                     className="btn btn-danger btn-control"
                                     onClick={handleShoot}
                                     disabled={!isPlaying}
-                                >🎯 Shoot</button>
+                                >{t.gameShoot}</button>
                                 <button
                                     className="btn btn-secondary btn-control"
                                     onClick={() => setSelectedLane(c => (c + 1) % 4)}
@@ -272,7 +277,7 @@ export default function GamePage() {
                                 <button
                                     className="btn btn-danger btn-stop"
                                     onClick={stopGame}
-                                >🛑 Stop Game</button>
+                                >{t.gameStop}</button>
                             ) : (
                                 <div className="controls-secondary">
                                     <button
@@ -281,26 +286,26 @@ export default function GamePage() {
                                         disabled={isEnded}
                                     >
                                         {isEnded
-                                            ? (gameState.status === 'won' ? '✨ Won!' : '💀 Over!')
-                                            : '▶️ Start'}
+                                            ? (gameState.status === 'won' ? t.gameWon : t.gameOver)
+                                            : t.gameStart}
                                     </button>
                                     <button
                                         className="btn btn-secondary btn-control"
                                         onClick={resetGame}
-                                    >🔄 New</button>
+                                    >{t.gameNew}</button>
                                 </div>
                             )}
 
-                            <p className="feedback">{feedback || '🎮 Press Start to launch!'}</p>
+                            <p className="feedback">{feedback || t.gamePressStart}</p>
                         </section>
                     </div>
                 </div>
 
                 {!isPlaying && (
                     <div className="action-buttons">
-                        <button className="btn btn-secondary" onClick={() => navigate('/')}>🏠 Home</button>
-                        <button className="btn btn-secondary" onClick={() => navigate('/hall-of-fame')}>🏆 Hall of Fame</button>
-                        <button className="btn btn-secondary" onClick={() => navigate('/settings')}>⚙️ Settings</button>
+                        <button className="btn btn-secondary" onClick={() => navigate('/')}>{t.gameHome}</button>
+                        <button className="btn btn-secondary" onClick={() => navigate('/hall-of-fame')}>{t.gameHallOfFame}</button>
+                        <button className="btn btn-secondary" onClick={() => navigate('/settings')}>{t.gameSettings}</button>
                     </div>
                 )}
             </main>

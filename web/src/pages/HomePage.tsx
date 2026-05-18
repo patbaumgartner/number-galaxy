@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom'
 import { store } from '../store'
 import Navigation from '../components/Navigation'
 import { avatars } from '../constants'
+import { translations } from '../translations'
 
 export default function HomePage() {
     const navigate = useNavigate()
     const storedPlayer = store.getPlayer()
+    const t = translations[store.getSettings().language]
     const [playerName, setPlayerName] = useState(storedPlayer?.playerName ?? '')
     const [selectedAvatar, setSelectedAvatar] = useState(storedPlayer?.avatarId ?? avatars[0])
     const [message, setMessage] = useState('')
@@ -14,7 +16,7 @@ export default function HomePage() {
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault()
         if (playerName.trim().length < 2) {
-            setMessage('Name must be at least 2 characters')
+            setMessage(t.homeNameError)
             return
         }
 
@@ -28,10 +30,10 @@ export default function HomePage() {
             } else {
                 store.savePlayer(playerName.trim(), selectedAvatar)
             }
-            setMessage('✨ Profile saved!')
+            setMessage(t.homeProfileSaved)
             setTimeout(() => navigate('/game'), 800)
         } catch (err) {
-            setMessage('❌ Error saving profile')
+            setMessage(t.homeProfileError)
         }
     }
 
@@ -42,24 +44,24 @@ export default function HomePage() {
                 <section className="hero">
                     <div className="hero-content">
                         <h1 className="neon-text">⚡ MATH INVADERS ⚡</h1>
-                        <p className="subtitle">Shoot the right answer and get better at math every day!</p>
+                        <p className="subtitle">{t.homeSubtitle}</p>
                         <p className="tagline">
-                            No login needed • Always free • Works offline
+                            {t.homeTagline}
                         </p>
                     </div>
                 </section>
 
                 <section className="card profile-card">
-                    <h2 className="neon-subtitle">👤 Who Are You?</h2>
-                    <p>Pick a name and an avatar — your scores will be saved!</p>
+                    <h2 className="neon-subtitle">{t.homeProfile}</h2>
+                    <p>{t.homeProfileHint}</p>
 
                     <form onSubmit={handleSubmit} className="profile-form">
                         <div className="form-group">
-                            <label htmlFor="nickname">Your Name</label>
+                            <label htmlFor="nickname">{t.homeNameLabel}</label>
                             <input
                                 id="nickname"
                                 type="text"
-                                placeholder="Type your name here"
+                                placeholder={t.homeNamePlaceholder}
                                 maxLength={24}
                                 minLength={2}
                                 value={playerName}
@@ -68,7 +70,7 @@ export default function HomePage() {
                         </div>
 
                         <div className="form-group">
-                            <label>Choose Your Avatar</label>
+                            <label>{t.homeAvatarLabel}</label>
                             <div className="avatar-grid">
                                 {avatars.map((avatar) => (
                                     <button
@@ -89,7 +91,7 @@ export default function HomePage() {
                             className="btn btn-primary"
                             disabled={playerName.trim().length < 2}
                         >
-                            {storedPlayer ? '💾 Save Changes' : '✨ Let\'s Play!'}
+                            {storedPlayer ? t.homeBtnSave : t.homeBtnPlay}
                         </button>
                     </form>
 
@@ -97,34 +99,31 @@ export default function HomePage() {
 
                     {storedPlayer && (
                         <p className="status">
-                            Playing as: <strong>{storedPlayer.playerName}</strong>
+                            {t.homePlayingAs} <strong>{storedPlayer.playerName}</strong>
                         </p>
                     )}
                 </section>
 
                 <section className="card">
-                    <h2 className="neon-subtitle">🎮 How to Play</h2>
+                    <h2 className="neon-subtitle">{t.homeHowToPlay}</h2>
                     <ol className="instructions">
-                        <li>Go to Settings and pick what math you want to practise</li>
-                        <li>Enter your name and pick an avatar</li>
-                        <li>Press ▶️ Start and answer 20 questions!</li>
-                        <li>Steer your rocket with ⬅️ ➡️ arrow keys</li>
-                        <li>Press Space or tap 🎯 Shoot to fire at the right answer</li>
-                        <li>Get answers right in a row for bonus points! 🔥</li>
+                        {t.homeInstructions.map((step, i) => <li key={i}>{step}</li>)}
                     </ol>
                 </section>
 
-                <section className="card actions">
+                <div className="action-buttons">
                     <button className="btn btn-primary" onClick={() => navigate('/game')}>
-                        🚀 Play Now!
+                        🚀 {t.homeBtnPlay}
                     </button>
                     <button className="btn btn-secondary" onClick={() => navigate('/hall-of-fame')}>
-                        🏆 Hall of Fame
+                        🏆 {t.navHallOfFame}
                     </button>
                     <button className="btn btn-secondary" onClick={() => navigate('/settings')}>
-                        ⚙️ Settings
+                        ⚙️ {t.navSettings}
                     </button>
-                </section>
+                </div>
+
+
             </main>
         </div>
     )

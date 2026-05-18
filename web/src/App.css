@@ -1,23 +1,31 @@
 /* ==================== NEON THEME ==================== */
 :root {
-  --primary: #22d3ee;
-  --primary-dark: #06b6d4;
-  --secondary: #c084fc;
-  --secondary-dark: #a855f7;
-  --accent: #fbbf24;
-  --accent-dark: #f59e0b;
+  /* Electric neon palette */
+  --primary: #00e5ff;
+  /* electric cyan */
+  --primary-dark: #00b8d9;
+  --secondary: #d946ef;
+  /* electric magenta */
+  --secondary-dark: #b91cc7;
+  --accent: #facc15;
+  /* electric yellow */
+  --accent-dark: #eab308;
   --danger: #f43f5e;
-  --success: #34d399;
-  --bg: #030712;
-  --bg-light: #0f172a;
-  --bg-lighter: #1e293b;
-  --text: #f1f5f9;
+  /* hot pink-red */
+  --success: #4ade80;
+  /* electric green */
+  --bg: #020617;
+  /* deep space */
+  --bg-light: #0c1330;
+  --bg-lighter: #172048;
+  --text: #f0f9ff;
   --text-muted: #94a3b8;
-  --border: #4a5568;
-  --glow-cyan: 0 0 20px rgba(34, 211, 238, 0.5);
-  --glow-magenta: 0 0 20px rgba(192, 132, 252, 0.5);
-  --glow-yellow: 0 0 20px rgba(251, 191, 36, 0.5);
-  --glow-danger: 0 0 20px rgba(244, 63, 94, 0.5);
+  --border: #334155;
+  --glow-cyan: 0 0 20px rgba(0, 229, 255, 0.7), 0 0 40px rgba(0, 229, 255, 0.3);
+  --glow-magenta: 0 0 20px rgba(217, 70, 239, 0.7), 0 0 40px rgba(217, 70, 239, 0.3);
+  --glow-yellow: 0 0 20px rgba(250, 204, 21, 0.7), 0 0 40px rgba(250, 204, 21, 0.3);
+  --glow-danger: 0 0 20px rgba(244, 63, 94, 0.7);
+  --glow-success: 0 0 20px rgba(74, 222, 128, 0.7);
 }
 
 * {
@@ -100,6 +108,14 @@ body {
   text-shadow: var(--glow-yellow);
 }
 
+.nav-link.active {
+  color: var(--primary);
+  background-color: rgba(0, 229, 255, 0.1);
+  box-shadow: inset 0 -2px 0 var(--primary);
+  text-shadow: var(--glow-cyan);
+  font-weight: bold;
+}
+
 /* ==================== PAGE LAYOUT ==================== */
 .page {
   min-height: 100vh;
@@ -122,9 +138,9 @@ body {
 .hero {
   text-align: center;
   padding: 3rem 2rem;
-  background: linear-gradient(135deg, rgba(0, 255, 255, 0.05) 0%, rgba(255, 0, 255, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.08) 0%, rgba(217, 70, 239, 0.08) 100%);
   border: 2px solid var(--primary);
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: var(--glow-cyan);
   margin-bottom: 2rem;
 }
@@ -167,18 +183,17 @@ body {
 /* ==================== CARDS ==================== */
 .card {
   background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-lighter) 100%);
-  border: 1px solid var(--primary);
-  border-radius: 8px;
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  border-radius: 12px;
   padding: 2rem;
-  box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(0, 229, 255, 0.08);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
   margin-bottom: 1.5rem;
 }
 
 .card:hover {
-  border-color: var(--secondary);
-  box-shadow: 0 0 30px rgba(255, 0, 255, 0.3);
-  transform: translateY(-2px);
+  border-color: rgba(217, 70, 239, 0.5);
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(217, 70, 239, 0.15);
 }
 
 .card h2 {
@@ -252,6 +267,9 @@ body {
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .avatar-btn:hover {
@@ -286,48 +304,51 @@ body {
 }
 
 .btn-primary {
-  background-color: var(--primary);
-  color: var(--bg);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+  color: #000;
   border-color: var(--primary);
-  box-shadow: 0 0 20px var(--glow-cyan);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: var(--primary-dark);
-  box-shadow: 0 0 40px var(--glow-cyan);
-  transform: scale(1.05);
+  background: linear-gradient(135deg, #66f3ff 0%, var(--primary) 100%);
+  box-shadow: 0 0 35px rgba(0, 229, 255, 0.8);
+  transform: translateY(-2px) scale(1.02);
 }
 
 .btn-secondary {
   background-color: var(--bg-lighter);
   color: var(--text);
   border-color: var(--secondary);
-  box-shadow: 0 0 15px rgba(255, 0, 255, 0.2);
+  box-shadow: 0 0 10px rgba(217, 70, 239, 0.2);
 }
 
 .btn-secondary:hover:not(:disabled) {
   background-color: var(--bg-light);
   border-color: var(--accent);
-  box-shadow: 0 0 25px var(--glow-yellow);
+  box-shadow: 0 0 20px rgba(250, 204, 21, 0.4);
   color: var(--accent);
+  transform: translateY(-2px);
 }
 
 .btn-danger {
-  background-color: var(--danger);
-  color: var(--text);
+  background: linear-gradient(135deg, var(--danger) 0%, #e11d48 100%);
+  color: #fff;
   border-color: var(--danger);
-  box-shadow: 0 0 15px var(--glow-danger);
+  box-shadow: 0 0 15px rgba(244, 63, 94, 0.5);
 }
 
 .btn-danger:hover:not(:disabled) {
-  background-color: #ff0080;
-  box-shadow: 0 0 30px var(--glow-danger);
-  transform: scale(1.05);
+  background: linear-gradient(135deg, #fb7185 0%, var(--danger) 100%);
+  box-shadow: 0 0 30px rgba(244, 63, 94, 0.8);
+  transform: translateY(-2px) scale(1.02);
 }
 
 .btn:disabled {
-  opacity: 0.5;
+  opacity: 0.4;
   cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
 /* ==================== GAME LAYOUT ==================== */
@@ -490,8 +511,15 @@ body {
 }
 
 @keyframes urgentPulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
 }
 
 /* ==================== COUNTDOWN RING ==================== */
@@ -544,7 +572,8 @@ body {
   stroke: var(--primary);
   stroke-width: 5;
   stroke-linecap: round;
-  stroke-dasharray: 175.93; /* 2π × 28 */
+  stroke-dasharray: 175.93;
+  /* 2π × 28 */
   stroke-dashoffset: 0;
   transition: stroke-dashoffset 0.9s linear, stroke 0.3s ease;
 }
@@ -703,12 +732,28 @@ body {
 .hall-of-fame-table {
   overflow-x: auto;
   margin: 1rem 0;
+  border-radius: 8px;
+  overflow: hidden;
 }
 
 .hall-of-fame-table table {
   width: 100%;
   border-collapse: collapse;
-  background-color: var(--bg-lighter);
+}
+
+.hall-of-fame-table .player-name {
+  font-weight: bold;
+}
+
+.hall-of-fame-table .avatar {
+  font-size: 1.4rem;
+  text-align: center;
+}
+
+.hall-of-fame-table .operation,
+.hall-of-fame-table .difficulty {
+  color: var(--text-muted);
+  font-size: 0.9rem;
 }
 
 .hall-of-fame-table th {
@@ -759,21 +804,33 @@ body {
 
 .instructions {
   list-style: none;
-  padding-left: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .instructions li {
-  padding: 0.75rem 0;
-  padding-left: 2rem;
-  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
   color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1.6;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(0, 229, 255, 0.06);
 }
 
-.instructions li:before {
+.instructions li:last-child {
+  border-bottom: none;
+}
+
+.instructions li::before {
   content: '⚡';
-  position: absolute;
-  left: 0;
   color: var(--accent);
+  flex-shrink: 0;
+  margin-top: 3px;
+  font-size: 0.9rem;
 }
 
 .status {
@@ -806,13 +863,18 @@ body {
 
 .empty-state {
   text-align: center;
-  padding: 3rem 2rem;
+  padding: 4rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .empty-message {
   font-size: 1.3rem;
   color: var(--accent);
   text-shadow: var(--glow-yellow);
+  line-height: 1.7;
 }
 
 .info-box,
@@ -857,6 +919,12 @@ body {
   color: var(--accent);
 }
 
+/* ==================== GAME PAGE ==================== */
+.game-page {
+  background: radial-gradient(ellipse 100% 50% at 50% 0%,
+      rgba(0, 60, 120, 0.4) 0%, transparent 60%), var(--bg);
+}
+
 /* ==================== GAME LAYOUT ==================== */
 .game-play-area {
   display: flex;
@@ -875,6 +943,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    position: sticky;
+    top: 80px;
   }
 }
 
@@ -908,32 +978,37 @@ body {
 }
 
 .toggle-btn {
-  padding: 0.75rem 1.25rem;
+  padding: 0.65rem 1.1rem;
   background-color: var(--bg-lighter);
   border: 2px solid var(--border);
-  color: var(--text);
-  border-radius: 6px;
+  color: var(--text-muted);
+  border-radius: 999px;
+  /* pill shape — friendly and clear */
   cursor: pointer;
   transition: all 0.2s ease;
   font-family: 'Courier New', monospace;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: bold;
-  flex: 1;
-  min-width: 110px;
+  flex: 0 0 auto;
+  /* size to content — never truncates */
   text-align: center;
   white-space: nowrap;
 }
 
 .toggle-btn:hover {
-  border-color: var(--primary);
-  color: var(--primary);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(250, 204, 21, 0.35);
 }
 
 .toggle-btn.active {
-  background-color: rgba(34, 211, 238, 0.15);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
   border-color: var(--primary);
-  color: var(--primary);
-  box-shadow: 0 0 12px rgba(34, 211, 238, 0.3);
+  color: #000;
+  font-weight: bold;
+  box-shadow: 0 0 16px rgba(0, 229, 255, 0.5), 0 0 32px rgba(217, 70, 239, 0.3);
+  transform: translateY(-2px);
 }
 
 .config-hint {
@@ -1123,10 +1198,10 @@ body {
     font-size: 0.9rem;
   }
 
-  /* --- Action buttons: 2×2 grid --- */
+  /* --- Action buttons: stack vertically on mobile --- */
   .action-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 0.5rem;
     margin-top: 0.5rem;
   }
@@ -1149,21 +1224,17 @@ body {
     padding: 0.6rem;
   }
 
-  /* --- Settings toggle groups: 2-column grid so text is never truncated --- */
+  /* --- Settings toggle groups: wrap freely on mobile --- */
   .toggle-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
   }
 
   .toggle-btn {
-    min-width: 0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 0.55rem 0.5rem;
-    font-size: 0.75rem;
-    flex: none;
+    flex: 0 0 auto;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.8rem;
   }
 
   /* --- Settings grid --- */

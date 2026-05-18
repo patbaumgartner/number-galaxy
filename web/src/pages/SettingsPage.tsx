@@ -5,6 +5,7 @@ import type { GameSettings } from '../store'
 import Navigation from '../components/Navigation'
 import { operationLabels, levelLabels, difficultyLabels } from '../constants'
 import type { Language, Operation, Level, Difficulty } from '../game'
+import { translations } from '../translations'
 
 const languageLabels: Record<Language, string> = {
     de: '🇩🇪 Deutsch',
@@ -17,6 +18,7 @@ export default function SettingsPage() {
     const navigate = useNavigate()
     const player = store.getPlayer()
     const [settings, setSettings] = useState<GameSettings>(store.getSettings())
+    const t = translations[settings.language]
 
     const update = (patch: Partial<GameSettings>) => {
         const next = { ...settings, ...patch }
@@ -33,7 +35,7 @@ export default function SettingsPage() {
     }
 
     const handleClearData = () => {
-        if (confirm('This will delete your name, avatar and all scores.\nAre you sure?')) {
+        if (confirm(t.settingsDeleteConfirm)) {
             store.clearAllData()
             setSettings(store.getSettings())
             navigate('/')
@@ -46,13 +48,13 @@ export default function SettingsPage() {
 
             <main className="container">
                 <section className="hero">
-                    <h1 className="neon-text">⚙️ SETTINGS ⚙️</h1>
-                    <p className="tagline">Changes are saved right away and used in your next game.</p>
+                    <h1 className="neon-text">{t.settingsTitle}</h1>
+                    <p className="tagline">{t.settingsTagline}</p>
                 </section>
 
                 {/* LANGUAGE */}
                 <section className="card">
-                    <h2 className="neon-subtitle">🌐 Language</h2>
+                    <h2 className="neon-subtitle">{t.settingsLangSection}</h2>
                     <div className="toggle-group">
                         {(Object.entries(languageLabels) as [Language, string][]).map(([lang, label]) => (
                             <button
@@ -68,8 +70,8 @@ export default function SettingsPage() {
 
                 {/* OPERATIONS */}
                 <section className="card">
-                    <h2 className="neon-subtitle">➕ What to Practise</h2>
-                    <p className="config-hint">Choose one or more — they’ll be mixed together!</p>
+                    <h2 className="neon-subtitle">{t.settingsOpsSection}</h2>
+                    <p className="config-hint">{t.settingsOpsHint}</p>
                     <div className="toggle-group toggle-group--wrap">
                         {(Object.entries(operationLabels) as [Operation, string][]).map(([op, label]) => (
                             <button
@@ -85,7 +87,7 @@ export default function SettingsPage() {
 
                 {/* LEVEL */}
                 <section className="card">
-                    <h2 className="neon-subtitle">📊 How Big Are the Numbers?</h2>
+                    <h2 className="neon-subtitle">{t.settingsLevelSection}</h2>
                     <div className="toggle-group">
                         {(Object.entries(levelLabels) as [Level, string][]).map(([lv, label]) => (
                             <button
@@ -101,7 +103,7 @@ export default function SettingsPage() {
 
                 {/* DIFFICULTY */}
                 <section className="card">
-                    <h2 className="neon-subtitle">⏱️ Time per Question</h2>
+                    <h2 className="neon-subtitle">{t.settingsDiffSection}</h2>
                     <div className="toggle-group">
                         {(Object.entries(difficultyLabels) as [Difficulty, string][]).map(([diff, label]) => (
                             <button
@@ -117,43 +119,41 @@ export default function SettingsPage() {
 
                 {/* PLAYER */}
                 <section className="card">
-                    <h2 className="neon-subtitle">👤 Your Profile</h2>
+                    <h2 className="neon-subtitle">{t.settingsProfileSection}</h2>
                     {player ? (
                         <div className="player-info">
-                            <p><strong>Name:</strong> {player.playerName}</p>
-                            <p><strong>Avatar:</strong> {player.avatarId}</p>
-                            <p><strong>Playing since:</strong> {new Date(player.createdAt).toLocaleDateString()}</p>
+                            <p><strong>{t.settingsProfileName}</strong> {player.playerName}</p>
+                            <p><strong>{t.settingsProfileAvatar}</strong> {player.avatarId}</p>
+                            <p><strong>{t.settingsProfileSince}</strong> {new Date(player.createdAt).toLocaleDateString(settings.language, { dateStyle: 'long' })}</p>
                         </div>
                     ) : (
                         <p style={{ color: 'var(--text-muted)' }}>
-                            No profile yet —{' '}
-                            <button className="link-btn" onClick={() => navigate('/')}>create one on the home page</button>.
+                            {t.settingsNoProfile}{' '}
+                            <button className="link-btn" onClick={() => navigate('/')}>{t.settingsNoProfileLink}</button>.
                         </p>
                     )}
                 </section>
 
                 {/* DATA */}
                 <section className="card">
-                    <h2 className="neon-subtitle">💾 Your Data</h2>
+                    <h2 className="neon-subtitle">{t.settingsDataSection}</h2>
                     <ul className="info-list" style={{ marginBottom: '1.25rem' }}>
-                        <li>All your scores are saved on this device</li>
-                        <li>Nothing is sent to the internet</li>
-                        <li>Works offline too!</li>
+                        {t.settingsDataInfo.map((info, i) => <li key={i}>{info}</li>)}
                     </ul>
                     <button className="btn btn-danger" onClick={handleClearData}>
-                        🗑️ Delete Everything
+                        {t.settingsDeleteBtn}
                     </button>
                 </section>
 
                 <div className="action-buttons">
-                    <button className="btn btn-primary" onClick={() => navigate('/')}>
-                        🎮 Play
+                    <button className="btn btn-primary" onClick={() => navigate('/game')}>
+                        {t.settingsPlayBtn}
                     </button>
                     <button className="btn btn-secondary" onClick={() => navigate('/')}>
-                        🏠 Home
+                        {t.gameHome}
                     </button>
                     <button className="btn btn-secondary" onClick={() => navigate('/hall-of-fame')}>
-                        🏆 Hall of Fame
+                        {t.gameHallOfFame}
                     </button>
                 </div>
             </main>

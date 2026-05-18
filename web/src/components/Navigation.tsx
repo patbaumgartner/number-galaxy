@@ -1,23 +1,26 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
+import { store } from '../store'
+import { translations } from '../translations'
 
 export default function Navigation() {
     const [showAuthor, setShowAuthor] = useState(false)
+    const t = translations[store.getSettings().language]
 
     return (
         <nav className="navbar">
             <div className="navbar-container">
-                <Link
+                <NavLink
                     to="/"
                     className="navbar-brand"
                     onClick={(e) => { e.preventDefault(); setShowAuthor(v => !v) }}
                 >
                     {showAuthor ? '👾 PATBAUMGARTNER 👾' : '⚡ MATH INVADERS ⚡'}
-                </Link>
+                </NavLink>
                 <div className="nav-links">
-                    <Link to="/" className="nav-link">🏠 Home</Link>
-                    <Link to="/hall-of-fame" className="nav-link">🏆 Hall of Fame</Link>
-                    <Link to="/settings" className="nav-link">⚙️ Settings</Link>
+                    <NavLink to="/" end className="nav-link">🏠 {t.navHome}</NavLink>
+                    <NavLink to="/hall-of-fame" className="nav-link">🏆 {t.navHallOfFame}</NavLink>
+                    <NavLink to="/settings" className="nav-link">⚙️ {t.navSettings}</NavLink>
                 </div>
             </div>
         </nav>

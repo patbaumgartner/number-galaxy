@@ -1,31 +1,29 @@
-import { useState, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { store } from '../store'
 import Navigation from '../components/Navigation'
-import LanguageSwitcher from '../components/LanguageSwitcher'
-import type { Language } from '../game'
+import { operationLabels, difficultyLabels } from '../constants'
+import { TOTAL_QUESTIONS_PER_RUN } from '../constants'
 
 export default function HallOfFamePage() {
     const navigate = useNavigate()
-    const [language, setLanguage] = useState<Language>('en')
 
-    const hallOfFame = useMemo(() => store.getHallOfFame(language), [language])
+    const hallOfFame = useMemo(() => store.getHallOfFame(), [])
 
     return (
         <div className="page">
             <Navigation />
-            <LanguageSwitcher language={language} onChangeLanguage={setLanguage} />
 
             <main className="container">
                 <section className="hero">
-                    <h1 className="neon-text">🏆 HALL OF FAME 🏆</h1>
-                    <p className="subtitle">Top scores for {language.toUpperCase()}</p>
+                    <h1 className="neon-text">🏆 BEST SCORES 🏆</h1>
+                    <p className="subtitle">Can you make it to the top?</p>
                 </section>
 
                 <section className="card">
                     {hallOfFame.length === 0 ? (
                         <div className="empty-state">
-                            <p className="empty-message">🚀 No scores yet. Be the first to claim glory!</p>
+                            <p className="empty-message">🚀 Nobody here yet — play a game and be first on the board!</p>
                         </div>
                     ) : (
                         <div className="hall-of-fame-table">
@@ -37,8 +35,8 @@ export default function HallOfFamePage() {
                                         <th>Avatar</th>
                                         <th>Score</th>
                                         <th>Questions</th>
-                                        <th>Operation</th>
-                                        <th>Difficulty</th>
+                                        <th>Math</th>
+                                        <th>Speed</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -48,9 +46,9 @@ export default function HallOfFamePage() {
                                             <td className="player-name">{entry.player}</td>
                                             <td className="avatar">{entry.avatarId}</td>
                                             <td className="score neon-text">{entry.score}</td>
-                                            <td className="questions">{entry.answeredCount}/10</td>
-                                            <td className="operation">{entry.operation}</td>
-                                            <td className="difficulty">{entry.difficulty}</td>
+                                            <td className="questions">{entry.answeredCount}/{TOTAL_QUESTIONS_PER_RUN}</td>
+                                            <td className="operation">{operationLabels[entry.operation] ?? entry.operation}</td>
+                                            <td className="difficulty">{difficultyLabels[entry.difficulty] ?? entry.difficulty}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -60,8 +58,8 @@ export default function HallOfFamePage() {
                 </section>
 
                 <div className="action-buttons">
-                    <button className="btn btn-secondary" onClick={() => navigate('/game')}>
-                        🎮 Play Game
+                    <button className="btn btn-primary" onClick={() => navigate('/')}>
+                        🎮 Play Now!
                     </button>
                     <button className="btn btn-secondary" onClick={() => navigate('/')}>
                         🏠 Home

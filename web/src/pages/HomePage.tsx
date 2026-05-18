@@ -42,24 +42,24 @@ export default function HomePage() {
                 <section className="hero">
                     <div className="hero-content">
                         <h1 className="neon-text">⚡ MATH INVADERS ⚡</h1>
-                        <p className="subtitle">Free math space game with neon vibes and saved progress</p>
+                        <p className="subtitle">Shoot the right answer and get better at math every day!</p>
                         <p className="tagline">
-                            No tracking • No ads • No emails • 100% free
+                            No login needed • Always free • Works offline
                         </p>
                     </div>
                 </section>
 
                 <section className="card profile-card">
-                    <h2 className="neon-subtitle">👤 Player Profile</h2>
-                    <p>Set your nickname and avatar to save progress and see yourself in the Hall of Fame</p>
+                    <h2 className="neon-subtitle">👤 Who Are You?</h2>
+                    <p>Pick a name and an avatar — your scores will be saved!</p>
 
                     <form onSubmit={handleSubmit} className="profile-form">
                         <div className="form-group">
-                            <label htmlFor="nickname">Nickname</label>
+                            <label htmlFor="nickname">Your Name</label>
                             <input
                                 id="nickname"
                                 type="text"
-                                placeholder="Enter your name"
+                                placeholder="Type your name here"
                                 maxLength={24}
                                 minLength={2}
                                 value={playerName}
@@ -68,7 +68,7 @@ export default function HomePage() {
                         </div>
 
                         <div className="form-group">
-                            <label>Avatar Selection</label>
+                            <label>Choose Your Avatar</label>
                             <div className="avatar-grid">
                                 {avatars.map((avatar) => (
                                     <button
@@ -78,7 +78,7 @@ export default function HomePage() {
                                         onClick={() => setSelectedAvatar(avatar)}
                                         title={avatar}
                                     >
-                                        <span className="avatar-emoji">{avatar.split(' ')[1] || '🚀'}</span>
+                                        <span className="avatar-emoji">{avatar}</span>
                                     </button>
                                 ))}
                             </div>
@@ -89,7 +89,7 @@ export default function HomePage() {
                             className="btn btn-primary"
                             disabled={playerName.trim().length < 2}
                         >
-                            {storedPlayer ? '💾 Update Profile' : '✨ Create Profile'}
+                            {storedPlayer ? '💾 Save Changes' : '✨ Let\'s Play!'}
                         </button>
                     </form>
 
@@ -97,7 +97,7 @@ export default function HomePage() {
 
                     {storedPlayer && (
                         <p className="status">
-                            Current player: <strong>{storedPlayer.playerName}</strong>
+                            Playing as: <strong>{storedPlayer.playerName}</strong>
                         </p>
                     )}
                 </section>
@@ -105,18 +105,18 @@ export default function HomePage() {
                 <section className="card">
                     <h2 className="neon-subtitle">🎮 How to Play</h2>
                     <ol className="instructions">
-                        <li>Choose your math operation and difficulty level</li>
-                        <li>Save your profile to track progress</li>
-                        <li>Answer 10 math questions to complete a mission</li>
-                        <li>Use arrow keys to move your rocket ⬅️ ➡️</li>
-                        <li>Press Space or Shoot to blast the correct answer</li>
-                        <li>Build streaks for bonus points!</li>
+                        <li>Go to Settings and pick what math you want to practise</li>
+                        <li>Enter your name and pick an avatar</li>
+                        <li>Press ▶️ Start and answer 20 questions!</li>
+                        <li>Steer your rocket with ⬅️ ➡️ arrow keys</li>
+                        <li>Press Space or tap 🎯 Shoot to fire at the right answer</li>
+                        <li>Get answers right in a row for bonus points! 🔥</li>
                     </ol>
                 </section>
 
                 <section className="card actions">
-                    <button className="btn btn-secondary" onClick={() => navigate('/game')}>
-                        🚀 Start Playing
+                    <button className="btn btn-primary" onClick={() => navigate('/game')}>
+                        🚀 Play Now!
                     </button>
                     <button className="btn btn-secondary" onClick={() => navigate('/hall-of-fame')}>
                         🏆 Hall of Fame

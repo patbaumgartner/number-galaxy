@@ -1,23 +1,23 @@
 /* ==================== NEON THEME ==================== */
 :root {
-  --primary: #00ffff;
-  --primary-dark: #00cccc;
-  --secondary: #ff00ff;
-  --secondary-dark: #cc00cc;
-  --accent: #ffff00;
-  --accent-dark: #cccc00;
-  --danger: #ff0066;
-  --success: #00ff66;
-  --bg: #0a0a0a;
-  --bg-light: #1a1a1a;
-  --bg-lighter: #2a2a2a;
-  --text: #ffffff;
-  --text-muted: #999999;
-  --border: #333333;
-  --glow-cyan: 0 0 20px #00ffff;
-  --glow-magenta: 0 0 20px #ff00ff;
-  --glow-yellow: 0 0 20px #ffff00;
-  --glow-danger: 0 0 20px #ff0066;
+  --primary: #22d3ee;
+  --primary-dark: #06b6d4;
+  --secondary: #c084fc;
+  --secondary-dark: #a855f7;
+  --accent: #fbbf24;
+  --accent-dark: #f59e0b;
+  --danger: #f43f5e;
+  --success: #34d399;
+  --bg: #030712;
+  --bg-light: #0f172a;
+  --bg-lighter: #1e293b;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --border: #4a5568;
+  --glow-cyan: 0 0 20px rgba(34, 211, 238, 0.5);
+  --glow-magenta: 0 0 20px rgba(192, 132, 252, 0.5);
+  --glow-yellow: 0 0 20px rgba(251, 191, 36, 0.5);
+  --glow-danger: 0 0 20px rgba(244, 63, 94, 0.5);
 }
 
 * {
@@ -26,7 +26,9 @@
   box-sizing: border-box;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   width: 100%;
   height: 100%;
   background-color: var(--bg);
@@ -74,16 +76,22 @@ body {
 
 .nav-links {
   display: flex;
-  gap: 2rem;
+  gap: 0.25rem;
+  align-items: center;
 }
 
 .nav-link {
   color: var(--text);
   text-decoration: none;
-  font-size: 1rem;
+  font-size: 0.95rem;
   transition: all 0.3s ease;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
   border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+  line-height: 1;
 }
 
 .nav-link:hover {
@@ -180,7 +188,7 @@ body {
 }
 
 .card p {
-  color: var(--text-muted);
+  color: var(--text);
   line-height: 1.8;
   margin-bottom: 1rem;
 }
@@ -328,7 +336,7 @@ body {
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 2rem;
+  gap: 1rem;
 }
 
 .scoreboard {
@@ -460,28 +468,147 @@ body {
 }
 
 @keyframes blast {
-  0% { transform: scale(1) rotate(0deg); box-shadow: 0 0 40px var(--glow-danger); }
-  50% { transform: scale(1.1) rotate(5deg); }
-  100% { transform: scale(0.9) rotate(-5deg); box-shadow: 0 0 10px var(--glow-danger); }
+  0% {
+    transform: scale(1) rotate(0deg);
+    box-shadow: 0 0 40px var(--glow-danger);
+  }
+
+  50% {
+    transform: scale(1.1) rotate(5deg);
+  }
+
+  100% {
+    transform: scale(0.9) rotate(-5deg);
+    box-shadow: 0 0 10px var(--glow-danger);
+  }
 }
 
+.countdown-urgent {
+  color: var(--danger) !important;
+  text-shadow: 0 0 10px var(--danger), 0 0 20px var(--danger) !important;
+  animation: urgentPulse 0.4s ease-in-out infinite;
+}
+
+@keyframes urgentPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ==================== COUNTDOWN RING ==================== */
+.question-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem 1.5rem;
+  background: radial-gradient(circle, rgba(34, 211, 238, 0.08) 0%, transparent 70%);
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.question-header .question-display {
+  flex: 1;
+  border: none;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  margin-bottom: 0;
+}
+
+.countdown-display {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.countdown-ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.countdown-ring-track {
+  fill: none;
+  stroke: var(--bg-lighter);
+  stroke-width: 5;
+}
+
+.countdown-ring-fill {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 175.93; /* 2π × 28 */
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.9s linear, stroke 0.3s ease;
+}
+
+.countdown-display.urgent .countdown-ring-fill {
+  stroke: var(--danger);
+}
+
+.countdown-display.idle .countdown-ring-fill {
+  stroke: var(--border);
+}
+
+.countdown-number {
+  position: relative;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary);
+  line-height: 1;
+  text-shadow: var(--glow-cyan);
+}
+
+.countdown-display.urgent .countdown-number {
+  color: var(--danger);
+  text-shadow: var(--glow-danger);
+  animation: urgentPulse 0.4s ease-in-out infinite;
+}
+
+.countdown-display.idle .countdown-number {
+  color: var(--text-muted);
+  text-shadow: none;
+}
+
+/* Stop button — full width, below the directional controls */
+.btn-stop {
+  width: 100%;
+  margin-top: 0.75rem;
+  height: 52px;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+}
+
+
 .rocket-track {
-  background: linear-gradient(90deg, rgba(0, 255, 255, 0.1) 0%, rgba(255, 0, 255, 0.1) 100%);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  background: linear-gradient(90deg, rgba(34, 211, 238, 0.05) 0%, rgba(192, 132, 252, 0.05) 100%);
   border: 2px solid var(--primary);
   border-radius: 8px;
-  padding: 1.5rem;
-  position: relative;
-  min-height: 80px;
-  overflow: hidden;
+  padding: 1rem;
+}
+
+.rocket-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60px;
 }
 
 .rocket {
   font-size: 2.5rem;
-  position: absolute;
-  top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-  transition: transform 0.1s ease;
+  display: block;
+  text-align: center;
+  line-height: 1;
 }
 
 /* ==================== CONTROLS ==================== */
@@ -688,7 +815,8 @@ body {
   text-shadow: var(--glow-yellow);
 }
 
-.info-box, .info-list {
+.info-box,
+.info-list {
   background-color: var(--bg-lighter);
   border: 1px solid var(--primary);
   border-radius: 4px;
@@ -729,41 +857,316 @@ body {
   color: var(--accent);
 }
 
+/* ==================== GAME LAYOUT ==================== */
+.game-play-area {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .game-play-area {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    align-items: start;
+  }
+
+  .game-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+
+/* ==================== TOUCH CONTROLS ==================== */
+.controls-main {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.controls-secondary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.btn-control {
+  height: 64px;
+  font-size: 1.2rem;
+  padding: 0 0.5rem;
+}
+
+/* ==================== CONFIG TOGGLES ==================== */
+.toggle-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.toggle-btn {
+  padding: 0.75rem 1.25rem;
+  background-color: var(--bg-lighter);
+  border: 2px solid var(--border);
+  color: var(--text);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Courier New', monospace;
+  font-size: 0.95rem;
+  font-weight: bold;
+  flex: 1;
+  min-width: 110px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.toggle-btn:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.toggle-btn.active {
+  background-color: rgba(34, 211, 238, 0.15);
+  border-color: var(--primary);
+  color: var(--primary);
+  box-shadow: 0 0 12px rgba(34, 211, 238, 0.3);
+}
+
+.config-hint {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: var(--primary);
+  text-decoration: underline;
+  cursor: pointer;
+  font-family: 'Courier New', monospace;
+  font-size: inherit;
+  padding: 0;
+}
+
 /* ==================== RESPONSIVE ==================== */
+/* Targets iPhone 14/15 (~390px) and Pixel 7/7a (~412px) */
 @media (max-width: 768px) {
+
+  /* --- Navbar: 2-row layout (brand on top, all links in one row below) --- */
+  .navbar {
+    padding: 0.4rem 0;
+  }
+
   .navbar-container {
     flex-direction: column;
-    gap: 1rem;
+    align-items: flex-start;
+    gap: 0.15rem;
+    padding: 0.25rem 0.75rem;
+  }
+
+  .navbar-brand {
+    font-size: 1rem;
   }
 
   .nav-links {
-    flex-direction: column;
-    gap: 0.5rem;
+    flex-direction: row;
+    flex-wrap: nowrap;
     width: 100%;
+    justify-content: space-around;
+    gap: 0;
+  }
+
+  .nav-link {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.4rem;
+  }
+
+  /* --- Hero: compact on mobile --- */
+  .hero {
+    padding: 1rem 1rem;
+    margin-bottom: 0.5rem;
   }
 
   .hero h1 {
-    font-size: 2rem;
+    font-size: 1.6rem;
+    letter-spacing: 1px;
   }
 
-  .controls {
-    grid-template-columns: repeat(3, 1fr);
+  .subtitle {
+    font-size: 0.9rem;
   }
 
+  .tagline {
+    font-size: 0.8rem;
+  }
+
+  /* --- Cards: tighter padding and spacing --- */
+  .card {
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* --- Game container: reduce gaps --- */
+  .game-container {
+    gap: 0.5rem;
+  }
+
+  .game-play-area {
+    gap: 0.5rem;
+  }
+
+  /* --- Scoreboard: 4 items in a single horizontal row --- */
   .scoreboard {
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    flex-direction: unset;
+    gap: 0.25rem;
     width: 100%;
-    gap: 1rem;
+  }
+
+  .score-item {
+    gap: 0.2rem;
+  }
+
+  .score-item .label {
+    font-size: 0.7rem;
+  }
+
+  .score-item .value {
+    font-size: 1.1rem;
+  }
+
+  /* --- Progress bar: slimmer --- */
+  .progress-bar {
+    height: 18px;
+  }
+
+  .progress-text {
+    margin-top: 0.2rem;
+    font-size: 0.8rem;
+  }
+
+  /* --- Game board: compact --- */
+  .game-board {
+    gap: 0.75rem;
+  }
+
+  .question-display {
+    padding: 0.75rem 1rem;
+  }
+
+  .question-text {
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+  }
+
+  .battlefield {
+    gap: 0.75rem;
   }
 
   .lanes {
     grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
   }
 
+  .lane {
+    padding: 0.75rem 0.5rem;
+    gap: 0.2rem;
+  }
+
+  .lane .alien {
+    font-size: 1.5rem;
+  }
+
+  .lane .value {
+    font-size: 1.2rem;
+  }
+
+  .rocket-track {
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .rocket-cell {
+    min-height: 44px;
+  }
+
+  .rocket {
+    font-size: 2rem;
+  }
+
+  /* --- Controls: slightly shorter touch targets --- */
+  .btn-control {
+    height: 52px;
+    font-size: 1.05rem;
+  }
+
+  .controls-main {
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .controls-secondary {
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .feedback {
+    min-height: 40px;
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  /* --- Action buttons: 2×2 grid --- */
+  .action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  /* --- General buttons --- */
+  .btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+    letter-spacing: 0;
+  }
+
+  /* --- Avatar grid: 5 columns, smaller buttons --- */
   .avatar-grid {
-    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    gap: 0.5rem;
   }
 
+  .avatar-btn {
+    font-size: 1.5rem;
+    padding: 0.6rem;
+  }
+
+  /* --- Settings toggle groups: 2-column grid so text is never truncated --- */
+  .toggle-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .toggle-btn {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0.55rem 0.5rem;
+    font-size: 0.75rem;
+    flex: none;
+  }
+
+  /* --- Settings grid --- */
   .settings-grid {
     grid-template-columns: 1fr;
   }
@@ -771,32 +1174,22 @@ body {
 
 @media (max-width: 480px) {
   .container {
-    padding: 1rem;
-  }
-
-  .hero {
-    padding: 2rem 1rem;
+    padding: 0.75rem;
   }
 
   .hero h1 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
   }
 
-  .card {
-    padding: 1.5rem;
+  .question-text {
+    font-size: 1.4rem;
   }
 
-  .controls {
-    grid-template-columns: repeat(2, 1fr);
+  .lane .alien {
+    font-size: 1.3rem;
   }
 
-  .btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-  }
-
-  .nav-link {
-    font-size: 0.9rem;
-    padding: 0.25rem 0.5rem;
+  .lane .value {
+    font-size: 1.1rem;
   }
 }

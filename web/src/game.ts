@@ -5,7 +5,14 @@ export type Operation =
   | 'multiplication'
   | 'division'
   | 'remainders'
-export type Level = 'starter' | 'advanced' | 'challenge'
+export type Level =
+  | 'starter'
+  | 'beginner'
+  | 'elementary'
+  | 'intermediate'
+  | 'advanced'
+  | 'expert'
+  | 'master'
 export type Difficulty = 'easy' | 'normal' | 'hard'
 export type GameStatus = 'ready' | 'playing' | 'won' | 'lost'
 
@@ -17,6 +24,7 @@ export type Question = {
 export type GameState = {
   language: Language
   operation: Operation
+  operationPool: Operation[]
   level: Level
   difficulty: Difficulty
   score: number
@@ -44,16 +52,38 @@ const remainderSeparator: Record<Language, string> = {
 const remainderLabel = (language: Language, quotient: number, remainder: number) =>
   `${quotient} ${remainderSeparator[language]} ${remainder}`
 
-const levelOffset: Record<Level, number> = {
-  starter: 0,
-  advanced: 6,
-  challenge: 14,
+// Max operand value per level — spans 10 → 1000
+const levelMaxValue: Record<Level, number> = {
+  starter: 10,
+  beginner: 20,
+  elementary: 50,
+  intermediate: 100,
+  advanced: 250,
+  expert: 500,
+  master: 1000,
 }
 
-const difficultyMultiplier: Record<Difficulty, number> = {
-  easy: 1,
-  normal: 1.6,
-  hard: 2.4,
+// Base seconds per question per level (shorter = more challenging)
+const levelSeconds: Record<Level, number> = {
+  starter: 15,
+  beginner: 13,
+  elementary: 11,
+  intermediate: 9,
+  advanced: 7,
+  expert: 6,
+  master: 5,
+}
+
+// Difficulty shifts the timer (does NOT change number range)
+const difficultySeconds: Record<Difficulty, number> = {
+  easy: 3,
+  normal: 0,
+  hard: -2,
+}
+
+/** Returns the countdown seconds for one question at the given level + difficulty. */
+export function getQuestionTime(level: Level, difficulty: Difficulty): number {
+  return Math.max(3, levelSeconds[level] + difficultySeconds[difficulty])
 }
 
 function randomInt(min: number, max: number) {
@@ -109,10 +139,11 @@ function createRemainderQuestion(language: Language, maxValue: number) {
 }
 
 function buildNumericOptions(answerValue: number) {
+  const drift = Math.max(3, Math.round(answerValue * 0.25))
   const choices = new Set<number>([answerValue])
   while (choices.size < 4) {
-    const drift = randomInt(-8, 8) || 1
-    choices.add(Math.max(0, answerValue + drift))
+    const delta = randomInt(-drift, drift) || 1
+    choices.add(Math.max(0, answerValue + delta))
   }
   return Array.from(choices)
     .sort(() => Math.random() - 0.5)
@@ -129,11 +160,9 @@ function buildRemainderOptions(language: Language, answer: string, maxValue: num
   return Array.from(choices).sort(() => Math.random() - 0.5)
 }
 
-export function createRound(language: Language, operation: Operation, level: Level, difficulty: Difficulty): GameState {
-  const maxValue = Math.max(
-    10,
-    Math.floor((12 + levelOffset[level]) * difficultyMultiplier[difficulty]),
-  )
+export function createRound(language: Language, operationPool: Operation[], level: Level, difficulty: Difficulty): GameState {
+  const operation = operationPool[Math.floor(Math.random() * operationPool.length)]
+  const maxValue = levelMaxValue[level]
 
   if (operation === 'remainders') {
     const question = createRemainderQuestion(language, maxValue)
@@ -141,6 +170,7 @@ export function createRound(language: Language, operation: Operation, level: Lev
     return {
       language,
       operation,
+      operationPool,
       level,
       difficulty,
       score: 0,
@@ -171,6 +201,7 @@ export function createRound(language: Language, operation: Operation, level: Lev
   return {
     language,
     operation,
+    operationPool,
     level,
     difficulty,
     score: 0,
@@ -187,15 +218,16 @@ export function createRound(language: Language, operation: Operation, level: Lev
   }
 }
 
-export function nextQuestion(previous: GameState): Pick<GameState, 'currentQuestion' | 'options' | 'correctIndex'> {
+export function nextQuestion(previous: GameState): Pick<GameState, 'currentQuestion' | 'options' | 'correctIndex' | 'operation'> {
   const nextState = createRound(
     previous.language,
-    previous.operation,
+    previous.operationPool,
     previous.level,
     previous.difficulty,
   )
 
   return {
+    operation: nextState.operation,
     currentQuestion: nextState.currentQuestion,
     options: nextState.options,
     correctIndex: nextState.correctIndex,

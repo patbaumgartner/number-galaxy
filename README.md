@@ -1,8 +1,12 @@
 # 🛸 Math Invaders
 
+[![Deploy to GitHub Pages](https://github.com/patbaumgartner/math-invaders/actions/workflows/deploy.yml/badge.svg)](https://github.com/patbaumgartner/math-invaders/actions/workflows/deploy.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+
 > A free, privacy-friendly neon math shooter for children. Play online at **[patbaumgartner.github.io/math-invaders](https://patbaumgartner.github.io/math-invaders)** with automatic GitHub Pages deployment—no backend required.
 
-**[🎮 Play Now](https://patbaumgartner.github.io/math-invaders)** · **[📖 How to Play](#-how-to-play)** · **[🏗️ Architecture](#-architecture)**
+**[🎮 Play Now](https://patbaumgartner.github.io/math-invaders)** · **[📖 How to Play](#-how-to-play)** · **[🏗️ Architecture](#-architecture)** · **[🤝 Contributing](#-contributing)**
 
 | Home | Game |
 |------|------|
@@ -18,7 +22,8 @@
 4. **Aim & shoot** — move rocket 🚀 to target correct answer, then fire
 5. **Complete 10 questions** — finish mission to earn Hall of Fame entry
 
-**Controls:** Arrow keys to move, Spacebar to shoot (or use mouse buttons)
+**Controls:** Arrow keys to move, Spacebar to shoot (or use mouse buttons)  
+**Timer:** 15 seconds per question — time's up counts as a wrong answer
 
 ---
 
@@ -28,12 +33,14 @@
 - **Correct answer:** +10 points
 - **Streak bonus:** +2 per consecutive correct
 - **Wrong answer:** −1 life
-- **Win condition:** 10 questions answered or lives remain
+- **Time's up:** −1 life (counts as wrong answer)
+- **Win condition:** 10 questions answered with lives remaining
 
 ### Lives & Streak
 - Start with **3 lives** ❤️❤️❤️
-- Lose 1 life per wrong answer
-- Streak grows with correct answers, resets on wrong
+- Lose 1 life per wrong answer or expired timer
+- **15-second timer** per question — flashes red in the last 5 seconds
+- Streak grows with correct answers, resets on wrong or timeout
 - Formula: `10 + (streak × 2)` points per question
 
 ### Math Operations
@@ -185,7 +192,15 @@ A: Settings → Clear All Data to wipe profile and scores.
 
 ## 📄 License
 
-Open source and free to use, modify, and share.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 🤝 Contributing
+
+Contributions make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+
+Please read our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before submitting a pull request. We also have a [Security Policy](SECURITY.md) and [Changelog](CHANGELOG.md).
 
 ---
 

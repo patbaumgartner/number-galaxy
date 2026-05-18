@@ -1,179 +1,192 @@
 # 🛸 Math Invaders
 
-**Math Invaders** is a fully free, privacy-friendly neon math shooter for children. It runs as a single Next.js application — one container, one URL, zero tracking.
+> A free, privacy-friendly neon math shooter for children. Play online at **[patbaumgartner.github.io/math-invaders](https://patbaumgartner.github.io/math-invaders)** with automatic GitHub Pages deployment—no backend required.
 
-![Screenshot of Math Invaders](./docs/math-invaders-game.png)
+**[🎮 Play Now](https://patbaumgartner.github.io/math-invaders)** · **[📖 How to Play](#-how-to-play)** · **[🏗️ Architecture](#-architecture)**
 
----
-
-## 🚀 How to play
-
-1. **Choose your weapon** — select an operation, level, and difficulty.
-2. **Pick your pilot** — enter a nickname and avatar to save progress (optional).
-3. **Press ▶ Start mission** to begin.
-4. **Steer your rocket** 🚀 left and right until it points at the correct answer lane.
-5. **Fire!** — hit the correct answer invader to score points.
-6. **Complete 10 questions** to finish a mission and reach the Hall of Fame.
+| Home | Game |
+|------|------|
+| ![Home page](./docs/math-invaders-home.png) | ![Game page](./docs/math-invaders-game.png) |
 
 ---
 
-## 🎮 Controls
+## 🎮 How to Play
 
-| Action         | Mouse / Touch          | Keyboard                  |
-|----------------|------------------------|---------------------------|
-| Move left       | Click **← Left** button | Arrow Left `←`           |
-| Move right      | Click **Right →** button | Arrow Right `→`          |
-| Shoot           | Click **🔫 Shoot**      | `Space`                   |
-| New mission     | Click **🔄 New mission** | —                        |
+1. **Choose settings** — select operation, level, difficulty
+2. **Create profile** — nickname + avatar (optional, for Hall of Fame)
+3. **Start mission** — press start to begin
+4. **Aim & shoot** — move rocket 🚀 to target correct answer, then fire
+5. **Complete 10 questions** — finish mission to earn Hall of Fame entry
+
+**Controls:** Arrow keys to move, Spacebar to shoot (or use mouse buttons)
 
 ---
 
-## 📐 Game rules
+## 📐 Game Mechanics
 
 ### Scoring
+- **Correct answer:** +10 points
+- **Streak bonus:** +2 per consecutive correct
+- **Wrong answer:** −1 life
+- **Win condition:** 10 questions answered or lives remain
 
-| Event                       | Points earned          |
-|-----------------------------|------------------------|
-| Correct answer              | **+10**                |
-| Streak bonus (per streak level) | **+2 × streak**   |
-| Wrong answer                | **−1 life**            |
+### Lives & Streak
+- Start with **3 lives** ❤️❤️❤️
+- Lose 1 life per wrong answer
+- Streak grows with correct answers, resets on wrong
+- Formula: `10 + (streak × 2)` points per question
 
-### Session structure
+### Math Operations
 
-- Each **mission** consists of exactly **10 questions**.
-- You start with **3 lives** ❤️❤️❤️.
-- Losing all lives **ends the mission early**.
-- Answering all 10 questions **wins the mission** regardless of lives.
-- Your best score per language is saved to the **Hall of Fame** (requires a saved profile).
+| Mode | Example | Notes |
+|------|---------|-------|
+| ➕ Addition | `7 + 3 = ?` | Basic arithmetic |
+| ➖ Subtraction | `10 − 4 = ?` | All results allowed |
+| ✖️ Multiplication | `6 × 7 = ?` | Whole numbers |
+| ➗ Division | `20 ÷ 4 = ?` | Whole number results only |
+| 🔢 Division + Remainder | `23 ÷ 5 = 4 r3` | Quotient + remainder |
 
-### Streak
+### Difficulty Tiers
 
-A **streak** grows by 1 with every correct answer in a row.  
-A wrong answer resets the streak to 0.  
-Each correct answer earns `10 + streak × 2` points — so staying on a streak pays off!
+**By complexity:** 😊 Easy < 🎯 Normal < 🔥 Hard  
+**By number range:** 🟢 Starter < 🟡 Advanced < 🔴 Challenge
 
-### Math modes
+### Languages
 
-| Mode                     | Description                          |
-|--------------------------|--------------------------------------|
-| ➕ Addition              | `a + b = ?`                          |
-| ➖ Subtraction           | `a − b = ?`                          |
-| ✖️ Multiplication        | `a × b = ?`                          |
-| ➗ Division              | `a ÷ b = ?` (whole number results)   |
-| 🔢 Division + remainders | `a ÷ b = q r` (quotient + remainder) |
+🇩🇪 German · 🇮🇹 Italian · 🇬🇧 English · 🇫🇷 French
 
-### Levels
-
-| Level                | Number range              |
-|----------------------|---------------------------|
-| 🌱 Starter (8–10)    | Small, beginner-friendly  |
-| 🚀 Advanced (8–10)   | Larger numbers            |
-| ⚡ Challenge (10+)   | Hard problems, wide range |
-
-### Difficulty
-
-| Difficulty | Effect                                    |
-|------------|-------------------------------------------|
-| 😊 Easy    | Wider gap between options — easier picks  |
-| 🎯 Normal  | Moderate distractor closeness             |
-| 🔥 Hard    | Distractors are very close to the answer  |
-
----
-
-## 🌍 Languages
-
-Math Invaders supports **German (DE), Italian (IT), English (EN), and French (FR)**.  
-Switching language also loads the Hall of Fame for that language.  
-Remainder notation adapts to the language: German uses `Rest`, others use `r`.
+Each language has its own Hall of Fame leaderboard.
 
 ---
 
 ## 🏆 Hall of Fame
 
-- Requires a saved player profile (nickname + avatar).
-- Only the **best score** per player per language is stored.
-- No email, no password, no tracking — a nickname is enough.
+- **Per language:** Separate leaderboards for each language
+- **Best score only:** Your top score per operation is saved
+- **No backend:** Scores stored locally on your device
+- **Requires profile:** Create one to save to Hall of Fame
 
 ---
 
-## 👨‍🚀 Avatars
+## 🏗️ Architecture
 
-Each of the **12 crew avatars** is procedurally generated with a unique neon color circle. Choose the one that feels most like you!
+**Static React app on GitHub Pages** — No backend server required.
 
-| Avatar          | Neon colour |
-|-----------------|-------------|
-| 🦊 Comet Fox    | Orange      |
-| 🐼 Nebula Panda | Lime        |
-| 🦁 Solar Lion   | Gold        |
-| 🐯 Tiger Spark  | Amber       |
-| 🐨 Cosmo Koala  | Cyan        |
-| 🦄 Star Unicorn | Magenta     |
-| 🐬 Orbit Dolphin | Mint       |
-| 🐢 Rocket Turtle | Green      |
-| 🐙 Astro Octopus | Pink       |
-| 🐸 Moon Frog    | Chartreuse  |
-| 🐻 Galaxy Bear  | Purple      |
-| 🐰 Meteor Bunny | Lavender    |
+```
+┌─ React 19 + TypeScript
+├─ Pages
+│  ├─ Home: Profile creation
+│  ├─ Game: Main gameplay
+│  ├─ Hall of Fame: Leaderboards
+│  └─ Settings: Data management
+├─ Storage
+│  └─ localStorage: Player data, game state, scores
+└─ Deploy
+   └─ GitHub Actions → GitHub Pages
+```
+
+### Tech Stack
+
+- **Frontend:** React 19.2, React Router 7.1, TypeScript 6.0
+- **Build:** Vite 8.0 (fast hot reload)
+- **Styling:** CSS3 neon theme (cyan/magenta/yellow on black)
+- **Storage:** Browser localStorage (zero tracking)
+- **Deploy:** GitHub Pages + GitHub Actions
+
+### Project Structure
+
+```
+web/
+├── src/
+│   ├── pages/          # 4 main pages
+│   ├── components/     # Reusable UI
+│   ├── App.tsx         # Router
+│   ├── App.css         # Neon theme
+│   ├── store.ts        # localStorage API
+│   ├── game.ts         # Game logic
+│   └── constants.ts    # Static data
+├── index.html          # Entry point
+├── vite.config.ts      # Vite config
+├── tsconfig.json       # TypeScript
+└── package.json        # Dependencies
+```
 
 ---
 
-## 🛡️ Why Math Invaders is child-safe
+## 🚀 Development
 
-- No ads
-- No tracking or analytics
-- No paywalls or premium features
-- No manipulative streaks or loot boxes
-- No forced email registration
-- Short, focused 10-question sessions
-- Pure black + neon design — no hidden UI patterns
-
----
-
-## 🏗️ Run locally
+### Setup
 
 ```bash
-cd backend
+cd web
 npm install
 npm run dev
 ```
 
-Open **http://localhost:3000**
+Opens [http://localhost:5173/math-invaders](http://localhost:5173/math-invaders)
 
----
-
-## 🐳 Docker (single container)
+### Build
 
 ```bash
-# from the project root
-docker compose up --build
+npm run build
 ```
 
-The app is served at **http://localhost:3000** and SQLite data persists in `./backend/data/`.
+Output in `web/dist/` — deploy to GitHub Pages or any static host.
+
+### Lint
+
+```bash
+npm run lint
+```
 
 ---
 
-## 🔌 API
+## 🌐 Deployment
 
-| Method | Path                           | Description                  |
-|--------|--------------------------------|------------------------------|
-| POST   | `/api/register`                | Create or update player       |
-| GET    | `/api/game-state?playerId=...` | Load saved game state         |
-| POST   | `/api/game-state`              | Save game state               |
-| GET    | `/api/hall-of-fame?language=..`| Fetch top scores              |
-| POST   | `/api/hall-of-fame`            | Submit score                  |
+**Automatic via GitHub Actions** on push to `main`:
+
+1. Install dependencies
+2. Build with Vite
+3. Deploy `dist/` to GitHub Pages
+4. Live at [patbaumgartner.github.io/math-invaders](https://patbaumgartner.github.io/math-invaders)
+
+See [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) for details.
 
 ---
 
-## 🧱 Architecture
+## 🎨 Design Philosophy
 
-```
-one container
-└── Next.js (backend/)
-    ├── / → MathInvadersGame UI (React, neon dark design)
-    ├── /api/register
-    ├── /api/game-state
-    └── /api/hall-of-fame
-        └── SQLite at backend/data/math-invaders.sqlite
-```
+- **No ads, no tracking, no monetization**
+- **Child-safe:** Pure black + neon colors, no hidden patterns
+- **Privacy-first:** All data stays on your device
+- **Offline-capable:** Works without internet after initial load
+- **Accessible:** Keyboard, mouse, and touch support
 
-The `web/` Vite workspace remains in the repo as a standalone reference build.
+---
+
+## ❓ FAQ
+
+**Q: Is my data private?**  
+A: Yes. Everything is stored locally using browser localStorage. No server, no cloud, no analytics.
+
+**Q: Can I play offline?**  
+A: Yes, after the initial page load, the app works offline.
+
+**Q: How do I save my progress?**  
+A: Create a player profile. Scores auto-save to localStorage.
+
+**Q: Can I use it on mobile?**  
+A: Yes, fully responsive for phones and tablets.
+
+**Q: How do I reset my data?**  
+A: Settings → Clear All Data to wipe profile and scores.
+
+---
+
+## 📄 License
+
+Open source and free to use, modify, and share.
+
+---
+
+Enjoy! 🎮⚡

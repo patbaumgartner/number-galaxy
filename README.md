@@ -12,6 +12,10 @@
 |------|------|
 | ![Home page](./docs/math-invaders-home.png) | ![Game page](./docs/math-invaders-game.png) |
 
+| Hall of Fame | Settings |
+|-------------|----------|
+| ![Hall of Fame](./docs/math-invaders-hall-of-fame.png) | ![Settings page](./docs/math-invaders-settings.png) |
+
 ---
 
 ## 🎮 How to Play
@@ -20,7 +24,7 @@
 2. **Create profile** — nickname + avatar (optional, for Hall of Fame)
 3. **Start mission** — press start to begin
 4. **Aim & shoot** — move rocket 🚀 to target correct answer, then fire
-5. **Complete 10 questions** — finish mission to earn Hall of Fame entry
+5. **Complete 20 questions** — finish mission to earn Hall of Fame entry
 
 **Controls:** Arrow keys to move, Spacebar to shoot (or use mouse buttons)  
 **Timer:** 15 seconds per question — time's up counts as a wrong answer
@@ -34,7 +38,7 @@
 - **Streak bonus:** +2 per consecutive correct
 - **Wrong answer:** −1 life
 - **Time's up:** −1 life (counts as wrong answer)
-- **Win condition:** 10 questions answered with lives remaining
+- **Win condition:** 20 questions answered with lives remaining
 
 ### Lives & Streak
 - Start with **3 lives** ❤️❤️❤️
@@ -96,7 +100,7 @@ Each language has its own Hall of Fame leaderboard.
 
 - **Frontend:** React 19.2, React Router 7.1, TypeScript 6.0
 - **Build:** Vite 8.0 (fast hot reload)
-- **Styling:** CSS3 neon theme (cyan/magenta/yellow on black)
+- **Styling:** CSS3 deep-space neon theme (cyan / hot-pink / gold on galaxy-purple)
 - **Storage:** Browser localStorage (zero tracking)
 - **Deploy:** GitHub Pages + GitHub Actions
 

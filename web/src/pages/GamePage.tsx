@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createRound, nextQuestion, getQuestionTime, type GameState } from '../game'
+import { createRound, nextQuestion, getQuestionTime, getWave, getEffectiveLevel, type GameState } from '../game'
 import { store } from '../store'
 import Navigation from '../components/Navigation'
 import GameBoard from '../components/GameBoard'
@@ -12,51 +12,43 @@ const CIRCUMFERENCE = 2 * Math.PI * 28
 export default function GamePage() {
     const navigate = useNavigate()
     const player = store.getPlayer()
+    const settings = store.getSettings()
+    const t = translations[settings.language]
 
-    // Guard: must come via Home (profile required)
-    useEffect(() => {
-        if (!player) navigate('/', { replace: true })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
-
-    if (!player) return null
-
-    const t = translations[store.getSettings().language]
-
-    const [gameState, setGameState] = useState<GameState>(() => {
-        const s = store.getSettings()
-        return createRound(s.language, s.operations, s.level, s.difficulty)
-    })
+    const [gameState, setGameState] = useState<GameState>(() =>
+        createRound(settings.language, settings.operations, settings.level, settings.difficulty)
+    )
     const [selectedLane, setSelectedLane] = useState(0)
     const [feedback, setFeedback] = useState('')
     const [blastLane, setBlastLane] = useState<number | null>(null)
-    const [maxTime, setMaxTime] = useState(() => {
-        const s = store.getSettings()
-        return getQuestionTime(s.level, s.difficulty)
-    })
-    const [countdown, setCountdown] = useState(maxTime)
+    const [maxTime, setMaxTime] = useState(() => getQuestionTime(settings.level, settings.difficulty))
+    const [countdown, setCountdown] = useState(() => getQuestionTime(settings.level, settings.difficulty))
 
-    // Persist game state
+    // Redirect to home if no player profile exists
+    useEffect(() => {
+        if (!player) navigate('/', { replace: true })
+    }, [navigate, player])
+
+    // Persist game state on each change
     useEffect(() => {
         if (player) store.saveGameState(player.id, gameState)
     }, [gameState, player])
 
-    // Countdown tick
+    // Stable ref to handleTimeExpired — initialised with a placeholder so it can
+    // be declared before handleTimeExpired without a temporal-dead-zone error.
+    // The ref is kept current by the effect declared after handleTimeExpired.
+    const handleTimeExpiredRef = useRef<() => void>(() => { })
+
+    // Countdown tick — fires time-expired handler via ref when reaching 0
     useEffect(() => {
-        if (gameState.status !== 'playing' || countdown <= 0) return
+        if (gameState.status !== 'playing') return
+        if (countdown === 0) {
+            handleTimeExpiredRef.current()
+            return
+        }
         const timer = setTimeout(() => setCountdown(c => c - 1), 1000)
         return () => clearTimeout(timer)
     }, [countdown, gameState.status])
-
-    // Reset countdown when question changes
-    useEffect(() => {
-        if (gameState.status === 'playing') {
-            const t = getQuestionTime(gameState.level, gameState.difficulty)
-            setMaxTime(t)
-            setCountdown(t)
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [gameState.currentQuestion])
 
     const submitScore = useCallback((state: GameState) => {
         if (state.score <= 0) return null
@@ -76,24 +68,23 @@ export default function GamePage() {
 
     const endGame = useCallback((state: GameState, won: boolean) => {
         const result = submitScore(state)
-        let msg: string
-        if (won) {
-            msg = result?.improved
+        const msg = won
+            ? (result?.improved
                 ? t.gameFeedbackNewRecord.replace('{score}', String(state.score))
-                : t.gameFeedbackComplete.replace('{score}', String(state.score))
-        } else {
-            msg = t.gameFeedbackStopped.replace('{score}', String(state.score))
-        }
+                : t.gameFeedbackComplete.replace('{score}', String(state.score)))
+            : t.gameFeedbackStopped.replace('{score}', String(state.score))
         setFeedback(msg)
         setTimeout(() => navigate('/hall-of-fame'), 1800)
-    }, [submitScore, navigate])
+    }, [submitScore, navigate, t])
 
     const handleTimeExpired = useCallback(() => {
         if (gameState.status !== 'playing') return
         const answeredCount = gameState.answeredCount + 1
         const nextLives = gameState.lives - 1
         const sessionEnded = answeredCount >= TOTAL_QUESTIONS_PER_RUN || nextLives <= 0
-        const nextRound = nextQuestion(gameState)
+        const nextWave = getWave(answeredCount)
+        const effectiveNextLevel = getEffectiveLevel(gameState.level, nextWave)
+        const nextRound = nextQuestion(gameState, effectiveNextLevel)
         const newState: GameState = {
             ...gameState,
             operation: sessionEnded ? gameState.operation : nextRound.operation,
@@ -108,13 +99,15 @@ export default function GamePage() {
         if (sessionEnded) {
             endGame(newState, nextLives > 0)
         } else {
+            const qt = getQuestionTime(effectiveNextLevel, gameState.difficulty)
+            setMaxTime(qt)
+            setCountdown(qt)
             setFeedback(t.gameFeedbackTimeout.replace('{answer}', gameState.currentQuestion.answer))
         }
-    }, [gameState, endGame])
+    }, [gameState, endGame, t])
 
-    useEffect(() => {
-        if (countdown === 0) handleTimeExpired()
-    }, [countdown, handleTimeExpired])
+    // Keep the ref current so the countdown effect always calls the latest version
+    useEffect(() => { handleTimeExpiredRef.current = handleTimeExpired })
 
     const startGame = useCallback(() => {
         const qt = getQuestionTime(gameState.level, gameState.difficulty)
@@ -122,7 +115,7 @@ export default function GamePage() {
         setCountdown(qt)
         setGameState(s => ({ ...s, status: 'playing' }))
         setFeedback(t.gameSteering)
-    }, [gameState.level, gameState.difficulty])
+    }, [gameState.level, gameState.difficulty, t])
 
     const stopGame = useCallback(() => {
         const finalState = { ...gameState, status: 'lost' as const }
@@ -150,11 +143,15 @@ export default function GamePage() {
         const answeredCount = gameState.answeredCount + 1
         const nextLives = isCorrect ? gameState.lives : gameState.lives - 1
         const sessionEnded = answeredCount >= TOTAL_QUESTIONS_PER_RUN || nextLives <= 0
-        const nextRound = nextQuestion(gameState)
+        const currentWave = getWave(gameState.answeredCount)
+        const nextWave = getWave(answeredCount)
+        const effectiveNextLevel = getEffectiveLevel(gameState.level, nextWave)
+        const nextRound = nextQuestion(gameState, effectiveNextLevel)
+        const points = isCorrect ? 10 + currentWave * 5 + Math.max(0, gameState.streak) * 2 : 0
         const nextState: GameState = {
             ...gameState,
             operation: sessionEnded ? gameState.operation : nextRound.operation,
-            score: isCorrect ? gameState.score + 10 + Math.max(0, gameState.streak) * 2 : gameState.score,
+            score: gameState.score + points,
             streak: isCorrect ? gameState.streak + 1 : 0,
             lives: nextLives,
             answeredCount,
@@ -165,13 +162,19 @@ export default function GamePage() {
         }
         setGameState(nextState)
         if (!sessionEnded) {
-            setFeedback(isCorrect
-                ? t.gameFeedbackCorrect + (nextState.streak > 1 ? ' ' + t.gameFeedbackStreak.replace('{streak}', String(nextState.streak)) : '')
-                : t.gameFeedbackWrong.replace('{answer}', gameState.currentQuestion.answer))
+            const qt = getQuestionTime(effectiveNextLevel, gameState.difficulty)
+            setMaxTime(qt)
+            setCountdown(qt)
+            const isWaveUp = nextWave > currentWave
+            setFeedback(isCorrect && isWaveUp
+                ? t.gameLevelUp.replace('{wave}', String(nextWave + 1))
+                : isCorrect
+                    ? t.gameFeedbackCorrect + (nextState.streak > 1 ? ' ' + t.gameFeedbackStreak.replace('{streak}', String(nextState.streak)) : '')
+                    : t.gameFeedbackWrong.replace('{answer}', gameState.currentQuestion.answer))
         } else {
             endGame(nextState, nextLives > 0)
         }
-    }, [gameState, selectedLane, endGame])
+    }, [gameState, selectedLane, endGame, t])
 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
@@ -183,11 +186,15 @@ export default function GamePage() {
         return () => window.removeEventListener('keydown', onKey)
     }, [handleShoot])
 
+    if (!player) return null
+
     const isPlaying = gameState.status === 'playing'
     const isEnded = gameState.status === 'won' || gameState.status === 'lost'
     const isUrgent = isPlaying && countdown <= 3
     const countdownFraction = maxTime > 0 ? countdown / maxTime : 1
     const currentProgress = Math.min(100, (gameState.answeredCount / TOTAL_QUESTIONS_PER_RUN) * 100)
+    const currentWave = getWave(gameState.answeredCount)
+    const currentEffectiveLevel = getEffectiveLevel(gameState.level, currentWave)
 
     return (
         <div className="page game-page">
@@ -218,6 +225,7 @@ export default function GamePage() {
                         <div className="progress-bar">
                             <div className="progress-fill" style={{ width: `${currentProgress}%` }} />
                         </div>
+                        <p className="progress-text">{t.levelLabels[currentEffectiveLevel]}</p>
                     </div>
                 </section>
 
@@ -303,9 +311,9 @@ export default function GamePage() {
 
                 {!isPlaying && (
                     <div className="action-buttons">
-                        <button className="btn btn-secondary" onClick={() => navigate('/')}>{t.gameHome}</button>
-                        <button className="btn btn-secondary" onClick={() => navigate('/hall-of-fame')}>{t.gameHallOfFame}</button>
-                        <button className="btn btn-secondary" onClick={() => navigate('/settings')}>{t.gameSettings}</button>
+                        <button className="btn btn-secondary" onClick={() => navigate('/')}>🏠 {t.navHome}</button>
+                        <button className="btn btn-secondary" onClick={() => navigate('/hall-of-fame')}>🏆 {t.navHallOfFame}</button>
+                        <button className="btn btn-secondary" onClick={() => navigate('/settings')}>⚙️ {t.navSettings}</button>
                     </div>
                 )}
             </main>

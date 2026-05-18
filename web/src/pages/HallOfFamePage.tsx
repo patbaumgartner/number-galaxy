@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { store } from '../store'
 import Navigation from '../components/Navigation'
-import { operationLabels, difficultyLabels } from '../constants'
 import { TOTAL_QUESTIONS_PER_RUN } from '../constants'
 import { translations } from '../translations'
 
@@ -48,8 +47,8 @@ export default function HallOfFamePage() {
                                             <td className="avatar">{entry.avatarId}</td>
                                             <td className="score neon-text">{entry.score}</td>
                                             <td className="questions">{entry.answeredCount}/{TOTAL_QUESTIONS_PER_RUN}</td>
-                                            <td className="operation">{operationLabels[entry.operation] ?? entry.operation}</td>
-                                            <td className="difficulty">{difficultyLabels[entry.difficulty] ?? entry.difficulty}</td>
+                                            <td className="operation">{t.operationLabels[entry.operation] ?? entry.operation}</td>
+                                            <td className="difficulty">{t.difficultyLabels[entry.difficulty] ?? entry.difficulty}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -63,7 +62,10 @@ export default function HallOfFamePage() {
                         {t.hofPlayNow}
                     </button>
                     <button className="btn btn-secondary" onClick={() => navigate('/')}>
-                        {t.hofHome}
+                        🏠 {t.navHome}
+                    </button>
+                    <button className="btn btn-secondary" onClick={() => navigate('/settings')}>
+                        ⚙️ {t.navSettings}
                     </button>
                 </div>
             </main>

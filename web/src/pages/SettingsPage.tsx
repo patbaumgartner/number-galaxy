@@ -1,18 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { store } from '../store'
-import type { GameSettings } from '../store'
+import { store, type GameSettings } from '../store'
 import Navigation from '../components/Navigation'
-import { operationLabels, levelLabels, difficultyLabels } from '../constants'
+import { languageLabels } from '../constants'
 import type { Language, Operation, Level, Difficulty } from '../game'
 import { translations } from '../translations'
-
-const languageLabels: Record<Language, string> = {
-    de: '🇩🇪 Deutsch',
-    it: '🇮🇹 Italiano',
-    en: '🇬🇧 English',
-    fr: '🇫🇷 Français',
-}
 
 export default function SettingsPage() {
     const navigate = useNavigate()
@@ -73,7 +65,7 @@ export default function SettingsPage() {
                     <h2 className="neon-subtitle">{t.settingsOpsSection}</h2>
                     <p className="config-hint">{t.settingsOpsHint}</p>
                     <div className="toggle-group toggle-group--wrap">
-                        {(Object.entries(operationLabels) as [Operation, string][]).map(([op, label]) => (
+                        {(Object.entries(t.operationLabels) as [Operation, string][]).map(([op, label]) => (
                             <button
                                 key={op}
                                 className={`toggle-btn ${settings.operations.includes(op) ? 'active' : ''}`}
@@ -89,7 +81,7 @@ export default function SettingsPage() {
                 <section className="card">
                     <h2 className="neon-subtitle">{t.settingsLevelSection}</h2>
                     <div className="toggle-group">
-                        {(Object.entries(levelLabels) as [Level, string][]).map(([lv, label]) => (
+                        {(Object.entries(t.levelLabels) as [Level, string][]).map(([lv, label]) => (
                             <button
                                 key={lv}
                                 className={`toggle-btn ${settings.level === lv ? 'active' : ''}`}
@@ -105,7 +97,7 @@ export default function SettingsPage() {
                 <section className="card">
                     <h2 className="neon-subtitle">{t.settingsDiffSection}</h2>
                     <div className="toggle-group">
-                        {(Object.entries(difficultyLabels) as [Difficulty, string][]).map(([diff, label]) => (
+                        {(Object.entries(t.difficultyLabels) as [Difficulty, string][]).map(([diff, label]) => (
                             <button
                                 key={diff}
                                 className={`toggle-btn ${settings.difficulty === diff ? 'active' : ''}`}
@@ -127,7 +119,7 @@ export default function SettingsPage() {
                             <p><strong>{t.settingsProfileSince}</strong> {new Date(player.createdAt).toLocaleDateString(settings.language, { dateStyle: 'long' })}</p>
                         </div>
                     ) : (
-                        <p style={{ color: 'var(--text-muted)' }}>
+                        <p className="text-muted">
                             {t.settingsNoProfile}{' '}
                             <button className="link-btn" onClick={() => navigate('/')}>{t.settingsNoProfileLink}</button>.
                         </p>
@@ -137,7 +129,7 @@ export default function SettingsPage() {
                 {/* DATA */}
                 <section className="card">
                     <h2 className="neon-subtitle">{t.settingsDataSection}</h2>
-                    <ul className="info-list" style={{ marginBottom: '1.25rem' }}>
+                    <ul className="info-list">
                         {t.settingsDataInfo.map((info, i) => <li key={i}>{info}</li>)}
                     </ul>
                     <button className="btn btn-danger" onClick={handleClearData}>
@@ -150,10 +142,10 @@ export default function SettingsPage() {
                         {t.settingsPlayBtn}
                     </button>
                     <button className="btn btn-secondary" onClick={() => navigate('/')}>
-                        {t.gameHome}
+                        🏠 {t.navHome}
                     </button>
                     <button className="btn btn-secondary" onClick={() => navigate('/hall-of-fame')}>
-                        {t.gameHallOfFame}
+                        🏆 {t.navHallOfFame}
                     </button>
                 </div>
             </main>

@@ -1,4 +1,4 @@
-import type { Language } from './game'
+import type { Language, Operation, Level, Difficulty } from './game'
 
 export type Translations = {
     // Navigation
@@ -34,9 +34,6 @@ export type Translations = {
     gameOver: string
     gamePressStart: string
     gameSteering: string
-    gameHome: string
-    gameSettings: string
-    gameHallOfFame: string
     // GamePage feedback (use {score} and {answer} as placeholders)
     gameFeedbackCorrect: string
     gameFeedbackStreak: string
@@ -45,6 +42,7 @@ export type Translations = {
     gameFeedbackNewRecord: string
     gameFeedbackComplete: string
     gameFeedbackStopped: string
+    gameLevelUp: string
     // HallOfFamePage
     hofTitle: string
     hofSubtitle: string
@@ -55,7 +53,10 @@ export type Translations = {
     hofColSpeed: string
     hofEmpty: string
     hofPlayNow: string
-    hofHome: string
+    // Shared label maps (used in Settings & Hall of Fame)
+    operationLabels: Record<Operation, string>
+    levelLabels: Record<Level, string>
+    difficultyLabels: Record<Difficulty, string>
     // SettingsPage
     settingsTitle: string
     settingsTagline: string
@@ -116,9 +117,6 @@ export const translations: Record<Language, Translations> = {
         gameOver: '💀 Over!',
         gamePressStart: '🎮 Press Start to launch!',
         gameSteering: '⬅️ ➡️ Steer · Space/Tap to Shoot!',
-        gameHome: '🏠 Home',
-        gameSettings: '⚙️ Settings',
-        gameHallOfFame: '🏆 Hall of Fame',
         gameFeedbackCorrect: '✅ Correct!',
         gameFeedbackStreak: '🔥 Streak ×{streak}',
         gameFeedbackWrong: '❌ Wrong! Answer: {answer}',
@@ -126,6 +124,7 @@ export const translations: Record<Language, Translations> = {
         gameFeedbackNewRecord: '🏆 New Record! {score} pts — entering Hall of Fame…',
         gameFeedbackComplete: '🎉 Mission complete! {score} pts — entering Hall of Fame…',
         gameFeedbackStopped: '🛑 Stopped. {score} pts — entering Hall of Fame…',
+        gameLevelUp: '🔥 Wave {wave}/4 — harder questions, more points!',
         hofTitle: '🏆 BEST SCORES 🏆',
         hofSubtitle: 'Can you make it to the top?',
         hofColPlayer: 'Player',
@@ -135,7 +134,27 @@ export const translations: Record<Language, Translations> = {
         hofColSpeed: 'Speed',
         hofEmpty: '🚀 Nobody here yet — play a game and be first on the board!',
         hofPlayNow: '🎮 Play Now!',
-        hofHome: '🏠 Home',
+        operationLabels: {
+            addition: '➕ Plus',
+            subtraction: '➖ Minus',
+            multiplication: '✖️ Times',
+            division: '➗ Divide',
+            remainders: '📊 Remainders',
+        },
+        levelLabels: {
+            starter: '🟢 Starter (≤10)',
+            beginner: '🔵 Beginner (≤20)',
+            elementary: '🟡 Elementary (≤50)',
+            intermediate: '🟠 Intermediate (≤100)',
+            advanced: '🔴 Advanced (≤250)',
+            expert: '⭐ Expert (≤500)',
+            master: '💥 Master (≤1000)',
+        },
+        difficultyLabels: {
+            easy: '😊 Easy (more time)',
+            normal: '🎯 Normal',
+            hard: '🔥 Hard (less time)',
+        },
         settingsTitle: '⚙️ SETTINGS ⚙️',
         settingsTagline: 'Changes are saved right away and used in your next game.',
         settingsLangSection: '🌐 Language',
@@ -162,7 +181,7 @@ export const translations: Record<Language, Translations> = {
 
     de: {
         navHome: 'Start',
-        navHallOfFame: 'Hall of Fame',
+        navHallOfFame: 'Bestenliste',
         navSettings: 'Einstellungen',
         homeSubtitle: 'Schiess die richtige Antwort und werde jeden Tag besser in Mathe!',
         homeTagline: 'Kein Login nötig • Immer kostenlos • Funktioniert offline',
@@ -189,7 +208,7 @@ export const translations: Record<Language, Translations> = {
         gameScore: 'Punkte',
         gameLives: 'Leben',
         gameStreak: 'Serie',
-        gameQuestion: 'Fr.',
+        gameQuestion: 'Frage',
         gameShoot: '🎯 Schiessen',
         gameStart: '▶️ Start',
         gameStop: '🛑 Stopp',
@@ -198,9 +217,6 @@ export const translations: Record<Language, Translations> = {
         gameOver: '💀 Verloren!',
         gamePressStart: '🎮 Drücke Start zum Spielen!',
         gameSteering: '⬅️ ➡️ Lenken · Leertaste/Tippen zum Schiessen!',
-        gameHome: '🏠 Start',
-        gameSettings: '⚙️ Einstellungen',
-        gameHallOfFame: '🏆 Hall of Fame',
         gameFeedbackCorrect: '✅ Richtig!',
         gameFeedbackStreak: '🔥 Serie ×{streak}',
         gameFeedbackWrong: '❌ Falsch! Antwort: {answer}',
@@ -208,7 +224,8 @@ export const translations: Record<Language, Translations> = {
         gameFeedbackNewRecord: '🏆 Neuer Rekord! {score} Pkt — Hall of Fame…',
         gameFeedbackComplete: '🎉 Mission erfüllt! {score} Pkt — Hall of Fame…',
         gameFeedbackStopped: '🛑 Gestoppt. {score} Pkt — Hall of Fame…',
-        hofTitle: '🏆 Hall of Fame 🏆',
+        gameLevelUp: '🔥 Welle {wave}/4 — schwieriger, mehr Punkte!',
+        hofTitle: '🏆 BESTENLISTE 🏆',
         hofSubtitle: 'Schaffst du es ganz nach oben?',
         hofColPlayer: 'Spieler',
         hofColScore: 'Punkte',
@@ -217,7 +234,27 @@ export const translations: Record<Language, Translations> = {
         hofColSpeed: 'Tempo',
         hofEmpty: '🚀 Noch niemand hier — spiel eine Runde und sei der Erste!',
         hofPlayNow: '🎮 Jetzt spielen!',
-        hofHome: '🏠 Start',
+        operationLabels: {
+            addition: '➕ Plus',
+            subtraction: '➖ Minus',
+            multiplication: '✖️ Mal',
+            division: '➗ Dividieren',
+            remainders: '📊 Rest',
+        },
+        levelLabels: {
+            starter: '🟢 Anfänger (≤10)',
+            beginner: '🔵 Einsteiger (≤20)',
+            elementary: '🟡 Grundstufe (≤50)',
+            intermediate: '🟠 Mittelstufe (≤100)',
+            advanced: '🔴 Fortgeschritten (≤250)',
+            expert: '⭐ Experte (≤500)',
+            master: '💥 Meister (≤1000)',
+        },
+        difficultyLabels: {
+            easy: '😊 Leicht (mehr Zeit)',
+            normal: '🎯 Normal',
+            hard: '🔥 Schwer (weniger Zeit)',
+        },
         settingsTitle: '⚙️ EINSTELLUNGEN ⚙️',
         settingsTagline: 'Änderungen werden sofort gespeichert und beim nächsten Spiel verwendet.',
         settingsLangSection: '🌐 Sprache',
@@ -280,9 +317,6 @@ export const translations: Record<Language, Translations> = {
         gameOver: '💀 Finito!',
         gamePressStart: '🎮 Premi Inizia per giocare!',
         gameSteering: '⬅️ ➡️ Sterza · Spazio/Tocca per Sparare!',
-        gameHome: '🏠 Home',
-        gameSettings: '⚙️ Impostazioni',
-        gameHallOfFame: '🏆 Hall of Fame',
         gameFeedbackCorrect: '✅ Corretto!',
         gameFeedbackStreak: '🔥 Serie ×{streak}',
         gameFeedbackWrong: '❌ Sbagliato! Risposta: {answer}',
@@ -290,6 +324,7 @@ export const translations: Record<Language, Translations> = {
         gameFeedbackNewRecord: '🏆 Nuovo record! {score} pt — Hall of Fame…',
         gameFeedbackComplete: '🎉 Missione compiuta! {score} pt — Hall of Fame…',
         gameFeedbackStopped: '🛑 Fermato. {score} pt — Hall of Fame…',
+        gameLevelUp: '🔥 Onda {wave}/4 — più difficile, più punti!',
         hofTitle: '🏆 PUNTEGGI MIGLIORI 🏆',
         hofSubtitle: 'Riesci ad arrivare in cima?',
         hofColPlayer: 'Giocatore',
@@ -299,7 +334,27 @@ export const translations: Record<Language, Translations> = {
         hofColSpeed: 'Velocità',
         hofEmpty: '🚀 Nessuno ancora — gioca e sii il primo!',
         hofPlayNow: '🎮 Gioca ora!',
-        hofHome: '🏠 Home',
+        operationLabels: {
+            addition: '➕ Addizione',
+            subtraction: '➖ Sottrazione',
+            multiplication: '✖️ Moltiplicazione',
+            division: '➗ Divisione',
+            remainders: '📊 Resti',
+        },
+        levelLabels: {
+            starter: '🟢 Principiante (≤10)',
+            beginner: '🔵 Base (≤20)',
+            elementary: '🟡 Elementare (≤50)',
+            intermediate: '🟠 Intermedio (≤100)',
+            advanced: '🔴 Avanzato (≤250)',
+            expert: '⭐ Esperto (≤500)',
+            master: '💥 Maestro (≤1000)',
+        },
+        difficultyLabels: {
+            easy: '😊 Facile (più tempo)',
+            normal: '🎯 Normale',
+            hard: '🔥 Difficile (meno tempo)',
+        },
         settingsTitle: '⚙️ IMPOSTAZIONI ⚙️',
         settingsTagline: 'Le modifiche vengono salvate subito e usate nel prossimo gioco.',
         settingsLangSection: '🌐 Lingua',
@@ -362,9 +417,6 @@ export const translations: Record<Language, Translations> = {
         gameOver: '💀 Perdu !',
         gamePressStart: '🎮 Appuie sur Démarrer pour jouer !',
         gameSteering: '⬅️ ➡️ Diriger · Espace/Toucher pour Tirer !',
-        gameHome: '🏠 Accueil',
-        gameSettings: '⚙️ Paramètres',
-        gameHallOfFame: '🏆 Hall of Fame',
         gameFeedbackCorrect: '✅ Correct !',
         gameFeedbackStreak: '🔥 Série ×{streak}',
         gameFeedbackWrong: '❌ Faux ! Réponse : {answer}',
@@ -372,6 +424,7 @@ export const translations: Record<Language, Translations> = {
         gameFeedbackNewRecord: '🏆 Nouveau record ! {score} pts — Hall of Fame…',
         gameFeedbackComplete: '🎉 Mission accomplie ! {score} pts — Hall of Fame…',
         gameFeedbackStopped: '🛑 Arrêté. {score} pts — Hall of Fame…',
+        gameLevelUp: '🔥 Vague {wave}/4 — plus difficile, plus de points !',
         hofTitle: '🏆 MEILLEURS SCORES 🏆',
         hofSubtitle: 'Peux-tu atteindre le sommet ?',
         hofColPlayer: 'Joueur',
@@ -381,7 +434,27 @@ export const translations: Record<Language, Translations> = {
         hofColSpeed: 'Vitesse',
         hofEmpty: '🚀 Personne encore — joue et sois le premier !',
         hofPlayNow: '🎮 Jouer maintenant !',
-        hofHome: '🏠 Accueil',
+        operationLabels: {
+            addition: '➕ Addition',
+            subtraction: '➖ Soustraction',
+            multiplication: '✖️ Multiplication',
+            division: '➗ Division',
+            remainders: '📊 Restes',
+        },
+        levelLabels: {
+            starter: '🟢 Débutant (≤10)',
+            beginner: '🔵 Niveau 1 (≤20)',
+            elementary: '🟡 Élémentaire (≤50)',
+            intermediate: '🟠 Intermédiaire (≤100)',
+            advanced: '🔴 Avancé (≤250)',
+            expert: '⭐ Expert (≤500)',
+            master: '💥 Maître (≤1000)',
+        },
+        difficultyLabels: {
+            easy: '😊 Facile (plus de temps)',
+            normal: '🎯 Normal',
+            hard: '🔥 Difficile (moins de temps)',
+        },
         settingsTitle: '⚙️ PARAMÈTRES ⚙️',
         settingsTagline: 'Les modifications sont enregistrées immédiatement et utilisées au prochain jeu.',
         settingsLangSection: '🌐 Langue',

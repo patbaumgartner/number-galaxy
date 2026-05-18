@@ -32,7 +32,7 @@ export default function HomePage() {
             }
             setMessage(t.homeProfileSaved)
             setTimeout(() => navigate('/game'), 800)
-        } catch (err) {
+        } catch {
             setMessage(t.homeProfileError)
         }
     }
@@ -61,6 +61,7 @@ export default function HomePage() {
                             <input
                                 id="nickname"
                                 type="text"
+                                autoComplete="nickname"
                                 placeholder={t.homeNamePlaceholder}
                                 maxLength={24}
                                 minLength={2}
@@ -111,19 +112,19 @@ export default function HomePage() {
                     </ol>
                 </section>
 
-                <div className="action-buttons">
-                    <button className="btn btn-primary" onClick={() => navigate('/game')}>
-                        🚀 {t.homeBtnPlay}
-                    </button>
-                    <button className="btn btn-secondary" onClick={() => navigate('/hall-of-fame')}>
-                        🏆 {t.navHallOfFame}
-                    </button>
-                    <button className="btn btn-secondary" onClick={() => navigate('/settings')}>
-                        ⚙️ {t.navSettings}
-                    </button>
-                </div>
-
-
+                {storedPlayer && (
+                    <div className="action-buttons">
+                        <button className="btn btn-primary" onClick={() => navigate('/game')}>
+                            {t.homeBtnPlay}
+                        </button>
+                        <button className="btn btn-secondary" onClick={() => navigate('/hall-of-fame')}>
+                            🏆 {t.navHallOfFame}
+                        </button>
+                        <button className="btn btn-secondary" onClick={() => navigate('/settings')}>
+                            ⚙️ {t.navSettings}
+                        </button>
+                    </div>
+                )}
             </main>
         </div>
     )

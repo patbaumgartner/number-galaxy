@@ -17,6 +17,7 @@ export default function GameBoard({
                 {options.map((option, idx) => (
                     <button
                         key={idx}
+                        aria-label={`Lane ${idx + 1}: ${option}`}
                         className={`lane ${selectedLane === idx ? 'selected' : ''} ${blastLane === idx ? 'blast' : ''}`}
                         onClick={() => onSelectLane(idx)}
                     >

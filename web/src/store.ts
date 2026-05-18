@@ -38,15 +38,6 @@ const defaultSettings: GameSettings = {
     difficulty: 'easy',
 }
 
-// Polyfill for UUID generation since crypto.randomUUID is not available in browsers
-function generateUUID(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-        const r = (Math.random() * 16) | 0
-        const v = c === 'x' ? r : (r & 0x3) | 0x8
-        return v.toString(16)
-    })
-}
-
 export const store = {
     getPlayer(): Player | null {
         if (typeof window === 'undefined') return null
@@ -61,7 +52,7 @@ export const store = {
 
     savePlayer(name: string, avatarId: string): Player {
         const player: Player = {
-            id: generateUUID(),
+            id: crypto.randomUUID(),
             playerName: name,
             avatarId,
             createdAt: new Date().toISOString(),
@@ -103,7 +94,8 @@ export const store = {
     },
 
     submitScore(entry: HallOfFameEntry): { improved: boolean; entries: HallOfFameEntry[] } {
-        const all = this.getAllHallOfFame()
+        const raw = window.localStorage.getItem(HALL_OF_FAME_STORAGE_KEY)
+        const all: HallOfFameEntry[] = raw ? (JSON.parse(raw) as HallOfFameEntry[]) : []
         const existingIndex = all.findIndex((e) => e.playerId === entry.playerId)
         const improved = existingIndex === -1 || all[existingIndex].score < entry.score
 
@@ -118,17 +110,6 @@ export const store = {
         all.sort((a, b) => b.score - a.score || b.answeredCount - a.answeredCount)
         window.localStorage.setItem(HALL_OF_FAME_STORAGE_KEY, JSON.stringify(all))
         return { improved, entries: all }
-    },
-
-    getAllHallOfFame(): HallOfFameEntry[] {
-        if (typeof window === 'undefined') return []
-        const raw = window.localStorage.getItem(HALL_OF_FAME_STORAGE_KEY)
-        if (!raw) return []
-        try {
-            return JSON.parse(raw) as HallOfFameEntry[]
-        } catch {
-            return []
-        }
     },
 
     clearAllData(): void {

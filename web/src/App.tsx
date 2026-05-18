@@ -6,17 +6,17 @@ import HallOfFamePage from './pages/HallOfFamePage'
 import SettingsPage from './pages/SettingsPage'
 
 function App() {
-  return (
-    <BrowserRouter basename="/math-invaders">
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/game" element={<GamePage />} />
-        <Route path="/hall-of-fame" element={<HallOfFamePage />} />
-        <Route path="/settings" element={<SettingsPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
-  )
+    return (
+        <BrowserRouter basename="/math-invaders">
+            <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/game" element={<GamePage />} />
+                <Route path="/hall-of-fame" element={<HallOfFamePage />} />
+                <Route path="/settings" element={<SettingsPage />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+        </BrowserRouter>
+    )
 }
 
 export default App

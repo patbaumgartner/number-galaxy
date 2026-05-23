@@ -23,6 +23,7 @@ export default function GamePage() {
     const [blastLane, setBlastLane] = useState<number | null>(null)
     const [maxTime, setMaxTime] = useState(() => getQuestionTime(settings.level, settings.difficulty))
     const [countdown, setCountdown] = useState(() => getQuestionTime(settings.level, settings.difficulty))
+    const [isShowingResult, setIsShowingResult] = useState(false)
 
     // Redirect to home if no player profile exists
     useEffect(() => {
@@ -42,13 +43,14 @@ export default function GamePage() {
     // Countdown tick — fires time-expired handler via ref when reaching 0
     useEffect(() => {
         if (gameState.status !== 'playing') return
+        if (isShowingResult) return
         if (countdown === 0) {
             handleTimeExpiredRef.current()
             return
         }
         const timer = setTimeout(() => setCountdown(c => c - 1), 1000)
         return () => clearTimeout(timer)
-    }, [countdown, gameState.status])
+    }, [countdown, gameState.status, isShowingResult])
 
     const submitScore = useCallback((state: GameState) => {
         if (state.score <= 0) return null
@@ -82,6 +84,7 @@ export default function GamePage() {
 
     const handleTimeExpired = useCallback(() => {
         if (gameState.status !== 'playing') return
+        if (isShowingResult) return
         const answeredCount = gameState.answeredCount + 1
         const nextLives = gameState.lives - 1
         const sessionEnded = answeredCount >= TOTAL_QUESTIONS_PER_RUN || nextLives <= 0
@@ -98,16 +101,20 @@ export default function GamePage() {
             correctIndex: sessionEnded ? gameState.correctIndex : nextRound.correctIndex,
             status: sessionEnded ? (nextLives > 0 ? 'won' : 'lost') : 'playing',
         }
-        setGameState(newState)
-        if (sessionEnded) {
-            endGame(newState, nextLives > 0)
-        } else {
-            const qt = getQuestionTime(effectiveNextLevel, gameState.difficulty)
-            setMaxTime(qt)
-            setCountdown(qt)
-            setFeedback(t.gameFeedbackTimeout.replace('{answer}', gameState.currentQuestion.answer))
-        }
-    }, [gameState, endGame, t])
+        setFeedback(t.gameFeedbackTimeout.replace('{answer}', gameState.currentQuestion.answer))
+        setIsShowingResult(true)
+        setTimeout(() => {
+            setIsShowingResult(false)
+            setGameState(newState)
+            if (sessionEnded) {
+                endGame(newState, nextLives > 0)
+            } else {
+                const qt = getQuestionTime(effectiveNextLevel, gameState.difficulty)
+                setMaxTime(qt)
+                setCountdown(qt)
+            }
+        }, 1500)
+    }, [gameState, endGame, t, isShowingResult])
 
     // Keep the ref current so the countdown effect always calls the latest version
     useEffect(() => { handleTimeExpiredRef.current = handleTimeExpired })
@@ -140,6 +147,7 @@ export default function GamePage() {
 
     const handleShoot = useCallback(() => {
         if (gameState.status !== 'playing') return
+        if (isShowingResult) return
         setBlastLane(selectedLane)
         setTimeout(() => setBlastLane(null), 240)
         const isCorrect = selectedLane === gameState.correctIndex
@@ -163,21 +171,35 @@ export default function GamePage() {
             correctIndex: sessionEnded ? gameState.correctIndex : nextRound.correctIndex,
             status: sessionEnded ? (nextLives > 0 ? 'won' : 'lost') : 'playing',
         }
-        setGameState(nextState)
-        if (!sessionEnded) {
-            const qt = getQuestionTime(effectiveNextLevel, gameState.difficulty)
-            setMaxTime(qt)
-            setCountdown(qt)
-            const isWaveUp = nextWave > currentWave
-            setFeedback(isCorrect && isWaveUp
-                ? t.gameLevelUp.replace('{wave}', String(nextWave + 1))
-                : isCorrect
-                    ? t.gameFeedbackCorrect + (nextState.streak > 1 ? ' ' + t.gameFeedbackStreak.replace('{streak}', String(nextState.streak)) : '')
-                    : t.gameFeedbackWrong.replace('{answer}', gameState.currentQuestion.answer))
+        if (isCorrect) {
+            setGameState(nextState)
+            if (!sessionEnded) {
+                const qt = getQuestionTime(effectiveNextLevel, gameState.difficulty)
+                setMaxTime(qt)
+                setCountdown(qt)
+                const isWaveUp = nextWave > currentWave
+                setFeedback(isWaveUp
+                    ? t.gameLevelUp.replace('{wave}', String(nextWave + 1))
+                    : t.gameFeedbackCorrect + (nextState.streak > 1 ? ' ' + t.gameFeedbackStreak.replace('{streak}', String(nextState.streak)) : ''))
+            } else {
+                endGame(nextState, true)
+            }
         } else {
-            endGame(nextState, nextLives > 0)
+            setFeedback(t.gameFeedbackWrong.replace('{answer}', gameState.currentQuestion.answer))
+            setIsShowingResult(true)
+            setTimeout(() => {
+                setIsShowingResult(false)
+                setGameState(nextState)
+                if (!sessionEnded) {
+                    const qt = getQuestionTime(effectiveNextLevel, gameState.difficulty)
+                    setMaxTime(qt)
+                    setCountdown(qt)
+                } else {
+                    endGame(nextState, nextLives > 0)
+                }
+            }, 1500)
         }
-    }, [gameState, selectedLane, endGame, t])
+    }, [gameState, selectedLane, endGame, t, isShowingResult])
 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {

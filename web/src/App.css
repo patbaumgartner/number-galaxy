@@ -1286,6 +1286,52 @@ body {
   }
 }
 
+/* ==================== ANSWER HISTORY STRIP ==================== */
+.answer-history {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.75rem 0;
+}
+
+.history-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.3em 0.7em;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: bold;
+  border: 2px solid;
+  animation: pillEnter 0.3s ease-out both;
+}
+
+.history-pill.correct {
+  background: rgba(0, 255, 136, 0.12);
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.history-pill.wrong {
+  background: rgba(255, 51, 102, 0.12);
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.history-icon {
+  font-size: 0.9em;
+}
+
+.history-answer {
+  opacity: 0.85;
+  font-size: 0.95em;
+}
+
+@keyframes pillEnter {
+  from { opacity: 0; transform: scale(0.7) translateY(6px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
 /* ==================== SCREEN SHAKE ==================== */
 @keyframes shake {
   0%   { transform: translateX(0); }

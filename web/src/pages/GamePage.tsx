@@ -27,6 +27,7 @@ export default function GamePage() {
     const [countdown, setCountdown] = useState(() => getQuestionTime(settings.level, settings.difficulty))
     const [isShowingResult, setIsShowingResult] = useState(false)
     const [isShaking, setIsShaking] = useState(false)
+    const [answerHistory, setAnswerHistory] = useState<Array<{ prompt: string; correct: boolean; answer: string }>>([])
     const [feedbackOverlay, setFeedbackOverlay] = useState<{
         type: 'correct' | 'wrong' | 'timeout'
         questionPrompt: string
@@ -111,6 +112,7 @@ export default function GamePage() {
         }
         setFeedback(t.gameFeedbackTimeout.replace('{answer}', gameState.currentQuestion.answer))
         setFeedbackOverlay({ type: 'timeout', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer })
+        setAnswerHistory(h => [{ prompt: gameState.currentQuestion.prompt, correct: false, answer: gameState.currentQuestion.answer }, ...h].slice(0, 5))
         playTimeout()
         setIsShaking(true)
         setTimeout(() => setIsShaking(false), 500)
@@ -154,6 +156,7 @@ export default function GamePage() {
         setSelectedLane(0)
         setBlastLane(null)
         setFeedback('')
+        setAnswerHistory([])
         setMaxTime(qt)
         setCountdown(qt)
     }, [])
@@ -188,6 +191,7 @@ export default function GamePage() {
             status: sessionEnded ? (nextLives > 0 ? 'won' : 'lost') : 'playing',
         }
         if (isCorrect) {
+            setAnswerHistory(h => [{ prompt: gameState.currentQuestion.prompt, correct: true, answer: gameState.currentQuestion.answer }, ...h].slice(0, 5))
             setFeedbackOverlay({ type: 'correct', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer })
             setTimeout(() => setFeedbackOverlay(null), 700)
             setGameState(nextState)
@@ -210,6 +214,7 @@ export default function GamePage() {
         } else {
             setFeedback(t.gameFeedbackWrong.replace('{answer}', gameState.currentQuestion.answer))
             setFeedbackOverlay({ type: 'wrong', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer })
+            setAnswerHistory(h => [{ prompt: gameState.currentQuestion.prompt, correct: false, answer: gameState.currentQuestion.answer }, ...h].slice(0, 5))
             playWrong()
             setIsShaking(true)
             setTimeout(() => setIsShaking(false), 500)
@@ -389,6 +394,18 @@ export default function GamePage() {
                         </section>
                     </div>
                 </div>
+
+                {answerHistory.length > 0 && (
+                    <div className="answer-history">
+                        {answerHistory.map((entry, i) => (
+                            <div key={i} className={`history-pill ${entry.correct ? 'correct' : 'wrong'}`}>
+                                <span className="history-icon">{entry.correct ? '✓' : '✗'}</span>
+                                <span className="history-prompt">{entry.prompt}</span>
+                                {!entry.correct && <span className="history-answer">={entry.answer}</span>}
+                            </div>
+                        ))}
+                    </div>
+                )}
 
                 {!isPlaying && (
                     <div className="action-buttons">

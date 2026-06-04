@@ -27,9 +27,32 @@ const SETTINGS_STORAGE_KEY = 'math-invaders-settings'
 const WEAKNESS_STORAGE_KEY = 'math-invaders-weakness'
 const HINT_SHOWN_KEY = 'math-invaders-hint-shown'
 const SR_STORAGE_KEY = 'math-invaders-sr'
+const SKILL_STATS_KEY = 'math-invaders-skill-stats'
 
 export type SREntry = { interval: number; due: number }
 export type SRData = Record<string, SREntry>
+
+export type SkillStats = Record<string, { history: boolean[] }>
+export type BadgeTier = 'none' | 'bronze' | 'silver' | 'gold' | 'platinum'
+
+export function computeBadge(history: boolean[]): BadgeTier {
+    const last = history.slice(-30)
+    if (last.length < 5) return 'none'
+    const pct = last.filter(Boolean).length / last.length
+    if (pct >= 0.95) return 'platinum'
+    if (pct >= 0.80) return 'gold'
+    if (pct >= 0.65) return 'silver'
+    if (pct >= 0.45) return 'bronze'
+    return 'none'
+}
+
+export const BADGE_EMOJI: Record<BadgeTier, string> = {
+    none: '',
+    bronze: '🥉',
+    silver: '🥈',
+    gold: '🥇',
+    platinum: '💎',
+}
 
 export type GameSettings = {
     language: Language
@@ -208,5 +231,20 @@ export const store = {
             data[operation] = { interval: 1, due: currentQ + 1 }
         }
         window.localStorage.setItem(SR_STORAGE_KEY, JSON.stringify(data))
+    },
+
+    getSkillStats(): SkillStats {
+        if (typeof window === 'undefined') return {}
+        const raw = window.localStorage.getItem(SKILL_STATS_KEY)
+        if (!raw) return {}
+        try { return JSON.parse(raw) as SkillStats } catch { return {} }
+    },
+
+    recordSkill(operation: string, correct: boolean): void {
+        const stats = this.getSkillStats()
+        const entry = stats[operation] ?? { history: [] }
+        entry.history = [...entry.history, correct].slice(-60) // keep last 60
+        stats[operation] = entry
+        window.localStorage.setItem(SKILL_STATS_KEY, JSON.stringify(stats))
     },
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { store, type GameSettings } from '../store'
+import { computeBadge, BADGE_EMOJI } from '../store'
 import Navigation from '../components/Navigation'
 import { languageLabels } from '../constants'
 import type { Language, Operation, Level, Difficulty } from '../game'
@@ -17,6 +18,8 @@ export default function SettingsPage() {
         setSettings(next)
         store.saveSettings(next)
     }
+
+    const skillStats = store.getSkillStats()
 
     const toggleOperation = (op: Operation) => {
         const ops = settings.operations.includes(op)
@@ -65,15 +68,19 @@ export default function SettingsPage() {
                     <h2 className="neon-subtitle">{t.settingsOpsSection}</h2>
                     <p className="config-hint">{t.settingsOpsHint}</p>
                     <div className="toggle-group toggle-group--wrap">
-                        {(Object.entries(t.operationLabels) as [Operation, string][]).map(([op, label]) => (
-                            <button
-                                key={op}
-                                className={`toggle-btn ${settings.operations.includes(op) ? 'active' : ''}`}
-                                onClick={() => toggleOperation(op)}
-                            >
-                                {label}
-                            </button>
-                        ))}
+                        {(Object.entries(t.operationLabels) as [Operation, string][]).map(([op, label]) => {
+                            const badge = computeBadge(skillStats[op]?.history ?? [])
+                            return (
+                                <button
+                                    key={op}
+                                    className={`toggle-btn ${settings.operations.includes(op) ? 'active' : ''}`}
+                                    onClick={() => toggleOperation(op)}
+                                >
+                                    {BADGE_EMOJI[badge] && <span className="badge-icon">{BADGE_EMOJI[badge]}</span>}
+                                    {label}
+                                </button>
+                            )
+                        })}
                     </div>
                 </section>
 

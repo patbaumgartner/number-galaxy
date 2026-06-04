@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createRound, nextQuestion, getQuestionTime, getWave, getEffectiveLevel, getWorkedExample, type GameState, type Operation } from '../game'
 import { store } from '../store'
+import { computeBadge, BADGE_EMOJI } from '../store'
 import Navigation from '../components/Navigation'
 import GameBoard from '../components/GameBoard'
 import { TOTAL_QUESTIONS_PER_RUN } from '../constants'
@@ -124,6 +125,7 @@ export default function GamePage() {
         const effectiveNextLevel = getEffectiveLevel(gameState.level, nextWave)
         store.recordMiss(gameState.operation)
         store.updateSR(gameState.operation, false, gameState.answeredCount)
+        store.recordSkill(gameState.operation, false)
         const nextRound = nextQuestion(gameState, effectiveNextLevel, store.getWeakness(), store.getSRData(), answeredCount)
         const newState: GameState = {
             ...gameState,
@@ -233,6 +235,7 @@ export default function GamePage() {
         if (isCorrect) {
             store.recordHit(gameState.operation)
             store.updateSR(gameState.operation, true, gameState.answeredCount)
+            store.recordSkill(gameState.operation, true)
             correctCountRef.current += 1
             bestStreakRef.current = Math.max(bestStreakRef.current, nextState.streak)
             setAnswerHistory(h => [{ prompt: gameState.currentQuestion.prompt, correct: true, answer: gameState.currentQuestion.answer }, ...h].slice(0, 5))
@@ -264,6 +267,7 @@ export default function GamePage() {
         } else {
             store.recordMiss(gameState.operation)
             store.updateSR(gameState.operation, false, gameState.answeredCount)
+            store.recordSkill(gameState.operation, false)
             setFeedback(t.gameFeedbackWrong.replace('{answer}', gameState.currentQuestion.answer))
             setFeedbackOverlay({ type: 'wrong', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer })
             setAnswerHistory(h => [{ prompt: gameState.currentQuestion.prompt, correct: false, answer: gameState.currentQuestion.answer }, ...h].slice(0, 5))
@@ -489,30 +493,39 @@ export default function GamePage() {
                     </div>
                 )}
 
-                {gameSummary && (
-                    <div className="game-summary-overlay">
-                        <div className="game-summary-card">
-                            <div className="summary-icon">{gameSummary.won ? '🏆' : '💀'}</div>
-                            <div className="summary-score">{gameSummary.score} pts</div>
-                            {gameSummary.newRecord && <div className="summary-record">🌟 New Record!</div>}
-                            <div className="summary-stats">
-                                <div className="summary-stat">
-                                    <span className="summary-stat-value">{gameSummary.total > 0 ? Math.round((gameSummary.correct / gameSummary.total) * 100) : 0}%</span>
-                                    <span className="summary-stat-label">Correct</span>
+                {gameSummary && (() => {
+                    const skillStats = store.getSkillStats()
+                    const badge = computeBadge(skillStats[gameState.operation]?.history ?? [])
+                    return (
+                        <div className="game-summary-overlay">
+                            <div className="game-summary-card">
+                                <div className="summary-icon">{gameSummary.won ? '🏆' : '💀'}</div>
+                                <div className="summary-score">{gameSummary.score} pts</div>
+                                {gameSummary.newRecord && <div className="summary-record">🌟 New Record!</div>}
+                                {badge !== 'none' && (
+                                    <div className="summary-badge">
+                                        {BADGE_EMOJI[badge]} {badge.charAt(0).toUpperCase() + badge.slice(1)} Badge!
+                                    </div>
+                                )}
+                                <div className="summary-stats">
+                                    <div className="summary-stat">
+                                        <span className="summary-stat-value">{gameSummary.total > 0 ? Math.round((gameSummary.correct / gameSummary.total) * 100) : 0}%</span>
+                                        <span className="summary-stat-label">Correct</span>
+                                    </div>
+                                    <div className="summary-stat">
+                                        <span className="summary-stat-value">{gameSummary.correct}/{gameSummary.total}</span>
+                                        <span className="summary-stat-label">Answered</span>
+                                    </div>
+                                    <div className="summary-stat">
+                                        <span className="summary-stat-value">{gameSummary.bestStreak}🔥</span>
+                                        <span className="summary-stat-label">Best Streak</span>
+                                    </div>
                                 </div>
-                                <div className="summary-stat">
-                                    <span className="summary-stat-value">{gameSummary.correct}/{gameSummary.total}</span>
-                                    <span className="summary-stat-label">Answered</span>
-                                </div>
-                                <div className="summary-stat">
-                                    <span className="summary-stat-value">{gameSummary.bestStreak}🔥</span>
-                                    <span className="summary-stat-label">Best Streak</span>
-                                </div>
+                                <p className="summary-redirect">Heading to Hall of Fame…</p>
                             </div>
-                            <p className="summary-redirect">Heading to Hall of Fame…</p>
                         </div>
-                    </div>
-                )}
+                    )
+                })()}
             </main>
         </div>
     )

@@ -1,0 +1,19 @@
+{
+  "name": "Math Invaders",
+  "short_name": "MathInvaders",
+  "description": "Shoot the right answer and get better at math every day!",
+  "start_url": "/math-invaders/",
+  "scope": "/math-invaders/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#07001a",
+  "theme_color": "#07001a",
+  "icons": [
+    {
+      "src": "/math-invaders/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

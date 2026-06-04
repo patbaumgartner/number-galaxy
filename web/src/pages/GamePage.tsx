@@ -28,6 +28,16 @@ export default function GamePage() {
     const [isShowingResult, setIsShowingResult] = useState(false)
     const [isShaking, setIsShaking] = useState(false)
     const [answerHistory, setAnswerHistory] = useState<Array<{ prompt: string; correct: boolean; answer: string }>>([])
+    const [gameSummary, setGameSummary] = useState<{
+        won: boolean
+        score: number
+        correct: number
+        total: number
+        bestStreak: number
+        newRecord: boolean
+    } | null>(null)
+    const correctCountRef = useRef(0)
+    const bestStreakRef = useRef(0)
     const [feedbackOverlay, setFeedbackOverlay] = useState<{
         type: 'correct' | 'wrong' | 'timeout'
         questionPrompt: string
@@ -88,7 +98,15 @@ export default function GamePage() {
                 ? t.gameFeedbackGameOver.replace('{score}', String(state.score))
                 : t.gameFeedbackStopped.replace('{score}', String(state.score))
         setFeedback(msg)
-        setTimeout(() => navigate('/hall-of-fame'), 1800)
+        setGameSummary({
+            won,
+            score: state.score,
+            correct: correctCountRef.current,
+            total: state.answeredCount,
+            bestStreak: bestStreakRef.current,
+            newRecord: result?.improved ?? false,
+        })
+        setTimeout(() => navigate('/hall-of-fame'), 4000)
     }, [submitScore, navigate, t])
 
     const handleTimeExpired = useCallback(() => {
@@ -157,6 +175,9 @@ export default function GamePage() {
         setBlastLane(null)
         setFeedback('')
         setAnswerHistory([])
+        setGameSummary(null)
+        correctCountRef.current = 0
+        bestStreakRef.current = 0
         setMaxTime(qt)
         setCountdown(qt)
     }, [])
@@ -191,6 +212,8 @@ export default function GamePage() {
             status: sessionEnded ? (nextLives > 0 ? 'won' : 'lost') : 'playing',
         }
         if (isCorrect) {
+            correctCountRef.current += 1
+            bestStreakRef.current = Math.max(bestStreakRef.current, nextState.streak)
             setAnswerHistory(h => [{ prompt: gameState.currentQuestion.prompt, correct: true, answer: gameState.currentQuestion.answer }, ...h].slice(0, 5))
             setFeedbackOverlay({ type: 'correct', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer })
             setTimeout(() => setFeedbackOverlay(null), 700)
@@ -412,6 +435,31 @@ export default function GamePage() {
                         <button className="btn btn-secondary" onClick={() => navigate('/')}>🏠 {t.navHome}</button>
                         <button className="btn btn-secondary" onClick={() => navigate('/hall-of-fame')}>🏆 {t.navHallOfFame}</button>
                         <button className="btn btn-secondary" onClick={() => navigate('/settings')}>⚙️ {t.navSettings}</button>
+                    </div>
+                )}
+
+                {gameSummary && (
+                    <div className="game-summary-overlay">
+                        <div className="game-summary-card">
+                            <div className="summary-icon">{gameSummary.won ? '🏆' : '💀'}</div>
+                            <div className="summary-score">{gameSummary.score} pts</div>
+                            {gameSummary.newRecord && <div className="summary-record">🌟 New Record!</div>}
+                            <div className="summary-stats">
+                                <div className="summary-stat">
+                                    <span className="summary-stat-value">{gameSummary.total > 0 ? Math.round((gameSummary.correct / gameSummary.total) * 100) : 0}%</span>
+                                    <span className="summary-stat-label">Correct</span>
+                                </div>
+                                <div className="summary-stat">
+                                    <span className="summary-stat-value">{gameSummary.correct}/{gameSummary.total}</span>
+                                    <span className="summary-stat-label">Answered</span>
+                                </div>
+                                <div className="summary-stat">
+                                    <span className="summary-stat-value">{gameSummary.bestStreak}🔥</span>
+                                    <span className="summary-stat-label">Best Streak</span>
+                                </div>
+                            </div>
+                            <p className="summary-redirect">Heading to Hall of Fame…</p>
+                        </div>
                     </div>
                 )}
             </main>

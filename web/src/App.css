@@ -1286,6 +1286,105 @@ body {
   }
 }
 
+/* ==================== GAME SUMMARY OVERLAY ==================== */
+.game-summary-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(7, 0, 26, 0.85);
+  backdrop-filter: blur(6px);
+  animation: summaryFadeIn 0.4s ease-out;
+}
+
+@keyframes summaryFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.game-summary-card {
+  background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-lighter) 100%);
+  border: 2px solid var(--primary);
+  border-radius: 16px;
+  padding: 2.5rem 3rem;
+  text-align: center;
+  box-shadow: 0 0 60px rgba(0, 245, 255, 0.3), 0 0 120px rgba(255, 77, 219, 0.15);
+  animation: summaryCardEnter 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  max-width: 420px;
+  width: 90%;
+}
+
+@keyframes summaryCardEnter {
+  from { transform: scale(0.6); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.summary-icon {
+  font-size: 5rem;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.summary-score {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--accent);
+  text-shadow: var(--glow-yellow);
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+}
+
+.summary-record {
+  font-size: 1.1rem;
+  color: var(--primary);
+  text-shadow: var(--glow-cyan);
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.summary-stats {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 1.25rem 0;
+  flex-wrap: wrap;
+}
+
+.summary-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.summary-stat-value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--primary);
+  text-shadow: var(--glow-cyan);
+}
+
+.summary-stat-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.summary-redirect {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-top: 1rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
 /* ==================== ANSWER HISTORY STRIP ==================== */
 .answer-history {
   display: flex;

@@ -6,6 +6,7 @@ import Navigation from '../components/Navigation'
 import GameBoard from '../components/GameBoard'
 import { TOTAL_QUESTIONS_PER_RUN } from '../constants'
 import { translations } from '../translations'
+import { playCorrect, playWrong, playShoot, playLevelUp, playTimeout } from '../sound'
 
 const CIRCUMFERENCE = 2 * Math.PI * 28
 
@@ -110,6 +111,7 @@ export default function GamePage() {
         }
         setFeedback(t.gameFeedbackTimeout.replace('{answer}', gameState.currentQuestion.answer))
         setFeedbackOverlay({ type: 'timeout', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer })
+        playTimeout()
         setIsShaking(true)
         setTimeout(() => setIsShaking(false), 500)
         setIsShowingResult(true)
@@ -163,6 +165,7 @@ export default function GamePage() {
         setTimeout(() => setBlastLane(null), 240)
         setLaunchLane(selectedLane)
         setTimeout(() => setLaunchLane(null), 400)
+        playShoot()
         const isCorrect = selectedLane === gameState.correctIndex
         const answeredCount = gameState.answeredCount + 1
         const nextLives = isCorrect ? gameState.lives : gameState.lives - 1
@@ -193,6 +196,11 @@ export default function GamePage() {
                 setMaxTime(qt)
                 setCountdown(qt)
                 const isWaveUp = nextWave > currentWave
+                if (isWaveUp) {
+                    playLevelUp()
+                } else {
+                    playCorrect()
+                }
                 setFeedback(isWaveUp
                     ? t.gameLevelUp.replace('{wave}', String(nextWave + 1))
                     : t.gameFeedbackCorrect + (nextState.streak > 1 ? ' ' + t.gameFeedbackStreak.replace('{streak}', String(nextState.streak)) : ''))
@@ -202,6 +210,7 @@ export default function GamePage() {
         } else {
             setFeedback(t.gameFeedbackWrong.replace('{answer}', gameState.currentQuestion.answer))
             setFeedbackOverlay({ type: 'wrong', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer })
+            playWrong()
             setIsShaking(true)
             setTimeout(() => setIsShaking(false), 500)
             setIsShowingResult(true)

@@ -37,10 +37,15 @@ export default function GamePage() {
         total: number
         bestStreak: number
         newRecord: boolean
+        bestTimeMs: number | null
+        newPersonalBest: boolean
     } | null>(null)
     const correctCountRef = useRef(0)
     const bestStreakRef = useRef(0)
     const lastSeenOperationRef = useRef<Operation | null>(null)
+    const questionStartTimeRef = useRef<number>(Date.now())
+    const bestTimeThisGameRef = useRef<number | null>(null)
+    const newPersonalBestRef = useRef(false)
     const [workedExampleOp, setWorkedExampleOp] = useState<Operation | null>(null)
     const [feedbackOverlay, setFeedbackOverlay] = useState<{
         type: 'correct' | 'wrong' | 'timeout'
@@ -57,6 +62,13 @@ export default function GamePage() {
     useEffect(() => {
         if (player) store.saveGameState(player.id, gameState)
     }, [gameState, player])
+
+    // Reset question start timer whenever a new question is shown
+    useEffect(() => {
+        if (gameState.status === 'playing') {
+            questionStartTimeRef.current = Date.now()
+        }
+    }, [gameState.currentQuestion, gameState.status])
 
     // Stable ref to handleTimeExpired — initialised with a placeholder so it can
     // be declared before handleTimeExpired without a temporal-dead-zone error.
@@ -111,6 +123,8 @@ export default function GamePage() {
             total: state.answeredCount,
             bestStreak: bestStreakRef.current,
             newRecord: result?.improved ?? false,
+            bestTimeMs: bestTimeThisGameRef.current,
+            newPersonalBest: newPersonalBestRef.current,
         })
         setTimeout(() => navigate('/hall-of-fame'), 4000)
     }, [submitScore, navigate, t])
@@ -199,6 +213,8 @@ export default function GamePage() {
         correctCountRef.current = 0
         bestStreakRef.current = 0
         lastSeenOperationRef.current = null
+        bestTimeThisGameRef.current = null
+        newPersonalBestRef.current = false
         setMaxTime(qt)
         setCountdown(qt)
     }, [])
@@ -236,6 +252,12 @@ export default function GamePage() {
             store.recordHit(gameState.operation)
             store.updateSR(gameState.operation, true, gameState.answeredCount)
             store.recordSkill(gameState.operation, true)
+            const elapsed = Date.now() - questionStartTimeRef.current
+            const isPB = store.updatePersonalBest(gameState.operation, elapsed)
+            if (isPB) newPersonalBestRef.current = true
+            if (bestTimeThisGameRef.current === null || elapsed < bestTimeThisGameRef.current) {
+                bestTimeThisGameRef.current = elapsed
+            }
             correctCountRef.current += 1
             bestStreakRef.current = Math.max(bestStreakRef.current, nextState.streak)
             setAnswerHistory(h => [{ prompt: gameState.currentQuestion.prompt, correct: true, answer: gameState.currentQuestion.answer }, ...h].slice(0, 5))
@@ -502,6 +524,9 @@ export default function GamePage() {
                                 <div className="summary-icon">{gameSummary.won ? '🏆' : '💀'}</div>
                                 <div className="summary-score">{gameSummary.score} pts</div>
                                 {gameSummary.newRecord && <div className="summary-record">🌟 New Record!</div>}
+                                {gameSummary.newPersonalBest && gameSummary.bestTimeMs !== null && (
+                                    <div className="summary-record">⚡ New Personal Best: {(gameSummary.bestTimeMs / 1000).toFixed(1)}s!</div>
+                                )}
                                 {badge !== 'none' && (
                                     <div className="summary-badge">
                                         {BADGE_EMOJI[badge]} {badge.charAt(0).toUpperCase() + badge.slice(1)} Badge!
@@ -520,6 +545,12 @@ export default function GamePage() {
                                         <span className="summary-stat-value">{gameSummary.bestStreak}🔥</span>
                                         <span className="summary-stat-label">Best Streak</span>
                                     </div>
+                                    {gameSummary.bestTimeMs !== null && (
+                                        <div className="summary-stat">
+                                            <span className="summary-stat-value">⚡{(gameSummary.bestTimeMs / 1000).toFixed(1)}s</span>
+                                            <span className="summary-stat-label">Best Time</span>
+                                        </div>
+                                    )}
                                 </div>
                                 <p className="summary-redirect">Heading to Hall of Fame…</p>
                             </div>

@@ -28,6 +28,7 @@ const WEAKNESS_STORAGE_KEY = 'math-invaders-weakness'
 const HINT_SHOWN_KEY = 'math-invaders-hint-shown'
 const SR_STORAGE_KEY = 'math-invaders-sr'
 const SKILL_STATS_KEY = 'math-invaders-skill-stats'
+const PERSONAL_BESTS_KEY = 'math-invaders-personal-bests'
 
 export type SREntry = { interval: number; due: number }
 export type SRData = Record<string, SREntry>
@@ -246,5 +247,23 @@ export const store = {
         entry.history = [...entry.history, correct].slice(-60) // keep last 60
         stats[operation] = entry
         window.localStorage.setItem(SKILL_STATS_KEY, JSON.stringify(stats))
+    },
+
+    getPersonalBests(): Record<string, number> {
+        if (typeof window === 'undefined') return {}
+        const raw = window.localStorage.getItem(PERSONAL_BESTS_KEY)
+        if (!raw) return {}
+        try { return JSON.parse(raw) as Record<string, number> } catch { return {} }
+    },
+
+    updatePersonalBest(operation: string, elapsedMs: number): boolean {
+        const bests = this.getPersonalBests()
+        const current = bests[operation]
+        if (current === undefined || elapsedMs < current) {
+            bests[operation] = elapsedMs
+            window.localStorage.setItem(PERSONAL_BESTS_KEY, JSON.stringify(bests))
+            return true
+        }
+        return false
     },
 }

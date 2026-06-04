@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { store, type GameSettings } from '../store'
-import { computeBadge, BADGE_EMOJI } from '../store'
+import { store, computeBadge, BADGE_EMOJI, type GameSettings } from '../store'
 import Navigation from '../components/Navigation'
 import { languageLabels } from '../constants'
 import type { Language, Operation, Level, Difficulty } from '../game'
@@ -122,11 +121,11 @@ export default function SettingsPage() {
                     <p className="config-hint">Drill: countdown pressure · Explore: no timer, learn at your own pace</p>
                     <div className="toggle-group">
                         <button
-                            className={`toggle-btn ${(settings.mode ?? 'drill') === 'drill' ? 'active' : ''}`}
-                            onClick={() => update({ mode: 'drill' })}
-                        >⏱ Drill</button>
+                        className={`toggle-btn ${settings.mode === 'drill' ? 'active' : ''}`}
+                        onClick={() => update({ mode: 'drill' })}
+                    >⏱ Drill</button>
                         <button
-                            className={`toggle-btn ${(settings.mode ?? 'drill') === 'explore' ? 'active' : ''}`}
+                            className={`toggle-btn ${settings.mode === 'explore' ? 'active' : ''}`}
                             onClick={() => update({ mode: 'explore' })}
                         >🔭 Explore</button>
                     </div>

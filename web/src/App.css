@@ -28,6 +28,11 @@
   --glow-yellow: 0 0 20px rgba(255, 230, 0, 0.7), 0 0 40px rgba(255, 230, 0, 0.3);
   --glow-danger: 0 0 20px rgba(255, 51, 102, 0.7);
   --glow-success: 0 0 20px rgba(0, 255, 136, 0.7);
+  /* Feature colours */
+  --tip: #fbbf24;        /* tip / badge gold */
+  --confidence: #818cf8; /* confidence prompt indigo */
+  --mint: #34d399;       /* confidence "got it" green */
+  --worked-correct: #22c55e; /* worked-example correct answer green */
 }
 
 * {
@@ -1393,8 +1398,8 @@ body {
 .summary-badge {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #fbbf24;
-  text-shadow: 0 0 10px #fbbf24;
+  color: var(--tip);
+  text-shadow: 0 0 10px var(--tip);
   margin-bottom: 0.6rem;
 }
 
@@ -1598,9 +1603,9 @@ body {
 
 .worked-example-answer {
   font-size: 1.8rem;
-  color: #22c55e;
+  color: var(--worked-correct);
   font-weight: bold;
-  text-shadow: 0 0 12px #22c55e;
+  text-shadow: 0 0 12px var(--worked-correct);
 }
 
 .worked-example-hint {
@@ -1618,7 +1623,7 @@ body {
   transform: translateX(-50%);
   z-index: 25;
   background: rgba(10, 0, 40, 0.96);
-  border: 2px solid #fbbf24;
+  border: 2px solid var(--tip);
   border-radius: 0.75rem;
   padding: 0.7rem 1.2rem;
   max-width: 280px;
@@ -1630,8 +1635,8 @@ body {
 .tip-title {
   font-size: 0.9rem;
   font-weight: bold;
-  color: #fbbf24;
-  text-shadow: 0 0 8px #fbbf24;
+  color: var(--tip);
+  text-shadow: 0 0 8px var(--tip);
   margin-bottom: 0.35rem;
   letter-spacing: 1px;
 }
@@ -1651,7 +1656,7 @@ body {
   transform: translateX(-50%);
   z-index: 24;
   background: rgba(10, 0, 40, 0.96);
-  border: 2px solid #818cf8;
+  border: 2px solid var(--confidence);
   border-radius: 0.75rem;
   padding: 0.6rem 1rem;
   min-width: 240px;
@@ -1688,14 +1693,14 @@ body {
 
 .confidence-btn--unsure {
   background: rgba(251, 191, 36, 0.2);
-  color: #fbbf24;
-  border: 1px solid #fbbf24;
+  color: var(--tip);
+  border: 1px solid var(--tip);
 }
 
 .confidence-btn--confident {
   background: rgba(52, 211, 153, 0.2);
-  color: #34d399;
-  border: 1px solid #34d399;
+  color: var(--mint);
+  border: 1px solid var(--mint);
 }
 
 /* ==================== SCREEN SHAKE ==================== */

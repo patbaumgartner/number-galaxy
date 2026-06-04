@@ -31,9 +31,7 @@ export function explainAnswer(prompt: string, answer: string): string {
             const q = Math.floor(a / b)
             return `${b} × ${q} = ${b * q} → ${a} ÷ ${b} = ${answer}`
         }
-    }
-    // remainders
-    if (prompt.includes('÷') || prompt.includes('r')) {
+        // remainder format: no clean match, just show the answer
         return `Answer: ${answer}`
     }
     return ''

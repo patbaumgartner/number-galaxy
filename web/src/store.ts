@@ -30,6 +30,13 @@ const SR_STORAGE_KEY = 'math-invaders-sr'
 const SKILL_STATS_KEY = 'math-invaders-skill-stats'
 const PERSONAL_BESTS_KEY = 'math-invaders-personal-bests'
 
+/** Migrate old entries that predate the level field (added post-launch). */
+function migrateEntries(entries: HallOfFameEntry[]): void {
+    for (const e of entries) {
+        if (!e.level) e.level = 'starter'
+    }
+}
+
 export type SREntry = { interval: number; due: number }
 export type SRData = Record<string, SREntry>
 
@@ -120,10 +127,7 @@ export const store = {
         if (!raw) return []
         try {
             const entries = JSON.parse(raw) as HallOfFameEntry[]
-            // Migrate old entries that predate the level field
-            for (const e of entries) {
-                if (!e.level) e.level = 'starter'
-            }
+            migrateEntries(entries)
             return entries.sort((a, b) => b.score - a.score || b.answeredCount - a.answeredCount)
         } catch {
             return []
@@ -133,10 +137,7 @@ export const store = {
     submitScore(entry: HallOfFameEntry): { improved: boolean; entries: HallOfFameEntry[] } {
         const raw = window.localStorage.getItem(HALL_OF_FAME_STORAGE_KEY)
         const all: HallOfFameEntry[] = raw ? (JSON.parse(raw) as HallOfFameEntry[]) : []
-        // Migrate old entries that predate the level field (same as getHallOfFame)
-        for (const e of all) {
-            if (!e.level) e.level = 'starter'
-        }
+        migrateEntries(all)
         // One best-score entry per player per level+difficulty combination
         const existingIndex = all.findIndex(
             (e) => e.playerId === entry.playerId && e.level === entry.level && e.difficulty === entry.difficulty

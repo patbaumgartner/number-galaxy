@@ -44,7 +44,7 @@ export default function GamePage() {
     const correctCountRef = useRef(0)
     const bestStreakRef = useRef(0)
     const lastSeenOperationRef = useRef<Operation | null>(null)
-    const questionStartTimeRef = useRef<number>(Date.now())
+    const questionStartTimeRef = useRef<number>(0)
     const bestTimeThisGameRef = useRef<number | null>(null)
     const newPersonalBestRef = useRef(false)
     const consecutiveMissesRef = useRef<Record<string, number>>({})
@@ -52,9 +52,11 @@ export default function GamePage() {
     const workedExamplesEnabledRef = useRef(settings.workedExamples)
     const tipsEnabledRef = useRef(settings.tips)
     // Keep refs current whenever settings change
-    confidenceEnabledRef.current = settings.confidence
-    workedExamplesEnabledRef.current = settings.workedExamples
-    tipsEnabledRef.current = settings.tips
+    useEffect(() => {
+        confidenceEnabledRef.current = settings.confidence
+        workedExamplesEnabledRef.current = settings.workedExamples
+        tipsEnabledRef.current = settings.tips
+    }, [settings.confidence, settings.workedExamples, settings.tips])
     const [tipOverlay, setTipOverlay] = useState<{ title: string; body: string } | null>(null)
     const [confidencePrompt, setConfidencePrompt] = useState<{
         operation: string
@@ -378,7 +380,7 @@ export default function GamePage() {
                 }
             }, 1500)
         }
-    }, [gameState, selectedLane, endGame, t, isShowingResult, dismissConfidence])
+    }, [gameState, selectedLane, endGame, t, isShowingResult, dismissConfidence, trackMissStreak])
 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {

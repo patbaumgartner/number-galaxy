@@ -20,7 +20,7 @@
 
 ## 🎮 How to Play
 
-1. **Choose settings** — select operation, level, difficulty
+1. **Choose settings** — select operation(s), level, difficulty, and learning mode
 2. **Create profile** — nickname + avatar (optional, for Hall of Fame)
 3. **Start mission** — press start to begin
 4. **Aim & shoot** — move rocket 🚀 to target correct answer, then fire
@@ -38,28 +38,29 @@
 ## 📐 Game Mechanics
 
 ### Scoring
-- **Correct answer:** +10 points
-- **Streak bonus:** +2 per consecutive correct
-- **Wrong answer:** −1 life
-- **Time's up:** −1 life (counts as wrong answer)
-- **Win condition:** 20 questions answered with lives remaining
+- **Correct answer:** +10 points base
+- **Wave bonus:** +5 per wave (wave advances every 5 questions)
+- **Streak bonus:** +2 per consecutive correct answer
+- **Wrong answer / Time's up:** −1 life, streak resets
 
 ### Lives & Streak
 - Start with **3 lives** ❤️❤️❤️
 - Lose 1 life per wrong answer or expired timer
 - **Timer per question** depends on level (15 s at Starter → 5 s at Master) and difficulty (Easy +3 s, Normal ±0, Hard −2 s) — minimum 3 s
 - Streak grows with correct answers, resets on wrong or timeout
-- Formula: `10 + (streak × 2)` points per question
+- Formula per correct answer: `10 + (wave × 5) + (streak × 2)` points
 
 ### Math Operations
 
 | Mode | Example | Notes |
 |------|---------|-------|
 | ➕ Addition | `7 + 3 = ?` | Basic arithmetic |
-| ➖ Subtraction | `10 − 4 = ?` | All results allowed |
+| ➖ Subtraction | `10 − 4 = ?` | All results ≥ 0 |
 | ✖️ Multiplication | `6 × 7 = ?` | Whole numbers |
 | ➗ Division | `20 ÷ 4 = ?` | Whole number results only |
 | 🔢 Division + Remainder | `23 ÷ 5 = 4 r3` | Quotient + remainder |
+
+Multiple operations can be active simultaneously; the game picks the next one using spaced-repetition and weakness weighting (see [Adaptive Learning](#-adaptive-learning)).
 
 ### Levels (Number Range & Base Time)
 
@@ -72,6 +73,8 @@
 | 🔴 Advanced | ≤ 250 | 7 s |
 | ⭐ Expert | ≤ 500 | 6 s |
 | 💥 Master | ≤ 1000 | 5 s |
+
+The effective level advances one step every 5 questions within a session (wave progression), keeping early questions easy and later ones harder.
 
 ### Difficulty (Time Modifier)
 
@@ -86,6 +89,60 @@
 🇩🇪 German · 🇮🇹 Italian · 🇬🇧 English · 🇫🇷 French
 
 The UI is fully translated; all players share the same Hall of Fame regardless of language.
+
+---
+
+## 🧠 Adaptive Learning
+
+Math Invaders includes a set of pedagogical features that help learners build genuine fluency — not just score points.
+
+### Spaced Repetition Scheduling
+Each operation tracks a review interval (SM-2 inspired). Operations you get wrong come back sooner; operations you master are shown less frequently. When multiple operations are enabled, the game weights its selection toward overdue or struggled operations.
+
+### Worked Examples
+The first time a new operation appears in a session, a 3-second overlay shows a solved example with a hint (e.g. "4 × 6 = 24 — 4 groups of 6: 6+6+6+6 = 24"). Configurable in Settings.
+
+### Why Explanations
+When you answer incorrectly or time out, the wrong-answer overlay includes a step-by-step explanation showing _how_ to reach the correct answer (e.g. "Count back 4 from 13: 13 → 12 → 11 → 10 → 9").
+
+### Mistake Pattern Tips
+After 3 consecutive wrong answers on the same operation, a mnemonic tip appears (e.g. "×9 finger trick", "Put the bigger number first, then count on"). Configurable in Settings.
+
+### Skill Mastery Badges
+Each operation accumulates a rolling accuracy history (last 30 answers). When accuracy crosses a threshold, a badge is awarded:
+
+| Badge | Threshold |
+|-------|-----------|
+| 🥉 Bronze | ≥ 45 % correct |
+| 🥈 Silver | ≥ 65 % correct |
+| 🥇 Gold | ≥ 80 % correct |
+| 💎 Platinum | ≥ 95 % correct |
+
+Badges appear on operation buttons in Settings and on the post-game summary screen.
+
+### Personal Bests
+The fastest correct response time per operation is tracked. A new personal best triggers a notification on the summary screen.
+
+### Confidence Check
+After each answer, a brief optional prompt asks "🤔 Not sure / 💪 Got it!". If you answer correctly but tap "Not sure", the spaced-repetition interval is reset so you see that operation again sooner. Auto-dismisses in 2 s. Configurable in Settings.
+
+### Explore Mode
+Disables the countdown timer entirely, allowing learners to work at their own pace without time pressure. Switch between Drill (timed) and Explore (untimed) in Settings.
+
+---
+
+## ⚙️ Settings Reference
+
+| Setting | Options | Default | Notes |
+|---------|---------|---------|-------|
+| Language | 🇩🇪 🇮🇹 🇬🇧 🇫🇷 | 🇩🇪 German | UI language |
+| Operations | ➕ ➖ ✖️ ➗ 🔢 | ➕ Addition | Multiple can be active at once |
+| Level | Starter → Master | Starter | Sets number range |
+| Difficulty | Easy / Normal / Hard | Easy | Adjusts timer |
+| Mode | ⏱ Drill / 🔭 Explore | Drill | Timed vs untimed |
+| Worked Examples | On / Off | On | Operation intro overlay |
+| Mistake Tips | On / Off | On | Mnemonic after 3 misses |
+| Confidence Check | On / Off | On | Post-answer self-rating |
 
 ---
 
@@ -141,10 +198,13 @@ web/
 │   │   └── Navigation.tsx
 │   ├── App.tsx         # Router
 │   ├── App.css         # Neon theme
-│   ├── store.ts        # localStorage API
-│   ├── game.ts         # Game logic
-│   ├── translations.ts # i18n strings
-│   └── constants.ts    # Static data
+│   ├── store.ts        # localStorage API (player, scores, SR, skills, settings)
+│   ├── game.ts         # Question generation, wave/level progression, worked examples
+│   ├── explain.ts      # Step-by-step wrong-answer explanations
+│   ├── tips.ts         # Mnemonic tips shown after 3 consecutive misses
+│   ├── sound.ts        # Synthesised Web Audio API sound effects
+│   ├── translations.ts # i18n strings (de/it/en/fr)
+│   └── constants.ts    # Avatars, language labels, TOTAL_QUESTIONS_PER_RUN
 ├── index.html          # Entry point
 ├── vite.config.ts      # Vite config
 ├── tsconfig.json       # TypeScript

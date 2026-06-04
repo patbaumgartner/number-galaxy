@@ -131,6 +131,38 @@ export default function SettingsPage() {
                     </div>
                 </section>
 
+                {/* WORKED EXAMPLES */}
+                <section className="card">
+                    <h2 className="neon-subtitle">📚 Worked Examples</h2>
+                    <p className="config-hint">Show a quick example when an operation appears for the first time. Turn off once you know them all.</p>
+                    <div className="toggle-group">
+                        <button
+                            className={`toggle-btn ${settings.workedExamples ? 'active' : ''}`}
+                            onClick={() => update({ workedExamples: true })}
+                        >✅ On</button>
+                        <button
+                            className={`toggle-btn ${!settings.workedExamples ? 'active' : ''}`}
+                            onClick={() => update({ workedExamples: false })}
+                        >⛔ Off</button>
+                    </div>
+                </section>
+
+                {/* TIPS */}
+                <section className="card">
+                    <h2 className="neon-subtitle">💡 Mistake Tips</h2>
+                    <p className="config-hint">Show a mnemonic hint after 3 consecutive misses on the same operation. Turn off if you prefer to figure it out yourself.</p>
+                    <div className="toggle-group">
+                        <button
+                            className={`toggle-btn ${settings.tips ? 'active' : ''}`}
+                            onClick={() => update({ tips: true })}
+                        >✅ On</button>
+                        <button
+                            className={`toggle-btn ${!settings.tips ? 'active' : ''}`}
+                            onClick={() => update({ tips: false })}
+                        >⛔ Off</button>
+                    </div>
+                </section>
+
                 {/* CONFIDENCE CHECK */}
                 <section className="card">
                     <h2 className="neon-subtitle">🤔 Confidence Check</h2>

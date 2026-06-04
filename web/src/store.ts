@@ -69,6 +69,8 @@ export type GameSettings = {
     difficulty: Difficulty
     mode: 'drill' | 'explore'
     confidence: boolean
+    workedExamples: boolean
+    tips: boolean
 }
 
 const defaultSettings: GameSettings = {
@@ -78,6 +80,8 @@ const defaultSettings: GameSettings = {
     difficulty: 'easy',
     mode: 'drill',
     confidence: true,
+    workedExamples: true,
+    tips: true,
 }
 
 export const store = {

@@ -49,8 +49,12 @@ export default function GamePage() {
     const newPersonalBestRef = useRef(false)
     const consecutiveMissesRef = useRef<Record<string, number>>({})
     const confidenceEnabledRef = useRef(settings.confidence)
-    // Keep the ref current whenever settings change
+    const workedExamplesEnabledRef = useRef(settings.workedExamples)
+    const tipsEnabledRef = useRef(settings.tips)
+    // Keep refs current whenever settings change
     confidenceEnabledRef.current = settings.confidence
+    workedExamplesEnabledRef.current = settings.workedExamples
+    tipsEnabledRef.current = settings.tips
     const [tipOverlay, setTipOverlay] = useState<{ title: string; body: string } | null>(null)
     const [confidencePrompt, setConfidencePrompt] = useState<{
         operation: string
@@ -105,7 +109,7 @@ export default function GamePage() {
     const trackMissStreak = useCallback((operation: string) => {
         const map = consecutiveMissesRef.current
         map[operation] = (map[operation] ?? 0) + 1
-        if (map[operation] === 3) {
+        if (tipsEnabledRef.current && map[operation] === 3) {
             const tip = getRandomTip(operation as Operation)
             setTipOverlay(tip)
             setTimeout(() => setTipOverlay(null), 4500)
@@ -230,7 +234,7 @@ export default function GamePage() {
         setGameState(s => ({ ...s, status: 'playing' }))
         setFeedback(t.gameSteering)
         // Show worked example for the current operation when starting
-        if (lastSeenOperationRef.current !== gameState.operation) {
+        if (workedExamplesEnabledRef.current && lastSeenOperationRef.current !== gameState.operation) {
             lastSeenOperationRef.current = gameState.operation
             setWorkedExampleOp(gameState.operation)
             setTimeout(() => setWorkedExampleOp(null), 3000)
@@ -333,7 +337,7 @@ export default function GamePage() {
                     playCorrect()
                 }
                 // Show worked example when operation changes mid-game
-                if (nextRound.operation !== gameState.operation && lastSeenOperationRef.current !== nextRound.operation) {
+                if (workedExamplesEnabledRef.current && nextRound.operation !== gameState.operation && lastSeenOperationRef.current !== nextRound.operation) {
                     lastSeenOperationRef.current = nextRound.operation
                     setWorkedExampleOp(nextRound.operation)
                     setTimeout(() => setWorkedExampleOp(null), 3000)

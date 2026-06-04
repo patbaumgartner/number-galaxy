@@ -48,6 +48,9 @@ export default function GamePage() {
     const bestTimeThisGameRef = useRef<number | null>(null)
     const newPersonalBestRef = useRef(false)
     const consecutiveMissesRef = useRef<Record<string, number>>({})
+    const confidenceEnabledRef = useRef(settings.confidence)
+    // Keep the ref current whenever settings change
+    confidenceEnabledRef.current = settings.confidence
     const [tipOverlay, setTipOverlay] = useState<{ title: string; body: string } | null>(null)
     const [confidencePrompt, setConfidencePrompt] = useState<{
         operation: string
@@ -209,8 +212,10 @@ export default function GamePage() {
                 setMaxTime(qt)
                 setCountdown(qt)
                 // Confidence prompt after timeout
-                const tid = setTimeout(dismissConfidence, 2000)
-                setConfidencePrompt({ operation: gameState.operation, wasCorrect: false, answeredCount: gameState.answeredCount, timeoutId: tid })
+                if (confidenceEnabledRef.current) {
+                    const tid = setTimeout(dismissConfidence, 2000)
+                    setConfidencePrompt({ operation: gameState.operation, wasCorrect: false, answeredCount: gameState.answeredCount, timeoutId: tid })
+                }
             }
         }, 1500)
     }, [gameState, endGame, t, isShowingResult, trackMissStreak, dismissConfidence])
@@ -311,8 +316,10 @@ export default function GamePage() {
             setTimeout(() => {
                 setFeedbackOverlay(null)
                 // Show confidence prompt (non-blocking, auto-dismisses in 2s)
-                const tid = setTimeout(dismissConfidence, 2000)
-                setConfidencePrompt({ operation: gameState.operation, wasCorrect: true, answeredCount: gameState.answeredCount, timeoutId: tid })
+                if (confidenceEnabledRef.current) {
+                    const tid = setTimeout(dismissConfidence, 2000)
+                    setConfidencePrompt({ operation: gameState.operation, wasCorrect: true, answeredCount: gameState.answeredCount, timeoutId: tid })
+                }
             }, 700)
             setGameState(nextState)
             if (!sessionEnded) {
@@ -358,8 +365,10 @@ export default function GamePage() {
                     setMaxTime(qt)
                     setCountdown(qt)
                     // Show confidence prompt after wrong answer
-                    const tid = setTimeout(dismissConfidence, 2000)
-                    setConfidencePrompt({ operation: gameState.operation, wasCorrect: false, answeredCount: gameState.answeredCount, timeoutId: tid })
+                    if (confidenceEnabledRef.current) {
+                        const tid = setTimeout(dismissConfidence, 2000)
+                        setConfidencePrompt({ operation: gameState.operation, wasCorrect: false, answeredCount: gameState.answeredCount, timeoutId: tid })
+                    }
                 } else {
                     endGame(nextState, nextLives > 0)
                 }

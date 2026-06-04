@@ -121,9 +121,9 @@ export default function SettingsPage() {
                     <p className="config-hint">Drill: countdown pressure · Explore: no timer, learn at your own pace</p>
                     <div className="toggle-group">
                         <button
-                        className={`toggle-btn ${settings.mode === 'drill' ? 'active' : ''}`}
-                        onClick={() => update({ mode: 'drill' })}
-                    >⏱ Drill</button>
+                            className={`toggle-btn ${settings.mode === 'drill' ? 'active' : ''}`}
+                            onClick={() => update({ mode: 'drill' })}
+                        >⏱ Drill</button>
                         <button
                             className={`toggle-btn ${settings.mode === 'explore' ? 'active' : ''}`}
                             onClick={() => update({ mode: 'explore' })}
@@ -131,21 +131,20 @@ export default function SettingsPage() {
                     </div>
                 </section>
 
-                {/* PLAYER */}
+                {/* CONFIDENCE CHECK */}
                 <section className="card">
-                    <h2 className="neon-subtitle">{t.settingsProfileSection}</h2>
-                    {player ? (
-                        <div className="player-info">
-                            <p><strong>{t.settingsProfileName}</strong> {player.playerName}</p>
-                            <p><strong>{t.settingsProfileAvatar}</strong> {player.avatarId}</p>
-                            <p><strong>{t.settingsProfileSince}</strong> {new Date(player.createdAt).toLocaleDateString(settings.language, { dateStyle: 'long' })}</p>
-                        </div>
-                    ) : (
-                        <p className="text-muted">
-                            {t.settingsNoProfile}{' '}
-                            <button className="link-btn" onClick={() => navigate('/')}>{t.settingsNoProfileLink}</button>.
-                        </p>
-                    )}
+                    <h2 className="neon-subtitle">🤔 Confidence Check</h2>
+                    <p className="config-hint">After each answer, ask yourself: "Did I really know that?" Helps with self-reflection.</p>
+                    <div className="toggle-group">
+                        <button
+                            className={`toggle-btn ${settings.confidence ? 'active' : ''}`}
+                            onClick={() => update({ confidence: true })}
+                        >✅ On</button>
+                        <button
+                            className={`toggle-btn ${!settings.confidence ? 'active' : ''}`}
+                            onClick={() => update({ confidence: false })}
+                        >⛔ Off</button>
+                    </div>
                 </section>
 
                 {/* DATA */}

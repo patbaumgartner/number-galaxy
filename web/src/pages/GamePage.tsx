@@ -50,6 +50,12 @@ export default function GamePage() {
     const newPersonalBestRef = useRef(false)
     const consecutiveMissesRef = useRef<Record<string, number>>({})
     const [tipOverlay, setTipOverlay] = useState<{ title: string; body: string } | null>(null)
+    const [confidencePrompt, setConfidencePrompt] = useState<{
+        operation: string
+        wasCorrect: boolean
+        answeredCount: number
+        timeoutId: ReturnType<typeof setTimeout>
+    } | null>(null)
     const [workedExampleOp, setWorkedExampleOp] = useState<Operation | null>(null)
     const [feedbackOverlay, setFeedbackOverlay] = useState<{
         type: 'correct' | 'wrong' | 'timeout'
@@ -102,6 +108,25 @@ export default function GamePage() {
             setTipOverlay(tip)
             setTimeout(() => setTipOverlay(null), 4500)
         }
+    }, [])
+
+    const dismissConfidence = useCallback(() => {
+        setConfidencePrompt(prev => {
+            if (prev) clearTimeout(prev.timeoutId)
+            return null
+        })
+    }, [])
+
+    const handleConfidence = useCallback((confident: boolean) => {
+        setConfidencePrompt(prev => {
+            if (!prev) return null
+            clearTimeout(prev.timeoutId)
+            // "Not sure" on correct → penalise SR: reset interval
+            if (!confident && prev.wasCorrect) {
+                store.updateSR(prev.operation, false, prev.answeredCount)
+            }
+            return null
+        })
     }, [])
 
     const submitScore = useCallback((state: GameState) => {
@@ -184,9 +209,12 @@ export default function GamePage() {
                 const qt = getQuestionTime(effectiveNextLevel, gameState.difficulty)
                 setMaxTime(qt)
                 setCountdown(qt)
+                // Confidence prompt after timeout
+                const tid = setTimeout(dismissConfidence, 2000)
+                setConfidencePrompt({ operation: gameState.operation, wasCorrect: false, answeredCount: gameState.answeredCount, timeoutId: tid })
             }
         }, 1500)
-    }, [gameState, endGame, t, isShowingResult, trackMissStreak])
+    }, [gameState, endGame, t, isShowingResult, trackMissStreak, dismissConfidence])
 
     // Keep the ref current so the countdown effect always calls the latest version
     useEffect(() => { handleTimeExpiredRef.current = handleTimeExpired })
@@ -232,6 +260,7 @@ export default function GamePage() {
         bestTimeThisGameRef.current = null
         newPersonalBestRef.current = false
         consecutiveMissesRef.current = {}
+        setConfidencePrompt(null)
         setMaxTime(qt)
         setCountdown(qt)
     }, [])
@@ -280,7 +309,12 @@ export default function GamePage() {
             bestStreakRef.current = Math.max(bestStreakRef.current, nextState.streak)
             setAnswerHistory(h => [{ prompt: gameState.currentQuestion.prompt, correct: true, answer: gameState.currentQuestion.answer }, ...h].slice(0, 5))
             setFeedbackOverlay({ type: 'correct', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer })
-            setTimeout(() => setFeedbackOverlay(null), 700)
+            setTimeout(() => {
+                setFeedbackOverlay(null)
+                // Show confidence prompt (non-blocking, auto-dismisses in 2s)
+                const tid = setTimeout(dismissConfidence, 2000)
+                setConfidencePrompt({ operation: gameState.operation, wasCorrect: true, answeredCount: gameState.answeredCount, timeoutId: tid })
+            }, 700)
             setGameState(nextState)
             if (!sessionEnded) {
                 const qt = getQuestionTime(effectiveNextLevel, gameState.difficulty)
@@ -324,12 +358,15 @@ export default function GamePage() {
                     const qt = getQuestionTime(effectiveNextLevel, gameState.difficulty)
                     setMaxTime(qt)
                     setCountdown(qt)
+                    // Show confidence prompt after wrong answer
+                    const tid = setTimeout(dismissConfidence, 2000)
+                    setConfidencePrompt({ operation: gameState.operation, wasCorrect: false, answeredCount: gameState.answeredCount, timeoutId: tid })
                 } else {
                     endGame(nextState, nextLives > 0)
                 }
             }, 1500)
         }
-    }, [gameState, selectedLane, endGame, t, isShowingResult])
+    }, [gameState, selectedLane, endGame, t, isShowingResult, dismissConfidence])
 
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
@@ -472,6 +509,22 @@ export default function GamePage() {
                             <div className="tip-overlay">
                                 <div className="tip-title">{tipOverlay.title}</div>
                                 <div className="tip-body">{tipOverlay.body}</div>
+                            </div>
+                        )}
+
+                        {confidencePrompt && (
+                            <div className="confidence-overlay">
+                                <div className="confidence-label">How did that feel?</div>
+                                <div className="confidence-buttons">
+                                    <button
+                                        className="confidence-btn confidence-btn--unsure"
+                                        onClick={() => handleConfidence(false)}
+                                    >🤔 Not sure</button>
+                                    <button
+                                        className="confidence-btn confidence-btn--confident"
+                                        onClick={() => handleConfidence(true)}
+                                    >💪 Got it!</button>
+                                </div>
                             </div>
                         )}
                     </section>

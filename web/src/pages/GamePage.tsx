@@ -267,7 +267,17 @@ export default function GamePage() {
                         </div>
                         <div className="score-item">
                             <span className="label">{t.gameStreak}</span>
-                            <span className="value neon-text">{gameState.streak > 0 ? `${gameState.streak}🔥` : '—'}</span>
+                            <span className="value neon-text">
+                                {gameState.streak > 0 ? (
+                                    <>
+                                        {gameState.streak}
+                                        <span
+                                            className="streak-fire"
+                                            style={{ fontSize: `${Math.min(1 + gameState.streak * 0.15, 2.5)}em` }}
+                                        >🔥</span>
+                                    </>
+                                ) : '—'}
+                            </span>
                         </div>
                         <div className="score-item">
                             <span className="label">{t.gameQuestion}</span>

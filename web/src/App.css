@@ -656,6 +656,18 @@ body {
   display: block;
   text-align: center;
   line-height: 1;
+  transition: transform 0.1s ease;
+}
+
+.rocket.launching {
+  animation: rocketLaunch 0.4s ease-in forwards;
+}
+
+@keyframes rocketLaunch {
+  0%   { transform: translateY(0) scale(1); opacity: 1; }
+  40%  { transform: translateY(-20px) scale(1.2); opacity: 1; }
+  70%  { transform: translateY(-80px) scale(0.7); opacity: 0.7; }
+  100% { transform: translateY(-140px) scale(0.2); opacity: 0; }
 }
 
 /* ==================== CONTROLS ==================== */

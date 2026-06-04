@@ -21,6 +21,7 @@ export default function GamePage() {
     const [selectedLane, setSelectedLane] = useState(0)
     const [feedback, setFeedback] = useState('')
     const [blastLane, setBlastLane] = useState<number | null>(null)
+    const [launchLane, setLaunchLane] = useState<number | null>(null)
     const [maxTime, setMaxTime] = useState(() => getQuestionTime(settings.level, settings.difficulty))
     const [countdown, setCountdown] = useState(() => getQuestionTime(settings.level, settings.difficulty))
     const [isShowingResult, setIsShowingResult] = useState(false)
@@ -160,6 +161,8 @@ export default function GamePage() {
         if (isShowingResult) return
         setBlastLane(selectedLane)
         setTimeout(() => setBlastLane(null), 240)
+        setLaunchLane(selectedLane)
+        setTimeout(() => setLaunchLane(null), 400)
         const isCorrect = selectedLane === gameState.correctIndex
         const answeredCount = gameState.answeredCount + 1
         const nextLives = isCorrect ? gameState.lives : gameState.lives - 1
@@ -298,6 +301,7 @@ export default function GamePage() {
                             options={gameState.options}
                             selectedLane={selectedLane}
                             blastLane={blastLane}
+                            launchLane={launchLane}
                             onSelectLane={isPlaying ? setSelectedLane : () => { }}
                             onShoot={isPlaying ? handleShoot : () => { }}
                             onSwipeLeft={isPlaying ? () => setSelectedLane(c => (c + 3) % 4) : () => { }}

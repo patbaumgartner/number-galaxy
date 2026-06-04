@@ -6,6 +6,7 @@ interface GameBoardProps {
     options: string[]
     selectedLane: number
     blastLane: number | null
+    launchLane: number | null
     onSelectLane: (lane: number) => void
     onShoot: () => void
     onSwipeLeft: () => void
@@ -16,6 +17,7 @@ export default function GameBoard({
     options,
     selectedLane,
     blastLane,
+    launchLane,
     onSelectLane,
     onShoot,
     onSwipeLeft,
@@ -85,7 +87,9 @@ export default function GameBoard({
             <div className="rocket-track">
                 {options.map((_, idx) => (
                     <div key={idx} className="rocket-cell">
-                        {selectedLane === idx && <span className="rocket">🚀</span>}
+                        {selectedLane === idx && (
+                            <span className={`rocket${launchLane === idx ? ' launching' : ''}`}>🚀</span>
+                        )}
                     </div>
                 ))}
             </div>

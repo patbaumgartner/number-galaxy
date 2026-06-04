@@ -24,6 +24,7 @@ export default function GamePage() {
     const [maxTime, setMaxTime] = useState(() => getQuestionTime(settings.level, settings.difficulty))
     const [countdown, setCountdown] = useState(() => getQuestionTime(settings.level, settings.difficulty))
     const [isShowingResult, setIsShowingResult] = useState(false)
+    const [isShaking, setIsShaking] = useState(false)
     const [feedbackOverlay, setFeedbackOverlay] = useState<{
         type: 'correct' | 'wrong' | 'timeout'
         questionPrompt: string
@@ -108,6 +109,8 @@ export default function GamePage() {
         }
         setFeedback(t.gameFeedbackTimeout.replace('{answer}', gameState.currentQuestion.answer))
         setFeedbackOverlay({ type: 'timeout', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer })
+        setIsShaking(true)
+        setTimeout(() => setIsShaking(false), 500)
         setIsShowingResult(true)
         setTimeout(() => {
             setFeedbackOverlay(null)
@@ -196,6 +199,8 @@ export default function GamePage() {
         } else {
             setFeedback(t.gameFeedbackWrong.replace('{answer}', gameState.currentQuestion.answer))
             setFeedbackOverlay({ type: 'wrong', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer })
+            setIsShaking(true)
+            setTimeout(() => setIsShaking(false), 500)
             setIsShowingResult(true)
             setTimeout(() => {
                 setFeedbackOverlay(null)
@@ -266,7 +271,7 @@ export default function GamePage() {
                 </section>
 
                 <div className="game-play-area">
-                    <section className="card game-board-card">
+                    <section className={`card game-board-card${isShaking ? ' shaking' : ''}`}>
                         {/* QUESTION + COUNTDOWN */}
                         <div className="question-header">
                             <div className={`countdown-display${isUrgent ? ' urgent' : ''}${!isPlaying ? ' idle' : ''}`}>

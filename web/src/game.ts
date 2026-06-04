@@ -241,10 +241,21 @@ export function createRound(language: Language, operationPool: Operation[], leve
 export function nextQuestion(
     previous: GameState,
     effectiveLevel?: Level,
+    weakness?: Record<string, number>,
 ): Pick<GameState, 'currentQuestion' | 'options' | 'correctIndex' | 'operation'> {
+    // Weighted operation selection — operations with more misses appear more often
+    let pool = previous.operationPool
+    if (weakness && pool.length > 1) {
+        const weights = pool.map(op => 1 + (weakness[op] ?? 0) * 2)
+        const totalWeight = weights.reduce((s, w) => s + w, 0)
+        let rand = Math.random() * totalWeight
+        const pickedIdx = weights.findIndex(w => { rand -= w; return rand <= 0 })
+        pool = [pool[pickedIdx >= 0 ? pickedIdx : 0]]
+    }
+
     const nextState = createRound(
         previous.language,
-        previous.operationPool,
+        pool,
         effectiveLevel ?? previous.level,
         previous.difficulty,
     )

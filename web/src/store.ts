@@ -24,6 +24,7 @@ const PLAYER_STORAGE_KEY = 'math-invaders-player'
 const GAME_STATE_STORAGE_KEY = 'math-invaders-game-state'
 const HALL_OF_FAME_STORAGE_KEY = 'math-invaders-hall-of-fame'
 const SETTINGS_STORAGE_KEY = 'math-invaders-settings'
+const WEAKNESS_STORAGE_KEY = 'math-invaders-weakness'
 
 export type GameSettings = {
     language: Language
@@ -151,5 +152,26 @@ export const store = {
 
     saveSettings(settings: GameSettings): void {
         window.localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings))
+    },
+
+    getWeakness(): Record<string, number> {
+        if (typeof window === 'undefined') return {}
+        const raw = window.localStorage.getItem(WEAKNESS_STORAGE_KEY)
+        if (!raw) return {}
+        try { return JSON.parse(raw) as Record<string, number> } catch { return {} }
+    },
+
+    recordMiss(operation: string): void {
+        const map = this.getWeakness()
+        map[operation] = (map[operation] ?? 0) + 1
+        window.localStorage.setItem(WEAKNESS_STORAGE_KEY, JSON.stringify(map))
+    },
+
+    recordHit(operation: string): void {
+        const map = this.getWeakness()
+        if (map[operation]) {
+            map[operation] = Math.max(0, map[operation] - 1)
+            window.localStorage.setItem(WEAKNESS_STORAGE_KEY, JSON.stringify(map))
+        }
     },
 }

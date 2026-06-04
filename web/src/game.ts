@@ -242,11 +242,22 @@ export function nextQuestion(
     previous: GameState,
     effectiveLevel?: Level,
     weakness?: Record<string, number>,
+    srData?: Record<string, { interval: number; due: number }>,
+    currentQ?: number,
 ): Pick<GameState, 'currentQuestion' | 'options' | 'correctIndex' | 'operation'> {
-    // Weighted operation selection — operations with more misses appear more often
+    // Weighted operation selection combining weakness and spaced-repetition due status
     let pool = previous.operationPool
-    if (weakness && pool.length > 1) {
-        const weights = pool.map(op => 1 + (weakness[op] ?? 0) * 2)
+    if (pool.length > 1) {
+        const qNum = currentQ ?? 0
+        const weights = pool.map(op => {
+            const weaknessBoost = weakness ? (weakness[op] ?? 0) * 2 : 0
+            const srEntry = srData?.[op]
+            // SR boost: overdue operations get 4× weight; due this question = 3×
+            const srBoost = srEntry
+                ? (qNum >= srEntry.due ? (qNum - srEntry.due + 1) * 2 : 0)
+                : 0
+            return 1 + weaknessBoost + srBoost
+        })
         const totalWeight = weights.reduce((s, w) => s + w, 0)
         let rand = Math.random() * totalWeight
         const pickedIdx = weights.findIndex(w => { rand -= w; return rand <= 0 })

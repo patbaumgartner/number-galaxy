@@ -26,6 +26,10 @@ const HALL_OF_FAME_STORAGE_KEY = 'math-invaders-hall-of-fame'
 const SETTINGS_STORAGE_KEY = 'math-invaders-settings'
 const WEAKNESS_STORAGE_KEY = 'math-invaders-weakness'
 const HINT_SHOWN_KEY = 'math-invaders-hint-shown'
+const SR_STORAGE_KEY = 'math-invaders-sr'
+
+export type SREntry = { interval: number; due: number }
+export type SRData = Record<string, SREntry>
 
 export type GameSettings = {
     language: Language
@@ -183,5 +187,24 @@ export const store = {
 
     markSwipeHintSeen(): void {
         window.localStorage.setItem(HINT_SHOWN_KEY, '1')
+    },
+
+    getSRData(): SRData {
+        if (typeof window === 'undefined') return {}
+        const raw = window.localStorage.getItem(SR_STORAGE_KEY)
+        if (!raw) return {}
+        try { return JSON.parse(raw) as SRData } catch { return {} }
+    },
+
+    updateSR(operation: string, correct: boolean, currentQ: number): void {
+        const data = this.getSRData()
+        const entry = data[operation] ?? { interval: 1, due: 0 }
+        if (correct) {
+            const newInterval = Math.min(Math.round(entry.interval * 2.5), 25)
+            data[operation] = { interval: newInterval, due: currentQ + newInterval }
+        } else {
+            data[operation] = { interval: 1, due: currentQ + 1 }
+        }
+        window.localStorage.setItem(SR_STORAGE_KEY, JSON.stringify(data))
     },
 }

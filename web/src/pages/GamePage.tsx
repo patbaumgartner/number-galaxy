@@ -119,7 +119,8 @@ export default function GamePage() {
         const nextWave = getWave(answeredCount)
         const effectiveNextLevel = getEffectiveLevel(gameState.level, nextWave)
         store.recordMiss(gameState.operation)
-        const nextRound = nextQuestion(gameState, effectiveNextLevel, store.getWeakness())
+        store.updateSR(gameState.operation, false, gameState.answeredCount)
+        const nextRound = nextQuestion(gameState, effectiveNextLevel, store.getWeakness(), store.getSRData(), answeredCount)
         const newState: GameState = {
             ...gameState,
             operation: sessionEnded ? gameState.operation : nextRound.operation,
@@ -204,7 +205,7 @@ export default function GamePage() {
         const currentWave = getWave(gameState.answeredCount)
         const nextWave = getWave(answeredCount)
         const effectiveNextLevel = getEffectiveLevel(gameState.level, nextWave)
-        const nextRound = nextQuestion(gameState, effectiveNextLevel, store.getWeakness())
+        const nextRound = nextQuestion(gameState, effectiveNextLevel, store.getWeakness(), store.getSRData(), answeredCount)
         const points = isCorrect ? 10 + currentWave * 5 + Math.max(0, gameState.streak) * 2 : 0
         const nextState: GameState = {
             ...gameState,
@@ -220,6 +221,7 @@ export default function GamePage() {
         }
         if (isCorrect) {
             store.recordHit(gameState.operation)
+            store.updateSR(gameState.operation, true, gameState.answeredCount)
             correctCountRef.current += 1
             bestStreakRef.current = Math.max(bestStreakRef.current, nextState.streak)
             setAnswerHistory(h => [{ prompt: gameState.currentQuestion.prompt, correct: true, answer: gameState.currentQuestion.answer }, ...h].slice(0, 5))
@@ -244,6 +246,7 @@ export default function GamePage() {
             }
         } else {
             store.recordMiss(gameState.operation)
+            store.updateSR(gameState.operation, false, gameState.answeredCount)
             setFeedback(t.gameFeedbackWrong.replace('{answer}', gameState.currentQuestion.answer))
             setFeedbackOverlay({ type: 'wrong', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer })
             setAnswerHistory(h => [{ prompt: gameState.currentQuestion.prompt, correct: false, answer: gameState.currentQuestion.answer }, ...h].slice(0, 5))

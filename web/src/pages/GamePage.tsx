@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { createRound, nextQuestion, getQuestionTime, getWave, getEffectiveLevel, type GameState } from '../game'
+import { createRound, nextQuestion, getQuestionTime, getWave, getEffectiveLevel, getWorkedExample, type GameState, type Operation } from '../game'
 import { store } from '../store'
 import Navigation from '../components/Navigation'
 import GameBoard from '../components/GameBoard'
@@ -39,6 +39,8 @@ export default function GamePage() {
     } | null>(null)
     const correctCountRef = useRef(0)
     const bestStreakRef = useRef(0)
+    const lastSeenOperationRef = useRef<Operation | null>(null)
+    const [workedExampleOp, setWorkedExampleOp] = useState<Operation | null>(null)
     const [feedbackOverlay, setFeedbackOverlay] = useState<{
         type: 'correct' | 'wrong' | 'timeout'
         questionPrompt: string
@@ -64,6 +66,7 @@ export default function GamePage() {
     useEffect(() => {
         if (gameState.status !== 'playing') return
         if (isShowingResult) return
+        if (workedExampleOp) return  // pause timer during worked example
         if (countdown === 0) {
             handleTimeExpiredRef.current()
             return
@@ -161,12 +164,18 @@ export default function GamePage() {
         setCountdown(qt)
         setGameState(s => ({ ...s, status: 'playing' }))
         setFeedback(t.gameSteering)
+        // Show worked example for the current operation when starting
+        if (lastSeenOperationRef.current !== gameState.operation) {
+            lastSeenOperationRef.current = gameState.operation
+            setWorkedExampleOp(gameState.operation)
+            setTimeout(() => setWorkedExampleOp(null), 3000)
+        }
         if (!store.hasSeenSwipeHint()) {
             store.markSwipeHintSeen()
             setShowSwipeHint(true)
             setTimeout(() => setShowSwipeHint(false), 3000)
         }
-    }, [gameState.level, gameState.difficulty, t])
+    }, [gameState.level, gameState.difficulty, gameState.operation, t])
 
     const stopGame = useCallback(() => {
         const finalState = { ...gameState, status: 'lost' as const }
@@ -186,6 +195,7 @@ export default function GamePage() {
         setGameSummary(null)
         correctCountRef.current = 0
         bestStreakRef.current = 0
+        lastSeenOperationRef.current = null
         setMaxTime(qt)
         setCountdown(qt)
     }, [])
@@ -238,6 +248,12 @@ export default function GamePage() {
                 } else {
                     playCorrect()
                 }
+                // Show worked example when operation changes mid-game
+                if (nextRound.operation !== gameState.operation && lastSeenOperationRef.current !== nextRound.operation) {
+                    lastSeenOperationRef.current = nextRound.operation
+                    setWorkedExampleOp(nextRound.operation)
+                    setTimeout(() => setWorkedExampleOp(null), 3000)
+                }
                 setFeedback(isWaveUp
                     ? t.gameLevelUp.replace('{wave}', String(nextWave + 1))
                     : t.gameFeedbackCorrect + (nextState.streak > 1 ? ' ' + t.gameFeedbackStreak.replace('{streak}', String(nextState.streak)) : ''))
@@ -281,7 +297,7 @@ export default function GamePage() {
 
     if (!player) return null
 
-    const isPlaying = gameState.status === 'playing'
+    const isPlaying = gameState.status === 'playing' && !workedExampleOp
     const isEnded = gameState.status === 'won' || gameState.status === 'lost'
     const isUrgent = isPlaying && countdown <= 3
     const countdownFraction = maxTime > 0 ? countdown / maxTime : 1
@@ -387,6 +403,20 @@ export default function GamePage() {
                                 <span className="swipe-hint-text">Swipe up or tap to shoot!</span>
                             </div>
                         )}
+
+                        {workedExampleOp && (() => {
+                            const ex = getWorkedExample(workedExampleOp)
+                            return (
+                                <div className="worked-example-overlay">
+                                    <div className="worked-example-title">📚 How it works</div>
+                                    <div className="worked-example-row">
+                                        <span className="worked-example-prompt">{ex.prompt}</span>
+                                        <span className="worked-example-answer">{ex.answer}</span>
+                                    </div>
+                                    <div className="worked-example-hint">{ex.hint}</div>
+                                </div>
+                            )
+                        })()}
                     </section>
 
                     <div className="game-sidebar">

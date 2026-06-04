@@ -238,6 +238,22 @@ export function createRound(language: Language, operationPool: Operation[], leve
     }
 }
 
+/** Generates a simple worked-example object for an operation. */
+export function getWorkedExample(operation: Operation): { prompt: string; answer: string; hint: string } {
+    switch (operation) {
+        case 'addition':
+            return { prompt: '7 + 5 = ?', answer: '12', hint: '7 → 8, 9, 10, 11, 12 (count on 5)' }
+        case 'subtraction':
+            return { prompt: '13 - 4 = ?', answer: '9', hint: '13 → 12, 11, 10, 9 (count back 4)' }
+        case 'multiplication':
+            return { prompt: '4 × 6 = ?', answer: '24', hint: '4 groups of 6: 6+6+6+6 = 24' }
+        case 'division':
+            return { prompt: '24 ÷ 6 = ?', answer: '4', hint: '24 ÷ 6: how many 6s? 6,12,18,24 → 4' }
+        case 'remainders':
+            return { prompt: '14 ÷ 4 = ?', answer: '3 r 2', hint: '4×3=12, 14−12=2, so 3 remainder 2' }
+    }
+}
+
 export function nextQuestion(
     previous: GameState,
     effectiveLevel?: Level,

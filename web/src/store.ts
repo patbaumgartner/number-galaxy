@@ -25,6 +25,7 @@ const GAME_STATE_STORAGE_KEY = 'math-invaders-game-state'
 const HALL_OF_FAME_STORAGE_KEY = 'math-invaders-hall-of-fame'
 const SETTINGS_STORAGE_KEY = 'math-invaders-settings'
 const WEAKNESS_STORAGE_KEY = 'math-invaders-weakness'
+const HINT_SHOWN_KEY = 'math-invaders-hint-shown'
 
 export type GameSettings = {
     language: Language
@@ -173,5 +174,14 @@ export const store = {
             map[operation] = Math.max(0, map[operation] - 1)
             window.localStorage.setItem(WEAKNESS_STORAGE_KEY, JSON.stringify(map))
         }
+    },
+
+    hasSeenSwipeHint(): boolean {
+        if (typeof window === 'undefined') return true
+        return window.localStorage.getItem(HINT_SHOWN_KEY) === '1'
+    },
+
+    markSwipeHintSeen(): void {
+        window.localStorage.setItem(HINT_SHOWN_KEY, '1')
     },
 }

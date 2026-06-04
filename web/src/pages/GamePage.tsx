@@ -27,6 +27,7 @@ export default function GamePage() {
     const [countdown, setCountdown] = useState(() => getQuestionTime(settings.level, settings.difficulty))
     const [isShowingResult, setIsShowingResult] = useState(false)
     const [isShaking, setIsShaking] = useState(false)
+    const [showSwipeHint, setShowSwipeHint] = useState(false)
     const [answerHistory, setAnswerHistory] = useState<Array<{ prompt: string; correct: boolean; answer: string }>>([])
     const [gameSummary, setGameSummary] = useState<{
         won: boolean
@@ -159,6 +160,11 @@ export default function GamePage() {
         setCountdown(qt)
         setGameState(s => ({ ...s, status: 'playing' }))
         setFeedback(t.gameSteering)
+        if (!store.hasSeenSwipeHint()) {
+            store.markSwipeHintSeen()
+            setShowSwipeHint(true)
+            setTimeout(() => setShowSwipeHint(false), 3000)
+        }
     }, [gameState.level, gameState.difficulty, t])
 
     const stopGame = useCallback(() => {
@@ -369,6 +375,13 @@ export default function GamePage() {
                                         <div className="answer-overlay-answer">= {feedbackOverlay.correctAnswer}</div>
                                     </>
                                 )}
+                            </div>
+                        )}
+
+                        {showSwipeHint && (
+                            <div className="swipe-hint">
+                                <span className="swipe-hint-arrow">⬆️</span>
+                                <span className="swipe-hint-text">Swipe up or tap to shoot!</span>
                             </div>
                         )}
                     </section>

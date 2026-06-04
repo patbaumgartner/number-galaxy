@@ -8,6 +8,7 @@ import GameBoard from '../components/GameBoard'
 import { TOTAL_QUESTIONS_PER_RUN } from '../constants'
 import { translations } from '../translations'
 import { playCorrect, playWrong, playShoot, playLevelUp, playTimeout } from '../sound'
+import { explainAnswer } from '../explain'
 
 const CIRCUMFERENCE = 2 * Math.PI * 28
 
@@ -51,6 +52,7 @@ export default function GamePage() {
         type: 'correct' | 'wrong' | 'timeout'
         questionPrompt: string
         correctAnswer: string
+        explanation?: string
     } | null>(null)
 
     // Redirect to home if no player profile exists
@@ -152,7 +154,7 @@ export default function GamePage() {
             status: sessionEnded ? (nextLives > 0 ? 'won' : 'lost') : 'playing',
         }
         setFeedback(t.gameFeedbackTimeout.replace('{answer}', gameState.currentQuestion.answer))
-        setFeedbackOverlay({ type: 'timeout', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer })
+        setFeedbackOverlay({ type: 'timeout', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer, explanation: explainAnswer(gameState.currentQuestion.prompt, gameState.currentQuestion.answer) })
         setAnswerHistory(h => [{ prompt: gameState.currentQuestion.prompt, correct: false, answer: gameState.currentQuestion.answer }, ...h].slice(0, 5))
         playTimeout()
         setIsShaking(true)
@@ -291,7 +293,7 @@ export default function GamePage() {
             store.updateSR(gameState.operation, false, gameState.answeredCount)
             store.recordSkill(gameState.operation, false)
             setFeedback(t.gameFeedbackWrong.replace('{answer}', gameState.currentQuestion.answer))
-            setFeedbackOverlay({ type: 'wrong', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer })
+            setFeedbackOverlay({ type: 'wrong', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer, explanation: explainAnswer(gameState.currentQuestion.prompt, gameState.currentQuestion.answer) })
             setAnswerHistory(h => [{ prompt: gameState.currentQuestion.prompt, correct: false, answer: gameState.currentQuestion.answer }, ...h].slice(0, 5))
             playWrong()
             setIsShaking(true)
@@ -420,6 +422,9 @@ export default function GamePage() {
                                     <>
                                         <div className="answer-overlay-question">{feedbackOverlay.questionPrompt}</div>
                                         <div className="answer-overlay-answer">= {feedbackOverlay.correctAnswer}</div>
+                                        {feedbackOverlay.explanation && (
+                                            <div className="answer-overlay-explanation">{feedbackOverlay.explanation}</div>
+                                        )}
                                     </>
                                 )}
                             </div>

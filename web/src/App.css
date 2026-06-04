@@ -531,11 +531,30 @@ body {
 }
 
 @keyframes alienDeath {
-  0%   { transform: scale(1) rotate(0deg); opacity: 1; }
-  30%  { transform: scale(1.4) rotate(-20deg); opacity: 1; }
-  60%  { transform: scale(0.3) rotate(180deg); opacity: 0.5; }
-  80%  { transform: scale(0) rotate(360deg); opacity: 0; }
-  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  0% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+
+  30% {
+    transform: scale(1.4) rotate(-20deg);
+    opacity: 1;
+  }
+
+  60% {
+    transform: scale(0.3) rotate(180deg);
+    opacity: 0.5;
+  }
+
+  80% {
+    transform: scale(0) rotate(360deg);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
 }
 
 @keyframes urgentPulse {
@@ -674,10 +693,25 @@ body {
 }
 
 @keyframes rocketLaunch {
-  0%   { transform: translateY(0) scale(1); opacity: 1; }
-  40%  { transform: translateY(-20px) scale(1.2); opacity: 1; }
-  70%  { transform: translateY(-80px) scale(0.7); opacity: 0.7; }
-  100% { transform: translateY(-140px) scale(0.2); opacity: 0; }
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  40% {
+    transform: translateY(-20px) scale(1.2);
+    opacity: 1;
+  }
+
+  70% {
+    transform: translateY(-80px) scale(0.7);
+    opacity: 0.7;
+  }
+
+  100% {
+    transform: translateY(-140px) scale(0.2);
+    opacity: 0;
+  }
 }
 
 /* ==================== CONTROLS ==================== */
@@ -1300,8 +1334,13 @@ body {
 }
 
 @keyframes summaryFadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .game-summary-card {
@@ -1317,8 +1356,15 @@ body {
 }
 
 @keyframes summaryCardEnter {
-  from { transform: scale(0.6); opacity: 0; }
-  to   { transform: scale(1); opacity: 1; }
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .summary-icon {
@@ -1393,8 +1439,15 @@ body {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
 }
 
 /* ==================== ANSWER HISTORY STRIP ==================== */
@@ -1439,8 +1492,15 @@ body {
 }
 
 @keyframes pillEnter {
-  from { opacity: 0; transform: scale(0.7) translateY(6px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.7) translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 /* ==================== SWIPE HINT ==================== */
@@ -1473,14 +1533,27 @@ body {
 }
 
 @keyframes hintBounce {
-  from { transform: translateY(0); }
-  to   { transform: translateY(-10px); }
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-10px);
+  }
 }
 
 @keyframes hintFadeOut {
-  0%   { opacity: 1; }
-  70%  { opacity: 1; }
-  100% { opacity: 0; }
+  0% {
+    opacity: 1;
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 
 /* ==================== WORKED EXAMPLE OVERLAY ==================== */
@@ -1512,7 +1585,7 @@ body {
   display: flex;
   align-items: center;
   gap: 1rem;
-  background: rgba(255,255,255,0.07);
+  background: rgba(255, 255, 255, 0.07);
   border-radius: 0.6rem;
   padding: 0.6rem 1.4rem;
 }
@@ -1539,14 +1612,37 @@ body {
 
 /* ==================== SCREEN SHAKE ==================== */
 @keyframes shake {
-  0%   { transform: translateX(0); }
-  15%  { transform: translateX(-8px) rotate(-1deg); }
-  30%  { transform: translateX(8px) rotate(1deg); }
-  45%  { transform: translateX(-6px) rotate(-0.5deg); }
-  60%  { transform: translateX(6px) rotate(0.5deg); }
-  75%  { transform: translateX(-3px); }
-  90%  { transform: translateX(3px); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(0);
+  }
+
+  15% {
+    transform: translateX(-8px) rotate(-1deg);
+  }
+
+  30% {
+    transform: translateX(8px) rotate(1deg);
+  }
+
+  45% {
+    transform: translateX(-6px) rotate(-0.5deg);
+  }
+
+  60% {
+    transform: translateX(6px) rotate(0.5deg);
+  }
+
+  75% {
+    transform: translateX(-3px);
+  }
+
+  90% {
+    transform: translateX(3px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
 
 .game-board-card.shaking {
@@ -1605,6 +1701,15 @@ body {
   letter-spacing: 4px;
   text-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 4px 16px rgba(0, 0, 0, 0.6);
   line-height: 1;
+}
+
+.answer-overlay-explanation {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.75);
+  text-align: center;
+  max-width: 240px;
+  line-height: 1.5;
+  margin-top: 0.4rem;
 }
 
 @keyframes overlayEnter {

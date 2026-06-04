@@ -421,6 +421,7 @@ body {
 /* ==================== GAME BOARD ==================== */
 .game-board-card {
   flex: 1;
+  position: relative;
 }
 
 .question-display {
@@ -1247,5 +1248,103 @@ body {
 
   .rocket {
     font-size: 1.3rem;
+  }
+}
+
+/* ==================== ANSWER FEEDBACK OVERLAY ==================== */
+.answer-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  animation: overlayEnter 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  pointer-events: none;
+}
+
+.answer-overlay--correct {
+  background: rgba(0, 160, 80, 0.93);
+  border: 4px solid var(--success);
+  box-shadow: 0 0 60px rgba(0, 255, 136, 0.7), inset 0 0 40px rgba(0, 255, 136, 0.2);
+}
+
+.answer-overlay--wrong,
+.answer-overlay--timeout {
+  background: rgba(180, 10, 40, 0.93);
+  border: 4px solid var(--danger);
+  box-shadow: 0 0 60px rgba(255, 51, 102, 0.7), inset 0 0 40px rgba(255, 51, 102, 0.2);
+}
+
+.answer-overlay-icon {
+  font-size: 6rem;
+  line-height: 1;
+  color: #fff;
+  font-weight: 900;
+  text-shadow: 0 0 40px rgba(255, 255, 255, 0.9), 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.answer-overlay-question {
+  font-size: 2rem;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 2px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.answer-overlay-answer {
+  font-size: 4rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 4px;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.8), 0 4px 16px rgba(0, 0, 0, 0.6);
+  line-height: 1;
+}
+
+@keyframes overlayEnter {
+  0% {
+    opacity: 0;
+    transform: scale(0.55);
+  }
+
+  65% {
+    transform: scale(1.07);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .answer-overlay-icon {
+    font-size: 4rem;
+  }
+
+  .answer-overlay-question {
+    font-size: 1.4rem;
+  }
+
+  .answer-overlay-answer {
+    font-size: 2.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .answer-overlay-icon {
+    font-size: 3rem;
+  }
+
+  .answer-overlay-question {
+    font-size: 1.1rem;
+  }
+
+  .answer-overlay-answer {
+    font-size: 2.2rem;
   }
 }

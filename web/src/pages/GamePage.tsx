@@ -24,6 +24,11 @@ export default function GamePage() {
     const [maxTime, setMaxTime] = useState(() => getQuestionTime(settings.level, settings.difficulty))
     const [countdown, setCountdown] = useState(() => getQuestionTime(settings.level, settings.difficulty))
     const [isShowingResult, setIsShowingResult] = useState(false)
+    const [feedbackOverlay, setFeedbackOverlay] = useState<{
+        type: 'correct' | 'wrong' | 'timeout'
+        questionPrompt: string
+        correctAnswer: string
+    } | null>(null)
 
     // Redirect to home if no player profile exists
     useEffect(() => {
@@ -102,8 +107,10 @@ export default function GamePage() {
             status: sessionEnded ? (nextLives > 0 ? 'won' : 'lost') : 'playing',
         }
         setFeedback(t.gameFeedbackTimeout.replace('{answer}', gameState.currentQuestion.answer))
+        setFeedbackOverlay({ type: 'timeout', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer })
         setIsShowingResult(true)
         setTimeout(() => {
+            setFeedbackOverlay(null)
             setIsShowingResult(false)
             setGameState(newState)
             if (sessionEnded) {
@@ -172,6 +179,8 @@ export default function GamePage() {
             status: sessionEnded ? (nextLives > 0 ? 'won' : 'lost') : 'playing',
         }
         if (isCorrect) {
+            setFeedbackOverlay({ type: 'correct', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer })
+            setTimeout(() => setFeedbackOverlay(null), 700)
             setGameState(nextState)
             if (!sessionEnded) {
                 const qt = getQuestionTime(effectiveNextLevel, gameState.difficulty)
@@ -186,8 +195,10 @@ export default function GamePage() {
             }
         } else {
             setFeedback(t.gameFeedbackWrong.replace('{answer}', gameState.currentQuestion.answer))
+            setFeedbackOverlay({ type: 'wrong', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer })
             setIsShowingResult(true)
             setTimeout(() => {
+                setFeedbackOverlay(null)
                 setIsShowingResult(false)
                 setGameState(nextState)
                 if (!sessionEnded) {
@@ -287,6 +298,20 @@ export default function GamePage() {
                             onSwipeLeft={isPlaying ? () => setSelectedLane(c => (c + 3) % 4) : () => { }}
                             onSwipeRight={isPlaying ? () => setSelectedLane(c => (c + 1) % 4) : () => { }}
                         />
+
+                        {feedbackOverlay && (
+                            <div className={`answer-overlay answer-overlay--${feedbackOverlay.type}`}>
+                                <div className="answer-overlay-icon">
+                                    {feedbackOverlay.type === 'correct' ? '✓' : feedbackOverlay.type === 'timeout' ? '⏰' : '✗'}
+                                </div>
+                                {feedbackOverlay.type !== 'correct' && (
+                                    <>
+                                        <div className="answer-overlay-question">{feedbackOverlay.questionPrompt}</div>
+                                        <div className="answer-overlay-answer">= {feedbackOverlay.correctAnswer}</div>
+                                    </>
+                                )}
+                            </div>
+                        )}
                     </section>
 
                     <div className="game-sidebar">

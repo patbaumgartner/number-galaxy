@@ -1610,6 +1610,38 @@ body {
   max-width: 260px;
 }
 
+/* ==================== TIP OVERLAY ==================== */
+.tip-overlay {
+  position: absolute;
+  bottom: 0.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+  background: rgba(10, 0, 40, 0.96);
+  border: 2px solid #fbbf24;
+  border-radius: 0.75rem;
+  padding: 0.7rem 1.2rem;
+  max-width: 280px;
+  text-align: center;
+  animation: overlayEnter 0.3s ease-out;
+  pointer-events: none;
+}
+
+.tip-title {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #fbbf24;
+  text-shadow: 0 0 8px #fbbf24;
+  margin-bottom: 0.35rem;
+  letter-spacing: 1px;
+}
+
+.tip-body {
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.5;
+}
+
 /* ==================== SCREEN SHAKE ==================== */
 @keyframes shake {
   0% {

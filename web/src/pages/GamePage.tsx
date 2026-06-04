@@ -9,6 +9,7 @@ import { TOTAL_QUESTIONS_PER_RUN } from '../constants'
 import { translations } from '../translations'
 import { playCorrect, playWrong, playShoot, playLevelUp, playTimeout } from '../sound'
 import { explainAnswer } from '../explain'
+import { getRandomTip } from '../tips'
 
 const CIRCUMFERENCE = 2 * Math.PI * 28
 
@@ -47,6 +48,8 @@ export default function GamePage() {
     const questionStartTimeRef = useRef<number>(Date.now())
     const bestTimeThisGameRef = useRef<number | null>(null)
     const newPersonalBestRef = useRef(false)
+    const consecutiveMissesRef = useRef<Record<string, number>>({})
+    const [tipOverlay, setTipOverlay] = useState<{ title: string; body: string } | null>(null)
     const [workedExampleOp, setWorkedExampleOp] = useState<Operation | null>(null)
     const [feedbackOverlay, setFeedbackOverlay] = useState<{
         type: 'correct' | 'wrong' | 'timeout'
@@ -90,6 +93,16 @@ export default function GamePage() {
         const timer = setTimeout(() => setCountdown(c => c - 1), 1000)
         return () => clearTimeout(timer)
     }, [countdown, gameState.status, isShowingResult, workedExampleOp, settings.mode])
+
+    const trackMissStreak = useCallback((operation: string) => {
+        const map = consecutiveMissesRef.current
+        map[operation] = (map[operation] ?? 0) + 1
+        if (map[operation] === 3) {
+            const tip = getRandomTip(operation as Operation)
+            setTipOverlay(tip)
+            setTimeout(() => setTipOverlay(null), 4500)
+        }
+    }, [])
 
     const submitScore = useCallback((state: GameState) => {
         if (state.score <= 0) return null
@@ -142,6 +155,7 @@ export default function GamePage() {
         store.recordMiss(gameState.operation)
         store.updateSR(gameState.operation, false, gameState.answeredCount)
         store.recordSkill(gameState.operation, false)
+        trackMissStreak(gameState.operation)
         const nextRound = nextQuestion(gameState, effectiveNextLevel, store.getWeakness(), store.getSRData(), answeredCount)
         const newState: GameState = {
             ...gameState,
@@ -172,7 +186,7 @@ export default function GamePage() {
                 setCountdown(qt)
             }
         }, 1500)
-    }, [gameState, endGame, t, isShowingResult])
+    }, [gameState, endGame, t, isShowingResult, trackMissStreak])
 
     // Keep the ref current so the countdown effect always calls the latest version
     useEffect(() => { handleTimeExpiredRef.current = handleTimeExpired })
@@ -217,6 +231,7 @@ export default function GamePage() {
         lastSeenOperationRef.current = null
         bestTimeThisGameRef.current = null
         newPersonalBestRef.current = false
+        consecutiveMissesRef.current = {}
         setMaxTime(qt)
         setCountdown(qt)
     }, [])
@@ -254,6 +269,7 @@ export default function GamePage() {
             store.recordHit(gameState.operation)
             store.updateSR(gameState.operation, true, gameState.answeredCount)
             store.recordSkill(gameState.operation, true)
+            consecutiveMissesRef.current[gameState.operation] = 0  // reset on correct
             const elapsed = Date.now() - questionStartTimeRef.current
             const isPB = store.updatePersonalBest(gameState.operation, elapsed)
             if (isPB) newPersonalBestRef.current = true
@@ -292,6 +308,7 @@ export default function GamePage() {
             store.recordMiss(gameState.operation)
             store.updateSR(gameState.operation, false, gameState.answeredCount)
             store.recordSkill(gameState.operation, false)
+            trackMissStreak(gameState.operation)
             setFeedback(t.gameFeedbackWrong.replace('{answer}', gameState.currentQuestion.answer))
             setFeedbackOverlay({ type: 'wrong', questionPrompt: gameState.currentQuestion.prompt, correctAnswer: gameState.currentQuestion.answer, explanation: explainAnswer(gameState.currentQuestion.prompt, gameState.currentQuestion.answer) })
             setAnswerHistory(h => [{ prompt: gameState.currentQuestion.prompt, correct: false, answer: gameState.currentQuestion.answer }, ...h].slice(0, 5))
@@ -450,6 +467,13 @@ export default function GamePage() {
                                 </div>
                             )
                         })()}
+
+                        {tipOverlay && (
+                            <div className="tip-overlay">
+                                <div className="tip-title">{tipOverlay.title}</div>
+                                <div className="tip-body">{tipOverlay.body}</div>
+                            </div>
+                        )}
                     </section>
 
                     <div className="game-sidebar">

@@ -67,13 +67,14 @@ export default function GamePage() {
         if (gameState.status !== 'playing') return
         if (isShowingResult) return
         if (workedExampleOp) return  // pause timer during worked example
+        if (settings.mode === 'explore') return  // no countdown in explore mode
         if (countdown === 0) {
             handleTimeExpiredRef.current()
             return
         }
         const timer = setTimeout(() => setCountdown(c => c - 1), 1000)
         return () => clearTimeout(timer)
-    }, [countdown, gameState.status, isShowingResult])
+    }, [countdown, gameState.status, isShowingResult, workedExampleOp, settings.mode])
 
     const submitScore = useCallback((state: GameState) => {
         if (state.score <= 0) return null
@@ -299,8 +300,9 @@ export default function GamePage() {
 
     const isPlaying = gameState.status === 'playing' && !workedExampleOp
     const isEnded = gameState.status === 'won' || gameState.status === 'lost'
-    const isUrgent = isPlaying && countdown <= 3
-    const countdownFraction = maxTime > 0 ? countdown / maxTime : 1
+    const isExplore = settings.mode === 'explore'
+    const isUrgent = isPlaying && !isExplore && countdown <= 3
+    const countdownFraction = isExplore ? 1 : (maxTime > 0 ? countdown / maxTime : 1)
     const currentProgress = Math.min(100, (gameState.answeredCount / TOTAL_QUESTIONS_PER_RUN) * 100)
     const currentWave = getWave(gameState.answeredCount)
     const currentEffectiveLevel = getEffectiveLevel(gameState.level, currentWave)
@@ -362,7 +364,7 @@ export default function GamePage() {
                                     />
                                 </svg>
                                 <span className="countdown-number">
-                                    {isPlaying ? countdown : '⏱'}
+                                    {isPlaying ? (isExplore ? '∞' : countdown) : '⏱'}
                                 </span>
                             </div>
                             <div className="question-display">

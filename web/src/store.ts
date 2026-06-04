@@ -36,6 +36,7 @@ export type GameSettings = {
     operations: Operation[]
     level: Level
     difficulty: Difficulty
+    mode: 'drill' | 'explore'
 }
 
 const defaultSettings: GameSettings = {
@@ -43,6 +44,7 @@ const defaultSettings: GameSettings = {
     operations: ['addition'],
     level: 'starter',
     difficulty: 'easy',
+    mode: 'drill',
 }
 
 export const store = {

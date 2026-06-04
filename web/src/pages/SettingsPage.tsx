@@ -109,6 +109,22 @@ export default function SettingsPage() {
                     </div>
                 </section>
 
+                {/* MODE */}
+                <section className="card">
+                    <h2 className="neon-subtitle">⏱ Mode</h2>
+                    <p className="config-hint">Drill: countdown pressure · Explore: no timer, learn at your own pace</p>
+                    <div className="toggle-group">
+                        <button
+                            className={`toggle-btn ${(settings.mode ?? 'drill') === 'drill' ? 'active' : ''}`}
+                            onClick={() => update({ mode: 'drill' })}
+                        >⏱ Drill</button>
+                        <button
+                            className={`toggle-btn ${(settings.mode ?? 'drill') === 'explore' ? 'active' : ''}`}
+                            onClick={() => update({ mode: 'explore' })}
+                        >🔭 Explore</button>
+                    </div>
+                </section>
+
                 {/* PLAYER */}
                 <section className="card">
                     <h2 className="neon-subtitle">{t.settingsProfileSection}</h2>

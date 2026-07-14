@@ -1,38 +1,54 @@
 version: 2
 updates:
-  - package-ecosystem: npm
-    directory: /web
-    schedule:
-      interval: weekly
-      day: monday
-    open-pull-requests-limit: 10
-    groups:
-      react:
-        patterns:
-          - react
-          - react-dom
-          - react-router-dom
-          - '@types/react'
-          - '@types/react-dom'
-      vite:
-        patterns:
-          - vite
-          - '@vitejs/*'
-      typescript:
-        patterns:
-          - typescript
-          - typescript-eslint
-          - '@types/*'
-      eslint:
-        patterns:
-          - eslint
-          - eslint-*
-          - '@eslint/*'
-          - globals
-
-  - package-ecosystem: github-actions
-    directory: /
-    schedule:
-      interval: weekly
-      day: monday
-    open-pull-requests-limit: 5
+- package-ecosystem: npm
+  directory: /web
+  schedule:
+    interval: weekly
+    day: monday
+    time: 06:00
+    timezone: Europe/Zurich
+  open-pull-requests-limit: 10
+  groups:
+    react:
+      patterns:
+      - react
+      - react-dom
+      - react-router-dom
+      - '@types/react'
+      - '@types/react-dom'
+    vite:
+      patterns:
+      - vite
+      - '@vitejs/*'
+    typescript:
+      patterns:
+      - typescript
+      - typescript-eslint
+      - '@types/*'
+    eslint:
+      patterns:
+      - eslint
+      - eslint-*
+      - '@eslint/*'
+      - globals
+  labels:
+  - dependencies
+  - npm
+  commit-message:
+    prefix: chore(deps)
+    prefix-development: chore(deps-dev)
+    include: scope
+- package-ecosystem: github-actions
+  directory: /
+  schedule:
+    interval: weekly
+    day: monday
+    time: 06:00
+    timezone: Europe/Zurich
+  open-pull-requests-limit: 5
+  labels:
+  - dependencies
+  - github-actions
+  commit-message:
+    prefix: ci(deps)
+    include: scope

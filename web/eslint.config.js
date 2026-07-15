@@ -8,9 +8,18 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 export default defineConfig([
   globalIgnores(['dist']),
   {
+    files: ['**/*.{js,mjs,cjs}'],
+    extends: [js.configs.recommended],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.serviceworker,
+      },
+    },
+  },
+  {
     files: ['**/*.{ts,tsx}'],
     extends: [
-      js.configs.recommended,
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
     ],
@@ -26,10 +35,6 @@ export default defineConfig([
         },
       },
       globals: globals.browser,
-    },
-    rules: {
-      'no-undef': 'off',
-      'no-unused-vars': 'off',
     },
   },
 ])

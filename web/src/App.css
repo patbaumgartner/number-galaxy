@@ -855,7 +855,7 @@ summary.panel__title {
   font-weight: 900;
   color: var(--color-cyan);
   text-shadow: var(--glow-score);
-  line-height: 1;
+  line-height: 1.2;
   margin-bottom: var(--space-1);
 }
 
@@ -1184,6 +1184,41 @@ summary.panel__title {
   font-weight: 800;
   color: var(--color-cyan);
   font-variant-numeric: tabular-nums;
+}
+
+/* Narrow phones cannot fit rank, avatar, name, stars, accuracy and score on one
+   line, and only the name can ellipsis. Give the run detail its own row. */
+@media (max-width: 460px) {
+  .board__row {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "rank avatar name  score"
+      "rank avatar stars meta";
+    column-gap: var(--space-2);
+    row-gap: 2px;
+    align-items: center;
+  }
+
+  .board__rank { grid-area: rank; }
+  .board__avatar { grid-area: avatar; margin-right: 0; }
+  .board__name { grid-area: name; }
+  .board__score { grid-area: score; }
+
+  .board__stars {
+    grid-area: stars;
+    margin-right: 0;
+    justify-self: start;
+  }
+
+  .board__meta {
+    grid-area: meta;
+    flex-direction: row;
+    align-items: center;
+    justify-self: end;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+  }
 }
 
 /* Animations */

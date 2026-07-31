@@ -339,13 +339,20 @@ button {
 .panel__title {
   font-size: var(--text-lg);
   font-weight: 700;
-  margin: 0;
+  margin: 0 0 var(--space-3);
+}
+
+/* These two already own the spacing to whatever follows them. */
+.panel__head .panel__title,
+summary.panel__title {
+  margin-bottom: 0;
 }
 
 .panel__hint {
   font-size: var(--text-sm);
   color: var(--text-muted);
-  margin: var(--space-2) 0 0;
+  line-height: 1.5;
+  margin: calc(-1 * var(--space-1)) 0 var(--space-4);
 }
 
 .panel__list {
@@ -400,7 +407,7 @@ button {
   left: 50%;
   transform: translateX(-50%);
   font-size: 2.25rem;
-  line-height: 1;
+  line-height: 1.15;
   margin: 0;
   pointer-events: none;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
@@ -578,7 +585,7 @@ button {
   font-size: var(--text-fluid-eq);
   font-weight: 800;
   font-variant-numeric: tabular-nums;
-  line-height: 1.1;
+  line-height: 1.16;
   max-width: 100%;
   overflow-wrap: break-word;
   margin: 0;
@@ -915,7 +922,6 @@ button {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  margin-bottom: var(--space-6);
 }
 
 .option {
@@ -985,8 +991,18 @@ button {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: var(--space-4);
   padding: var(--space-4) 0;
   border-bottom: 1px solid var(--border-hairline);
+}
+
+.switch-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.switch-row__title + .panel__hint {
+  margin-bottom: 0;
 }
 
 .switch-row--stack {
@@ -1253,6 +1269,60 @@ button {
   
   .hud__timer-fill {
     transition: none;
+  }
+}
+
+/* Desktop: the game is a centred column, not a stretched phone layout. The
+   equation stops flex-growing so it cannot balloon into a mostly empty card. */
+@media (min-width: 720px) {
+  .stage {
+    width: 100%;
+    max-width: 620px;
+    margin-inline: auto;
+    justify-content: center;
+    gap: var(--space-4);
+    padding-bottom: var(--space-6);
+  }
+
+  .equation {
+    flex: 0 0 auto;
+    min-height: 210px;
+    padding: var(--space-6) var(--space-5);
+  }
+
+  .answer-grid {
+    max-width: 100%;
+    margin-bottom: var(--space-4);
+  }
+
+  .answer-tile {
+    min-height: 124px;
+  }
+
+  .answer-tile__alien {
+    font-size: 2.4rem;
+  }
+
+  .game-bar {
+    width: 100%;
+    max-width: 620px;
+    margin-inline: auto;
+    padding-inline: 0;
+    background: transparent;
+  }
+
+  .stage__rocket {
+    font-size: 2.75rem;
+  }
+}
+
+@media (min-width: 720px) and (max-height: 700px) {
+  .equation {
+    min-height: 150px;
+  }
+
+  .answer-tile {
+    min-height: 96px;
   }
 }
 

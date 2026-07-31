@@ -1,4 +1,14 @@
-body {
+/*
+ * Painted on a fixed layer rather than on `body`: as a body background this
+ * grid repaints across the whole scroll height on every scroll frame, which
+ * is a real cost on phones.
+ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background-image:
     linear-gradient(var(--border-hairline) 1px, transparent 1px),
     linear-gradient(90deg, var(--border-hairline) 1px, transparent 1px);

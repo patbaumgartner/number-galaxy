@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { BADGE_EMOJI, store, type GameSettings } from '../store'
 import { OPERATIONS, RANKS, rankConfig, type Operation, type Rank } from '../game'
@@ -11,7 +11,11 @@ export default function SettingsPage() {
     const navigate = useNavigate()
     const [settings, setSettings] = useState<GameSettings>(() => store.getSettings())
     const t = translations[settings.language]
-    const skills = store.getSkillStats()
+    const skills = useMemo(() => store.getSkillStats(), [])
+    const badges = useMemo(
+        () => new Map(OPERATIONS.map(op => [op, store.computeBadge(skills[op]?.history ?? [])])),
+        [skills],
+    )
     useDocumentLanguage(settings.language)
 
     const update = (patch: Partial<GameSettings>) => {
@@ -48,7 +52,7 @@ export default function SettingsPage() {
                     <p className="panel__hint">{t.settings.practiceHint}</p>
                     <div className="options">
                         {OPERATIONS.map(operation => {
-                            const badge = store.computeBadge(skills[operation]?.history ?? [])
+                            const badge = badges.get(operation) ?? 'none'
                             const active = settings.operations.includes(operation)
                             return (
                                 <button

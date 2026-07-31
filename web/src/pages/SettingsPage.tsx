@@ -54,22 +54,32 @@ export default function SettingsPage() {
                         {OPERATIONS.map(operation => {
                             const badge = badges.get(operation) ?? 'none'
                             const active = settings.operations.includes(operation)
+                            const locked = active && settings.operations.length === 1
                             return (
                                 <button
                                     key={operation}
                                     type="button"
-                                    className={`option${active ? ' option--active' : ''}`}
+                                    className={`option${active ? ' option--active' : ''}${locked ? ' option--locked' : ''}`}
                                     aria-pressed={active}
+                                    aria-disabled={locked}
                                     onClick={() => toggleOperation(operation)}
                                 >
                                     {t.operations[operation]}
-                                    {badge !== 'none' && (
-                                        <span className="option__badge" aria-hidden="true">{BADGE_EMOJI[badge]}</span>
-                                    )}
+                                    <span className="option__marks">
+                                        {badge !== 'none' && (
+                                            <span className="option__badge" aria-hidden="true">{BADGE_EMOJI[badge]}</span>
+                                        )}
+                                        <span className="option__state" aria-hidden="true">
+                                            {locked ? '🔒' : active ? '✓' : ''}
+                                        </span>
+                                    </span>
                                 </button>
                             )
                         })}
                     </div>
+                    {settings.operations.length === 1 && (
+                        <p className="panel__note">{t.settings.keepOne}</p>
+                    )}
                 </section>
 
                 <section className="panel">
@@ -87,8 +97,6 @@ export default function SettingsPage() {
                                 <span className="rung__name">{t.ranks[rank]}</span>
                                 <span className="rung__meta">
                                     {fill(t.settings.rankRange, { max: rankConfig[rank].maxValue })}
-                                    {' · '}
-                                    {fill(t.settings.formsUnlocked, { count: rankConfig[rank].forms.length })}
                                 </span>
                             </button>
                         ))}

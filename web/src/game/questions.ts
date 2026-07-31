@@ -219,9 +219,17 @@ export function createQuestion({
 
 export type SpacedRepetitionEntry = { interval: number; due: number }
 
+/** A struggled operation may be favoured, but never to the point of crowding out the rest. */
+const MAX_WEAKNESS_BOOST = 3
+
 /**
  * Weights the pool towards operations the player struggles with or that are
  * overdue for review, then picks one.
+ *
+ * Both boosts are bounded. Unbounded weakness let one operation the player kept
+ * missing take over the whole mission, and an operation with no review history
+ * counted as "not due" — so a maths the child had explicitly chosen could go a
+ * whole session without ever appearing.
  */
 export function pickOperation(
     rng: Rng,
@@ -229,15 +237,22 @@ export function pickOperation(
     weakness: Record<string, number> = {},
     srData: Record<string, SpacedRepetitionEntry> = {},
     questionIndex = 0,
+    shown: readonly Operation[] = [],
 ): Operation {
     if (pool.length === 0) return 'addition'
     if (pool.length === 1) return pool[0]
 
-    const weights = pool.map(operation => {
-        const weaknessBoost = (weakness[operation] ?? 0) * 2
-        const entry = srData[operation]
-        const overdueBoost = entry && questionIndex >= entry.due ? (questionIndex - entry.due + 1) * 2 : 0
+    // Anything the player picked is shown before anything repeats, so choosing
+    // five kinds of maths always means seeing five kinds of maths.
+    const unseen = pool.filter(operation => !shown.includes(operation))
+    const candidates = unseen.length > 0 ? unseen : pool
+
+    const weights = candidates.map(operation => {
+        const weaknessBoost = Math.min(weakness[operation] ?? 0, MAX_WEAKNESS_BOOST)
+        // Never reviewed means due right now, not "never due".
+        const { due } = srData[operation] ?? { interval: 1, due: 0 }
+        const overdueBoost = questionIndex >= due ? Math.min(questionIndex - due + 1, 6) : 0
         return 1 + weaknessBoost + overdueBoost
     })
-    return pool[pickWeighted(rng, weights)]
+    return candidates[pickWeighted(rng, weights)]
 }

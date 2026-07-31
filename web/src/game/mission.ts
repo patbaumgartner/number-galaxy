@@ -14,6 +14,8 @@ export type MissionState = {
     operations: Operation[]
     /** One entry per answered question, in order — drives the progress trail. */
     results: boolean[]
+    /** Operations already used, so every chosen one is shown before any repeats. */
+    shownOperations: Operation[]
     streak: number
     bestStreak: number
     score: number
@@ -49,9 +51,10 @@ function drawQuestion(
     rank: Rank,
     operations: Operation[],
     questionIndex: number,
+    shown: readonly Operation[],
     { rng = defaultRng, weakness, srData }: MissionDeps,
 ): Question {
-    const operation = pickOperation(rng, operations, weakness, srData, questionIndex)
+    const operation = pickOperation(rng, operations, weakness, srData, questionIndex, shown)
     return createQuestion({ language, operation, rank, rng })
 }
 
@@ -63,16 +66,18 @@ export function createMission({
     ...deps
 }: MissionConfig): MissionState {
     const pool = operations.length > 0 ? operations : (['addition'] as Operation[])
+    const question = drawQuestion(language, rank, pool, 0, [], deps)
     return {
         language,
         rank,
         timed,
         operations: pool,
         results: [],
+        shownOperations: [question.operation],
         streak: 0,
         bestStreak: 0,
         score: 0,
-        question: drawQuestion(language, rank, pool, 0, deps),
+        question,
         phase: 'ready',
     }
 }
@@ -101,11 +106,21 @@ export function scoreAnswer(state: MissionState, outcome: AnswerOutcome): Missio
 /** Swaps in the next question and hands control back to the player. */
 export function advanceMission(state: MissionState, deps: MissionDeps = {}): MissionState {
     if (state.phase === 'summary') return state
-    return {
-        ...state,
-        question: drawQuestion(state.language, state.rank, state.operations, getAnswered(state), deps),
-        phase: 'answering',
-    }
+    const question = drawQuestion(
+        state.language,
+        state.rank,
+        state.operations,
+        getAnswered(state),
+        state.shownOperations,
+        deps,
+    )
+    // Once every chosen operation has been shown the cycle restarts, so the
+    // adaptive weighting keeps working across the rest of the mission.
+    const shown = state.shownOperations.length >= state.operations.length
+        ? [question.operation]
+        : [...state.shownOperations, question.operation]
+
+    return { ...state, question, shownOperations: shown, phase: 'answering' }
 }
 
 /** Ends the mission early at the player's request, keeping what they earned. */

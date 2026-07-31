@@ -58,7 +58,7 @@ export type Translations = {
         rankTitle: string
         rankHint: string
         rankRange: string
-        formsUnlocked: string
+        keepOne: string
         languageTitle: string
         moreTitle: string
         timerTitle: string
@@ -148,11 +148,11 @@ const de: Translations = {
         title: 'Einstellungen',
         tagline: 'Stelle deine Mission ein',
         practiceTitle: 'Was möchtest du üben?',
-        practiceHint: 'Wähle eine oder mehrere Rechenarten.',
+        practiceHint: 'Wähle eine oder mehrere — alle sind bei jedem Rang verfügbar.',
         rankTitle: 'Wie schwer?',
-        rankHint: 'Der Rang bestimmt die Zahlen, die Zeit und die Aufgabentypen.',
+        rankHint: 'Der Rang bestimmt nur, wie gross die Zahlen werden und wie viel Zeit du hast.',
         rankRange: 'bis {max}',
-        formsUnlocked: 'Aufgabentypen: {count}',
+        keepOne: 'Mindestens eine Rechenart muss aktiv bleiben.',
         languageTitle: 'Sprache',
         moreTitle: 'Mehr Einstellungen',
         timerTitle: 'Countdown',
@@ -257,11 +257,11 @@ const en: Translations = {
         title: 'Settings',
         tagline: 'Set up your mission',
         practiceTitle: 'What do you want to practise?',
-        practiceHint: 'Pick one or more kinds of maths.',
+        practiceHint: 'Pick one or more — all of them work at every rank.',
         rankTitle: 'How hard?',
-        rankHint: 'Rank sets the numbers, the time and the kinds of question.',
+        rankHint: 'Rank only sets how big the numbers get and how much time you have.',
         rankRange: 'up to {max}',
-        formsUnlocked: 'Question types: {count}',
+        keepOne: 'At least one kind of maths has to stay on.',
         languageTitle: 'Language',
         moreTitle: 'More settings',
         timerTitle: 'Countdown',
@@ -366,11 +366,11 @@ const it: Translations = {
         title: 'Impostazioni',
         tagline: 'Prepara la tua missione',
         practiceTitle: 'Cosa vuoi allenare?',
-        practiceHint: 'Scegli uno o più tipi di calcolo.',
+        practiceHint: 'Scegline uno o più — sono tutti disponibili a ogni grado.',
         rankTitle: 'Quanto difficile?',
-        rankHint: 'Il grado decide i numeri, il tempo e i tipi di domanda.',
+        rankHint: 'Il grado decide solo quanto sono grandi i numeri e quanto tempo hai.',
         rankRange: 'fino a {max}',
-        formsUnlocked: 'Tipi di domanda: {count}',
+        keepOne: 'Almeno un tipo di calcolo deve restare attivo.',
         languageTitle: 'Lingua',
         moreTitle: 'Altre impostazioni',
         timerTitle: 'Conto alla rovescia',
@@ -475,11 +475,11 @@ const fr: Translations = {
         title: 'Réglages',
         tagline: 'Prépare ta mission',
         practiceTitle: 'Que veux-tu entraîner ?',
-        practiceHint: 'Choisis un ou plusieurs types de calcul.',
+        practiceHint: 'Choisis-en un ou plusieurs — tous sont disponibles à chaque grade.',
         rankTitle: 'Quelle difficulté ?',
-        rankHint: 'Le grade fixe les nombres, le temps et les types de question.',
+        rankHint: 'Le grade fixe seulement la taille des nombres et le temps dont tu disposes.',
         rankRange: 'jusqu’à {max}',
-        formsUnlocked: 'Types de question : {count}',
+        keepOne: 'Au moins un type de calcul doit rester activé.',
         languageTitle: 'Langue',
         moreTitle: 'Plus de réglages',
         timerTitle: 'Chrono',

@@ -1,0 +1,125 @@
+import type { Language, Operation, OperatorSymbol } from './types'
+import { MINUS, OPERATOR_SYMBOLS } from './types'
+import { randomInt, type Rng } from './rng'
+
+/** `left symbol right = result`, with every value inside the rank's bounds. */
+export type Equation = {
+    left: number
+    right: number
+    result: number
+    symbol: OperatorSymbol
+}
+
+/** `dividend ÷ divisor = quotient remainder remainder`. */
+export type RemainderEquation = {
+    dividend: number
+    divisor: number
+    quotient: number
+    remainder: number
+}
+
+export type BinaryOperation = Exclude<Operation, 'remainders'>
+
+const remainderSeparator: Record<Language, string> = {
+    de: 'Rest',
+    it: 'r',
+    en: 'r',
+    fr: 'r',
+}
+
+export function remainderLabel(language: Language, quotient: number, remainder: number): string {
+    return `${quotient} ${remainderSeparator[language]} ${remainder}`
+}
+
+/**
+ * Keeps times tables recognisable: factors never exceed 12, so even Legend
+ * multiplies within the tables a child actually learns.
+ */
+function maxFactorFor(maxValue: number): number {
+    return Math.min(12, Math.max(3, Math.round(Math.sqrt(maxValue) * 1.4)))
+}
+
+function additionEquation(rng: Rng, maxValue: number): Equation {
+    const left = randomInt(rng, 2, maxValue - 2)
+    const right = randomInt(rng, 2, maxValue - left)
+    return { left, right, result: left + right, symbol: '+' }
+}
+
+function subtractionEquation(rng: Rng, maxValue: number): Equation {
+    const left = randomInt(rng, 4, maxValue)
+    const right = randomInt(rng, 2, left - 2)
+    return { left, right, result: left - right, symbol: MINUS }
+}
+
+function multiplicationEquation(rng: Rng, maxValue: number): Equation {
+    const maxFactor = maxFactorFor(maxValue)
+    // Capping `left` at half of maxValue guarantees `right` has room to be >= 2.
+    const leftCap = Math.max(2, Math.min(maxFactor, Math.floor(maxValue / 2)))
+    const left = randomInt(rng, 2, leftCap)
+    const rightCap = Math.max(2, Math.min(maxFactor, Math.floor(maxValue / left)))
+    const right = randomInt(rng, 2, rightCap)
+    return { left, right, result: left * right, symbol: '×' }
+}
+
+function divisionEquation(rng: Rng, maxValue: number): Equation {
+    const maxFactor = maxFactorFor(maxValue)
+    const divisorCap = Math.max(2, Math.min(maxFactor, Math.floor(maxValue / 2)))
+    const divisor = randomInt(rng, 2, divisorCap)
+    const quotientCap = Math.max(2, Math.min(maxFactor, Math.floor(maxValue / divisor)))
+    const quotient = randomInt(rng, 2, quotientCap)
+    // Built from the answer outwards, so the division is always exact.
+    return { left: divisor * quotient, right: divisor, result: quotient, symbol: '÷' }
+}
+
+const equationFactories: Record<BinaryOperation, (rng: Rng, maxValue: number) => Equation> = {
+    addition: additionEquation,
+    subtraction: subtractionEquation,
+    multiplication: multiplicationEquation,
+    division: divisionEquation,
+}
+
+export function createEquation(rng: Rng, operation: BinaryOperation, maxValue: number): Equation {
+    return equationFactories[operation](rng, maxValue)
+}
+
+export function createRemainderEquation(rng: Rng, maxValue: number): RemainderEquation {
+    const maxFactor = maxFactorFor(maxValue)
+    const divisorCap = Math.max(2, Math.min(maxFactor, Math.floor(maxValue / 3)))
+    const divisor = randomInt(rng, 2, divisorCap)
+    const remainder = randomInt(rng, 1, divisor - 1)
+    const quotientCap = Math.max(1, Math.floor((maxValue - remainder) / divisor))
+    const quotient = randomInt(rng, 1, quotientCap)
+    return { dividend: divisor * quotient + remainder, divisor, quotient, remainder }
+}
+
+/**
+ * Applies an operator under child-safe arithmetic rules, or returns `null` when
+ * the operator does not legally apply: no negative results, no division by zero
+ * and no inexact division.
+ */
+export function applyOperator(symbol: OperatorSymbol, left: number, right: number): number | null {
+    switch (symbol) {
+        case '+':
+            return left + right
+        case MINUS:
+            return left >= right ? left - right : null
+        case '×':
+            return left * right
+        case '÷':
+            return right !== 0 && left % right === 0 ? left / right : null
+    }
+}
+
+/**
+ * True when exactly one of `+ − × ÷` turns `left ? right` into `result`.
+ *
+ * This is what rejects genuinely ambiguous prompts such as `4 ? 2 = 2`
+ * (both `−` and `÷` work) or `2 ? 2 = 4` (both `+` and `×` work).
+ */
+export function hasUniqueOperator(left: number, right: number, result: number): boolean {
+    let matches = 0
+    for (const symbol of OPERATOR_SYMBOLS) {
+        if (applyOperator(symbol, left, right) === result) matches += 1
+    }
+    return matches === 1
+}

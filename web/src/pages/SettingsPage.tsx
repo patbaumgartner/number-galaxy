@@ -1,16 +1,18 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { store, computeBadge, BADGE_EMOJI, type GameSettings } from '../store'
-import Navigation from '../components/Navigation'
+import { BADGE_EMOJI, store, type GameSettings } from '../store'
+import { OPERATIONS, RANKS, rankConfig, type Operation, type Rank } from '../game'
 import { languageLabels } from '../constants'
-import type { Language, Operation, Level, Difficulty } from '../game'
-import { translations } from '../translations'
+import { fill, translations } from '../translations'
+import { useDocumentLanguage } from '../hooks'
+import type { Language } from '../game'
 
 export default function SettingsPage() {
     const navigate = useNavigate()
-    const player = store.getPlayer()
-    const [settings, setSettings] = useState<GameSettings>(store.getSettings())
+    const [settings, setSettings] = useState<GameSettings>(() => store.getSettings())
     const t = translations[settings.language]
+    const skills = store.getSkillStats()
+    useDocumentLanguage(settings.language)
 
     const update = (patch: Partial<GameSettings>) => {
         const next = { ...settings, ...patch }
@@ -18,80 +20,87 @@ export default function SettingsPage() {
         store.saveSettings(next)
     }
 
-    const skillStats = store.getSkillStats()
-
-    const toggleOperation = (op: Operation) => {
-        const ops = settings.operations.includes(op)
-            ? settings.operations.filter((o) => o !== op)
-            : [...settings.operations, op]
-        if (ops.length === 0) return // at least one required
-        update({ operations: ops })
+    const toggleOperation = (operation: Operation) => {
+        const next = settings.operations.includes(operation)
+            ? settings.operations.filter(entry => entry !== operation)
+            : [...settings.operations, operation]
+        if (next.length === 0) return
+        update({ operations: next })
     }
 
-    const handleClearData = () => {
-        if (confirm(t.settingsDeleteConfirm)) {
-            store.clearAllData()
-            setSettings(store.getSettings())
-            navigate('/')
-        }
+    const reset = () => {
+        if (!confirm(t.settings.resetConfirm)) return
+        store.clearAllData()
+        setSettings(store.getSettings())
+        navigate('/')
     }
 
     return (
         <div className="page">
-            <Navigation />
+            <main className="shell">
+                <header className="shell__head">
+                    <h1 className="shell__title">⚙️ {t.settings.title}</h1>
+                    <p className="shell__tagline">{t.settings.tagline}</p>
+                </header>
 
-            <main className="container">
-                <section className="hero">
-                    <h1 className="neon-text">{t.settingsTitle}</h1>
-                    <p className="tagline">{t.settingsTagline}</p>
-                </section>
-
-                {/* LANGUAGE */}
-                <section className="card">
-                    <h2 className="neon-subtitle">{t.settingsLangSection}</h2>
-                    <div className="toggle-group">
-                        {(Object.entries(languageLabels) as [Language, string][]).map(([lang, label]) => (
-                            <button
-                                key={lang}
-                                className={`toggle-btn ${settings.language === lang ? 'active' : ''}`}
-                                onClick={() => update({ language: lang })}
-                            >
-                                {label}
-                            </button>
-                        ))}
-                    </div>
-                </section>
-
-                {/* OPERATIONS */}
-                <section className="card">
-                    <h2 className="neon-subtitle">{t.settingsOpsSection}</h2>
-                    <p className="config-hint">{t.settingsOpsHint}</p>
-                    <div className="toggle-group toggle-group--wrap">
-                        {(Object.entries(t.operationLabels) as [Operation, string][]).map(([op, label]) => {
-                            const badge = computeBadge(skillStats[op]?.history ?? [])
+                <section className="panel">
+                    <h2 className="panel__title">{t.settings.practiceTitle}</h2>
+                    <p className="panel__hint">{t.settings.practiceHint}</p>
+                    <div className="options">
+                        {OPERATIONS.map(operation => {
+                            const badge = store.computeBadge(skills[operation]?.history ?? [])
+                            const active = settings.operations.includes(operation)
                             return (
                                 <button
-                                    key={op}
-                                    className={`toggle-btn ${settings.operations.includes(op) ? 'active' : ''}`}
-                                    onClick={() => toggleOperation(op)}
+                                    key={operation}
+                                    type="button"
+                                    className={`option${active ? ' option--active' : ''}`}
+                                    aria-pressed={active}
+                                    onClick={() => toggleOperation(operation)}
                                 >
-                                    {BADGE_EMOJI[badge] && <span className="badge-icon">{BADGE_EMOJI[badge]}</span>}
-                                    {label}
+                                    {t.operations[operation]}
+                                    {badge !== 'none' && (
+                                        <span className="option__badge" aria-hidden="true">{BADGE_EMOJI[badge]}</span>
+                                    )}
                                 </button>
                             )
                         })}
                     </div>
                 </section>
 
-                {/* LEVEL */}
-                <section className="card">
-                    <h2 className="neon-subtitle">{t.settingsLevelSection}</h2>
-                    <div className="toggle-group">
-                        {(Object.entries(t.levelLabels) as [Level, string][]).map(([lv, label]) => (
+                <section className="panel">
+                    <h2 className="panel__title">{t.settings.rankTitle}</h2>
+                    <p className="panel__hint">{t.settings.rankHint}</p>
+                    <div className="ladder">
+                        {RANKS.map((rank: Rank) => (
                             <button
-                                key={lv}
-                                className={`toggle-btn ${settings.level === lv ? 'active' : ''}`}
-                                onClick={() => update({ level: lv })}
+                                key={rank}
+                                type="button"
+                                className={`rung${settings.rank === rank ? ' rung--active' : ''}`}
+                                aria-pressed={settings.rank === rank}
+                                onClick={() => update({ rank })}
+                            >
+                                <span className="rung__name">{t.ranks[rank]}</span>
+                                <span className="rung__meta">
+                                    {fill(t.settings.rankRange, { max: rankConfig[rank].maxValue })}
+                                    {' · '}
+                                    {fill(t.settings.formsUnlocked, { count: rankConfig[rank].forms.length })}
+                                </span>
+                            </button>
+                        ))}
+                    </div>
+                </section>
+
+                <section className="panel">
+                    <h2 className="panel__title">{t.settings.languageTitle}</h2>
+                    <div className="options">
+                        {(Object.entries(languageLabels) as [Language, string][]).map(([code, label]) => (
+                            <button
+                                key={code}
+                                type="button"
+                                className={`option${settings.language === code ? ' option--active' : ''}`}
+                                aria-pressed={settings.language === code}
+                                onClick={() => update({ language: code })}
                             >
                                 {label}
                             </button>
@@ -99,110 +108,84 @@ export default function SettingsPage() {
                     </div>
                 </section>
 
-                {/* DIFFICULTY */}
-                <section className="card">
-                    <h2 className="neon-subtitle">{t.settingsDiffSection}</h2>
-                    <div className="toggle-group">
-                        {(Object.entries(t.difficultyLabels) as [Difficulty, string][]).map(([diff, label]) => (
-                            <button
-                                key={diff}
-                                className={`toggle-btn ${settings.difficulty === diff ? 'active' : ''}`}
-                                onClick={() => update({ difficulty: diff })}
-                            >
-                                {label}
-                            </button>
-                        ))}
-                    </div>
-                </section>
+                <details className="panel panel--details">
+                    <summary className="panel__title">{t.settings.moreTitle}</summary>
 
-                {/* MODE */}
-                <section className="card">
-                    <h2 className="neon-subtitle">⏱ Mode</h2>
-                    <p className="config-hint">Drill: countdown pressure · Explore: no timer, learn at your own pace</p>
-                    <div className="toggle-group">
+                    <div className="switch-row">
+                        <div>
+                            <h3 className="switch-row__title">⏱ {t.settings.timerTitle}</h3>
+                            <p className="panel__hint">{t.settings.timerHint}</p>
+                        </div>
                         <button
-                            className={`toggle-btn ${settings.mode === 'drill' ? 'active' : ''}`}
-                            onClick={() => update({ mode: 'drill' })}
-                        >⏱ Drill</button>
-                        <button
-                            className={`toggle-btn ${settings.mode === 'explore' ? 'active' : ''}`}
-                            onClick={() => update({ mode: 'explore' })}
-                        >🔭 Explore</button>
-                    </div>
-                </section>
-
-                {/* WORKED EXAMPLES */}
-                <section className="card">
-                    <h2 className="neon-subtitle">📚 Worked Examples</h2>
-                    <p className="config-hint">Show a quick example when an operation appears for the first time. Turn off once you know them all.</p>
-                    <div className="toggle-group">
-                        <button
-                            className={`toggle-btn ${settings.workedExamples ? 'active' : ''}`}
-                            onClick={() => update({ workedExamples: true })}
-                        >✅ On</button>
-                        <button
-                            className={`toggle-btn ${!settings.workedExamples ? 'active' : ''}`}
-                            onClick={() => update({ workedExamples: false })}
-                        >⛔ Off</button>
-                    </div>
-                </section>
-
-                {/* TIPS */}
-                <section className="card">
-                    <h2 className="neon-subtitle">💡 Mistake Tips</h2>
-                    <p className="config-hint">Show a mnemonic hint after 3 consecutive misses on the same operation. Turn off if you prefer to figure it out yourself.</p>
-                    <div className="toggle-group">
-                        <button
-                            className={`toggle-btn ${settings.tips ? 'active' : ''}`}
-                            onClick={() => update({ tips: true })}
-                        >✅ On</button>
-                        <button
-                            className={`toggle-btn ${!settings.tips ? 'active' : ''}`}
-                            onClick={() => update({ tips: false })}
-                        >⛔ Off</button>
-                    </div>
-                </section>
-
-                {/* CONFIDENCE CHECK */}
-                <section className="card">
-                    <h2 className="neon-subtitle">🤔 Confidence Check</h2>
-                    <p className="config-hint">After each answer, ask yourself: "Did I really know that?" Helps with self-reflection.</p>
-                    <div className="toggle-group">
-                        <button
-                            className={`toggle-btn ${settings.confidence ? 'active' : ''}`}
-                            onClick={() => update({ confidence: true })}
-                        >✅ On</button>
-                        <button
-                            className={`toggle-btn ${!settings.confidence ? 'active' : ''}`}
-                            onClick={() => update({ confidence: false })}
-                        >⛔ Off</button>
-                    </div>
-                </section>
-
-                {/* DATA */}
-                <section className="card">
-                    <h2 className="neon-subtitle">{t.settingsDataSection}</h2>
-                    <ul className="info-list">
-                        {t.settingsDataInfo.map((info, i) => <li key={i}>{info}</li>)}
-                    </ul>
-                    <button className="btn btn-danger" onClick={handleClearData}>
-                        {t.settingsDeleteBtn}
-                    </button>
-                </section>
-
-                <div className="action-buttons">
-                    {player && (
-                        <button className="btn btn-primary" onClick={() => navigate('/game')}>
-                            {t.settingsPlayBtn}
+                            type="button"
+                            className={`switch${settings.timed ? ' switch--on' : ''}`}
+                            role="switch"
+                            aria-checked={settings.timed}
+                            onClick={() => update({ timed: !settings.timed })}
+                        >
+                            <span className="switch__track"><span className="switch__thumb" /></span>
+                            {settings.timed ? t.settings.on : t.settings.off}
                         </button>
-                    )}
-                    <button className="btn btn-secondary" onClick={() => navigate('/')}>
-                        🏠 {t.navHome}
+                    </div>
+
+                    <div className="switch-row">
+                        <div>
+                            <h3 className="switch-row__title">🔊 {t.settings.soundTitle}</h3>
+                            <p className="panel__hint">{t.settings.soundHint}</p>
+                        </div>
+                        <button
+                            type="button"
+                            className={`switch${settings.sound ? ' switch--on' : ''}`}
+                            role="switch"
+                            aria-checked={settings.sound}
+                            onClick={() => update({ sound: !settings.sound })}
+                        >
+                            <span className="switch__track"><span className="switch__thumb" /></span>
+                            {settings.sound ? t.settings.on : t.settings.off}
+                        </button>
+                    </div>
+
+                    <div className="switch-row">
+                        <div>
+                            <h3 className="switch-row__title">💡 {t.settings.hintsTitle}</h3>
+                            <p className="panel__hint">{t.settings.hintsHint}</p>
+                        </div>
+                        <button
+                            type="button"
+                            className={`switch${settings.hints ? ' switch--on' : ''}`}
+                            role="switch"
+                            aria-checked={settings.hints}
+                            onClick={() => update({ hints: !settings.hints })}
+                        >
+                            <span className="switch__track"><span className="switch__thumb" /></span>
+                            {settings.hints ? t.settings.on : t.settings.off}
+                        </button>
+                    </div>
+
+                    <div className="switch-row switch-row--stack">
+                        <div>
+                            <h3 className="switch-row__title">🗄 {t.settings.dataTitle}</h3>
+                            <ul className="panel__list">
+                                {t.settings.dataInfo.map((info, index) => <li key={index}>{info}</li>)}
+                            </ul>
+                        </div>
+                        <button type="button" className="btn btn--danger" onClick={reset}>
+                            {t.settings.reset}
+                        </button>
+                    </div>
+                </details>
+
+                <nav className="home-nav">
+                    <button type="button" className="btn btn--primary" onClick={() => navigate('/game')}>
+                        🚀 {t.settings.done}
                     </button>
-                    <button className="btn btn-secondary" onClick={() => navigate('/hall-of-fame')}>
-                        🏆 {t.navHallOfFame}
+                    <button type="button" className="btn btn--ghost" onClick={() => navigate('/')}>
+                        🏠 {t.nav.home}
                     </button>
-                </div>
+                    <button type="button" className="btn btn--ghost" onClick={() => navigate('/hall-of-fame')}>
+                        🏆 {t.nav.hallOfFame}
+                    </button>
+                </nav>
             </main>
         </div>
     )

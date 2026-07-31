@@ -1,11 +1,11 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import './App.css'
 import HomePage from './pages/HomePage'
 import GamePage from './pages/GamePage'
 import HallOfFamePage from './pages/HallOfFamePage'
 import SettingsPage from './pages/SettingsPage'
 
-function App() {
+export default function App() {
     return (
         <BrowserRouter basename="/math-invaders">
             <Routes>
@@ -18,5 +18,3 @@ function App() {
         </BrowserRouter>
     )
 }
-
-export default App

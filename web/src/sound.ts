@@ -1,12 +1,18 @@
-// Web Audio API sound effects — no files, no dependencies
-// All sounds are synthesised in the browser.
-
 let ctx: AudioContext | null = null
+let enabled = true
 
-function getCtx(): AudioContext {
-    if (!ctx) ctx = new AudioContext()
-    if (ctx.state === 'suspended') ctx.resume()
-    return ctx
+export function setSoundEnabled(value: boolean): void {
+    enabled = value
+}
+
+function getCtx(): AudioContext | null {
+    try {
+        if (!ctx) ctx = new AudioContext()
+        if (ctx.state === 'suspended') void ctx.resume()
+        return ctx
+    } catch {
+        return null
+    }
 }
 
 function beep(
@@ -16,8 +22,10 @@ function beep(
     gain = 0.18,
     fadeOut = true,
 ) {
+    if (!enabled) return
+    const c = getCtx()
+    if (!c) return
     try {
-        const c = getCtx()
         const osc = c.createOscillator()
         const vol = c.createGain()
         osc.type = type
@@ -29,51 +37,57 @@ function beep(
         osc.start(c.currentTime)
         osc.stop(c.currentTime + duration)
     } catch {
-        // Silently ignore if audio is blocked
+        /* audio blocked — the game stays playable without it */
     }
 }
 
-export function playCorrect() {
-    // Rising two-note arpeggio
-    beep(523, 0.1, 'triangle', 0.15)       // C5
-    setTimeout(() => beep(784, 0.15, 'triangle', 0.15), 90)  // G5
-}
-
-export function playWrong() {
-    // Low descending buzz
-    beep(180, 0.12, 'sawtooth', 0.2)
-    setTimeout(() => beep(130, 0.18, 'sawtooth', 0.18), 100)
+function sequence(notes: number[], spacing: number, duration: number, gain = 0.15) {
+    notes.forEach((frequency, index) => {
+        setTimeout(() => beep(frequency, duration, 'triangle', gain), index * spacing)
+    })
 }
 
 export function playShoot() {
-    // Short laser zap
+    if (!enabled) return
+    const c = getCtx()
+    if (!c) return
     try {
-        const c = getCtx()
         const osc = c.createOscillator()
         const vol = c.createGain()
         osc.type = 'sawtooth'
         osc.frequency.setValueAtTime(900, c.currentTime)
         osc.frequency.exponentialRampToValueAtTime(200, c.currentTime + 0.12)
-        vol.gain.setValueAtTime(0.12, c.currentTime)
+        vol.gain.setValueAtTime(0.1, c.currentTime)
         vol.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.12)
         osc.connect(vol)
         vol.connect(c.destination)
         osc.start(c.currentTime)
         osc.stop(c.currentTime + 0.13)
-    } catch { /* ignore */ }
+    } catch {
+        /* ignore */
+    }
 }
 
-export function playLevelUp() {
-    // Ascending 4-note fanfare
-    const notes = [523, 659, 784, 1047]
-    notes.forEach((freq, i) => {
-        setTimeout(() => beep(freq, 0.12, 'triangle', 0.15), i * 80)
-    })
+export function playCorrect() {
+    sequence([523, 784], 90, 0.13)
+}
+
+/** Rises with the multiplier, so a bigger combo literally sounds bigger. */
+export function playCombo(multiplier: number) {
+    sequence([523, 659, 784, 1047].slice(0, Math.min(4, multiplier + 1)), 70, 0.11, 0.16)
+}
+
+export function playWrong() {
+    beep(180, 0.12, 'sawtooth', 0.18)
+    setTimeout(() => beep(130, 0.18, 'sawtooth', 0.16), 100)
 }
 
 export function playTimeout() {
-    // Triple low alarm pulse
-    ;[0, 120, 240].forEach(delay => {
-        setTimeout(() => beep(220, 0.09, 'square', 0.18, false), delay)
-    })
+    for (const delay of [0, 120, 240]) {
+        setTimeout(() => beep(220, 0.09, 'square', 0.16, false), delay)
+    }
+}
+
+export function playVictory() {
+    sequence([523, 659, 784, 1047, 1319], 110, 0.18, 0.16)
 }

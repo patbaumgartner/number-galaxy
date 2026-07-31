@@ -1,100 +1,107 @@
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { store } from '../store'
-import type { HallOfFameEntry } from '../store'
-import type { Difficulty, Level } from '../game'
-import Navigation from '../components/Navigation'
-import { TOTAL_QUESTIONS_PER_RUN } from '../constants'
+import { store, type ScoreEntry } from '../store'
+import { RANKS, type Rank } from '../game'
 import { translations } from '../translations'
+import { useDocumentLanguage } from '../hooks'
 
-const DIFFICULTY_ORDER: Difficulty[] = ['hard', 'normal', 'easy']
-const LEVEL_ORDER: Level[] = ['master', 'expert', 'advanced', 'intermediate', 'elementary', 'beginner', 'starter']
+type Group = { rank: Rank; timed: boolean; entries: ScoreEntry[] }
 
 export default function HallOfFamePage() {
     const navigate = useNavigate()
-    const t = translations[store.getSettings().language]
-    const player = store.getPlayer()
-    const hallOfFame = useMemo(() => store.getHallOfFame(), [])
+    const language = store.getSettings().language
+    const t = translations[language]
+    useDocumentLanguage(language)
+    const scores = useMemo(() => store.getScores(), [])
+    const legacy = useMemo(() => store.getLegacyScores(), [])
 
-    type Group = { difficulty: Difficulty; level: Level; entries: HallOfFameEntry[] }
     const groups = useMemo<Group[]>(() => {
         const result: Group[] = []
-        for (const difficulty of DIFFICULTY_ORDER) {
-            for (const level of LEVEL_ORDER) {
-                const entries = hallOfFame
-                    .filter((e) => e.difficulty === difficulty && e.level === level)
-                    .sort((a, b) => b.score - a.score || b.answeredCount - a.answeredCount)
-                if (entries.length > 0) result.push({ difficulty, level, entries })
+        for (const rank of [...RANKS].reverse()) {
+            for (const timed of [true, false]) {
+                const entries = scores.filter(entry => entry.rank === rank && entry.timed === timed)
+                if (entries.length > 0) result.push({ rank, timed, entries })
             }
         }
         return result
-    }, [hallOfFame])
+    }, [scores])
 
     return (
         <div className="page">
-            <Navigation />
+            <main className="shell">
+                <header className="shell__head">
+                    <h1 className="shell__title">🏆 {t.hof.title}</h1>
+                    <p className="shell__tagline">{t.hof.subtitle}</p>
+                </header>
 
-            <main className="container">
-                <section className="hero">
-                    <h1 className="neon-text">{t.hofTitle}</h1>
-                    <p className="subtitle">{t.hofSubtitle}</p>
-                </section>
-
-                {groups.length === 0 ? (
-                    <section className="card">
-                        <div className="empty-state">
-                            <p className="empty-message">{t.hofEmpty}</p>
-                        </div>
+                {groups.length === 0 && legacy.length === 0 && (
+                    <section className="panel panel--empty">
+                        <p>{t.hof.empty}</p>
                     </section>
-                ) : (
-                    groups.map(({ difficulty, level, entries }) => (
-                        <section key={`${difficulty}-${level}`} className="card">
-                            <h2 className="section-title">
-                                {t.difficultyLabels[difficulty]} &nbsp;·&nbsp; {t.levelLabels[level]}
-                            </h2>
-                            <div className="hall-of-fame-table">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>#</th>
-                                            <th>{t.hofColPlayer}</th>
-                                            <th></th>
-                                            <th>{t.hofColScore}</th>
-                                            <th>{t.hofColQuestions}</th>
-                                            <th>{t.hofColMath}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {entries.map((entry, idx) => (
-                                            <tr key={`${entry.playerId}-${entry.level}-${entry.difficulty}-${idx}`} className={idx === 0 ? 'champion' : ''}>
-                                                <td className="rank">{idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : idx + 1}</td>
-                                                <td className="player-name">{entry.player}</td>
-                                                <td className="avatar">{entry.avatarId}</td>
-                                                <td className="score neon-text">{entry.score}</td>
-                                                <td className="questions">{entry.answeredCount}/{TOTAL_QUESTIONS_PER_RUN}</td>
-                                                <td className="operation">{t.operationLabels[entry.operation] ?? entry.operation}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </section>
-                    ))
                 )}
 
-                <div className="action-buttons">
-                    {player && (
-                        <button className="btn btn-primary" onClick={() => navigate('/game')}>
-                            {t.hofPlayNow}
-                        </button>
-                    )}
-                    <button className="btn btn-secondary" onClick={() => navigate('/')}>
-                        🏠 {t.navHome}
+                {groups.map(({ rank, timed, entries }) => (
+                    <section key={`${rank}-${timed}`} className="panel">
+                        <div className="panel__head">
+                            <h2 className="panel__title">{t.ranks[rank]}</h2>
+                            <span className="chip chip--sm">
+                                {timed ? `⏱ ${t.hof.timed}` : `∞ ${t.hof.untimed}`}
+                            </span>
+                        </div>
+                        <ol className="board">
+                            {entries.map((entry, index) => (
+                                <li
+                                    key={`${entry.playerId}-${index}`}
+                                    className={`board__row${index === 0 ? ' board__row--first' : ''}`}
+                                >
+                                    <span className="board__rank" aria-hidden="true">
+                                        {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}
+                                    </span>
+                                    <span className="board__avatar" aria-hidden="true">{entry.avatarId}</span>
+                                    <span className="board__name">{entry.player}</span>
+                                    <span className="board__stars" aria-hidden="true">
+                                        {'★'.repeat(entry.stars)}{'☆'.repeat(3 - entry.stars)}
+                                    </span>
+                                    <span className="board__meta">
+                                        {t.hof.accuracy} {entry.correct}/{entry.total}
+                                        {' · '}
+                                        {t.hof.streak} {entry.bestStreak}
+                                    </span>
+                                    <span className="board__score">{entry.score}</span>
+                                </li>
+                            ))}
+                        </ol>
+                    </section>
+                ))}
+
+                {legacy.length > 0 && (
+                    <details className="panel panel--details">
+                        <summary className="panel__title">{t.hof.legacyTitle}</summary>
+                        <p className="panel__hint">{t.hof.legacyHint}</p>
+                        <ol className="board board--legacy">
+                            {legacy.map((entry, index) => (
+                                <li key={index} className="board__row">
+                                    <span className="board__rank" aria-hidden="true">{index + 1}</span>
+                                    <span className="board__avatar" aria-hidden="true">{entry.avatarId}</span>
+                                    <span className="board__name">{entry.player}</span>
+                                    <span className="board__score">{entry.score}</span>
+                                </li>
+                            ))}
+                        </ol>
+                    </details>
+                )}
+
+                <nav className="home-nav">
+                    <button type="button" className="btn btn--primary" onClick={() => navigate('/game')}>
+                        🚀 {t.home.play}
                     </button>
-                    <button className="btn btn-secondary" onClick={() => navigate('/settings')}>
-                        ⚙️ {t.navSettings}
+                    <button type="button" className="btn btn--ghost" onClick={() => navigate('/')}>
+                        🏠 {t.nav.home}
                     </button>
-                </div>
+                    <button type="button" className="btn btn--ghost" onClick={() => navigate('/settings')}>
+                        ⚙️ {t.nav.settings}
+                    </button>
+                </nav>
             </main>
         </div>
     )

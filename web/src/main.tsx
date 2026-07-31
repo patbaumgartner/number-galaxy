@@ -9,8 +9,8 @@ createRoot(document.getElementById('root')!).render(
     </StrictMode>,
 )
 
-// Register service worker for offline support
-if ('serviceWorker' in navigator) {
+// Registering in dev would serve stale cached assets and make QA lie.
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
     window.addEventListener('load', () => {
         navigator.serviceWorker
             .register('/math-invaders/sw.js', { scope: '/math-invaders/' })

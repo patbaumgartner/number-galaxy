@@ -1,7 +1,7 @@
 // Math Invaders Service Worker
 // Caches the app shell on install; serves from cache with network fallback.
 
-const CACHE_NAME = 'math-invaders-v1'
+const CACHE_NAME = 'math-invaders-v2'
 
 // App shell to pre-cache on install
 const PRECACHE_URLS = [

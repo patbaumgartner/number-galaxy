@@ -1,9 +1,12 @@
-// Math Invaders Service Worker
-// Caches the app shell on install; serves from cache with network fallback.
+// Math Invaders service worker.
+//
+// Navigations are network-first so a fresh deploy is picked up on the next
+// visit; a cache-first shell would keep serving the previous release until a
+// second load. Build output is content-hashed and therefore safe to serve
+// cache-first.
 
-const CACHE_NAME = 'math-invaders-v2'
+const CACHE_NAME = 'math-invaders-v3'
 
-// App shell to pre-cache on install
 const PRECACHE_URLS = [
   '/math-invaders/',
   '/math-invaders/index.html',
@@ -29,26 +32,31 @@ self.addEventListener('activate', (event) => {
   self.clients.claim()
 })
 
+function putInCache(request, response) {
+  if (response && response.status === 200 && response.type === 'basic') {
+    const clone = response.clone()
+    caches.open(CACHE_NAME).then((cache) => cache.put(request, clone))
+  }
+  return response
+}
+
 self.addEventListener('fetch', (event) => {
-  // Only handle same-origin GET requests
-  if (event.request.method !== 'GET') return
-  const url = new URL(event.request.url)
-  if (url.origin !== self.location.origin) return
+  const { request } = event
+  if (request.method !== 'GET') return
+  if (new URL(request.url).origin !== self.location.origin) return
+
+  if (request.mode === 'navigate') {
+    event.respondWith(
+      fetch(request)
+        .then((response) => putInCache(request, response))
+        .catch(() => caches.match(request).then((cached) => cached || caches.match('/math-invaders/')))
+    )
+    return
+  }
 
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      // Return cached version, and also update cache in background
-      const networkFetch = fetch(event.request)
-        .then((response) => {
-          if (response && response.status === 200) {
-            const clone = response.clone()
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone))
-          }
-          return response
-        })
-        .catch(() => cached)
-
-      return cached || networkFetch
-    })
+    caches.match(request).then((cached) =>
+      cached || fetch(request).then((response) => putInCache(request, response))
+    )
   )
 })

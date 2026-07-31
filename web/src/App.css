@@ -937,13 +937,20 @@ summary.panel__title {
   width: 100%;
 }
 
-.option:hover {
+/* Scoped to unselected options: a bare `.option:hover` outranks
+   `.option--active` and stripped the selection border off whichever one the
+   pointer happened to be over. */
+.option:not(.option--active):hover {
   border-color: var(--border-highlight);
 }
 
 .option--active {
   border-color: var(--color-cyan);
   background: rgba(0, 245, 255, 0.05);
+}
+
+.option--active:hover {
+  background: rgba(0, 245, 255, 0.12);
 }
 
 .option__badge {

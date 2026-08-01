@@ -86,6 +86,7 @@ export type Translations = {
         legacyTitle: string
         legacyHint: string
     }
+    error: { title: string; body: string; reload: string }
     operations: Record<Operation, string>
     ranks: Record<Rank, string>
 }
@@ -182,6 +183,11 @@ const de: Translations = {
         streak: 'Serie',
         legacyTitle: 'Früher',
         legacyHint: 'Ergebnisse aus der alten Version — nicht vergleichbar.',
+    },
+    error: {
+        title: '👾 Da ist etwas schiefgelaufen',
+        body: 'Das Spiel hat einen Fehler. Deine Punkte sind sicher — probier es nochmal.',
+        reload: 'Neu laden',
     },
     operations: {
         addition: '➕ Plus',
@@ -292,6 +298,11 @@ const en: Translations = {
         legacyTitle: 'Earlier',
         legacyHint: 'Results from the old version — not comparable.',
     },
+    error: {
+        title: '👾 Something went wrong',
+        body: 'The game hit a snag. Your scores are safe — give it another go.',
+        reload: 'Reload',
+    },
     operations: {
         addition: '➕ Plus',
         subtraction: '➖ Minus',
@@ -401,6 +412,11 @@ const it: Translations = {
         legacyTitle: 'Prima',
         legacyHint: 'Risultati della vecchia versione — non confrontabili.',
     },
+    error: {
+        title: '👾 Qualcosa è andato storto',
+        body: 'Il gioco ha avuto un problema. I tuoi punti sono al sicuro — riprova.',
+        reload: 'Ricarica',
+    },
     operations: {
         addition: '➕ Più',
         subtraction: '➖ Meno',
@@ -509,6 +525,11 @@ const fr: Translations = {
         streak: 'Série',
         legacyTitle: 'Avant',
         legacyHint: 'Résultats de l’ancienne version — non comparables.',
+    },
+    error: {
+        title: '👾 Un problème est survenu',
+        body: 'Le jeu a rencontré une erreur. Tes points sont en sécurité — réessaie.',
+        reload: 'Recharger',
     },
     operations: {
         addition: '➕ Plus',

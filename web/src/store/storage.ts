@@ -10,12 +10,31 @@ const available = (): Storage | null => {
     }
 }
 
+/**
+ * Whether a parsed value can stand in for the fallback.
+ *
+ * Tampered or half-written storage parses cleanly into the wrong kind: `'null'`
+ * yields null without throwing, and a bare string or number then blows up on the
+ * first property write ("Cannot create property 'addition' on string"). A null
+ * fallback means the caller does its own validation, so anything is let through.
+ */
+function matchesShape(parsed: unknown, fallback: unknown): boolean {
+    if (fallback === null || fallback === undefined) return true
+    if (Array.isArray(fallback)) return Array.isArray(parsed)
+    if (typeof fallback === 'object') {
+        return parsed !== null && typeof parsed === 'object' && !Array.isArray(parsed)
+    }
+    return typeof parsed === typeof fallback
+}
+
 export function readJson<T>(key: string, fallback: T): T {
     const storage = available()
     if (!storage) return fallback
     try {
         const raw = storage.getItem(key)
-        return raw === null ? fallback : (JSON.parse(raw) as T)
+        if (raw === null) return fallback
+        const parsed: unknown = JSON.parse(raw)
+        return matchesShape(parsed, fallback) ? (parsed as T) : fallback
     } catch {
         return fallback
     }

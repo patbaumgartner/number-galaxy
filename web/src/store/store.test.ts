@@ -5,6 +5,7 @@ import {
     computeBadge,
     defaultSettings,
     legacyLevelToRank,
+    progressKeys,
     scoreKeys,
     settingsKeys,
     store,
@@ -248,6 +249,47 @@ describe('progress tracking', () => {
         expect(store.getPlayer()).toBeNull()
         expect(store.getScores()).toEqual([])
         expect(storage.getItem('unrelated-app-key')).toBe('keep me')
+    })
+})
+
+describe('corrupt storage', () => {
+    const corruptions = ['null', '[1,2,3]', '{{{not json', '"a string"', '123']
+
+    it('falls back to defaults when settings hold any junk value', () => {
+        for (const junk of corruptions) {
+            storage.setItem(settingsKeys.current, junk)
+            expect(() => store.getSettings()).not.toThrow()
+            expect(store.getSettings().language).toBe(defaultSettings.language)
+        }
+    })
+
+    it('survives junk in every progress key', () => {
+        for (const junk of corruptions) {
+            for (const key of [progressKeys.weakness, progressKeys.spacedRepetition, progressKeys.skills, progressKeys.bests]) {
+                storage.setItem(key, junk)
+            }
+            expect(() => store.getWeakness()).not.toThrow()
+            expect(() => store.getSkillStats()).not.toThrow()
+            expect(() => store.getSpacedRepetition()).not.toThrow()
+            expect(() => store.getPersonalBests()).not.toThrow()
+            expect(() => store.recordAnswer('addition', false, 0)).not.toThrow()
+            expect(() => store.updatePersonalBest('addition', 100)).not.toThrow()
+        }
+    })
+
+    it('reports no player rather than throwing when the profile is junk', () => {
+        for (const junk of corruptions) {
+            storage.setItem(progressKeys.player, junk)
+            expect(store.getPlayer()).toBeNull()
+        }
+    })
+
+    it('reads an empty leaderboard when scores hold junk', () => {
+        for (const junk of corruptions) {
+            storage.setItem(scoreKeys.current, junk)
+            expect(() => store.getScores()).not.toThrow()
+            expect(Array.isArray(store.getScores())).toBe(true)
+        }
     })
 })
 

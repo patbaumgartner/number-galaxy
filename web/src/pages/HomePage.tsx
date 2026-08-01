@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { store } from '../store'
 import { QUESTIONS_PER_MISSION, rankConfig } from '../game'
 import { avatars } from '../constants'

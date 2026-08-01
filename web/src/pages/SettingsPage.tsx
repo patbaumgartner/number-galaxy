@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { BADGE_EMOJI, store, type GameSettings } from '../store'
 import { OPERATIONS, RANKS, rankConfig, type Operation, type Rank } from '../game'
 import { languageLabels } from '../constants'

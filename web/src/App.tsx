@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
 import './App.css'
 import HomePage from './pages/HomePage'
 import GamePage from './pages/GamePage'

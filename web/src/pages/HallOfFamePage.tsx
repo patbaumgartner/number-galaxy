@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { store, type ScoreEntry } from '../store'
 import { RANKS, type Rank } from '../game'
 import { translations } from '../translations'

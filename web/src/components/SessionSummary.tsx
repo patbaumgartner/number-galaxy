@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { store } from '../store'
 import { translations } from '../translations'
 import type { Phase, PlanetId } from '../timesTable/types'

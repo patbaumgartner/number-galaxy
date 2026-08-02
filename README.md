@@ -355,7 +355,7 @@ A: Create a player profile. Scores auto-save to localStorage.
 A: Yes — the game screen is built mobile-first and fits a single portrait viewport. Just tap the answer you want.
 
 **Q: How do I reset my data?**  
-A: Settings → Clear All Data to wipe profile and scores.
+A: Settings → More settings → Delete all data to wipe profile and scores.
 
 ---
 

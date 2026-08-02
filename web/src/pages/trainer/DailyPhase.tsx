@@ -12,6 +12,7 @@ import { explainFact, getStrategyCard } from '../../timesTable/strategies'
 import { GALAXIES, getPlanet } from '../../timesTable/tables'
 import { computeStars, ttStore } from '../../timesTable/ttStore'
 import type { Fact, FactKey, PlanetId } from '../../timesTable/types'
+import { useModalDialog } from '../../hooks'
 import { translations } from '../../translations'
 
 const planetForFact = (fact: Fact): PlanetId => {
@@ -120,5 +121,6 @@ function TrainerFrame({ title, exit, children }: { readonly title: string; reado
 }
 
 function Dialog({ title, children, onClose }: { readonly title: string; readonly children: ReactNode; readonly onClose: () => void }) {
-    return <div className="overlay" role="dialog" aria-modal="true" aria-label={title}><section className="overlay__card"><h2>{title}</h2>{children}<button type="button" className="btn btn--primary" autoFocus onClick={onClose}>OK</button></section></div>
+    const dialog = useModalDialog<HTMLDivElement>(onClose)
+    return <div className="overlay" role="dialog" aria-modal="true" aria-label={title} ref={dialog}><section className="overlay__card"><h2>{title}</h2>{children}<button type="button" className="btn btn--primary" autoFocus onClick={onClose}>OK</button></section></div>
 }

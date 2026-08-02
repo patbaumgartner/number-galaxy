@@ -78,3 +78,50 @@ describe('PracticePhase', () => {
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/times-tables')
     })
 })
+
+describe('PracticePhase dialogs behave like modals', () => {
+    beforeEach(() => {
+        seedLanguage('en')
+        vi.spyOn(Math, 'random').mockReturnValue(0)
+        vi.spyOn(performance, 'now').mockReturnValue(1_000)
+    })
+    afterEach(() => vi.restoreAllMocks())
+
+    it('closes the strategy card with Escape and returns focus to the hint button', async () => {
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<PracticePhase planetId="t3" />)
+        const hint = screen.getByRole('button', { name: '💡' })
+
+        await user.click(hint)
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+
+        await user.keyboard('{Escape}')
+
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+        expect(hint).toHaveFocus()
+    })
+
+    it('keeps Tab inside the strategy card', async () => {
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<PracticePhase planetId="t3" />)
+
+        await user.click(screen.getByRole('button', { name: '💡' }))
+        const dialog = screen.getByRole('dialog')
+        await user.tab()
+        await user.tab()
+
+        expect(dialog).toContainElement(document.activeElement as HTMLElement)
+    })
+
+    it('advances past the explanation when it is dismissed with Escape', async () => {
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<PracticePhase planetId="t3" />)
+        await submit(user, 999)
+
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+        await user.keyboard('{Escape}')
+
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument()
+    })
+})

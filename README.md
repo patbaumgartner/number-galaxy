@@ -28,6 +28,16 @@
 Every mission is exactly 25 questions. A wrong answer costs your combo and a bit of
 accuracy, but it never ends the run — so a tricky day means *more* practice, not less.
 
+## ✖️ Times Tables Galaxy
+
+Times Tables Galaxy is a focused multiplication trainer available from the game picker
+after a profile is created. Its planet map covers tables 1–12, squares, shortcuts
+(15, 20 and 25), and larger tables 13–19. Learn introduces skip-counting and a strategy
+card; Practice adapts to due and weak facts; and an accurate Speed Run unlocks after the
+first star. Earn ⭐ for Practice, ⭐⭐ for a fast accurate run, and ⭐⭐⭐ by mastering every
+fact. Leitner-style review builds a Daily Mission, while the mastery heatmap distinguishes
+unseen, learning, due, and mastered facts.
+
 **Controls:**
 - **Touch / mouse:** tap or click an answer tile
 - **Keyboard:** `1`–`4` fire at that tile directly; arrow keys move focus, Enter/Space fires
@@ -152,6 +162,8 @@ Three choices up front, everything else tucked away:
 | ⏱ Countdown | On / Off | Off | Time pressure per question |
 | 🔊 Sound | On / Off | On | Hit and miss effects |
 | 💡 Worked solutions | On / Off | On | Working after a miss, plus the Help button |
+| ✖️ Strategy cards | On / Off | On | Optional hints during trainer practice |
+| ✖️ Trainer progress | Reset | — | Clears only trainer facts, stars and best times |
 | 🗄 Data | — | — | Clear everything stored on this device |
 
 ---
@@ -206,11 +218,16 @@ web/
 │   │   ├── HomePage.tsx        # Instant play + profile
 │   │   ├── GamePage.tsx        # Mission loop (phase machine)
 │   │   ├── HallOfFamePage.tsx  # Scores by rank
-│   │   └── SettingsPage.tsx    # Three choices + advanced
+│   │   ├── SettingsPage.tsx    # Three choices + advanced
+│   │   ├── TimesTablesPage.tsx # Times Tables Galaxy map
+│   │   └── trainer/            # Learn, Practice, Speed Run and Daily Mission
 │   ├── components/
 │   │   ├── AnswerGrid.tsx      # 2x2 one-tap answer tiles
 │   │   ├── GameHud.tsx         # Score, combo, timer ring, trail
-│   │   └── MissionSummary.tsx  # Stars, stats, play again
+│   │   ├── MissionSummary.tsx  # Stars, stats, play again
+│   │   ├── NumberPad.tsx       # Trainer numeric input
+│   │   ├── FactHeatmap.tsx     # Trainer mastery grid
+│   │   └── SessionSummary.tsx  # Trainer results
 │   ├── game/                   # Pure domain — no React, fully tested
 │   │   ├── types.ts            # Ranks, forms, scoring
 │   │   ├── rng.ts              # Seedable PRNG (deterministic tests)
@@ -226,6 +243,7 @@ web/
 │   │   ├── scores.ts           # Scores v2 + legacy records
 │   │   ├── progress.ts         # Player, weakness, SR, badges
 │   │   └── store.test.ts       # Migration + score keying
+│   ├── timesTable/             # Trainer domain, storage, routing and tests
 │   ├── App.tsx         # Router
 │   ├── App.css         # Token-driven design system
 │   ├── hooks.ts        # Countdown + page visibility

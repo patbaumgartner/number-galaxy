@@ -12,6 +12,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Mission phases for tables, squares, shortcuts and advanced facts.
 - Leitner-style review, persistent stars and best times, strategy cards, a mastery
   heatmap and independent trainer-progress reset in Settings.
+- **Three-layer test suite, 355 tests.** Domain logic in Node, React components and
+  pages in jsdom via Testing Library, and the built bundle driven through desktop and
+  mobile Chromium with Playwright. Coverage is gated at 95 % statements / 92 % branches
+  and the end-to-end suite runs in CI. See [docs/TESTING.md](docs/TESTING.md).
+- End-to-end coverage for accessibility, responsive layout and the PWA app shell, so
+  console errors, horizontal overflow and undersized touch targets fail the build.
+- `useModalDialog` hook giving every modal Escape-to-close, a focus trap and focus
+  restoration to the control that opened it.
+
+### Fixed
+- **The Learn phase was unstyled.** It wrapped its content in a `container` class that
+  had no CSS rule, so text sat flush against the viewport edge and buttons stretched the
+  full window width. Its cards, skip-count sequence, fact table and answer hints had no
+  styling at all.
+- **Wrong-answer shake did nothing in the trainer.** The `shake` keyframes existed and
+  the phases applied a `shake` class, but no rule connected the two.
+- **The trainer session summary rendered as bare text** — its button used `btn-primary`
+  where the design system defines `btn--primary`.
+- **Trainer navigation ran off the screen between 376 px and roughly 500 px**, hiding
+  Hall of Fame and Settings on the most common phone widths (iPhone 12–15, Pixel 7).
+  The bar now wraps instead of relying on a fixed breakpoint.
+- Trainer navigation links had 21 px hit areas; they now meet the 44 px minimum.
+- The trainer navigation showed its multiplication glyph twice.
+- Hall of Fame ran the best streak and the score together, so "Serie 18" beside "640"
+  read as "18640"; the player's name also ellipsed while the secondary stats held twice
+  its width.
+- Modal dialogs did not trap focus, and neither the profile editor nor the in-game help
+  overlay closed on Escape.
 
 ## [2.0.0] - 2026-07-30
 

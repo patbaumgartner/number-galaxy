@@ -201,11 +201,11 @@ Three choices up front, everything else tucked away:
 
 ### Tech Stack
 
-- **Frontend:** React 19.2, React Router 7.15, TypeScript 6.0
-- **Build:** Vite 8.0 (fast hot reload)
+- **Frontend:** React 19.2, React Router 8.3, TypeScript 7.0
+- **Build:** Vite 8 (fast hot reload)
 - **Styling:** Token-driven CSS design system (deep-space palette, fluid type, `100dvh`)
 - **Storage:** Browser localStorage (zero tracking)
-- **Testing:** Vitest (pure domain logic, deterministic via a seedable PRNG)
+- **Testing:** Vitest (domain in Node, UI in jsdom + Testing Library) and Playwright (desktop + mobile Chromium)
 - **Deploy:** GitHub Pages + GitHub Actions
 
 ### Project Structure
@@ -217,6 +217,8 @@ web/
 │   ├── manifest.json   # PWA manifest
 │   ├── sw.js           # Offline app-shell cache
 │   └── favicon.svg     # App icon
+├── e2e/                # Playwright specs — smoke, game, settings,
+│                       # hall of fame, times tables, a11y, responsive, PWA
 ├── src/
 │   ├── pages/
 │   │   ├── HomePage.tsx        # Instant play + profile
@@ -231,7 +233,9 @@ web/
 │   │   ├── MissionSummary.tsx  # Stars, stats, play again
 │   │   ├── NumberPad.tsx       # Trainer numeric input
 │   │   ├── FactHeatmap.tsx     # Trainer mastery grid
-│   │   └── SessionSummary.tsx  # Trainer results
+│   │   ├── SessionSummary.tsx  # Trainer results
+│   │   ├── Navigation.tsx      # Trainer top bar
+│   │   └── ErrorBoundary.tsx   # Crash fallback
 │   ├── game/                   # Pure domain — no React, fully tested
 │   │   ├── types.ts            # Ranks, forms, scoring
 │   │   ├── rng.ts              # Seedable PRNG (deterministic tests)
@@ -239,27 +243,32 @@ web/
 │   │   ├── options.ts          # Distractor generation
 │   │   ├── questions.ts        # Assembles forms into questions
 │   │   ├── mission.ts          # Mission state reducer
-│   │   ├── examples.ts         # Worked examples
-│   │   └── questions.test.ts   # Generator invariants
+│   │   └── examples.ts         # Worked examples
 │   ├── store/                  # localStorage — no React
 │   │   ├── storage.ts          # Safe JSON read/write
 │   │   ├── settings.ts         # Settings + v1 migration
 │   │   ├── scores.ts           # Scores v2 + legacy records
-│   │   ├── progress.ts         # Player, weakness, SR, badges
-│   │   └── store.test.ts       # Migration + score keying
-│   ├── timesTable/             # Trainer domain, storage, routing and tests
+│   │   └── progress.ts         # Player, weakness, SR, badges
+│   ├── timesTable/             # Trainer domain, storage and routing
+│   ├── test/                   # Shared jsdom setup and render helpers
 │   ├── App.tsx         # Router
 │   ├── App.css         # Token-driven design system
-│   ├── hooks.ts        # Countdown + page visibility
+│   ├── timesTable.css  # Trainer-specific styles
+│   ├── hooks.ts        # Countdown, page visibility, modal dialogs
 │   ├── sound.ts        # Web Audio effects
 │   ├── translations.ts # i18n (de/it/en/fr)
 │   └── constants.ts    # Avatars, language labels
 ├── index.html
 ├── vite.config.ts
+├── vitest.config.ts      # Two projects: domain (node) and ui (jsdom)
+├── playwright.config.ts  # Runs against the production build
 ├── tsconfig.json
 ├── eslint.config.js
 └── package.json
 ```
+
+Tests live beside the code they cover: `*.test.ts` for pure logic, `*.test.tsx` for
+anything that renders.
 
 ---
 
@@ -286,11 +295,17 @@ Output in `web/dist/` — deploy to GitHub Pages or any static host.
 ### Test
 
 ```bash
-npm test
+npm test              # 255 unit tests (domain + UI)
+npm run test:coverage # with coverage, gated at 95 % statements
+npm run test:e2e      # 100 Playwright tests, desktop + mobile Chromium
+npm run test:all      # everything
 ```
 
-Covers the question generators (every rank × operation × form across many seeds) and the
-storage migration. `npm run lint` and `npm test` both run in CI.
+Three layers: pure domain logic in Node, React components and pages in jsdom, and the
+built bundle driven through a real browser. See **[docs/TESTING.md](docs/TESTING.md)**
+for the full strategy, helpers and conventions.
+
+`npm run lint`, `npm run test:coverage`, `npm run build` and `npm run test:e2e` all run in CI.
 
 ### Lint
 
@@ -319,7 +334,9 @@ See [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) for details.
 - **Child-safe:** Pure black + neon colors, no hidden patterns
 - **Privacy-first:** All data stays on your device
 - **Offline-capable:** Works without internet after initial load
-- **Accessible:** Native buttons, visible focus rings, 48 px touch targets, `prefers-reduced-motion` support
+- **Accessible:** Native buttons, visible focus rings, 44 px minimum touch targets,
+  `prefers-reduced-motion` support, and dialogs that trap focus and close on Escape —
+  all verified by the automated accessibility and responsive suites
 
 ---
 
@@ -352,7 +369,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Contributions make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-Please read our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before submitting a pull request. We also have a [Security Policy](SECURITY.md) and [Changelog](CHANGELOG.md).
+Please read our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before submitting a pull request. The [Testing Guide](docs/TESTING.md) explains how the three test layers fit together. We also have a [Security Policy](SECURITY.md) and [Changelog](CHANGELOG.md).
 
 ---
 

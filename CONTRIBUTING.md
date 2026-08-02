@@ -35,7 +35,8 @@ This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.
 3. **Install** dependencies: `cd web && npm install`
 4. **Run** locally: `npm run dev`
 5. Open [http://localhost:5173/math-invaders](http://localhost:5173/math-invaders)
-6. **Test touch controls:** open DevTools → toggle device toolbar (or use a real mobile device) and verify swipe gestures and tap-to-shoot work
+6. **Test on a phone:** open DevTools → toggle the device toolbar (or use a real device)
+   and check both the one-tap answer grid and the trainer number pad
 ---
 
 ## How to Contribute
@@ -61,23 +62,28 @@ Open a [💡 Feature Request](.github/ISSUE_TEMPLATE/feature_request.yml) with:
 
 ### Adding Translations
 
-The game supports multiple languages. To add a new one:
+The game supports German, Italian, English and French. To add another:
 
-1. Open `web/src/constants.ts`
-2. Add your language code to the `Language` type
-3. Add translated labels for all operations/levels/difficulties
-4. Open `web/src/components/LanguageSwitcher.tsx` and add the flag/button
-5. Test all screens in the new language
-6. Submit a PR with the title `feat: add [language] translation`
+1. Open `web/src/game/types.ts` and add your code to the `Language` union
+2. Open `web/src/translations.ts` and add a full block for it — the `Translations` type
+   means TypeScript will list every key you still owe
+3. Open `web/src/constants.ts` and add a `languageLabels` entry with its flag
+4. Add the remainder separator in `web/src/game/equations.ts` (`remainderSeparator`)
+5. Run `npm test` — `translations.test.ts` checks key parity, array lengths and
+   `{placeholder}` parity across every language, so a missing key fails the build
+6. Check every screen in the new language, including Settings and the trainer
+7. Submit a PR titled `feat: add [language] translation`
 
 ### Submitting Code
 
 1. Create a branch: `git checkout -b feat/your-feature`
 2. Make your changes
-3. Lint: `npm run lint`
-4. Build: `npm run build` (must succeed)
-5. Commit using [conventional commits](#commit-convention)
-6. Push and open a Pull Request
+3. Add or update tests — see the [Testing Guide](docs/TESTING.md)
+4. Lint: `npm run lint`
+5. Test: `npm test` and `npm run test:e2e` (both must pass)
+6. Build: `npm run build` (must succeed — it also type-checks)
+7. Commit using [conventional commits](#commit-convention)
+8. Push and open a Pull Request
 
 ---
 
@@ -94,14 +100,20 @@ npm install
 # Start development server
 npm run dev
 
-# Build for production
+# Build for production (also type-checks)
 npm run build
 
 # Lint
 npm run lint
 
-# Test
+# Unit tests (domain in Node, UI in jsdom)
 npm test
+npm run test:watch
+npm run test:coverage
+
+# End-to-end tests (builds and previews, then drives Chromium)
+npx playwright install chromium   # first time only
+npm run test:e2e
 ```
 
 **Requirements:** Node.js 22+
@@ -112,33 +124,51 @@ npm test
 
 ```
 math-invaders/
-├── web/                  # React application
+├── web/                      # React application
+│   ├── e2e/                  # Playwright end-to-end specs
 │   ├── src/
-│   │   ├── pages/        # Route-level page components
-│   │   ├── components/   # Reusable UI components
-│   │   ├── App.tsx       # Router setup
-│   │   ├── App.css       # Global neon theme
-│   │   ├── store.ts      # localStorage persistence
-│   │   ├── game.ts       # Core game logic
-│   │   └── constants.ts  # Avatars, labels, config
+│   │   ├── pages/            # Route-level pages, incl. trainer/ phases
+│   │   ├── components/       # Reusable UI components
+│   │   ├── game/             # Arcade domain: rng, equations, questions, mission
+│   │   ├── store/            # localStorage: settings, scores, progress
+│   │   ├── timesTable/       # Trainer domain: facts, Leitner, sessions, stars
+│   │   ├── test/             # Shared jsdom setup and render helpers
+│   │   ├── App.tsx           # Router
+│   │   ├── App.css           # Token-driven design system
+│   │   ├── timesTable.css    # Trainer styles
+│   │   ├── hooks.ts          # Countdown, page visibility, modal dialogs
+│   │   ├── translations.ts   # i18n (de/it/en/fr)
+│   │   └── constants.ts      # Avatars, language labels
 │   ├── vite.config.ts
+│   ├── vitest.config.ts      # Two projects: domain (node), ui (jsdom)
+│   ├── playwright.config.ts
 │   └── package.json
 ├── .github/
-│   ├── workflows/        # GitHub Actions CI/CD
-│   └── ISSUE_TEMPLATE/   # Issue templates
-├── docs/                 # Screenshots
+│   ├── workflows/            # GitHub Actions CI/CD
+│   └── ISSUE_TEMPLATE/       # Issue templates
+├── docs/                     # Screenshots and the Testing Guide
 ├── LICENSE
 └── README.md
 ```
+
+Tests sit next to the code they cover. **The extension picks the environment:**
+`*.test.ts` runs in Node for pure logic, `*.test.tsx` runs in jsdom for anything that
+renders. See [docs/TESTING.md](docs/TESTING.md).
 
 ---
 
 ## Style Guide
 
-- **TypeScript** strictly typed; avoid `any`
+- **TypeScript** strictly typed; never `any`, `@ts-ignore` or `@ts-expect-error`
 - **React** functional components with hooks only
-- **CSS** use existing CSS variables from `App.css`; no inline styles
-- **Touch support:** all interactive elements must have `touch-action: manipulation` and a minimum touch target of 44×44 px
+- **CSS** use the existing custom properties from `App.css`; no inline styles, and no
+  class in the markup without a matching rule
+- **Domain logic stays out of components** — `game/`, `store/` and `timesTable/` contain
+  no React, which is what makes them cheap to test exhaustively
+- **Randomness is injected**, never called directly, so tests can replay a seed
+- **Accessibility:** every interactive element needs an accessible name, a visible focus
+  ring, and a touch target of at least 44×44 px; modal dialogs must trap focus and close
+  on Escape (use `useModalDialog`)
 - **No new dependencies** without discussion — keep the bundle small
 - Keep files focused; split large components
 

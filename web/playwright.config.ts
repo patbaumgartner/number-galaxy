@@ -8,7 +8,8 @@ import { defineConfig, devices } from '@playwright/test'
  * including the `/math-invaders/` base path the router depends on.
  */
 const PORT = 4173
-const BASE_URL = `http://127.0.0.1:${PORT}/math-invaders/`
+const HOST = '127.0.0.1'
+const BASE_URL = `http://${HOST}:${PORT}/math-invaders/`
 
 export default defineConfig({
     testDir: './e2e',
@@ -39,11 +40,14 @@ export default defineConfig({
         },
     ],
     webServer: {
-        command: `npm run build && npx vite preview --port ${PORT} --strictPort`,
+        // The host is pinned rather than left to default: `vite preview` binds
+        // `localhost`, which resolves to ::1 on GitHub's runners while Playwright
+        // polls 127.0.0.1, so the server is never seen and the wait times out.
+        command: `npm run build && npx vite preview --host ${HOST} --port ${PORT} --strictPort`,
         url: BASE_URL,
         reuseExistingServer: !process.env.CI,
         timeout: 180_000,
-        stdout: 'ignore',
+        stdout: 'pipe',
         stderr: 'pipe',
     },
 })

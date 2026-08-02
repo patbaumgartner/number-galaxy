@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import App from './App'
 import { store } from './store'
+import { translations } from './translations'
 
 const BASENAME = '/math-invaders'
 
@@ -39,7 +40,7 @@ describe('App routing', () => {
     it('renders the times tables galaxy map', () => {
         renderAt('/times-tables')
 
-        expect(screen.getByRole('navigation', { name: /primary navigation/i })).toBeInTheDocument()
+        expect(screen.getByRole('navigation', { name: translations.de.tt.title })).toBeInTheDocument()
         expect(screen.getByRole('tablist')).toBeInTheDocument()
     })
 

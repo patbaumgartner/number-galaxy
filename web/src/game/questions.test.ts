@@ -318,13 +318,20 @@ describe('pickForm', () => {
         }
     })
 
-    it('unlocks strictly more forms at every rank', () => {
+    it('never takes a form away as the ranks climb', () => {
         for (let i = 1; i < RANKS.length; i += 1) {
             const previous = rankConfig[RANKS[i - 1]].forms
             const current = rankConfig[RANKS[i]].forms
-            expect(current.length).toBeGreaterThan(previous.length)
+            expect(current.length).toBeGreaterThanOrEqual(previous.length)
             for (const form of previous) expect(current).toContain(form)
         }
+    })
+
+    it('unlocks every form by the top rank, and raises the ceiling beyond it', () => {
+        const top = rankConfig[RANKS[RANKS.length - 1]]
+        const previous = rankConfig[RANKS[RANKS.length - 2]]
+        expect([...top.forms].sort()).toEqual([...QUESTION_FORMS].sort())
+        expect(top.maxValue).toBeGreaterThan(previous.maxValue)
     })
 })
 

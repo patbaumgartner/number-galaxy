@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router'
 import Navigation from '../../components/Navigation'
 import { NumberPad } from '../../components/NumberPad'
 import { playCorrect, playWrong } from '../../sound'
+import { useSoundSetting } from '../../hooks'
 import { store } from '../../store'
 import { buildLearnSession } from '../../timesTable/session'
 import { getStrategyCard } from '../../timesTable/strategies'
@@ -12,6 +13,7 @@ import { translations } from '../../translations'
 
 export function LearnPhase({ planetId }: { planetId: PlanetId }) {
     const lang = store.getSettings().language
+    useSoundSetting()
     const t = translations[lang]
     const navigate = useNavigate()
     const planet = getPlanet(planetId)!

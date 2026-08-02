@@ -21,7 +21,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `useModalDialog` hook giving every modal Escape-to-close, a focus trap and focus
   restoration to the control that opened it.
 
+### Changed
+- **Settings and navigation are now split by game.** Both games shared one page with
+  no indication of which control changed what; settings are grouped under 🛸 Math
+  Invaders, ✖️ Times Tables Galaxy and ⚙️ Both games. The trainer's top bar no longer
+  links to the arcade leaderboard, and the shared settings page no longer sends you
+  into the arcade game when you leave it.
+- **The home page explains each game separately** — the how-to section only ever
+  described Math Invaders — and each game picker card now carries a one-line summary.
+- **Every Times Tables planet has its own icon.** Twenty-one of the twenty-three
+  rendered an identical ✖️, so the galaxy map was a wall of grey crosses.
+- **Language flags are drawn as SVG** instead of 🇩🇪-style regional-indicator emoji,
+  which render as bare "DE"/"GB" letters on Windows and most Linux desktops.
+
+### Added
+- **💫 Supernova rank** — numbers up to 1000, above Legend.
+
 ### Fixed
+- **The sound setting only worked in Math Invaders.** All four trainer phases play
+  sounds but none applied the preference, so switching sound off and going straight
+  to the times tables still made noise.
+- The trainer progress reset button sat directly against the divider above it.
+- The Squares Nebula unlock hint said "5 home planets" while the galaxy it refers to
+  is called the Home Galaxy.
 - **The Learn phase was unstyled.** It wrapped its content in a `container` class that
   had no CSS rule, so text sat flush against the viewport edge and buttons stretched the
   full window width. Its cards, skip-count sequence, fact table and answer hints had no

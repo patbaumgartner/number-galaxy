@@ -14,13 +14,13 @@ type Galaxy = {
 }
 
 const homePlanets = [
-  ['t1', 1], ['t2', 2], ['t3', 3], ['t4', 4], ['t5', 5], ['t6', 6],
-  ['t7', 7], ['t8', 8], ['t9', 9], ['t10', 10], ['t11', 11], ['t12', 12],
+  ['t1', 1, '🌍'], ['t2', 2, '🍒'], ['t3', 3, '🚀'], ['t4', 4, '🍀'], ['t5', 5, '🖐️'], ['t6', 6, '🐝'],
+  ['t7', 7, '🌈'], ['t8', 8, '🐙'], ['t9', 9, '🐈'], ['t10', 10, '🎳'], ['t11', 11, '⚽'], ['t12', 12, '🕛'],
 ] as const
 
-const toTablePlanet = (id: PlanetId, factor: number, rangeEnd: number): Planet => ({
+const toTablePlanet = (id: PlanetId, factor: number, rangeEnd: number, emoji: string): Planet => ({
   id,
-  emoji: '✖️',
+  emoji,
   label: `×${factor}`,
   factor,
   rangeEnd,
@@ -29,32 +29,32 @@ const toTablePlanet = (id: PlanetId, factor: number, rangeEnd: number): Planet =
 export const GALAXIES: readonly Galaxy[] = [
   {
     id: 'home',
-    planets: homePlanets.map(([id, factor]) => toTablePlanet(id, factor, 12)),
+    planets: homePlanets.map(([id, factor, emoji]) => toTablePlanet(id, factor, 12, emoji)),
   },
   {
     id: 'squares',
     planets: [
-      { id: 'sq-core', emoji: '⬜', label: '1²–12²', factor: 1, rangeEnd: 12 },
-      { id: 'sq-deep', emoji: '⬛', label: '13²–25²', factor: 13, rangeEnd: 25 },
+      { id: 'sq-core', emoji: '🧊', label: '1²–12²', factor: 1, rangeEnd: 12 },
+      { id: 'sq-deep', emoji: '📦', label: '13²–25²', factor: 13, rangeEnd: 25 },
     ],
   },
   {
     id: 'shortcuts',
     planets: [
-      toTablePlanet('t15', 15, 12),
-      toTablePlanet('t20', 20, 12),
-      toTablePlanet('t25', 25, 12),
+      toTablePlanet('t15', 15, 12, '⏱️'),
+      toTablePlanet('t20', 20, 12, '🎲'),
+      toTablePlanet('t25', 25, 12, '🪙'),
     ],
   },
   {
     id: 'deep',
     planets: [
-      toTablePlanet('t13', 13, 10),
-      toTablePlanet('t14', 14, 10),
-      toTablePlanet('t16', 16, 10),
-      toTablePlanet('t17', 17, 10),
-      toTablePlanet('t18', 18, 10),
-      toTablePlanet('t19', 19, 10),
+      toTablePlanet('t13', 13, 10, '🛸'),
+      toTablePlanet('t14', 14, 10, '🌌'),
+      toTablePlanet('t16', 16, 10, '🛰️'),
+      toTablePlanet('t17', 17, 10, '☄️'),
+      toTablePlanet('t18', 18, 10, '🔭'),
+      toTablePlanet('t19', 19, 10, '🪐'),
     ],
   },
 ]

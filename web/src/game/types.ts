@@ -15,7 +15,7 @@ export type Operation =
  * A rank fixes three things at once: how big the numbers get, how long you get
  * per question, and which equation forms are unlocked.
  */
-export type Rank = 'rookie' | 'cadet' | 'pilot' | 'ace' | 'legend'
+export type Rank = 'rookie' | 'cadet' | 'pilot' | 'ace' | 'legend' | 'supernova'
 
 /**
  * The *shape* of an equation, orthogonal to the operation it is built from.
@@ -59,7 +59,7 @@ export const OPERATIONS: readonly Operation[] = [
     'remainders',
 ]
 
-export const RANKS: readonly Rank[] = ['rookie', 'cadet', 'pilot', 'ace', 'legend']
+export const RANKS: readonly Rank[] = ['rookie', 'cadet', 'pilot', 'ace', 'legend', 'supernova']
 
 export const QUESTION_FORMS: readonly QuestionForm[] = [
     'direct',
@@ -102,6 +102,11 @@ export const rankConfig: Record<Rank, RankConfig> = {
     legend: {
         maxValue: 500,
         seconds: 14,
+        forms: ['direct', 'missingRight', 'missingLeft', 'missingOperator', 'chain'],
+    },
+    supernova: {
+        maxValue: 1000,
+        seconds: 13,
         forms: ['direct', 'missingRight', 'missingLeft', 'missingOperator', 'chain'],
     },
 }

@@ -109,6 +109,7 @@ One ladder sets the numbers, the clock and the unlocked forms:
 | 🚀 Pilot | ≤ 50 | 16 s | + Missing left |
 | 🔥 Ace | ≤ 100 | 15 s | + Missing operator |
 | 👑 Legend | ≤ 500 | 14 s | + Chain |
+| 💫 Supernova | ≤ 1000 | 13 s | All five |
 
 Harder forms add a few seconds of thinking time on top. Direct questions stay the most
 common form at every rank, so unlocking something new seasons a mission instead of
@@ -116,9 +117,11 @@ taking it over.
 
 ### Languages
 
-🇩🇪 German · 🇮🇹 Italian · 🇬🇧 English · 🇫🇷 French
+German · Italian · English · French
 
-The UI is fully translated and `<html lang>` follows your choice. Worked solutions are
+The UI is fully translated and `<html lang>` follows your choice. Flags in the picker
+are drawn as SVG rather than 🇩🇪-style emoji, which collapse to bare "DE"/"GB" letters
+on Windows and most Linux desktops. Worked solutions are
 written in pure maths notation (`12 − 7 = 5`), so they read identically in every language.
 
 ---
@@ -156,13 +159,18 @@ The fastest correct response per operation is tracked and celebrated on the summ
 
 ## ⚙️ Settings Reference
 
-Three choices up front, everything else tucked away:
+Settings are grouped by the game they affect, because both games share the page:
+
+- **🛸 Math Invaders** — what to practise, rank, countdown, worked solutions
+- **✖️ Times Tables Galaxy** — strategy cards, trainer progress reset
+- **⚙️ Both games** — language, sound, clearing all data
+
 
 | Setting | Options | Default | Notes |
 |---------|---------|---------|-------|
 | Practise | ➕ ➖ ✖️ ➗ 🔢 | ➕ Addition | Several can be active at once |
-| Rank | Rookie → Legend | 🌱 Rookie | Numbers, time and unlocked forms |
-| Language | 🇩🇪 🇮🇹 🇬🇧 🇫🇷 | 🇩🇪 German | UI language |
+| Rank | Rookie → Supernova | 🌱 Rookie | Numbers, time and unlocked forms |
+| Language | German · Italian · English · French | German | UI language, picked by drawn flag |
 | ⏱ Countdown | On / Off | Off | Time pressure per question |
 | 🔊 Sound | On / Off | On | Hit and miss effects |
 | 💡 Worked solutions | On / Off | On | Working after a miss, plus the Help button |

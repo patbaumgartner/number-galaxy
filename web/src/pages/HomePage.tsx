@@ -60,25 +60,6 @@ export default function HomePage() {
                     <span className="chip__edit" aria-hidden="true">✏️</span>
                 </button>
 
-                <section className="panel">
-                    <div className="panel__head">
-                        <h2 className="panel__title">{t.home.missionTitle}</h2>
-                        <button type="button" className="btn btn--ghost btn--sm" onClick={() => navigate('/settings')}>
-                            {t.home.change}
-                        </button>
-                    </div>
-                    <ul className="chips">
-                        {settings.operations.map(operation => (
-                            <li key={operation} className="chip">{t.operations[operation]}</li>
-                        ))}
-                        <li className="chip chip--rank">{t.ranks[settings.rank]}</li>
-                        <li className="chip">
-                            {fill(t.settings.rankRange, { max: rankConfig[settings.rank].maxValue })}
-                        </li>
-                        <li className="chip">{settings.timed ? '⏱' : '∞'} {QUESTIONS_PER_MISSION}</li>
-                    </ul>
-                </section>
-
                 {player && (
                     <section className="panel game-picker">
                         <h2 className="panel__title">{t.home.chooseGame}</h2>
@@ -86,20 +67,60 @@ export default function HomePage() {
                             <button type="button" className="game-picker__card" onClick={() => navigate('/game')}>
                                 <span aria-hidden="true">🛸</span>
                                 <strong>{t.home.gameInvaders}</strong>
+                                <small>{t.home.gameInvadersBlurb}</small>
                             </button>
                             <button type="button" className="game-picker__card" onClick={() => navigate('/times-tables')}>
                                 <span aria-hidden="true">✖️</span>
                                 <strong>{t.home.gameTables}</strong>
+                                <small>{t.home.gameTablesBlurb}</small>
                             </button>
                         </div>
                     </section>
                 )}
 
-                <section className="panel">
-                    <h2 className="panel__title">{t.home.howToTitle}</h2>
-                    <ol className="steps">
-                        {t.home.howToSteps.map((step, index) => <li key={index}>{step}</li>)}
-                    </ol>
+                <section className="group">
+                    <div className="group__head">
+                        <h2 className="group__title">🛸 {t.home.gameInvaders}</h2>
+                    </div>
+
+                    <div className="panel">
+                        <div className="panel__head">
+                            <h3 className="panel__title">{t.home.missionTitle}</h3>
+                            <button type="button" className="btn btn--ghost btn--sm" onClick={() => navigate('/settings')}>
+                                {t.home.change}
+                            </button>
+                        </div>
+                        <ul className="chips">
+                            {settings.operations.map(operation => (
+                                <li key={operation} className="chip">{t.operations[operation]}</li>
+                            ))}
+                            <li className="chip chip--rank">{t.ranks[settings.rank]}</li>
+                            <li className="chip">
+                                {fill(t.settings.rankRange, { max: rankConfig[settings.rank].maxValue })}
+                            </li>
+                            <li className="chip">{settings.timed ? '⏱' : '∞'} {QUESTIONS_PER_MISSION}</li>
+                        </ul>
+                    </div>
+
+                    <div className="panel">
+                        <h3 className="panel__title">{t.home.howToTitle}</h3>
+                        <ol className="steps">
+                            {t.home.howToSteps.map((step, index) => <li key={index}>{step}</li>)}
+                        </ol>
+                    </div>
+                </section>
+
+                <section className="group">
+                    <div className="group__head">
+                        <h2 className="group__title">{t.tt.title}</h2>
+                    </div>
+
+                    <div className="panel">
+                        <h3 className="panel__title">{t.home.howToTablesTitle}</h3>
+                        <ol className="steps">
+                            {t.home.howToTablesSteps.map((step, index) => <li key={index}>{step}</li>)}
+                        </ol>
+                    </div>
                 </section>
 
                 <nav className="home-nav">

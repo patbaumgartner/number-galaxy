@@ -4,6 +4,7 @@ import Navigation from '../../components/Navigation'
 import { NumberPad } from '../../components/NumberPad'
 import { SessionSummary } from '../../components/SessionSummary'
 import { playCorrect, playLevelUp, playWrong } from '../../sound'
+import { useSoundSetting } from '../../hooks'
 import { store } from '../../store'
 import { applyAnswer, localEpochDay } from '../../timesTable/leitner'
 import { buildSpeedSession } from '../../timesTable/session'
@@ -14,6 +15,7 @@ import { translations } from '../../translations'
 
 export function SpeedPhase({ planetId }: { planetId: PlanetId }) {
     const lang = store.getSettings().language
+    useSoundSetting()
     const t = translations[lang]
     const navigate = useNavigate()
     const planet = getPlanet(planetId)!

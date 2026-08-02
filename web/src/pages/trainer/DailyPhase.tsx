@@ -12,7 +12,7 @@ import { explainFact, getStrategyCard } from '../../timesTable/strategies'
 import { GALAXIES, getPlanet } from '../../timesTable/tables'
 import { computeStars, ttStore } from '../../timesTable/ttStore'
 import type { Fact, FactKey, PlanetId } from '../../timesTable/types'
-import { useModalDialog } from '../../hooks'
+import { useModalDialog, useSoundSetting } from '../../hooks'
 import { translations } from '../../translations'
 
 const planetForFact = (fact: Fact): PlanetId => {
@@ -28,6 +28,7 @@ const elapsedSince = (startedAt: number): number => performance.now() - startedA
 
 export function DailyPhase() {
     const settings = store.getSettings()
+    useSoundSetting()
     const t = translations[settings.language].tt
     const [today] = useState(() => localEpochDay(Date.now(), new Date().getTimezoneOffset()))
     const [session, setSession] = useState(() => buildDailyMission(ttStore.getProgress(), ttStore.getStars(), today))

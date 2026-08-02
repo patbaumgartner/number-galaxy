@@ -21,7 +21,7 @@ import { translations } from '../translations'
 import AnswerGrid from '../components/AnswerGrid'
 import GameHud from '../components/GameHud'
 import MissionSummary from '../components/MissionSummary'
-import { useCountdown, useDocumentLanguage, useModalDialog, usePageVisible } from '../hooks'
+import { useCountdown, useDocumentLanguage, useModalDialog, usePageVisible, useSoundSetting } from '../hooks'
 import {
     playCombo,
     playCorrect,
@@ -29,7 +29,6 @@ import {
     playTimeout,
     playVictory,
     playWrong,
-    setSoundEnabled,
 } from '../sound'
 
 const CORRECT_MS = 650
@@ -88,7 +87,7 @@ export default function GamePage() {
     const newBestRef = useRef(false)
     const submittedRef = useRef(false)
 
-    useEffect(() => setSoundEnabled(settings.sound), [settings.sound])
+    useSoundSetting()
 
     const answered = getAnswered(mission)
     const seconds = getQuestionSeconds(mission.rank, mission.question.form)

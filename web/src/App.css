@@ -1420,3 +1420,69 @@ summary.panel__title {
   min-width: 48px;
   min-height: 48px;
 }
+
+/* Settings are grouped by which game they affect, because the two games share
+   one page and it was not obvious which switch changed what. */
+.group {
+  margin-bottom: var(--space-6);
+}
+
+.group__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+  padding: 0 var(--space-2) var(--space-3);
+  border-bottom: 2px solid var(--border-highlight);
+  margin-bottom: var(--space-4);
+}
+
+.group__title {
+  font-size: var(--text-lg);
+  font-weight: 800;
+  color: var(--color-cyan);
+  margin: 0;
+}
+
+.group__hint {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  margin: 0;
+}
+
+/* A destructive action following a switch row needs clear air above it, or it
+   reads as part of the row's hairline divider. */
+.panel__action {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-hairline);
+}
+
+.panel__action .btn {
+  width: 100%;
+}
+
+/* Drawn flags: emoji flags render as bare "DE"/"GB" letters wherever the
+   platform ships no flag font. */
+.flag {
+  width: 1.5rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+  margin-right: var(--space-3);
+  border-radius: 2px;
+  border: 1px solid var(--border-highlight);
+  vertical-align: middle;
+}
+
+.option .flag {
+  margin-right: var(--space-3);
+}
+
+.game-picker__card small {
+  display: block;
+  margin-top: var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-weight: 400;
+  line-height: 1.35;
+}

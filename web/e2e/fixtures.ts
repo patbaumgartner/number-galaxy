@@ -105,7 +105,9 @@ export async function answerCurrentFact(page: Page): Promise<void> {
     if (match === null) throw new Error('The trainer did not render a multiplication fact')
     const answer = String(Number(match[1]) * Number(match[2]))
     for (const digit of answer) await page.getByRole('button', { name: digit, exact: true }).click()
-    await page.getByRole('button', { name: /submit/i }).click()
+    // The pad's confirm button is labelled in the active UI language, and specs
+    // that start from empty storage run in the default German.
+    await page.getByRole('button', { name: /submit|bestätigen|invia|valider/i }).click()
 }
 
 export function collectConsoleErrors(page: Page): string[] {

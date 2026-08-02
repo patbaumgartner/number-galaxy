@@ -1,11 +1,27 @@
 import { useEffect, useRef, useState } from 'react'
 import type { Language } from './game'
+import { setSoundEnabled } from './sound'
+import { store } from './store'
 
 /** Mirrors the chosen UI language onto `<html lang>` for screen readers. */
 export function useDocumentLanguage(language: Language): void {
     useEffect(() => {
         document.documentElement.lang = language
     }, [language])
+}
+
+/**
+ * Applies the stored sound preference.
+ *
+ * `sound.ts` keeps one module-level flag for the whole app, so every screen that
+ * makes a noise has to set it. Both games call this: without it, a child who
+ * switched sound off and went straight to the trainer still heard it, because
+ * only the arcade game was applying the setting.
+ */
+export function useSoundSetting(): void {
+    useEffect(() => {
+        setSoundEnabled(store.getSettings().sound)
+    }, [])
 }
 
 /** False while the tab is in the background, so a mission never runs unwatched. */

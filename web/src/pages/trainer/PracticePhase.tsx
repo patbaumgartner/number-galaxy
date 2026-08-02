@@ -12,11 +12,12 @@ import { getPlanet } from '../../timesTable/tables'
 import { computeStars, ttStore } from '../../timesTable/ttStore'
 import type { Fact, FactKey, PlanetId, StarLevel } from '../../timesTable/types'
 import type { Language } from '../../game'
-import { useModalDialog } from '../../hooks'
+import { useModalDialog, useSoundSetting } from '../../hooks'
 import { translations } from '../../translations'
 
 export function PracticePhase({ planetId }: { planetId: PlanetId }) {
     const lang = store.getSettings().language
+    useSoundSetting()
     const ttSettings = ttStore.getTTSettings()
     const t = translations[lang]
     const navigate = useNavigate()

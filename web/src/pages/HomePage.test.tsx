@@ -32,9 +32,9 @@ describe('HomePage', () => {
         const user = userEvent.setup({ delay: null })
         renderWithRouter(<HomePage />)
 
-        await user.click(screen.getByRole('button', { name: 'Math Invaders' }))
+        await user.click(screen.getByRole('button', { name: /^Math Invaders/ }))
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/game')
-        await user.click(screen.getByRole('button', { name: 'Times Tables Galaxy' }))
+        await user.click(screen.getByRole('button', { name: /^Times Tables Galaxy/ }))
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/times-tables')
         await user.click(screen.getByRole('button', { name: /best scores/i }))
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/hall-of-fame')

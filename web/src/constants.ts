@@ -6,9 +6,9 @@ export const avatars = [
     '💎', '🦄', '🐉', '🦅', '🦁', '🐺', '🐼', '🦊',
 ]
 
-export const languageLabels: Record<Language, string> = {
-    de: '🇩🇪 Deutsch',
-    it: '🇮🇹 Italiano',
-    en: '🇬🇧 English',
-    fr: '🇫🇷 Français',
+export const languageNames: Record<Language, string> = {
+    de: 'Deutsch',
+    it: 'Italiano',
+    en: 'English',
+    fr: 'Français',
 }

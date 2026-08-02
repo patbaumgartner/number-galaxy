@@ -39,16 +39,17 @@ describe('SettingsPage', () => {
     it('persists all switches including trainer strategy cards', async () => {
         const user = userEvent.setup({ delay: null })
         renderWithRouter(<SettingsPage />)
-        const switches = screen.getAllByRole('switch')
-        expect(switches[0]).toHaveAttribute('aria-checked', 'true')
-        await user.click(switches[0])
+        const switchFor = (label: RegExp) => screen.getByRole('switch', {
+            name: (_name, element) => label.test(element.closest('.switch-row')?.textContent ?? ''),
+        })
+
+        expect(switchFor(/strategy cards/i)).toHaveAttribute('aria-checked', 'true')
+        await user.click(switchFor(/strategy cards/i))
         expect(ttStore.getTTSettings().strategyCards).toBe(false)
 
-        await user.click(screen.getByText('More settings'))
-        const advanced = screen.getAllByRole('switch')
-        await user.click(advanced[1])
-        await user.click(advanced[2])
-        await user.click(advanced[3])
+        await user.click(switchFor(/countdown/i))
+        await user.click(switchFor(/sound/i))
+        await user.click(switchFor(/worked solutions/i))
         expect(store.getSettings()).toMatchObject({ timed: true, sound: false, hints: false })
     })
 
@@ -72,7 +73,6 @@ describe('SettingsPage', () => {
         const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false)
         const user = userEvent.setup({ delay: null })
         renderWithRouter(<SettingsPage />)
-        await user.click(screen.getByText('More settings'))
         await user.click(screen.getByRole('button', { name: /delete all data/i }))
         expect(store.getPlayer()).not.toBeNull()
 
@@ -80,11 +80,14 @@ describe('SettingsPage', () => {
         await user.click(screen.getByRole('button', { name: /delete all data/i }))
         expect(store.getPlayer()).toBeNull()
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/')
-        await user.click(screen.getByRole('button', { name: /fertig/i }))
-        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/game')
-        await user.click(screen.getByRole('button', { name: /start/i }))
-        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/')
-        await user.click(screen.getByRole('button', { name: /bestenliste/i }))
-        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/hall-of-fame')
+    })
+
+    it('offers only game-neutral navigation, because both games share this page', () => {
+        seedLanguage('en')
+        renderWithRouter(<SettingsPage />)
+
+        expect(screen.getByRole('button', { name: /home/i })).toBeInTheDocument()
+        expect(screen.queryByRole('button', { name: /best scores/i })).not.toBeInTheDocument()
+        expect(screen.queryByRole('button', { name: /done/i })).not.toBeInTheDocument()
     })
 })

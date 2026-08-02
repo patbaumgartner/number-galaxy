@@ -107,6 +107,11 @@ export default function HomePage() {
                         <ol className="steps">
                             {t.home.howToSteps.map((step, index) => <li key={index}>{step}</li>)}
                         </ol>
+                        <div className="panel__action">
+                            <button type="button" className="btn btn--ghost" onClick={() => navigate('/hall-of-fame')}>
+                                🏆 {t.nav.hallOfFame}
+                            </button>
+                        </div>
                     </div>
                 </section>
 
@@ -124,9 +129,6 @@ export default function HomePage() {
                 </section>
 
                 <nav className="home-nav">
-                    <button type="button" className="btn btn--ghost" onClick={() => navigate('/hall-of-fame')}>
-                        🏆 {t.nav.hallOfFame}
-                    </button>
                     <button type="button" className="btn btn--ghost" onClick={() => navigate('/settings')}>
                         ⚙️ {t.nav.settings}
                     </button>

@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useNavigate } from 'react-router'
 import { store, type ScoreEntry } from '../store'
 import { RANKS, type Rank } from '../game'
+import TopBar from '../components/TopBar'
 import { translations } from '../translations'
 import { useDocumentLanguage } from '../hooks'
 
@@ -28,9 +29,15 @@ export default function HallOfFamePage() {
 
     return (
         <div className="page">
+            <TopBar
+                back={{ label: t.nav.home, to: '/' }}
+                title={<>🏆<span className="game-bar__hide-sm"> {t.hof.title}</span></>}
+                actions={<button type="button" className="btn btn--icon" onClick={() => navigate('/settings')}>
+                    ⚙️<span className="game-bar__hide-sm"> {t.nav.settings}</span>
+                </button>}
+            />
             <main className="shell">
                 <header className="shell__head">
-                    <h1 className="shell__title">🏆 {t.hof.title}</h1>
                     <p className="shell__tagline">{t.hof.subtitle}</p>
                 </header>
 
@@ -91,17 +98,6 @@ export default function HallOfFamePage() {
                     </details>
                 )}
 
-                <nav className="home-nav">
-                    <button type="button" className="btn btn--primary" onClick={() => navigate('/game')}>
-                        🚀 {t.home.play}
-                    </button>
-                    <button type="button" className="btn btn--ghost" onClick={() => navigate('/')}>
-                        🏠 {t.nav.home}
-                    </button>
-                    <button type="button" className="btn btn--ghost" onClick={() => navigate('/settings')}>
-                        ⚙️ {t.nav.settings}
-                    </button>
-                </nav>
             </main>
         </div>
     )

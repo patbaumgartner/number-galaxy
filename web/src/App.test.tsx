@@ -40,14 +40,14 @@ describe('App routing', () => {
     it('renders the times tables galaxy map', () => {
         renderAt('/times-tables')
 
-        expect(screen.getByRole('navigation', { name: translations.de.tt.title })).toBeInTheDocument()
+        expect(screen.getByRole('heading', { level: 1, name: translations.de.tt.title })).toBeInTheDocument()
         expect(screen.getByRole('tablist')).toBeInTheDocument()
     })
 
     it('renders a trainer phase behind its own route', () => {
         renderAt('/times-tables/train/t2/learn')
 
-        expect(screen.getByRole('heading', { level: 2, name: /2/ })).toBeInTheDocument()
+        expect(screen.getByRole('heading', { level: 1, name: /2/ })).toBeInTheDocument()
     })
 
     it('redirects an unknown route home instead of showing a blank page', () => {

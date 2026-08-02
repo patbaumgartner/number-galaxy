@@ -1,7 +1,7 @@
 import { useMemo, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import FactHeatmap from '../components/FactHeatmap'
-import Navigation from '../components/Navigation'
+import TopBar from '../components/TopBar'
 import { useDocumentLanguage, useModalDialog } from '../hooks'
 import { translations } from '../translations'
 import { localEpochDay } from '../timesTable/leitner'
@@ -50,11 +50,14 @@ export default function TimesTablesPage() {
 
     return (
         <div className="page trainer-page">
-            <Navigation />
+            <TopBar
+                back={{ label: translations[settings.language].nav.home, to: '/' }}
+                title={t.title}
+                actions={<button type="button" className="btn btn--icon" onClick={() => navigate('/settings')}>
+                    ⚙️<span className="game-bar__hide-sm"> {translations[settings.language].nav.settings}</span>
+                </button>}
+            />
             <main className="shell trainer-shell">
-                <header className="shell__head">
-                    <h1 className="shell__title">{t.title}</h1>
-                </header>
 
                 <section className="panel trainer-daily">
                     <h2 className="panel__title">{t.dailyMission}</h2>

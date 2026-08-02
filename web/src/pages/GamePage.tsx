@@ -19,6 +19,7 @@ import {
 import { RULESET_VERSION, store } from '../store'
 import { translations } from '../translations'
 import AnswerGrid from '../components/AnswerGrid'
+import TopBar from '../components/TopBar'
 import GameHud from '../components/GameHud'
 import MissionSummary from '../components/MissionSummary'
 import { useCountdown, useDocumentLanguage, useModalDialog, usePageVisible, useSoundSetting } from '../hooks'
@@ -219,15 +220,14 @@ export default function GamePage() {
 
     return (
         <div className="page page--game">
-            <header className="game-bar">
-                <button type="button" className="btn btn--icon" onClick={() => navigate('/')}>
-                    ←<span className="game-bar__hide-sm"> {t.nav.home}</span>
-                </button>
-                <span className="game-bar__player">
-                    <span aria-hidden="true">{player.avatarId}</span>
-                    <span className="game-bar__hide-sm">{player.playerName}</span>
-                </span>
-                <span className="game-bar__actions">
+            <TopBar
+                back={{ label: t.nav.home, to: '/' }}
+                title={<>🛸<span className="game-bar__hide-sm"> {t.home.gameInvaders}</span></>}
+                actions={<>
+                    <span className="game-bar__player">
+                        <span aria-hidden="true">{player.avatarId}</span>
+                        <span className="game-bar__hide-sm">{player.playerName}</span>
+                    </span>
                     {settings.hints && (
                         <button
                             type="button"
@@ -246,8 +246,8 @@ export default function GamePage() {
                     >
                         {t.game.quit}
                     </button>
-                </span>
-            </header>
+                </>}
+            />
 
             <main className="stage">
                 <GameHud

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router'
-import Navigation from '../../components/Navigation'
+import TopBar from '../../components/TopBar'
 import { NumberPad } from '../../components/NumberPad'
 import { SessionSummary } from '../../components/SessionSummary'
 import { playCorrect, playLevelUp, playWrong } from '../../sound'
@@ -20,7 +19,6 @@ export function PracticePhase({ planetId }: { planetId: PlanetId }) {
     useSoundSetting()
     const ttSettings = ttStore.getTTSettings()
     const t = translations[lang]
-    const navigate = useNavigate()
     const planet = getPlanet(planetId)!
     const [todayEpochDay] = useState(() => localEpochDay(Date.now(), new Date().getTimezoneOffset()))
     const [initialSessionSize] = useState(() => [...buildPracticeSession(planetId, ttStore.getProgress(), localEpochDay(Date.now(), new Date().getTimezoneOffset()))].length)
@@ -49,7 +47,7 @@ export function PracticePhase({ planetId }: { planetId: PlanetId }) {
     }, [shake])
 
     if (finished) {
-        return <div className="page trainer-page"><Navigation /><main className="shell"><header className="trainer-header"><h2>{planet.emoji} {planet.label} - {t.tt.phasePractice}</h2><button className="btn btn--ghost btn--sm" onClick={() => navigate('/times-tables')}>{t.tt.trainExit}</button></header><div className="trainer-body"><SessionSummary phase="practice" planetId={planetId} accuracy={accuracy} streak={bestStreak} leveledUpCount={leveledUpCount} earnedStars={earnedStars} starsChanged={starsChanged} /></div></main></div>
+        return <div className="page trainer-page"><TopBar back={{ label: t.tt.trainExit, to: '/times-tables' }} title={<span className="game-bar__player">{planet.emoji}<span className="game-bar__hide-sm"> {planet.label} — {t.tt.phasePractice}</span></span>} /><main className="shell"><div className="trainer-body"><SessionSummary phase="practice" planetId={planetId} accuracy={accuracy} streak={bestStreak} leveledUpCount={leveledUpCount} earnedStars={earnedStars} starsChanged={starsChanged} /></div></main></div>
     }
     if (session.length === 0) return null
     const currentFact = session[currentIdx]
@@ -96,7 +94,7 @@ export function PracticePhase({ planetId }: { planetId: PlanetId }) {
             setSession(prev => prev.filter(f => f.key === currentFact.key).length > 1 ? prev : [...prev, currentFact])
         }
     }
-    return <div className="page trainer-page"><Navigation /><main className="shell"><header className="trainer-header"><h2>{planet.emoji} {planet.label} - {t.tt.phasePractice}</h2><button className="btn btn--ghost btn--sm" onClick={() => navigate('/times-tables')}>{t.tt.trainExit}</button></header><div className="trainer-body">{showStrategy && <StrategyOverlay planetId={planetId} lang={lang} dismiss={t.tt.learnCardDismiss} onClose={() => setShowStrategy(false)} />}{explanation ? <ExplanationDialog explanation={explanation} dismiss={t.tt.learnCardDismiss} onClose={() => { setExplanation(null); advance() }} /> : <div className="panel practice-card"><div className="progress-bar">{currentIdx + 1} / {session.length}</div><div className="streak-bar"><span>🔥 {streak}</span>{ttSettings.strategyCards && <button type="button" className="btn btn--ghost btn--sm" onClick={() => setShowStrategy(true)}>💡</button>}</div><div className={`question-display ${shake ? 'shake' : ''}`}>{currentFact.a} × {currentFact.b} = ?</div><div className="pad-wrapper"><NumberPad value={padValue} onChange={setPadValue} onSubmit={handlePadSubmit} /></div></div>}</div></main></div>
+    return <div className="page trainer-page"><TopBar back={{ label: t.tt.trainExit, to: '/times-tables' }} title={<span className="game-bar__player">{planet.emoji}<span className="game-bar__hide-sm"> {planet.label} — {t.tt.phasePractice}</span></span>} /><main className="shell"><div className="trainer-body">{showStrategy && <StrategyOverlay planetId={planetId} lang={lang} dismiss={t.tt.learnCardDismiss} onClose={() => setShowStrategy(false)} />}{explanation ? <ExplanationDialog explanation={explanation} dismiss={t.tt.learnCardDismiss} onClose={() => { setExplanation(null); advance() }} /> : <div className="panel practice-card"><div className="progress-bar">{currentIdx + 1} / {session.length}</div><div className="streak-bar"><span>🔥 {streak}</span>{ttSettings.strategyCards && <button type="button" className="btn btn--ghost btn--sm" onClick={() => setShowStrategy(true)}>💡</button>}</div><div className={`question-display ${shake ? 'shake' : ''}`}>{currentFact.a} × {currentFact.b} = ?</div><div className="pad-wrapper"><NumberPad value={padValue} onChange={setPadValue} onSubmit={handlePadSubmit} /></div></div>}</div></main></div>
 }
 
 type StrategyOverlayProps = {

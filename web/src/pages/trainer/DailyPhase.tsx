@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { useNavigate } from 'react-router'
-import Navigation from '../../components/Navigation'
+import TopBar from '../../components/TopBar'
 import { NumberPad } from '../../components/NumberPad'
 import { SessionSummary } from '../../components/SessionSummary'
 import { playCorrect, playLevelUp, playWrong } from '../../sound'
@@ -117,8 +116,7 @@ export function DailyPhase() {
 }
 
 function TrainerFrame({ title, exit, children }: { readonly title: string; readonly exit: string; readonly children: ReactNode }) {
-    const navigate = useNavigate()
-    return <div className="page trainer-page"><Navigation /><main className="shell"><header className="trainer-header"><h2>{title}</h2><button type="button" className="btn btn--ghost btn--sm" onClick={() => navigate('/times-tables')}>{exit}</button></header><div className="trainer-body">{children}</div></main></div>
+    return <div className="page trainer-page"><TopBar back={{ label: exit, to: '/times-tables' }} title={<span className="game-bar__player">{title}</span>} /><main className="shell"><div className="trainer-body">{children}</div></main></div>
 }
 
 function Dialog({ title, children, onClose }: { readonly title: string; readonly children: ReactNode; readonly onClose: () => void }) {

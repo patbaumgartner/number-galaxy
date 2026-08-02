@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
-import Navigation from '../../components/Navigation'
+import TopBar from '../../components/TopBar'
 import { NumberPad } from '../../components/NumberPad'
 import { playCorrect, playWrong } from '../../sound'
 import { useSoundSetting } from '../../hooks'
@@ -90,12 +90,11 @@ export function LearnPhase({ planetId }: { planetId: PlanetId }) {
 
     return (
         <div className="page trainer-page">
-            <Navigation />
+            <TopBar
+                back={{ label: t.tt.trainExit, to: '/times-tables' }}
+                title={<span className="game-bar__player">{planet.emoji}<span className="game-bar__hide-sm"> {planet.label} — {t.tt.phaseLearn}</span></span>}
+            />
             <main className="shell">
-                <header className="trainer-header">
-                    <h2>{planet.emoji} {planet.label} - {t.tt.phaseLearn}</h2>
-                    <button className="btn btn--ghost btn--sm" onClick={() => navigate('/times-tables')}>{t.tt.trainExit}</button>
-                </header>
 
                 <div className="trainer-body">
                     {step === 'strategy' && (

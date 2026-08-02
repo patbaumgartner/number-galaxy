@@ -29,6 +29,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   into the arcade game when you leave it.
 - **The home page explains each game separately** — the how-to section only ever
   described Math Invaders — and each game picker card now carries a one-line summary.
+- **One navigation bar for every game screen, in both games.** The arcade had its
+  own bar, the trainer stacked two, and the arcade's Hall of Fame had none at all —
+  three patterns for the same job. A shared `TopBar` now puts the exit in the same
+  corner everywhere, and each screen has exactly one `h1` (the arcade game screen
+  previously had none).
 - **Every Times Tables planet has its own icon.** Twenty-one of the twenty-three
   rendered an identical ✖️, so the galaxy map was a wall of grey crosses.
 - **Language flags are drawn as SVG** instead of 🇩🇪-style regional-indicator emoji,

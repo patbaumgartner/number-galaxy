@@ -121,6 +121,17 @@ button {
   padding-bottom: var(--space-8);
 }
 
+/* Play, the profile chip and the game picker are three separate decisions and
+   need to read as three, not one block. */
+.btn--play {
+  margin-bottom: var(--space-4);
+}
+
+.shell--home .chip--player {
+  align-self: center;
+  margin-bottom: var(--space-6);
+}
+
 .shell__head {
   text-align: center;
   margin-bottom: var(--space-6);
@@ -1035,6 +1046,10 @@ summary.panel__title {
   padding-bottom: 0;
 }
 
+.panel > .switch-row:first-child {
+  padding-top: 0;
+}
+
 .switch-row__title + .panel__hint {
   margin-bottom: 0;
 }
@@ -1450,12 +1465,10 @@ summary.panel__title {
   margin: 0;
 }
 
-/* A destructive action following a switch row needs clear air above it, or it
-   reads as part of the row's hairline divider. */
+/* A destructive action following a switch row needs clear air above it. The row
+   above already draws the hairline, so drawing another here made two. */
 .panel__action {
   margin-top: var(--space-4);
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--border-hairline);
 }
 
 .panel__action .btn {
@@ -1485,4 +1498,21 @@ summary.panel__title {
   font-size: var(--text-sm);
   font-weight: 400;
   line-height: 1.35;
+}
+
+.game-bar__title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  margin: 0;
+  font-size: var(--text-base);
+  font-weight: 700;
+}
+
+.game-bar__title,
+.game-bar__player {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }

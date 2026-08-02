@@ -91,3 +91,5 @@ export function playTimeout() {
 export function playVictory() {
     sequence([523, 659, 784, 1047, 1319], 110, 0.18, 0.16)
 }
+
+export const playLevelUp = playVictory

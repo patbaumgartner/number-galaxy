@@ -17,6 +17,9 @@ export type Translations = {
         cancel: string
         missionTitle: string
         change: string
+        chooseGame: string
+        gameInvaders: string
+        gameTables: string
         howToTitle: string
         howToSteps: string[]
     }
@@ -89,6 +92,21 @@ export type Translations = {
     error: { title: string; body: string; reload: string }
     operations: Record<Operation, string>
     ranks: Record<Rank, string>
+    tt: {
+        padSubmit: string; padDelete: string; title: string
+        galaxyHome: string; galaxyHomeTagline: string; galaxySquares: string; galaxySquaresTagline: string
+        galaxyShortcuts: string; galaxyShortcutsTagline: string; galaxyDeep: string; galaxyDeepTagline: string
+        dailyMission: string; duePlayMission: string; allCaughtUp: string
+        lockedHintSquares: string; lockedHintShortcuts: string; lockedHintDeep: string; lockedHintSpeed: string
+        phaseLearn: string; phasePractice: string; phaseSpeed: string
+        heatmapTitle: string; heatmapCore: string; heatmapExtended: string; heatmapSquares: string
+        trainExit: string; summaryAccuracy: string; summaryStreak: string; summaryLeveledUp: string
+        summaryPracticeBtn: string; summaryTime: string; summaryNewBest: string; summaryStarsEarned: string
+        summarySpeedUnlocked: string; summaryMastered: string; summaryKeepPracticing: string
+        learnFinish: string; learnCardDismiss: string; learnGuided: string; speedGo: string
+        settingsTitle: string; settingsStrategyCards: string; settingsStrategyHint: string
+        settingsReset: string; settingsResetConfirm: string
+    }
 }
 
 const de: Translations = {
@@ -108,6 +126,9 @@ const de: Translations = {
         cancel: 'Abbrechen',
         missionTitle: 'Deine Mission',
         change: 'Ändern',
+        chooseGame: 'Wähle dein Spiel',
+        gameInvaders: 'Math Invaders',
+        gameTables: 'Einmaleins-Galaxie',
         howToTitle: 'So geht’s',
         howToSteps: [
             'Drücke auf Spielen — es geht sofort los.',
@@ -203,6 +224,16 @@ const de: Translations = {
         ace: '🔥 Ass',
         legend: '👑 Legende',
     },
+    tt: {
+        padSubmit: 'Bestätigen', padDelete: 'Löschen', title: '✖️ Einmaleins-Galaxie',
+        galaxyHome: 'Start-Galaxie', galaxyHomeTagline: 'Die Reihen 1 bis 12', galaxySquares: 'Quadrat-Nebel', galaxySquaresTagline: 'Zahlen mal sich selbst',
+        galaxyShortcuts: 'Abkürzungs-Gürtel', galaxyShortcutsTagline: 'Tricks für 15, 20 und 25', galaxyDeep: 'Tiefer Raum', galaxyDeepTagline: 'Die großen Reihen 13 bis 19',
+        dailyMission: 'Tagesmission', duePlayMission: 'fällige Aufgaben spielen', allCaughtUp: 'Alles geschafft!',
+        lockedHintSquares: 'Verdiene ⭐⭐ auf 5 Startplaneten', lockedHintShortcuts: 'Verdiene ⭐ auf den Quadraten bis 12²', lockedHintDeep: 'Verdiene ⭐⭐ auf den Reihen 2 bis 12', lockedHintSpeed: 'Verdiene ⭐ für den Sprint',
+        phaseLearn: 'Lernen', phasePractice: 'Üben', phaseSpeed: 'Sprint', heatmapTitle: 'Deine Lernkarte', heatmapCore: 'Basis 1–12', heatmapExtended: 'Erweitert 13–25', heatmapSquares: 'Quadrate 1–25',
+        trainExit: 'Zurück zur Karte', summaryAccuracy: 'Richtig', summaryStreak: 'Beste Serie', summaryLeveledUp: 'Aufgestiegen', summaryPracticeBtn: 'Jetzt üben', summaryTime: 'Zeit', summaryNewBest: 'Neue Bestzeit!', summaryStarsEarned: '{n} Stern(e) verdient!', summarySpeedUnlocked: 'Sprint freigeschaltet!', summaryMastered: 'Planet gemeistert!', summaryKeepPracticing: 'Übe weiter für Sterne.', learnFinish: 'Super gemacht!', learnCardDismiss: 'Verstanden', learnGuided: 'Jetzt probieren', speedGo: 'LOS!',
+        settingsTitle: 'Einmaleins-Trainer', settingsStrategyCards: 'Strategiekarten', settingsStrategyHint: 'Zeigt bei Bedarf einen Rechentipp.', settingsReset: 'Trainer-Fortschritt löschen', settingsResetConfirm: 'Einmaleins-Fortschritt wirklich löschen?',
+    },
 }
 
 const en: Translations = {
@@ -222,6 +253,9 @@ const en: Translations = {
         cancel: 'Cancel',
         missionTitle: 'Your mission',
         change: 'Change',
+        chooseGame: 'Choose your game',
+        gameInvaders: 'Math Invaders',
+        gameTables: 'Times Tables Galaxy',
         howToTitle: 'How to play',
         howToSteps: [
             'Press Play — you start right away.',
@@ -317,6 +351,14 @@ const en: Translations = {
         ace: '🔥 Ace',
         legend: '👑 Legend',
     },
+    tt: {
+        padSubmit: 'Submit', padDelete: 'Delete', title: '✖️ Times Tables Galaxy',
+        galaxyHome: 'Home Galaxy', galaxyHomeTagline: 'Times tables 1 to 12', galaxySquares: 'Squares Nebula', galaxySquaresTagline: 'Numbers times themselves', galaxyShortcuts: 'Shortcuts Belt', galaxyShortcutsTagline: 'Tricks for 15, 20, and 25', galaxyDeep: 'Deep Space', galaxyDeepTagline: 'The bigger tables 13 to 19',
+        dailyMission: 'Daily mission', duePlayMission: 'due facts — play mission', allCaughtUp: 'All caught up!', lockedHintSquares: 'Earn ⭐⭐ on 5 home planets', lockedHintShortcuts: 'Earn ⭐ on squares up to 12²', lockedHintDeep: 'Earn ⭐⭐ on tables 2 to 12', lockedHintSpeed: 'Earn ⭐ to unlock Speed Run',
+        phaseLearn: 'Learn', phasePractice: 'Practice', phaseSpeed: 'Speed Run', heatmapTitle: 'Mastery map', heatmapCore: 'Core 1–12', heatmapExtended: 'Extended 13–25', heatmapSquares: 'Squares 1–25',
+        trainExit: 'Back to map', summaryAccuracy: 'Accuracy', summaryStreak: 'Best streak', summaryLeveledUp: 'Levelled up', summaryPracticeBtn: 'Practise now', summaryTime: 'Time', summaryNewBest: 'New personal best!', summaryStarsEarned: 'You earned {n} star(s)!', summarySpeedUnlocked: 'Speed Run unlocked!', summaryMastered: 'Planet mastered!', summaryKeepPracticing: 'Keep practising for stars.', learnFinish: 'Great work!', learnCardDismiss: 'Got it', learnGuided: 'Try these now', speedGo: 'GO!',
+        settingsTitle: 'Times tables trainer', settingsStrategyCards: 'Strategy cards', settingsStrategyHint: 'Shows a calculation tip when you need one.', settingsReset: 'Reset trainer progress', settingsResetConfirm: 'Really reset all times tables progress?',
+    },
 }
 
 const it: Translations = {
@@ -336,6 +378,9 @@ const it: Translations = {
         cancel: 'Annulla',
         missionTitle: 'La tua missione',
         change: 'Cambia',
+        chooseGame: 'Scegli il tuo gioco',
+        gameInvaders: 'Math Invaders',
+        gameTables: 'Galassia delle tabelline',
         howToTitle: 'Come si gioca',
         howToSteps: [
             'Premi Gioca — si parte subito.',
@@ -431,6 +476,14 @@ const it: Translations = {
         ace: '🔥 Asso',
         legend: '👑 Leggenda',
     },
+    tt: {
+        padSubmit: 'Invia', padDelete: 'Cancella', title: '✖️ Galassia delle tabelline',
+        galaxyHome: 'Galassia base', galaxyHomeTagline: 'Le tabelline da 1 a 12', galaxySquares: 'Nebulosa dei quadrati', galaxySquaresTagline: 'Numeri moltiplicati per se stessi', galaxyShortcuts: 'Cintura delle scorciatoie', galaxyShortcutsTagline: 'Trucchi per 15, 20 e 25', galaxyDeep: 'Spazio profondo', galaxyDeepTagline: 'Le grandi tabelline da 13 a 19',
+        dailyMission: 'Missione quotidiana', duePlayMission: 'fatti da ripassare — gioca', allCaughtUp: 'Tutto fatto!', lockedHintSquares: 'Ottieni ⭐⭐ su 5 pianeti base', lockedHintShortcuts: 'Ottieni ⭐ sui quadrati fino a 12²', lockedHintDeep: 'Ottieni ⭐⭐ sulle tabelline 2–12', lockedHintSpeed: 'Ottieni ⭐ per sbloccare la corsa veloce',
+        phaseLearn: 'Impara', phasePractice: 'Esercitati', phaseSpeed: 'Corsa veloce', heatmapTitle: 'Mappa della padronanza', heatmapCore: 'Base 1–12', heatmapExtended: 'Estesa 13–25', heatmapSquares: 'Quadrati 1–25',
+        trainExit: 'Torna alla mappa', summaryAccuracy: 'Precisione', summaryStreak: 'Migliore serie', summaryLeveledUp: 'Avanzato', summaryPracticeBtn: 'Esercitati ora', summaryTime: 'Tempo', summaryNewBest: 'Nuovo record personale!', summaryStarsEarned: 'Hai guadagnato {n} stella/e!', summarySpeedUnlocked: 'Corsa veloce sbloccata!', summaryMastered: 'Pianeta conquistato!', summaryKeepPracticing: 'Continua per guadagnare stelle.', learnFinish: 'Ottimo lavoro!', learnCardDismiss: 'Capito', learnGuided: 'Prova ora', speedGo: 'VIA!',
+        settingsTitle: 'Allenatore di tabelline', settingsStrategyCards: 'Carte strategia', settingsStrategyHint: 'Mostra un suggerimento di calcolo quando serve.', settingsReset: 'Azzera i progressi', settingsResetConfirm: 'Azzerare davvero tutti i progressi delle tabelline?',
+    },
 }
 
 const fr: Translations = {
@@ -450,6 +503,9 @@ const fr: Translations = {
         cancel: 'Annuler',
         missionTitle: 'Ta mission',
         change: 'Modifier',
+        chooseGame: 'Choisis ton jeu',
+        gameInvaders: 'Math Invaders',
+        gameTables: 'Galaxie des multiplications',
         howToTitle: 'Comment jouer',
         howToSteps: [
             'Appuie sur Jouer — ça commence tout de suite.',
@@ -544,6 +600,14 @@ const fr: Translations = {
         pilot: '🚀 Pilote',
         ace: '🔥 As',
         legend: '👑 Légende',
+    },
+    tt: {
+        padSubmit: 'Valider', padDelete: 'Effacer', title: '✖️ Galaxie des multiplications',
+        galaxyHome: 'Galaxie de départ', galaxyHomeTagline: 'Les tables de 1 à 12', galaxySquares: 'Nébuleuse des carrés', galaxySquaresTagline: 'Les nombres multipliés par eux-mêmes', galaxyShortcuts: 'Ceinture des raccourcis', galaxyShortcutsTagline: 'Astuces pour 15, 20 et 25', galaxyDeep: 'Espace profond', galaxyDeepTagline: 'Les grandes tables de 13 à 19',
+        dailyMission: 'Mission quotidienne', duePlayMission: 'faits à revoir — jouer', allCaughtUp: 'Tout est fait !', lockedHintSquares: 'Gagne ⭐⭐ sur 5 planètes de départ', lockedHintShortcuts: 'Gagne ⭐ sur les carrés jusqu’à 12²', lockedHintDeep: 'Gagne ⭐⭐ sur les tables 2 à 12', lockedHintSpeed: 'Gagne ⭐ pour débloquer le sprint',
+        phaseLearn: 'Apprendre', phasePractice: 'S’entraîner', phaseSpeed: 'Sprint', heatmapTitle: 'Carte de maîtrise', heatmapCore: 'Base 1–12', heatmapExtended: 'Étendu 13–25', heatmapSquares: 'Carrés 1–25',
+        trainExit: 'Retour à la carte', summaryAccuracy: 'Précision', summaryStreak: 'Meilleure série', summaryLeveledUp: 'Progressé', summaryPracticeBtn: 'S’entraîner', summaryTime: 'Temps', summaryNewBest: 'Nouveau record personnel !', summaryStarsEarned: 'Tu as gagné {n} étoile(s) !', summarySpeedUnlocked: 'Sprint débloqué !', summaryMastered: 'Planète maîtrisée !', summaryKeepPracticing: 'Continue pour gagner des étoiles.', learnFinish: 'Excellent travail !', learnCardDismiss: 'Compris', learnGuided: 'Essaie maintenant', speedGo: 'GO !',
+        settingsTitle: 'Entraîneur de tables', settingsStrategyCards: 'Cartes stratégie', settingsStrategyHint: 'Affiche une astuce de calcul au besoin.', settingsReset: 'Réinitialiser les progrès', settingsResetConfirm: 'Réinitialiser tous les progrès des tables ?',
     },
 }
 

@@ -6,10 +6,12 @@ import { languageLabels } from '../constants'
 import { fill, translations } from '../translations'
 import { useDocumentLanguage } from '../hooks'
 import type { Language } from '../game'
+import { ttStore } from '../timesTable/ttStore'
 
 export default function SettingsPage() {
     const navigate = useNavigate()
     const [settings, setSettings] = useState<GameSettings>(() => store.getSettings())
+    const [trainerSettings, setTrainerSettings] = useState(() => ttStore.getTTSettings())
     const t = translations[settings.language]
     const skills = useMemo(() => store.getSkillStats(), [])
     const badges = useMemo(
@@ -30,6 +32,18 @@ export default function SettingsPage() {
             : [...settings.operations, operation]
         if (next.length === 0) return
         update({ operations: next })
+    }
+
+    const updateTrainer = (strategyCards: boolean) => {
+        const next = { strategyCards }
+        setTrainerSettings(next)
+        ttStore.saveTTSettings(next)
+    }
+
+    const resetTrainer = () => {
+        if (!confirm(t.tt.settingsResetConfirm)) return
+        ttStore.resetTrainerProgress()
+        setTrainerSettings(ttStore.getTTSettings())
     }
 
     const reset = () => {
@@ -80,6 +94,21 @@ export default function SettingsPage() {
                     {settings.operations.length === 1 && (
                         <p className="panel__note">{t.settings.keepOne}</p>
                     )}
+                </section>
+
+                <section className="panel">
+                    <h2 className="panel__title">{t.tt.settingsTitle}</h2>
+                    <div className="switch-row">
+                        <div>
+                            <h3 className="switch-row__title">{t.tt.settingsStrategyCards}</h3>
+                            <p className="panel__hint">{t.tt.settingsStrategyHint}</p>
+                        </div>
+                        <button type="button" className={`switch${trainerSettings.strategyCards ? ' switch--on' : ''}`} role="switch" aria-checked={trainerSettings.strategyCards} onClick={() => updateTrainer(!trainerSettings.strategyCards)}>
+                            <span className="switch__track"><span className="switch__thumb" /></span>
+                            {trainerSettings.strategyCards ? t.settings.on : t.settings.off}
+                        </button>
+                    </div>
+                    <button type="button" className="btn btn--danger" onClick={resetTrainer}>{t.tt.settingsReset}</button>
                 </section>
 
                 <section className="panel">

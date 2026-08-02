@@ -18,8 +18,7 @@ export default function HomePage() {
     const [avatar, setAvatar] = useState(player?.avatarId ?? avatars[0])
 
     const play = () => {
-        store.ensurePlayer(t.home.defaultName, avatars[0])
-        navigate('/game')
+        setPlayer(store.ensurePlayer(t.home.defaultName, avatars[0]))
     }
 
     const saveProfile = () => {
@@ -79,6 +78,22 @@ export default function HomePage() {
                         <li className="chip">{settings.timed ? '⏱' : '∞'} {QUESTIONS_PER_MISSION}</li>
                     </ul>
                 </section>
+
+                {player && (
+                    <section className="panel game-picker">
+                        <h2 className="panel__title">{t.home.chooseGame}</h2>
+                        <div className="game-picker__cards">
+                            <button type="button" className="game-picker__card" onClick={() => navigate('/game')}>
+                                <span aria-hidden="true">🛸</span>
+                                <strong>{t.home.gameInvaders}</strong>
+                            </button>
+                            <button type="button" className="game-picker__card" onClick={() => navigate('/times-tables')}>
+                                <span aria-hidden="true">✖️</span>
+                                <strong>{t.home.gameTables}</strong>
+                            </button>
+                        </div>
+                    </section>
+                )}
 
                 <section className="panel">
                     <h2 className="panel__title">{t.home.howToTitle}</h2>

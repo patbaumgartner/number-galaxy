@@ -10,7 +10,7 @@ export default function Navigation() {
             <NavLink to="/" end className="trainer-nav__brand">MATH INVADERS</NavLink>
             <div className="trainer-nav__links">
                 <NavLink to="/" end className="trainer-nav__link">{t.nav.home}</NavLink>
-                <NavLink to="/times-tables" className="trainer-nav__link">✖️ <span>{t.tt.title}</span></NavLink>
+                <NavLink to="/times-tables" className="trainer-nav__link">{t.tt.title}</NavLink>
                 <NavLink to="/hall-of-fame" className="trainer-nav__link">{t.nav.hallOfFame}</NavLink>
                 <NavLink to="/settings" className="trainer-nav__link">{t.nav.settings}</NavLink>
             </div>

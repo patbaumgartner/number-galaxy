@@ -89,10 +89,10 @@ export function LearnPhase({ planetId }: { planetId: PlanetId }) {
     return (
         <div className="page trainer-page">
             <Navigation />
-            <main className="container">
+            <main className="shell">
                 <header className="trainer-header">
                     <h2>{planet.emoji} {planet.label} - {t.tt.phaseLearn}</h2>
-                    <button className="btn btn--sm" onClick={() => navigate('/times-tables')}>{t.tt.trainExit}</button>
+                    <button className="btn btn--ghost btn--sm" onClick={() => navigate('/times-tables')}>{t.tt.trainExit}</button>
                 </header>
 
                 <div className="trainer-body">

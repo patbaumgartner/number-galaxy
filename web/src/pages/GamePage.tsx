@@ -14,13 +14,14 @@ import {
     scoreAnswer,
     type AnswerOutcome,
     type MissionState,
+    type WorkedExample,
 } from '../game'
 import { RULESET_VERSION, store } from '../store'
 import { translations } from '../translations'
 import AnswerGrid from '../components/AnswerGrid'
 import GameHud from '../components/GameHud'
 import MissionSummary from '../components/MissionSummary'
-import { useCountdown, useDocumentLanguage, usePageVisible } from '../hooks'
+import { useCountdown, useDocumentLanguage, useModalDialog, usePageVisible } from '../hooks'
 import {
     playCombo,
     playCorrect,
@@ -293,24 +294,12 @@ export default function GamePage() {
             </main>
 
             {helpOpen && (
-                <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="help-title">
-                    <div className="overlay__card">
-                        <h2 className="overlay__title" id="help-title">💡 {t.game.helpTitle}</h2>
-                        <p className="overlay__example">
-                            <span>{example.prompt}</span>
-                            <strong>{example.answer}</strong>
-                        </p>
-                        <p className="overlay__steps">{example.steps}</p>
-                        <button
-                            type="button"
-                            className="btn btn--primary"
-                            onClick={() => setHelpOpen(false)}
-                            autoFocus
-                        >
-                            {t.game.helpClose}
-                        </button>
-                    </div>
-                </div>
+                <HelpOverlay
+                    title={t.game.helpTitle}
+                    close={t.game.helpClose}
+                    example={example}
+                    onClose={() => setHelpOpen(false)}
+                />
             )}
 
             {result && (
@@ -329,6 +318,33 @@ export default function GamePage() {
                     onSeeScores={() => navigate('/hall-of-fame')}
                 />
             )}
+        </div>
+    )
+}
+
+type HelpOverlayProps = {
+    title: string
+    close: string
+    example: WorkedExample
+    onClose: () => void
+}
+
+function HelpOverlay({ title, close, example, onClose }: HelpOverlayProps) {
+    const dialog = useModalDialog<HTMLDivElement>(onClose)
+
+    return (
+        <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="help-title" ref={dialog}>
+            <div className="overlay__card">
+                <h2 className="overlay__title" id="help-title">💡 {title}</h2>
+                <p className="overlay__example">
+                    <span>{example.prompt}</span>
+                    <strong>{example.answer}</strong>
+                </p>
+                <p className="overlay__steps">{example.steps}</p>
+                <button type="button" className="btn btn--primary" onClick={onClose} autoFocus>
+                    {close}
+                </button>
+            </div>
         </div>
     )
 }

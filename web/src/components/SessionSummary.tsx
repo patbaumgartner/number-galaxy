@@ -61,7 +61,7 @@ export function SessionSummary({
             )}
 
             <div className="summary-actions" style={{ marginTop: '1rem' }}>
-                <button className="btn btn-primary" onClick={() => navigate('/times-tables')}>
+                <button className="btn btn--primary" onClick={() => navigate('/times-tables')}>
                     {t.tt.trainExit}
                 </button>
             </div>

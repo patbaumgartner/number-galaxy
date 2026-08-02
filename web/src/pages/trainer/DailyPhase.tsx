@@ -104,7 +104,7 @@ export function DailyPhase() {
             {explanation !== null ? <Dialog title={explanation} onClose={() => { setExplanation(null); if (index + 1 < session.length) setIndex(current => current + 1); else finish(false) }}><p>{explanation}</p></Dialog> : (
                 <section className="panel practice-card">
                     <div className="progress-bar">{index + 1} / {session.length}</div>
-                    <div className="streak-bar"><span>🔥 {streak}</span>{ttStore.getTTSettings().strategyCards && <button type="button" className="btn btn--sm" onClick={() => setShowStrategy(true)}>💡</button>}</div>
+                    <div className="streak-bar"><span>🔥 {streak}</span>{ttStore.getTTSettings().strategyCards && <button type="button" className="btn btn--ghost btn--sm" onClick={() => setShowStrategy(true)}>💡</button>}</div>
                     <p className="question-header" aria-hidden="true">{planet?.emoji}</p>
                     <p className="question-display">{fact.a} × {fact.b} = ?</p>
                     <NumberPad value={value} onChange={setValue} onSubmit={submit} />
@@ -116,7 +116,7 @@ export function DailyPhase() {
 
 function TrainerFrame({ title, exit, children }: { readonly title: string; readonly exit: string; readonly children: ReactNode }) {
     const navigate = useNavigate()
-    return <div className="page trainer-page"><Navigation /><main className="shell"><header className="trainer-header"><h2>{title}</h2><button type="button" className="btn btn--sm" onClick={() => navigate('/times-tables')}>{exit}</button></header><div className="trainer-body">{children}</div></main></div>
+    return <div className="page trainer-page"><Navigation /><main className="shell"><header className="trainer-header"><h2>{title}</h2><button type="button" className="btn btn--ghost btn--sm" onClick={() => navigate('/times-tables')}>{exit}</button></header><div className="trainer-body">{children}</div></main></div>
 }
 
 function Dialog({ title, children, onClose }: { readonly title: string; readonly children: ReactNode; readonly onClose: () => void }) {

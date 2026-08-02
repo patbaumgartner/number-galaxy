@@ -1,4 +1,5 @@
 import type { Translations } from '../translations'
+import { useModalDialog } from '../hooks'
 
 const CONFETTI_PIECES = 16
 
@@ -33,9 +34,10 @@ export default function MissionSummary({
 }: MissionSummaryProps) {
     const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0
     const perfect = correct === total && total > 0
+    const dialog = useModalDialog<HTMLDivElement>()
 
     return (
-        <div className="summary" role="dialog" aria-modal="true" aria-labelledby="summary-title">
+        <div className="summary" role="dialog" aria-modal="true" aria-labelledby="summary-title" ref={dialog}>
             <div className="summary__card">
                 {stars === 3 && (
                     <div className="summary__confetti" aria-hidden="true">

@@ -60,3 +60,87 @@ export function useCountdown({ seconds, running, resetKey, onExpire }: Countdown
 
     return clock.remaining
 }
+
+const FOCUSABLE = [
+    'a[href]',
+    'button:not([disabled])',
+    'input:not([disabled])',
+    'select:not([disabled])',
+    'textarea:not([disabled])',
+    '[tabindex]:not([tabindex="-1"])',
+].join(',')
+
+/**
+ * Makes an `aria-modal` dialog behave like one.
+ *
+ * Returns a ref to put on the dialog element. While it is mounted, Escape
+ * closes it, Tab cycles inside it instead of reaching the page behind, and the
+ * control that opened it gets focus back on close. Pass no `onClose` for a
+ * dialog that cannot be dismissed, such as the end-of-mission summary.
+ */
+export function useModalDialog<T extends HTMLElement>(onClose?: () => void) {
+    const ref = useRef<T>(null)
+    const onCloseRef = useRef(onClose)
+    const openerRef = useRef<HTMLElement | null>(null)
+
+    // Captured during the first render, not in the effect: React applies a
+    // child's `autoFocus` before effects run, so by then `document.activeElement`
+    // is already inside the dialog and the real opener is lost.
+    if (openerRef.current === null) {
+        openerRef.current = document.activeElement as HTMLElement | null
+    }
+
+    useEffect(() => {
+        onCloseRef.current = onClose
+    })
+
+    useEffect(() => {
+        const opener = openerRef.current
+        const dialog = ref.current
+        if (dialog === null) return
+
+        // Several dialogs autofocus their primary action; only take over when
+        // focus is still outside, so we never fight the more specific choice.
+        if (!dialog.contains(document.activeElement)) {
+            dialog.querySelector<HTMLElement>(FOCUSABLE)?.focus()
+        }
+
+        const onKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape' && onCloseRef.current !== undefined) {
+                event.preventDefault()
+                onCloseRef.current()
+                return
+            }
+            if (event.key !== 'Tab') return
+
+            const focusable = [...dialog.querySelectorAll<HTMLElement>(FOCUSABLE)]
+            if (focusable.length === 0) {
+                event.preventDefault()
+                return
+            }
+
+            const first = focusable[0]
+            const last = focusable[focusable.length - 1]
+            const active = document.activeElement
+
+            if (!dialog.contains(active)) {
+                event.preventDefault()
+                first.focus()
+            } else if (event.shiftKey && active === first) {
+                event.preventDefault()
+                last.focus()
+            } else if (!event.shiftKey && active === last) {
+                event.preventDefault()
+                first.focus()
+            }
+        }
+
+        document.addEventListener('keydown', onKeyDown)
+        return () => {
+            document.removeEventListener('keydown', onKeyDown)
+            opener?.focus()
+        }
+    }, [])
+
+    return ref
+}

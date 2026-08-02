@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import FactHeatmap from '../components/FactHeatmap'
 import Navigation from '../components/Navigation'
-import { useDocumentLanguage } from '../hooks'
+import { useDocumentLanguage, useModalDialog } from '../hooks'
 import { translations } from '../translations'
 import { localEpochDay } from '../timesTable/leitner'
 import { countDueFacts } from '../timesTable/session'
@@ -36,14 +36,6 @@ export default function TimesTablesPage() {
     const hasAnyStar = Object.values(stars).some(star => (star ?? 0) > 0)
     const nextRecommended = RECOMMENDED_ORDER.find(planetId => (stars[planetId] ?? 0) === 0)
     const activePlanetInfo = activePlanet === null ? undefined : getPlanet(activePlanet)
-
-    useEffect(() => {
-        const close = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') setActivePlanet(null)
-        }
-        window.addEventListener('keydown', close)
-        return () => window.removeEventListener('keydown', close)
-    }, [])
 
     const selectPlanet = (planetId: PlanetId) => {
         if (isPlanetUnlocked(planetId, stars)) setActivePlanet(planetId)
@@ -111,15 +103,31 @@ export default function TimesTablesPage() {
             </main>
 
             {activePlanet !== null && activePlanetInfo !== undefined && (
-                <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="phase-chooser-title" onClick={() => setActivePlanet(null)}>
-                    <div className="overlay__card trainer-phase-dialog" onClick={event => event.stopPropagation()}>
-                        <h2 className="overlay__title" id="phase-chooser-title">{activePlanetInfo.emoji} {activePlanetInfo.label}</h2>
-                        <button type="button" className="btn btn--ghost" autoFocus onClick={() => train('learn')}>{t.phaseLearn}</button>
-                        <button type="button" className="btn btn--primary" onClick={() => train('practice')}>{t.phasePractice}</button>
-                        <button type="button" className="btn btn--ghost" disabled={(stars[activePlanet] ?? 0) < 1} onClick={() => train('speed')}>{t.phaseSpeed}</button>
-                    </div>
-                </div>
+                <PhaseChooser title={`${activePlanetInfo.emoji} ${activePlanetInfo.label}`} onClose={() => setActivePlanet(null)}>
+                    <button type="button" className="btn btn--ghost" autoFocus onClick={() => train('learn')}>{t.phaseLearn}</button>
+                    <button type="button" className="btn btn--primary" onClick={() => train('practice')}>{t.phasePractice}</button>
+                    <button type="button" className="btn btn--ghost" disabled={(stars[activePlanet] ?? 0) < 1} onClick={() => train('speed')}>{t.phaseSpeed}</button>
+                </PhaseChooser>
             )}
+        </div>
+    )
+}
+
+type PhaseChooserProps = {
+    readonly title: string
+    readonly onClose: () => void
+    readonly children: ReactNode
+}
+
+function PhaseChooser({ title, onClose, children }: PhaseChooserProps) {
+    const dialog = useModalDialog<HTMLDivElement>(onClose)
+
+    return (
+        <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="phase-chooser-title" onClick={onClose} ref={dialog}>
+            <div className="overlay__card trainer-phase-dialog" onClick={event => event.stopPropagation()}>
+                <h2 className="overlay__title" id="phase-chooser-title">{title}</h2>
+                {children}
+            </div>
         </div>
     )
 }

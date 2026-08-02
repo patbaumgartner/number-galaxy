@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router'
 import { store } from '../store'
 import { QUESTIONS_PER_MISSION, rankConfig } from '../game'
 import { avatars } from '../constants'
-import { fill, translations } from '../translations'
-import { useDocumentLanguage } from '../hooks'
+import { fill, translations, type Translations } from '../translations'
+import { useDocumentLanguage, useModalDialog } from '../hooks'
 
 export default function HomePage() {
     const navigate = useNavigate()
@@ -113,53 +113,79 @@ export default function HomePage() {
             </main>
 
             {editing && (
-                <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="profile-title">
-                    <div className="overlay__card">
-                        <h2 className="overlay__title" id="profile-title">{t.home.rename}</h2>
-
-                        <label className="field">
-                            <span className="field__label">{t.home.nameLabel}</span>
-                            <input
-                                className="field__input"
-                                type="text"
-                                autoComplete="off"
-                                maxLength={20}
-                                placeholder={t.home.namePlaceholder}
-                                value={name}
-                                onChange={event => setName(event.target.value)}
-                                autoFocus
-                            />
-                        </label>
-
-                        <fieldset className="field">
-                            <legend className="field__label">{t.home.avatarLabel}</legend>
-                            <div className="avatars">
-                                {avatars.map(option => (
-                                    <button
-                                        key={option}
-                                        type="button"
-                                        className={`avatar${avatar === option ? ' avatar--active' : ''}`}
-                                        aria-pressed={avatar === option}
-                                        aria-label={option}
-                                        onClick={() => setAvatar(option)}
-                                    >
-                                        {option}
-                                    </button>
-                                ))}
-                            </div>
-                        </fieldset>
-
-                        <div className="overlay__actions">
-                            <button type="button" className="btn btn--primary" onClick={saveProfile}>
-                                {t.home.save}
-                            </button>
-                            <button type="button" className="btn btn--ghost" onClick={() => setEditing(false)}>
-                                {t.home.cancel}
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <ProfileEditor
+                    labels={t.home}
+                    name={name}
+                    avatar={avatar}
+                    onName={setName}
+                    onAvatar={setAvatar}
+                    onSave={saveProfile}
+                    onCancel={() => setEditing(false)}
+                />
             )}
+        </div>
+    )
+}
+
+type ProfileEditorProps = {
+    labels: Translations['home']
+    name: string
+    avatar: string
+    onName: (name: string) => void
+    onAvatar: (avatar: string) => void
+    onSave: () => void
+    onCancel: () => void
+}
+
+function ProfileEditor({ labels, name, avatar, onName, onAvatar, onSave, onCancel }: ProfileEditorProps) {
+    const dialog = useModalDialog<HTMLDivElement>(onCancel)
+
+    return (
+        <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="profile-title" ref={dialog}>
+            <div className="overlay__card">
+                <h2 className="overlay__title" id="profile-title">{labels.rename}</h2>
+
+                <label className="field">
+                    <span className="field__label">{labels.nameLabel}</span>
+                    <input
+                        className="field__input"
+                        type="text"
+                        autoComplete="off"
+                        maxLength={20}
+                        placeholder={labels.namePlaceholder}
+                        value={name}
+                        onChange={event => onName(event.target.value)}
+                        autoFocus
+                    />
+                </label>
+
+                <fieldset className="field">
+                    <legend className="field__label">{labels.avatarLabel}</legend>
+                    <div className="avatars">
+                        {avatars.map(option => (
+                            <button
+                                key={option}
+                                type="button"
+                                className={`avatar${avatar === option ? ' avatar--active' : ''}`}
+                                aria-pressed={avatar === option}
+                                aria-label={option}
+                                onClick={() => onAvatar(option)}
+                            >
+                                {option}
+                            </button>
+                        ))}
+                    </div>
+                </fieldset>
+
+                <div className="overlay__actions">
+                    <button type="button" className="btn btn--primary" onClick={onSave}>
+                        {labels.save}
+                    </button>
+                    <button type="button" className="btn btn--ghost" onClick={onCancel}>
+                        {labels.cancel}
+                    </button>
+                </div>
+            </div>
         </div>
     )
 }

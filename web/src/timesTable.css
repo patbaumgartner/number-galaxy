@@ -75,7 +75,7 @@
 
 .trainer-header { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); }
 .trainer-header h2 { margin: 0; font-size: var(--text-xl); }
-.trainer-body { width: 100%; }
+.trainer-body { width: 100%; flex: 1; display: flex; flex-direction: column; justify-content: center; gap: var(--space-4); }
 .strategy-card, .practice-card, .speed-card, .summary-card, .speed-ready-card { display: grid; gap: var(--space-4); }
 .question-display { margin: 0; text-align: center; font-size: var(--text-fluid-eq); font-weight: 800; color: var(--color-cyan); }
 .question-header { margin: 0; text-align: center; font-size: var(--text-2xl); }
@@ -98,7 +98,7 @@
 .strategy-overlay { z-index: 100; }
 .strategy-overlay .strategy-card { max-width: 400px; width: 100%; margin: auto; box-shadow: var(--shadow-md); background: var(--bg-surface); border: 1px solid var(--border-highlight); border-radius: var(--radius-lg); padding: var(--space-6); text-align: center; }
 
-.summary-stats { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-6); background: var(--bg-surface-elevated); padding: var(--space-4); border-radius: var(--radius-md); }
+.summary-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-6); background: var(--bg-surface-elevated); padding: var(--space-4); border-radius: var(--radius-md); }
 .summary-stats p { margin: 0; }
 .summary-stars { display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-6); color: var(--color-gold); text-align: center; font-weight: 800; font-size: 1.25rem; }
 .summary-stars p { margin: 0; }

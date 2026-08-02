@@ -34,6 +34,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   three patterns for the same job. A shared `TopBar` now puts the exit in the same
   corner everywhere, and each screen has exactly one `h1` (the arcade game screen
   previously had none).
+- **The equation type no longer breaks mid-formula.** At Legend and Supernova, four
+  of seven realistic prompts wrapped on a phone, splitting sums like
+  `37 ? 496 = 533` across two lines. The fluid size now fits all but the two-step
+  chains, which wrap evenly.
 - **Every Times Tables planet has its own icon.** Twenty-one of the twenty-three
   rendered an identical ✖️, so the galaxy map was a wall of grey crosses.
 - **Language flags are drawn as SVG** instead of 🇩🇪-style regional-indicator emoji,
@@ -43,6 +47,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **💫 Supernova rank** — numbers up to 1000, above Legend.
 
 ### Fixed
+- **The Hall of Fame lost player names on phones.** Below 460px the stats column was
+  sized `auto`, and the longer French and Italian strings consumed the whole name
+  column — names vanished and the stars overlapped the stats. German happened to fit,
+  which is why it went unnoticed.
+- **Button labels disappeared from the accessibility tree on phones.** They were
+  hidden with `display: none`, so the back and help buttons were announced as "←" and
+  "💡". They are now visually hidden but still read aloud.
+- **Trainer screens pinned their card to the top**, leaving a large void beneath it on
+  a tall phone.
 - **The sound setting only worked in Math Invaders.** All four trainer phases play
   sounds but none applied the preference, so switching sound off and going straight
   to the times tables still made noise.

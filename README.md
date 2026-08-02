@@ -16,9 +16,9 @@
 |-------------|----------|
 | ![Hall of Fame](./docs/math-invaders-hall-of-fame.png) | ![Settings page](./docs/math-invaders-settings.png) |
 
-| Times Tables Galaxy |
-|---------------------|
-| ![Times Tables Galaxy](./docs/math-invaders-times-tables.png) |
+| Times Tables Galaxy | Trainer practice |
+|---------------------|------------------|
+| ![Times Tables Galaxy](./docs/math-invaders-times-tables.png) | ![Trainer practice](./docs/math-invaders-trainer-practice.png) |
 
 ---
 
@@ -182,6 +182,9 @@ Settings are grouped by the game they affect, because both games share the page:
 
 ## 🏆 Hall of Fame
 
+Reached from the Math Invaders section on the home page — the leaderboard belongs to
+the arcade game, so the trainer does not link to it.
+
 - **One best entry per rank and per clock setting** — a relaxed run never overwrites a timed one
 - **No backend:** scores stay in your browser's `localStorage`
 - **Earlier scores** from before the rework are kept read-only under "Earlier". They are
@@ -196,11 +199,15 @@ Settings are grouped by the game they affect, because both games share the page:
 
 ```
 ┌─ React 19 + TypeScript
+├─ Two games, one shell
+│  ├─ 🛸 Math Invaders     — the one-tap arcade game
+│  └─ ✖️ Times Tables Galaxy — the multiplication trainer
 ├─ Pages
-│  ├─ Home: Profile creation
-│  ├─ Game: Main gameplay
-│  ├─ Hall of Fame: Leaderboards
-│  └─ Settings: Data management
+│  ├─ Home: profile and the game picker
+│  ├─ Game: the arcade mission loop
+│  ├─ Hall of Fame: Math Invaders leaderboards
+│  ├─ Times Tables: galaxy map and the four trainer phases
+│  └─ Settings: grouped by which game each control affects
 ├─ Storage
 │  └─ localStorage: Player data, game state, scores
 └─ Deploy
@@ -242,7 +249,8 @@ web/
 │   │   ├── NumberPad.tsx       # Trainer numeric input
 │   │   ├── FactHeatmap.tsx     # Trainer mastery grid
 │   │   ├── SessionSummary.tsx  # Trainer results
-│   │   ├── Navigation.tsx      # Trainer top bar
+│   │   ├── TopBar.tsx         # The one navigation bar, used by both games
+│   │   ├── Flag.tsx           # Drawn language flags
 │   │   └── ErrorBoundary.tsx   # Crash fallback
 │   ├── game/                   # Pure domain — no React, fully tested
 │   │   ├── types.ts            # Ranks, forms, scoring
@@ -343,8 +351,11 @@ See [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) for details.
 - **Privacy-first:** All data stays on your device
 - **Offline-capable:** Works without internet after initial load
 - **Accessible:** Native buttons, visible focus rings, 44 px minimum touch targets,
-  `prefers-reduced-motion` support, and dialogs that trap focus and close on Escape —
-  all verified by the automated accessibility and responsive suites
+  `prefers-reduced-motion` support, dialogs that trap focus and close on Escape, and
+  labels that stay in the accessibility tree even when a phone hides them — all
+  verified by the automated accessibility and responsive suites
+- **Consistent:** both games share one navigation bar, so the way out is always the
+  first control in the top-left, whichever game a child is in
 
 ---
 

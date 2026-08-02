@@ -104,10 +104,11 @@ export async function answerCurrentFact(page: Page): Promise<void> {
     const match = ((await display.textContent()) ?? '').match(/(\d+)\s*×\s*(\d+)\s*=\s*\?/) 
     if (match === null) throw new Error('The trainer did not render a multiplication fact')
     const answer = String(Number(match[1]) * Number(match[2]))
-    for (const digit of answer) await page.getByRole('button', { name: digit, exact: true }).click()
-    // The pad's confirm button is labelled in the active UI language, and specs
-    // that start from empty storage run in the default German.
-    await page.getByRole('button', { name: /submit|bestätigen|invia|valider/i }).click()
+    // Typed rather than clicked: resolving a locator per digit costs enough under
+    // parallel load to push an answer past the 3s mastery threshold in
+    // `isMastered`, which made star assertions flaky. The pad accepts real keys.
+    await page.keyboard.type(answer)
+    await page.keyboard.press('Enter')
 }
 
 export function collectConsoleErrors(page: Page): string[] {

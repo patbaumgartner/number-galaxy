@@ -31,7 +31,7 @@ export default function HallOfFamePage() {
         <div className="page">
             <TopBar
                 back={{ label: t.nav.home, to: '/' }}
-                title={<>🏆<span className="game-bar__hide-sm"> {t.hof.title}</span></>}
+                title={<>🏆 {t.hof.title}</>}
                 actions={<button type="button" className="btn btn--icon" onClick={() => navigate('/settings')}>
                     ⚙️<span className="game-bar__hide-sm"> {t.nav.settings}</span>
                 </button>}

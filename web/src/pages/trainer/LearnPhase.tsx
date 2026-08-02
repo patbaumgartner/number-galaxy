@@ -92,7 +92,7 @@ export function LearnPhase({ planetId }: { planetId: PlanetId }) {
         <div className="page trainer-page">
             <TopBar
                 back={{ label: t.tt.trainExit, to: '/times-tables' }}
-                title={<span className="game-bar__player">{planet.emoji}<span className="game-bar__hide-sm"> {planet.label} — {t.tt.phaseLearn}</span></span>}
+                title={<>{planet.emoji} {planet.label} — {t.tt.phaseLearn}</>}
             />
             <main className="shell">
 

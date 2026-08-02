@@ -34,7 +34,7 @@
   --text-lg: 1.25rem;
   --text-xl: 1.5rem;
   --text-2xl: 2rem;
-  --text-fluid-eq: clamp(2.4rem, 11vw, 4.5rem);
+  --text-fluid-eq: clamp(2rem, 9.5vw, 4.5rem);
 
   /* Radii */
   --radius-sm: 8px;
@@ -395,9 +395,29 @@ summary.panel__title {
   gap: var(--space-2);
 }
 
-@media (max-width: 400px) {
+@media (max-width: 560px) {
+  /* Hidden from sight, kept for screen readers: `display: none` also stripped
+     these labels from the accessibility tree, leaving buttons named "←" and
+     "💡" on every phone. */
   .game-bar__hide-sm {
-    display: none;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .game-bar__title {
+    font-size: var(--text-sm);
+    margin-inline: var(--space-1);
+  }
+
+  .game-bar {
+    padding-inline: var(--space-2);
+    gap: var(--space-1);
   }
 }
 
@@ -599,6 +619,9 @@ summary.panel__title {
   line-height: 1.16;
   max-width: 100%;
   overflow-wrap: break-word;
+  /* Only the two-step chain prompts still need two lines at phone widths; an
+     even split reads better than one long line plus an orphan. */
+  text-wrap: balance;
   margin: 0;
 }
 
@@ -1250,10 +1273,10 @@ summary.panel__title {
 @media (max-width: 460px) {
   .board__row {
     display: grid;
-    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    grid-template-columns: auto auto minmax(0, 1fr) auto auto;
     grid-template-areas:
-      "rank avatar name  score"
-      "rank avatar stars meta";
+      "rank avatar name score stars"
+      "rank avatar meta meta  meta";
     column-gap: var(--space-2);
     row-gap: 2px;
     align-items: center;
@@ -1267,14 +1290,15 @@ summary.panel__title {
   .board__stars {
     grid-area: stars;
     margin-right: 0;
-    justify-self: start;
+    justify-self: end;
   }
 
   .board__meta {
     grid-area: meta;
     flex-direction: row;
     align-items: center;
-    justify-self: end;
+    justify-self: start;
+    min-width: 0;
     font-size: var(--text-sm);
     color: var(--text-muted);
   }
@@ -1501,13 +1525,17 @@ summary.panel__title {
 }
 
 .game-bar__title {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
+  flex: 1 1 auto;
   min-width: 0;
-  margin: 0;
+  margin: 0 var(--space-2);
   font-size: var(--text-base);
   font-weight: 700;
+  text-align: center;
+}
+
+.game-bar > .btn,
+.game-bar__actions {
+  flex: 0 0 auto;
 }
 
 .game-bar__title,

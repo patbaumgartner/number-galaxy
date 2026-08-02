@@ -116,7 +116,7 @@ export function DailyPhase() {
 }
 
 function TrainerFrame({ title, exit, children }: { readonly title: string; readonly exit: string; readonly children: ReactNode }) {
-    return <div className="page trainer-page"><TopBar back={{ label: exit, to: '/times-tables' }} title={<span className="game-bar__player">{title}</span>} /><main className="shell"><div className="trainer-body">{children}</div></main></div>
+    return <div className="page trainer-page"><TopBar back={{ label: exit, to: '/times-tables' }} title={title} /><main className="shell"><div className="trainer-body">{children}</div></main></div>
 }
 
 function Dialog({ title, children, onClose }: { readonly title: string; readonly children: ReactNode; readonly onClose: () => void }) {

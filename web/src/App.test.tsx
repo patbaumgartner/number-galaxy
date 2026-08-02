@@ -1,0 +1,66 @@
+import { render, screen } from '@testing-library/react'
+import { describe, expect, it } from 'vitest'
+import App from './App'
+import { store } from './store'
+
+const BASENAME = '/math-invaders'
+
+function renderAt(path: string) {
+    window.history.pushState({}, '', `${BASENAME}${path}`)
+    return render(<App />)
+}
+
+describe('App routing', () => {
+    it('renders the home page at the root', () => {
+        renderAt('/')
+
+        expect(screen.getByRole('heading', { level: 1, name: /MATH INVADERS/i })).toBeInTheDocument()
+    })
+
+    it('renders the game page', () => {
+        renderAt('/game')
+
+        expect(screen.getByRole('group')).toBeInTheDocument()
+        expect(screen.getAllByRole('button', { name: /^\d+$/ }).length).toBeGreaterThan(0)
+    })
+
+    it('renders the hall of fame page', () => {
+        renderAt('/hall-of-fame')
+
+        expect(screen.getByRole('heading', { level: 1, name: /🏆/ })).toBeInTheDocument()
+    })
+
+    it('renders the settings page', () => {
+        renderAt('/settings')
+
+        expect(screen.getByRole('heading', { level: 1, name: /⚙️/ })).toBeInTheDocument()
+    })
+
+    it('renders the times tables galaxy map', () => {
+        renderAt('/times-tables')
+
+        expect(screen.getByRole('navigation', { name: /primary navigation/i })).toBeInTheDocument()
+        expect(screen.getByRole('tablist')).toBeInTheDocument()
+    })
+
+    it('renders a trainer phase behind its own route', () => {
+        renderAt('/times-tables/train/t2/learn')
+
+        expect(screen.getByRole('heading', { level: 2, name: /2/ })).toBeInTheDocument()
+    })
+
+    it('redirects an unknown route home instead of showing a blank page', () => {
+        renderAt('/this-route-does-not-exist')
+
+        expect(screen.getByRole('heading', { level: 1, name: /MATH INVADERS/i })).toBeInTheDocument()
+        expect(window.location.pathname.replace(/\/$/, '')).toBe(BASENAME)
+    })
+
+    it('mirrors the stored language onto the document element', () => {
+        store.saveSettings({ ...store.getSettings(), language: 'fr' })
+
+        renderAt('/')
+
+        expect(document.documentElement.lang).toBe('fr')
+    })
+})

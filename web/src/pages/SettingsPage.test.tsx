@@ -1,0 +1,90 @@
+import { screen } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { progressKeys, store } from '../store'
+import { ttStore } from '../timesTable/ttStore'
+import { LOCATION_TEST_ID, renderWithRouter, seedLanguage, seedOperations, seedPlayer, userEvent } from '../test/utils'
+import SettingsPage from './SettingsPage'
+
+describe('SettingsPage', () => {
+    beforeEach(() => seedLanguage('en'))
+    afterEach(() => vi.restoreAllMocks())
+
+    it('persists operation and rank choices while locking the final operation', async () => {
+        seedOperations(['addition'])
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<SettingsPage />)
+        const plus = screen.getByRole('button', { name: /plus/i })
+        expect(plus).toHaveAttribute('aria-disabled', 'true')
+        await user.click(plus)
+        expect(store.getSettings().operations).toEqual(['addition'])
+
+        await user.click(screen.getByRole('button', { name: /times/i }))
+        expect(store.getSettings().operations).toEqual(['addition', 'multiplication'])
+        await user.click(screen.getByRole('button', { name: /cadet/i }))
+        expect(store.getSettings().rank).toBe('cadet')
+        expect(screen.getByRole('button', { name: /cadet/i })).toHaveAttribute('aria-pressed', 'true')
+    })
+
+    it('renders mastery badges and persists translated language changes', async () => {
+        localStorage.setItem(progressKeys.skills, JSON.stringify({ addition: { history: [true, true, true, true, true] } }))
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<SettingsPage />)
+        expect(screen.getByText('💎')).toBeInTheDocument()
+        await user.click(screen.getByRole('button', { name: /français/i }))
+        expect(store.getSettings().language).toBe('fr')
+        expect(document.documentElement.lang).toBe('fr')
+        expect(screen.getByRole('heading', { name: /réglages/i })).toBeInTheDocument()
+    })
+
+    it('persists all switches including trainer strategy cards', async () => {
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<SettingsPage />)
+        const switches = screen.getAllByRole('switch')
+        expect(switches[0]).toHaveAttribute('aria-checked', 'true')
+        await user.click(switches[0])
+        expect(ttStore.getTTSettings().strategyCards).toBe(false)
+
+        await user.click(screen.getByText('More settings'))
+        const advanced = screen.getAllByRole('switch')
+        await user.click(advanced[1])
+        await user.click(advanced[2])
+        await user.click(advanced[3])
+        expect(store.getSettings()).toMatchObject({ timed: true, sound: false, hints: false })
+    })
+
+    it('resets only trainer data after confirmation and does nothing when cancelled', async () => {
+        seedPlayer()
+        ttStore.saveTTSettings({ strategyCards: false })
+        vi.spyOn(window, 'confirm').mockReturnValue(false)
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<SettingsPage />)
+        await user.click(screen.getByRole('button', { name: /reset trainer progress/i }))
+        expect(ttStore.getTTSettings().strategyCards).toBe(false)
+
+        vi.spyOn(window, 'confirm').mockReturnValue(true)
+        await user.click(screen.getByRole('button', { name: /reset trainer progress/i }))
+        expect(ttStore.getTTSettings().strategyCards).toBe(true)
+        expect(store.getPlayer()).not.toBeNull()
+    })
+
+    it('clears all data only after confirmation and navigates through each footer action', async () => {
+        seedPlayer()
+        const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false)
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<SettingsPage />)
+        await user.click(screen.getByText('More settings'))
+        await user.click(screen.getByRole('button', { name: /delete all data/i }))
+        expect(store.getPlayer()).not.toBeNull()
+
+        confirm.mockReturnValue(true)
+        await user.click(screen.getByRole('button', { name: /delete all data/i }))
+        expect(store.getPlayer()).toBeNull()
+        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/')
+        await user.click(screen.getByRole('button', { name: /fertig/i }))
+        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/game')
+        await user.click(screen.getByRole('button', { name: /start/i }))
+        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/')
+        await user.click(screen.getByRole('button', { name: /bestenliste/i }))
+        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/hall-of-fame')
+    })
+})

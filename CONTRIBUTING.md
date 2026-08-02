@@ -34,7 +34,8 @@ This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.
 2. **Clone** your fork: `git clone https://github.com/YOUR_USERNAME/math-invaders.git`
 3. **Install** dependencies: `cd web && npm install`
 4. **Run** locally: `npm run dev`
-5. Open [http://localhost:5173/math-invaders](http://localhost:5173/math-invaders)5. **Test touch controls:** open DevTools → toggle device toolbar (or use a real mobile device) and verify swipe gestures and tap-to-shoot work
+5. Open [http://localhost:5173/math-invaders](http://localhost:5173/math-invaders)
+6. **Test touch controls:** open DevTools → toggle device toolbar (or use a real mobile device) and verify swipe gestures and tap-to-shoot work
 ---
 
 ## How to Contribute
@@ -98,6 +99,9 @@ npm run build
 
 # Lint
 npm run lint
+
+# Test
+npm test
 ```
 
 **Requirements:** Node.js 22+

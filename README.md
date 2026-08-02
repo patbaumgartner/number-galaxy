@@ -16,6 +16,10 @@
 |-------------|----------|
 | ![Hall of Fame](./docs/math-invaders-hall-of-fame.png) | ![Settings page](./docs/math-invaders-settings.png) |
 
+| Times Tables Galaxy |
+|---------------------|
+| ![Times Tables Galaxy](./docs/math-invaders-times-tables.png) |
+
 ---
 
 ## 🎮 How to Play

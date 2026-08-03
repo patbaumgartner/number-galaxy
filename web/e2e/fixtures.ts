@@ -151,6 +151,10 @@ export async function answerBeamQuestion(page: Page): Promise<void> {
     await page.getByRole('button', { name: /Land on/ }).click()
 }
 
+/** One stat from the shared play HUD, which renders its label and value separately. */
+export const hudStat = (page: Page, label: string) =>
+    page.locator('.hud__stat').filter({ hasText: label }).locator('.hud__value')
+
 export function collectConsoleErrors(page: Page): string[] {
     const errors: string[] = []
     page.on('console', message => {

@@ -55,7 +55,7 @@
   flex-direction: column;
   gap: var(--space-3);
   position: relative;
-  padding: var(--space-3) var(--space-4) calc(var(--space-5) + env(safe-area-inset-bottom));
+  padding: var(--space-4) var(--space-4) calc(var(--space-5) + env(safe-area-inset-bottom));
 }
 
 .stage__rocket {
@@ -118,7 +118,7 @@
   line-height: 1.1;
 }
 
-.hud__value--score {
+.hud__stat--score .hud__value {
   color: var(--color-cyan);
   text-shadow: var(--glow-score);
 }

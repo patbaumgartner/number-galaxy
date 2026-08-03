@@ -5,10 +5,10 @@ Math Invaders is tested in three layers, each answering a different question.
 | Layer | Question it answers | Runner | Count |
 |-------|--------------------|--------|-------|
 | **Domain** | Is the maths correct? | Vitest (`node`) | 207 tests · 23 files |
-| **UI** | Does the interface behave? | Vitest (`jsdom`) + Testing Library | 169 tests · 28 files |
+| **UI** | Does the interface behave? | Vitest (`jsdom`) + Testing Library | 170 tests · 28 files |
 | **End-to-end** | Does the shipped bundle work? | Playwright (Chromium desktop + mobile) | 150 tests · 11 files |
 
-**526 tests total.** Everything below runs from `web/`.
+**527 tests total.** Everything below runs from `web/`.
 
 ```bash
 npm test              # both Vitest projects

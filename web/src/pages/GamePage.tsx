@@ -20,7 +20,7 @@ import { translations } from '../i18n'
 import AnswerGrid from '../components/arcade/AnswerGrid'
 import TopBar from '../components/TopBar'
 import WorkedExampleDialog from '../components/WorkedExampleDialog'
-import GameHud from '../components/arcade/GameHud'
+import PlayHud from '../components/PlayHud'
 import MissionSummary from '../components/arcade/MissionSummary'
 import {
     useCountdown,
@@ -267,20 +267,19 @@ export default function GamePage() {
             />
 
             <main className="stage">
-                <GameHud
-                    score={mission.score}
-                    combo={getComboMultiplier(mission.streak)}
-                    streak={mission.streak}
+                <PlayHud
+                    stats={[
+                        { label: t.game.score, value: mission.score, modifier: 'score' },
+                        {
+                            label: t.game.combo,
+                            value: <>×{getComboMultiplier(mission.streak)}{mission.streak >= 3 && <span className="hud__flame" aria-hidden="true">🔥</span>}</>,
+                            modifier: `combo hud__stat--x${getComboMultiplier(mission.streak)}`,
+                        },
+                        { label: t.play.question, value: `${answered}/${QUESTIONS_PER_MISSION}` },
+                    ]}
                     results={mission.results}
                     total={QUESTIONS_PER_MISSION}
-                    seconds={mission.timed ? remaining : null}
-                    maxSeconds={seconds}
-                    labels={{
-                        score: t.game.score,
-                        combo: t.game.combo,
-                        question: t.game.question,
-                        untimed: t.game.untimed,
-                    }}
+                    timer={{ seconds: mission.timed ? remaining : null, maxSeconds: seconds, untimed: t.game.untimed }}
                 />
 
                 <section className={`equation${feedback ? ` equation--${feedback.outcome}` : ''}`}>

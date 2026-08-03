@@ -122,6 +122,11 @@ export type Translations = {
         settingsTitle: string; settingsStrategyCards: string; settingsStrategyHint: string
         settingsReset: string; settingsResetConfirm: string
     }
+    /** Labels the shared play HUD shows in every game. */
+    play: {
+        question: string
+        streak: string
+    }
     surprise: {
         title: string
         blurb: string

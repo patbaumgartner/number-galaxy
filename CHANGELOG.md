@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **One status strip for every game.** The arcade, the trainer and the beam each
+  showed progress differently — a rich stat row, a bare "1 / 12" tucked inside a
+  card, a plain line — so moving between them felt like moving between three
+  apps. A shared `PlayHud` now fixes where progress sits and how it reads, while
+  each game still chooses what to show in it. Every play screen starts at the
+  same height, carries the same progress trail, and keeps its 💡 Help in the top
+  bar rather than floating inside a card.
 - **🎲 Surprise me** on the home picker: one button that chooses a game for you.
   It only ever offers content you have unlocked, never changes the rank or tier you
   have earned, and sends you to the Daily Mission first when trainer facts are due.
@@ -36,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Mission phases for tables, squares, shortcuts and advanced facts.
 - Leitner-style review, persistent stars and best times, strategy cards, a mastery
   heatmap and independent trainer-progress reset in Settings.
-- **Three-layer test suite, 526 tests.** Domain logic in Node, React components and
+- **Three-layer test suite, 527 tests.** Domain logic in Node, React components and
   pages in jsdom via Testing Library, and the built bundle driven through desktop and
   mobile Chromium with Playwright. Coverage is gated at 95 % statements / 92 % branches
   and the end-to-end suite runs in CI. See [docs/TESTING.md](docs/TESTING.md).

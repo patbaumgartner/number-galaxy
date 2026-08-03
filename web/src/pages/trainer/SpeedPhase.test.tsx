@@ -1,7 +1,7 @@
 import { act, fireEvent, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { ttStore } from '../../timesTable/ttStore'
-import { LOCATION_TEST_ID, renderWithRouter, seedLanguage, seedStars } from '../../test/utils'
+import { LOCATION_TEST_ID, renderWithRouter, seedLanguage, seedStars, hudStat } from '../../test/utils'
 import { SpeedPhase } from './SpeedPhase'
 
 const answer = (): number => {
@@ -41,7 +41,7 @@ describe('SpeedPhase', () => {
         act(() => vi.advanceTimersByTime(1000))
         act(() => vi.advanceTimersByTime(1))
         expect(screen.getByText('00:00.0')).toBeInTheDocument()
-        expect(screen.getByText(/1 \/ 12/)).toBeInTheDocument()
+        expect(hudStat('Question')).toBe('1/12')
         submit(999)
         expect(container.querySelector('.question-display')).toHaveClass('shake')
         expect(Object.keys(ttStore.getProgress())).not.toHaveLength(0)

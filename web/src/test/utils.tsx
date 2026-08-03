@@ -1,4 +1,4 @@
-import { render, type RenderOptions, type RenderResult } from '@testing-library/react'
+import { render, screen, type RenderOptions, type RenderResult } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { ReactElement } from 'react'
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router'
@@ -101,5 +101,18 @@ export function seedBeamStars(stars: Partial<Record<BeamSkill, BeamStarLevel>>):
 
 export const seedBeamSettings = (alwaysShowBar: boolean): void =>
     beamStore.saveBeamSettings({ alwaysShowBar })
+
+/**
+ * Reads one stat out of the shared play HUD by its label.
+ *
+ * The HUD renders the label and its value as separate elements, so a plain text
+ * query for "Question 3/10" finds nothing even though that is what a player
+ * sees. This asks the way they read it.
+ */
+export function hudStat(label: string | RegExp): string {
+    const stat = screen.getByText(label).closest('.hud__stat')
+    if (stat === null) throw new Error(`No HUD stat labelled ${String(label)}`)
+    return (stat.textContent ?? '').replace(String(label), '').trim()
+}
 
 export { userEvent }

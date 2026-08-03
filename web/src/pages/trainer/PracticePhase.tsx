@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import PlayHud from '../../components/PlayHud'
 import TrainerFrame from '../../components/trainer/TrainerFrame'
 import { NumberPad } from '../../components/trainer/NumberPad'
 import { SessionSummary } from '../../components/trainer/SessionSummary'
@@ -121,7 +122,23 @@ export function PracticePhase({ planetId }: { planetId: PlanetId }) {
         }
     }
     return (
-        <TrainerFrame title={title} exit={t.tt.trainExit}>
+        <TrainerFrame
+            title={title}
+            exit={t.tt.trainExit}
+            actions={ttSettings.strategyCards && (
+                <button type="button" className="btn btn--icon" onClick={() => setShowStrategy(true)}>
+                    💡<span className="game-bar__hide-sm"> {t.beam.help}</span>
+                </button>
+            )}
+        >
+            <PlayHud
+                stats={[
+                    { label: t.play.streak, value: <>🔥 {streak}</> },
+                    { label: t.play.question, value: `${currentIdx + 1}/${session.length}` },
+                ]}
+                results={session.map((_unused, index) => (index < currentIdx ? firstAttempt[session[index].key] : undefined))}
+                total={session.length}
+            />
             {showStrategy && (
                 <StrategyOverlay
                     planetId={planetId}
@@ -138,17 +155,6 @@ export function PracticePhase({ planetId }: { planetId: PlanetId }) {
                 />
             ) : (
                 <div className="panel practice-card">
-                    <div className="progress-bar">{currentIdx + 1} / {session.length}</div>
-                    <div className="streak-bar">
-                        <span>🔥 {streak}</span>
-                        {ttSettings.strategyCards && (
-                            <button
-                                type="button"
-                                className="btn btn--ghost btn--sm"
-                                onClick={() => setShowStrategy(true)}
-                            >💡</button>
-                        )}
-                    </div>
                     <div className={`question-display ${shake ? 'shake' : ''}`}>{currentFact.a} × {currentFact.b} = ?</div>
                     <div className="pad-wrapper">
                         <NumberPad value={padValue} onChange={setPadValue} onSubmit={handlePadSubmit} />

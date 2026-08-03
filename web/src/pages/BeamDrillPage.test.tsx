@@ -8,6 +8,7 @@ import {
     seedBeamSettings,
     seedBeamStars,
     seedLanguage,
+    hudStat,
 } from '../test/utils'
 
 const CORRECT_MS = 700
@@ -70,7 +71,7 @@ describe('BeamDrillPage', () => {
 
     it('opens on the first question with the bar picture and the beam', () => {
         renderDrill('double')
-        expect(screen.getByText('Question 1/10')).toBeInTheDocument()
+        expect(hudStat('Question')).toBe('1/10')
         expect(screen.getByRole('img', { name: /Bar picture/ })).toBeInTheDocument()
         expect(screen.getByRole('slider', { name: 'Move the alien along the beam' })).toBeInTheDocument()
         expect(screen.getByText('Tier 1')).toBeInTheDocument()
@@ -94,8 +95,8 @@ describe('BeamDrillPage', () => {
         expect(screen.getByText('Correct!')).toBeInTheDocument()
 
         act(() => vi.advanceTimersByTime(CORRECT_MS))
-        expect(screen.getByText('Question 2/10')).toBeInTheDocument()
-        expect(screen.getByText(/Streak 1/)).toBeInTheDocument()
+        expect(hudStat('Question')).toBe('2/10')
+        expect(hudStat('Streak')).toContain('1')
     })
 
     it('always offers a beam stop exactly on the answer', () => {
@@ -113,7 +114,7 @@ describe('BeamDrillPage', () => {
         answerWrongly()
         expect(screen.getByText(/Missed! The answer was/)).toBeInTheDocument()
         expect(screen.getByRole('img', { name: /Bar picture: \d+ = \d+ · \d+ = \d+ \+ \d+/ })).toBeInTheDocument()
-        expect(screen.getByText(/Streak 0/)).toBeInTheDocument()
+        expect(hudStat('Streak')).toContain('0')
     })
 
     it('keeps the bar hidden until a miss when the player switched it off', () => {
@@ -136,7 +137,7 @@ describe('BeamDrillPage', () => {
         expect(beamStore.getBests().double).toBe(1)
 
         fireEvent.click(screen.getByRole('button', { name: 'Play again' }))
-        expect(screen.getByText('Question 1/10')).toBeInTheDocument()
+        expect(hudStat('Question')).toBe('1/10')
     })
 
     it('withholds the star and says so when the run was not good enough', () => {
@@ -175,12 +176,12 @@ describe('BeamDrillPage', () => {
     it('turns away a station that does not exist', () => {
         renderDrill('nonsense')
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/number-beam')
-        expect(screen.queryByText('Question 1/10')).not.toBeInTheDocument()
+        expect(screen.queryByText('Question')).not.toBeInTheDocument()
     })
 
     it('turns away a station whose zone is still locked', () => {
         renderDrill('split')
-        expect(screen.queryByText('Question 1/10')).not.toBeInTheDocument()
+        expect(screen.queryByText('Question')).not.toBeInTheDocument()
     })
 
     it('lets a bond and a split drill be played once their zones are open', () => {

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { NumberPad } from '../../components/trainer/NumberPad'
 import { SessionSummary } from '../../components/trainer/SessionSummary'
+import PlayHud from '../../components/PlayHud'
 import TrainerFrame from '../../components/trainer/TrainerFrame'
 import { playCorrect, playLevelUp, playWrong } from '../../sound'
 import { store } from '../../store'
@@ -29,6 +30,7 @@ export function DailyPhase() {
     const settings = store.getSettings()
     useSoundSetting()
     const t = translations[settings.language].tt
+    const play = translations[settings.language].play
     const surprise = useSurpriseRun()
     const surpriseActions: SurpriseActions | undefined = surprise.active
         ? {
@@ -133,7 +135,23 @@ export function DailyPhase() {
     }
 
     return (
-        <TrainerFrame title={t.dailyMission} exit={t.trainExit}>
+        <TrainerFrame
+            title={t.dailyMission}
+            exit={t.trainExit}
+            actions={ttStore.getTTSettings().strategyCards && (
+                <button type="button" className="btn btn--icon" onClick={() => setShowStrategy(true)}>
+                    💡<span className="game-bar__hide-sm"> {translations[settings.language].beam.help}</span>
+                </button>
+            )}
+        >
+            <PlayHud
+                stats={[
+                    { label: play.streak, value: <>🔥 {streak}</> },
+                    { label: play.question, value: `${index + 1}/${session.length}` },
+                ]}
+                results={session.map((_unused, at) => (at < index ? true : undefined))}
+                total={session.length}
+            />
             {showStrategy && (
                 <Dialog title={strategyCard.title} onClose={() => setShowStrategy(false)}>
                     {strategyCard.lines.map(line => <p key={line}>{line}</p>)}
@@ -143,17 +161,6 @@ export function DailyPhase() {
                 <Dialog title={explanation} onClose={dismissExplanation}><p>{explanation}</p></Dialog>
             ) : (
                 <section className="panel practice-card">
-                    <div className="progress-bar">{index + 1} / {session.length}</div>
-                    <div className="streak-bar">
-                        <span>🔥 {streak}</span>
-                        {ttStore.getTTSettings().strategyCards && (
-                            <button
-                                type="button"
-                                className="btn btn--ghost btn--sm"
-                                onClick={() => setShowStrategy(true)}
-                            >💡</button>
-                        )}
-                    </div>
                     <p className="question-header" aria-hidden="true">{planet?.emoji}</p>
                     <p className="question-display">{fact.a} × {fact.b} = ?</p>
                     <NumberPad value={value} onChange={setValue} onSubmit={submit} />

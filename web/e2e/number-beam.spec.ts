@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { answerBeamQuestion, collectConsoleErrors, gotoApp, seedStorage } from './fixtures'
+import { answerBeamQuestion, collectConsoleErrors, gotoApp, hudStat, seedStorage } from './fixtures'
 
 const settings = { language: 'en', operations: ['addition'], rank: 'rookie', timed: false, sound: false, hints: true }
 const player = { id: 'beam-pilot', playerName: 'Nova', avatarId: '🚀', createdAt: '2026-01-01T00:00:00.000Z' }
@@ -38,7 +38,7 @@ test('reaches the doubling drill from the home game picker', async ({ page }) =>
     await page.getByRole('button', { name: /Number Beam/ }).click()
     await page.locator(station('Double')).click()
     await expect(page).toHaveURL(/\/number-beam\/drill\/double$/)
-    await expect(page.getByText('Question 1/10')).toBeVisible()
+    await expect(hudStat(page, 'Question')).toHaveText('1/10')
 })
 
 test('draws the whole above its two halves and reveals the numbers after a miss', async ({ page }) => {
@@ -93,7 +93,7 @@ test('plays a full drill entirely on the beam, earning and keeping a star', asyn
     await gotoApp(page, '/number-beam/drill/double')
 
     for (let index = 0; index < 10; index += 1) {
-        await expect(page.getByText(`Question ${index + 1}/10`)).toBeVisible()
+        await expect(hudStat(page, 'Question')).toHaveText(`${index + 1}/10`)
         // Never a tile grid: the beam is the only way to answer in this section.
         await expect(page.locator('.answer-grid')).toHaveCount(0)
         await answerBeamQuestion(page)

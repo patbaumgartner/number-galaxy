@@ -181,8 +181,12 @@ export const de: Translations = {
         settingsReset: 'Trainer-Fortschritt löschen',
         settingsResetConfirm: 'Einmaleins-Fortschritt wirklich löschen?',
     },
+    play: {
+        question: 'Aufgabe',
+        streak: 'Serie',
+    },
     surprise: {
-        title: '🎲 Überrasch mich',
+        title: 'Überrasch mich',
         blurb: 'Das Spiel wählt für dich — und nimmt das, was du gerade brauchst.',
         again: 'Noch eine Überraschung',
     },

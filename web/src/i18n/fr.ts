@@ -183,8 +183,12 @@ export const fr: Translations = {
         settingsReset: 'Réinitialiser les progrès',
         settingsResetConfirm: 'Réinitialiser tous les progrès des tables ?',
     },
+    play: {
+        question: 'Question',
+        streak: 'Série',
+    },
     surprise: {
-        title: '🎲 Surprends-moi',
+        title: 'Surprends-moi',
         blurb: 'Le jeu choisit pour toi — il prend ce dont tu as le plus besoin.',
         again: 'Une autre surprise',
     },

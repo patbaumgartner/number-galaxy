@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
+import PlayHud from '../../components/PlayHud'
 import TrainerFrame from '../../components/trainer/TrainerFrame'
 import { NumberPad } from '../../components/trainer/NumberPad'
 import { SessionSummary } from '../../components/trainer/SessionSummary'
@@ -134,9 +135,15 @@ export function SpeedPhase({ planetId }: { planetId: PlanetId }) {
     }
     return (
         <TrainerFrame title={title} exit={t.tt.trainExit}>
+            <PlayHud
+                stats={[
+                    { label: t.tt.summaryTime, value: formatDisplayTime(displayTime) },
+                    { label: t.play.question, value: `${currentIdx + 1}/${session.length}` },
+                ]}
+                results={session.map((_unused, index) => (index < currentIdx ? true : undefined))}
+                total={session.length}
+            />
             <div className="panel speed-card">
-                <div className="speed-timer">{formatDisplayTime(displayTime)}</div>
-                <div className="progress-bar">{currentIdx + 1} / {session.length}</div>
                 <div className={`question-display ${shake ? 'shake' : ''}`}>{currentFact.a} × {currentFact.b} = ?</div>
                 <div className="pad-wrapper">
                     <NumberPad value={padValue} onChange={setPadValue} onSubmit={handlePadSubmit} />

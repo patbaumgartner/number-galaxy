@@ -200,21 +200,14 @@
 
 /* ------------------------------------------------------------------ drill -- */
 
-/* The drill is a study screen, not the arcade's one-viewport loop: it carries a
-   bar picture and an input on top of the question. `safe center` centres it when
-   it fits and falls back to start-alignment when it does not — plain `center`
-   would push the overflow off both ends and out of reach. */
+/* Every play screen shares this rhythm: the status strip sits directly under the
+   top bar and content flows down from there. Centring the column instead made
+   each game start at a different height, which is what made three games that
+   share a design system still feel like three different apps. */
 .beam-stage {
   gap: var(--space-3);
   max-width: 620px;
-  justify-content: safe center;
-}
-
-.beam-progress {
-  display: flex;
-  justify-content: space-between;
-  color: var(--text-muted);
-  font-size: var(--text-sm);
+  justify-content: flex-start;
 }
 
 .beam-drill .equation { flex: 0 0 auto; min-height: 0; padding: var(--space-4) var(--space-3); }
@@ -235,11 +228,11 @@
 
 /* --------------------------------------------------------------- surprise -- */
 
-.game-picker__surprise {
-  display: grid;
-  gap: var(--space-2);
-  margin-top: var(--space-3);
+/* A fourth game rather than a special control beside three: same card, same
+   affordance, just the one whose subject is "whatever you need next". */
+.game-picker__card--surprise {
+  border-color: var(--color-pink);
+  background: linear-gradient(180deg, rgba(255, 77, 219, .1), transparent);
 }
 
-.game-picker__surprise .btn { width: 100%; }
-.game-picker__surprise .panel__hint { margin: 0; text-align: center; }
+.game-picker__card--surprise:hover { border-color: var(--color-pink); }

@@ -183,8 +183,12 @@ export const it: Translations = {
         settingsReset: 'Azzera i progressi',
         settingsResetConfirm: 'Azzerare davvero tutti i progressi delle tabelline?',
     },
+    play: {
+        question: 'Domanda',
+        streak: 'Serie',
+    },
     surprise: {
-        title: '🎲 Sorprendimi',
+        title: 'Sorprendimi',
         blurb: 'Sceglie il gioco per te — prende quello che ti serve di più.',
         again: 'Un’altra sorpresa',
     },

@@ -80,16 +80,15 @@ export default function HomePage() {
                                 <strong>{t.home.gameBeam}</strong>
                                 <small>{t.home.gameBeamBlurb}</small>
                             </button>
-                        </div>
-                        <div className="game-picker__surprise">
                             <button
                                 type="button"
-                                className="btn btn--primary"
+                                className="game-picker__card game-picker__card--surprise"
                                 onClick={() => navigate(surpriseRoute(nextSurprise()))}
                             >
-                                {t.surprise.title}
+                                <span aria-hidden="true">🎲</span>
+                                <strong>{t.surprise.title}</strong>
+                                <small>{t.surprise.blurb}</small>
                             </button>
-                            <p className="panel__hint">{t.surprise.blurb}</p>
                         </div>
                     </section>
                 )}

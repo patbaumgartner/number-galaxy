@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router'
 import BarModelView from '../components/beam/BarModel'
 import BeamSlider from '../components/beam/BeamSlider'
+import PlayHud from '../components/PlayHud'
 import TopBar from '../components/TopBar'
 import WorkedExampleDialog from '../components/WorkedExampleDialog'
 import {
@@ -158,17 +159,14 @@ function BeamDrill({ skill, onReplay }: { readonly skill: BeamSkill; readonly on
             />
 
             <main className="shell beam-stage">
-                <div className="beam-progress">
-                    <span>{t.beam.question} {Math.min(drill.results.length + 1, total)}/{total}</span>
-                    <span>🔥 {t.beam.streak} {drill.streak}</span>
-                </div>
-                <ol className="hud__trail" aria-hidden="true">
-                    {Array.from({ length: total }, (_unused, index) => {
-                        const hit = drill.results[index]
-                        const state = hit === undefined ? 'todo' : hit ? 'hit' : 'miss'
-                        return <li key={index} className={`hud__trail-step hud__trail-step--${state}`} />
-                    })}
-                </ol>
+                <PlayHud
+                    stats={[
+                        { label: t.play.streak, value: <>🔥 {drill.streak}</> },
+                        { label: t.play.question, value: `${Math.min(drill.results.length + 1, total)}/${total}` },
+                    ]}
+                    results={drill.results}
+                    total={total}
+                />
 
                 <section className={`equation${feedback === null ? '' : ` equation--${feedback.correct ? 'correct' : 'wrong'}`}`}>
                     <p className="equation__prompt">{question.prompt}</p>

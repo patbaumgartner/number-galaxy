@@ -38,6 +38,11 @@ accuracy, but it never ends the run — so a tricky day means *more* practice, n
 
 ## 🎲 Surprise me
 
+Surprise is offered as a fourth game in the picker rather than a button beside
+the other three, because that is what it is: the game whose subject is "whatever
+you need next".
+
+
 Three games on the picker is a decision to make before anything happens, which sits
 badly with a game whose first promise is "press Play — you start right away". **Surprise
 me** makes that decision for you.
@@ -317,10 +322,11 @@ web/
 │   │   └── trainer/            # Learn, Practice, Speed Run and Daily Mission
 │   ├── components/             # Shared at the top, feature-owned in folders
 │   │   ├── TopBar.tsx          # The one navigation bar, used by every game
+│   │   ├── PlayHud.tsx         # The status strip every game shows while playing
 │   │   ├── WorkedExampleDialog.tsx # The 💡 Help dialog, shared by two games
 │   │   ├── Flag.tsx            # Drawn language flags
 │   │   ├── ErrorBoundary.tsx   # Crash fallback
-│   │   ├── arcade/             # AnswerGrid, GameHud, MissionSummary
+│   │   ├── arcade/             # AnswerGrid, MissionSummary
 │   │   ├── trainer/            # NumberPad, FactHeatmap, SessionSummary, TrainerFrame
 │   │   └── beam/               # BarModel, BeamSlider
 │   ├── game/                   # Pure domain — no React, fully tested
@@ -396,7 +402,7 @@ Output in `web/dist/` — deploy to GitHub Pages or any static host.
 ### Test
 
 ```bash
-npm test              # 376 unit tests (domain + UI)
+npm test              # 377 unit tests (domain + UI)
 npm run test:coverage # with coverage, gated at 95 % statements
 npm run test:e2e      # 150 Playwright tests, desktop + mobile Chromium
 npm run test:all      # everything

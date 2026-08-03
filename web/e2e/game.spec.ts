@@ -67,7 +67,7 @@ test('finishes immediately when Quit is selected and Play again starts fresh', a
     await expect(page.getByRole('dialog')).toBeVisible()
     await page.getByRole('button', { name: 'Play again' }).click()
     await expect(page.locator('.equation__prompt')).toBeVisible()
-    await expect(page.locator('.hud__value--score')).toHaveText('0')
+    await expect(page.locator('.hud__stat--score .hud__value')).toHaveText('0')
 })
 
 test('fires tiles with digits and moves the roving answer focus with arrows', async ({ page }) => {

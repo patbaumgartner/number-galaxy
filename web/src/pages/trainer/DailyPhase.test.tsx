@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { canonicalKey } from '../../timesTable/facts'
 import { localEpochDay } from '../../timesTable/leitner'
 import { ttStore } from '../../timesTable/ttStore'
-import { LOCATION_TEST_ID, renderWithRouter, seedFactProgress, seedLanguage, seedStars, userEvent } from '../../test/utils'
+import { LOCATION_TEST_ID, renderWithRouter, seedFactProgress, seedLanguage, seedStars, userEvent, hudStat } from '../../test/utils'
 import { DailyPhase } from './DailyPhase'
 
 const answer = (): number => {
@@ -39,11 +39,11 @@ describe('DailyPhase', () => {
         })
         const user = userEvent.setup({ delay: null })
         renderWithRouter(<DailyPhase />)
-        expect(screen.getByText('1 / 4')).toBeInTheDocument()
+        expect(hudStat('Question')).toBe('1/4')
         await submit(user, 999)
         expect(screen.getByRole('dialog')).toBeInTheDocument()
         await user.click(screen.getByRole('button', { name: 'OK' }))
-        expect(screen.getByText('2 / 4')).toBeInTheDocument()
+        expect(hudStat('Question')).toBe('2/4')
         await submit(user, answer())
         expect(screen.getByText('🔥 1')).toBeInTheDocument()
         for (let index = 0; index < 2; index += 1) await submit(user, answer())
@@ -59,11 +59,11 @@ describe('DailyPhase', () => {
         ttStore.saveTTSettings({ strategyCards: false })
         const user = userEvent.setup({ delay: null })
         const off = renderWithRouter(<DailyPhase />)
-        expect(screen.queryByRole('button', { name: '💡' })).not.toBeInTheDocument()
+        expect(screen.queryByRole('button', { name: /help/i })).not.toBeInTheDocument()
         off.unmount()
         ttStore.saveTTSettings({ strategyCards: true })
         renderWithRouter(<DailyPhase />)
-        await user.click(screen.getByRole('button', { name: '💡' }))
+        await user.click(screen.getByRole('button', { name: /help/i }))
         expect(screen.getByRole('dialog')).toBeInTheDocument()
         await user.click(screen.getByRole('button', { name: 'OK' }))
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument()

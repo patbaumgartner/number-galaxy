@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { buildPracticeSession } from '../../timesTable/session'
 import { ttStore } from '../../timesTable/ttStore'
-import { LOCATION_TEST_ID, renderWithRouter, seedLanguage, userEvent } from '../../test/utils'
+import { LOCATION_TEST_ID, renderWithRouter, seedLanguage, userEvent, hudStat } from '../../test/utils'
 import { PracticePhase } from './PracticePhase'
 
 const answer = (): number => {
@@ -29,7 +29,7 @@ describe('PracticePhase', () => {
         const expected = buildPracticeSession('t3', ttStore.getProgress(), Math.floor(Date.now() / 86_400_000), () => 0)
         const user = userEvent.setup({ delay: null })
         renderWithRouter(<PracticePhase planetId="t3" />)
-        expect(screen.getByText(`1 / ${expected.length}`)).toBeInTheDocument()
+        expect(hudStat('Question')).toBe(`1/${expected.length}`)
         expect(screen.getByText('🔥 0')).toBeInTheDocument()
         expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument()
 
@@ -40,7 +40,7 @@ describe('PracticePhase', () => {
         expect(screen.getByRole('dialog')).toBeInTheDocument()
         expect(screen.getByText(/×3/)).toBeInTheDocument()
         await user.click(screen.getByRole('button', { name: 'Got it' }))
-        expect(screen.getByText(`3 / ${expected.length + 1}`)).toBeInTheDocument()
+        expect(hudStat('Question')).toBe(`3/${expected.length + 1}`)
     })
 
     it('awards one star for at least eighty percent first-attempt accuracy', async () => {
@@ -55,12 +55,12 @@ describe('PracticePhase', () => {
         const user = userEvent.setup({ delay: null })
         ttStore.saveTTSettings({ strategyCards: false })
         const disabled = renderWithRouter(<PracticePhase planetId="t3" />)
-        expect(screen.queryByRole('button', { name: '💡' })).not.toBeInTheDocument()
+        expect(screen.queryByRole('button', { name: /help/i })).not.toBeInTheDocument()
         disabled.unmount()
 
         ttStore.saveTTSettings({ strategyCards: true })
         renderWithRouter(<PracticePhase planetId="t3" />)
-        await user.click(screen.getByRole('button', { name: '💡' }))
+        await user.click(screen.getByRole('button', { name: /help/i }))
         expect(screen.getByRole('dialog')).toBeInTheDocument()
         await user.click(screen.getByRole('button', { name: 'Got it' }))
         for (let index = 0; index < 3; index += 1) {
@@ -90,7 +90,7 @@ describe('PracticePhase dialogs behave like modals', () => {
     it('closes the strategy card with Escape and returns focus to the hint button', async () => {
         const user = userEvent.setup({ delay: null })
         renderWithRouter(<PracticePhase planetId="t3" />)
-        const hint = screen.getByRole('button', { name: '💡' })
+        const hint = screen.getByRole('button', { name: /help/i })
 
         await user.click(hint)
         expect(screen.getByRole('dialog')).toBeInTheDocument()
@@ -105,7 +105,7 @@ describe('PracticePhase dialogs behave like modals', () => {
         const user = userEvent.setup({ delay: null })
         renderWithRouter(<PracticePhase planetId="t3" />)
 
-        await user.click(screen.getByRole('button', { name: '💡' }))
+        await user.click(screen.getByRole('button', { name: /help/i }))
         const dialog = screen.getByRole('dialog')
         await user.tab()
         await user.tab()

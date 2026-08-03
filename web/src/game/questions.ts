@@ -11,6 +11,7 @@ import {
     type Equation,
 } from './equations'
 import { buildNumericOptions, buildOperatorOptions, buildRemainderOptions } from './options'
+import { strategyWorking } from './working'
 
 /** Unlocking a new form should season a mission, not take it over. */
 const DIRECT_FORM_WEIGHT = 3
@@ -32,7 +33,8 @@ function finish(
 // ---------------------------------------------------------------- direct ----
 
 function directQuestion(rng: Rng, operation: BinaryOperation, maxValue: number): Question {
-    const { left, right, result, symbol } = createEquation(rng, operation, maxValue)
+    const equation = createEquation(rng, operation, maxValue)
+    const { left, right, result, symbol } = equation
     const nearMisses = [
         result + 1,
         result - 1,
@@ -49,7 +51,8 @@ function directQuestion(rng: Rng, operation: BinaryOperation, maxValue: number):
         `${left} ${symbol} ${right} = ?`,
         String(result),
         buildNumericOptions(rng, result, nearMisses),
-        `${left} ${symbol} ${right} = ${result}`,
+        // A route to the answer, not the answer restated — see `working.ts`.
+        strategyWorking(equation, maxValue),
     )
 }
 

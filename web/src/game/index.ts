@@ -16,6 +16,8 @@ export {
     QUESTIONS_PER_MISSION,
     QUESTION_FORMS,
     RANKS,
+    SHOW_SPEED_ABOVE,
+    STRUGGLED_BELOW,
     WAVES_PER_MISSION,
     WAVE_SIZE,
     getComboMultiplier,
@@ -56,3 +58,5 @@ export {
 
 export type { WorkedExample } from './examples'
 export { getWorkedExample } from './examples'
+
+export { strategyWorking } from './working'

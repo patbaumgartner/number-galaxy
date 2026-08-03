@@ -36,7 +36,33 @@ test('shows a worked solution after a wrong answer and continues the mission', a
     await expect(page.locator('.equation__result')).toContainText('The answer was')
     await expect(page.locator('.equation__working')).toBeVisible()
     await expect(page.locator('.equation__prompt')).toBeVisible()
+
+    // The solution holds until it is dismissed — no clock takes it away mid-read.
+    const gotIt = page.getByRole('button', { name: 'Got it' })
+    await expect(gotIt).toBeFocused()
+    await page.waitForTimeout(2500)
+    await expect(page.locator('.equation__working')).toBeVisible()
+
+    await gotIt.click()
+    await expect(gotIt).toBeHidden()
     await answerCurrentQuestion(page)
+})
+
+test('asks a missed question again later in the same mission', async ({ page }) => {
+    await seedStorage(page, { settings: untimed, player })
+    await gotoApp(page, '/game')
+    const missed = (await page.locator('.equation__prompt').textContent()) ?? ''
+    const answer = calculateArcadeAnswer(missed)
+    await page.locator('.answer-tile').filter({ hasNotText: answer }).first().click()
+    await page.getByRole('button', { name: 'Got it' }).click()
+
+    const seen: string[] = []
+    for (let index = 0; index < 4; index += 1) {
+        seen.push((await page.locator('.equation__prompt').textContent()) ?? '')
+        await answerCurrentQuestion(page)
+        await page.waitForTimeout(700)
+    }
+    expect(seen).toContain(missed)
 })
 
 test('raises the combo multiplier to x2 after three correct answers', async ({ page }) => {

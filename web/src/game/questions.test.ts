@@ -375,9 +375,15 @@ describe('scoring', () => {
     it('awards stars by accuracy', () => {
         expect(getStars(25, 25)).toBe(3)
         expect(getStars(23, 25)).toBe(3)
-        expect(getStars(18, 25)).toBe(2)
-        expect(getStars(13, 25)).toBe(1)
-        expect(getStars(5, 25)).toBe(0)
+        expect(getStars(20, 25)).toBe(2)
+        expect(getStars(18, 25)).toBe(1)
         expect(getStars(0, 0)).toBe(0)
+    })
+
+    it('withholds the first star from a run that four-way guessing could reach', () => {
+        // Chance alone scores 25 % on four tiles, so 50 % must not read as success.
+        expect(getStars(13, 25)).toBe(0)
+        expect(getStars(16, 25)).toBe(0)
+        expect(getStars(17, 25)).toBe(1)
     })
 })

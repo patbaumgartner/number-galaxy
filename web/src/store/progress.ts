@@ -1,4 +1,4 @@
-import type { Operation } from '../game'
+import type { Operation, QuestionForm } from '../game'
 import { readJson, storageKey, writeJson } from './storage'
 
 export type Player = {
@@ -18,9 +18,31 @@ const WEAKNESS_KEY = storageKey('weakness')
 const SR_KEY = storageKey('sr')
 const SKILL_KEY = storageKey('skill-stats')
 const BESTS_KEY = storageKey('personal-bests')
+const MISSES_KEY = storageKey('misses')
 
 const SKILL_HISTORY_LIMIT = 60
 const BADGE_WINDOW = 30
+
+/**
+ * How many misses are kept.
+ *
+ * Which wrong tile a child reached for is the only signal that separates "does
+ * not know it" from a specific, nameable mistake — off by one, smaller taken
+ * from larger, digits added column by column. A plain correct/wrong tally
+ * throws that away. Bounded so a shared device cannot grow the key without end.
+ */
+const MISS_LIMIT = 200
+
+/** One missed question, kept for later diagnosis rather than for scoring. */
+export type MissRecord = {
+    operation: Operation
+    form: QuestionForm
+    prompt: string
+    /** The option the child chose, or `''` when the clock ran out. */
+    chosen: string
+    answer: string
+    at: string
+}
 
 export const BADGE_EMOJI: Record<BadgeTier, string> = {
     none: '',
@@ -109,6 +131,15 @@ export function getPersonalBests(): Record<string, number> {
     return readJson<Record<string, number>>(BESTS_KEY, {})
 }
 
+export function getMisses(): MissRecord[] {
+    const entries = readJson<MissRecord[]>(MISSES_KEY, [])
+    return Array.isArray(entries) ? entries.filter(entry => entry && typeof entry.prompt === 'string') : []
+}
+
+export function recordMiss(entry: MissRecord): void {
+    writeJson(MISSES_KEY, [...getMisses(), entry].slice(-MISS_LIMIT))
+}
+
 export function updatePersonalBest(operation: Operation, elapsedMs: number): boolean {
     const bests = getPersonalBests()
     const current = bests[operation]
@@ -124,4 +155,5 @@ export const progressKeys = {
     spacedRepetition: SR_KEY,
     skills: SKILL_KEY,
     bests: BESTS_KEY,
+    misses: MISSES_KEY,
 }

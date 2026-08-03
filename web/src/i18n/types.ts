@@ -48,6 +48,7 @@ export type Translations = {
         timeUp: string
         theAnswerIs: string
         untimed: string
+        gotIt: string
     }
     summary: {
         complete: string
@@ -61,6 +62,10 @@ export type Translations = {
         playAgain: string
         changeMission: string
         seeScores: string
+        easier: string
+        easierHint: string
+        stop: string
+        stopHint: string
     }
     settings: {
         title: string

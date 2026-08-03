@@ -1,8 +1,11 @@
 import type { Translations } from '../../i18n'
 import type { SurpriseActions } from '../../hooks'
 import { useModalDialog } from '../../hooks'
+import { SHOW_SPEED_ABOVE, STRUGGLED_BELOW } from '../../game'
 
 const CONFETTI_PIECES = 16
+
+const RUNS_BEFORE_BREAK = 2
 
 type MissionSummaryProps = {
     score: number
@@ -13,8 +16,13 @@ type MissionSummaryProps = {
     fastestMs: number | null
     newRecord: boolean
     newPersonalBest: boolean
+    /** Missions played back to back in this sitting, this one included. */
+    runs: number
+    /** False at the lowest rank, where there are no smaller numbers to offer. */
+    canEase: boolean
     labels: Translations['summary']
     onPlayAgain: () => void
+    onEasier: () => void
     onChangeMission: () => void
     onSeeScores: () => void
     /** Set when the picker chose this game, not the player. */
@@ -30,15 +38,23 @@ export default function MissionSummary({
     fastestMs,
     newRecord,
     newPersonalBest,
+    runs,
+    canEase,
     labels,
     surprise,
     onPlayAgain,
+    onEasier,
     onChangeMission,
     onSeeScores,
 }: MissionSummaryProps) {
     const accuracy = total > 0 ? Math.round((correct / total) * 100) : 0
     const perfect = correct === total && total > 0
     const dialog = useModalDialog<HTMLDivElement>()
+
+    // A fast run full of misses is not a faster child.
+    const showSpeed = fastestMs !== null && total > 0 && correct / total >= SHOW_SPEED_ABOVE
+    const struggled = total > 0 && correct / total < STRUGGLED_BELOW
+    const offerBreak = runs >= RUNS_BEFORE_BREAK
 
     return (
         <div className="summary" role="dialog" aria-modal="true" aria-labelledby="summary-title" ref={dialog}>
@@ -80,8 +96,8 @@ export default function MissionSummary({
                     <span className="summary__score-label">{labels.score}</span>
                 </p>
 
-                {newRecord && <p className="summary__badge">🏆 {labels.newRecord}</p>}
-                {newPersonalBest && fastestMs !== null && (
+                {newRecord && !struggled && <p className="summary__badge">🏆 {labels.newRecord}</p>}
+                {newPersonalBest && showSpeed && (
                     <p className="summary__badge">⚡ {labels.newBest}</p>
                 )}
 
@@ -94,7 +110,7 @@ export default function MissionSummary({
                         <dt>{labels.bestStreak}</dt>
                         <dd>{bestStreak}🔥</dd>
                     </div>
-                    {fastestMs !== null && (
+                    {showSpeed && (
                         <div className="summary__stat">
                             <dt>{labels.fastest}</dt>
                             <dd>{(fastestMs / 1000).toFixed(1)}s</dd>
@@ -102,10 +118,22 @@ export default function MissionSummary({
                     )}
                 </dl>
 
+                {struggled && canEase && <p className="summary__hint">{labels.easierHint}</p>}
+                {!struggled && offerBreak && <p className="summary__hint">{labels.stopHint}</p>}
+
                 <div className="summary__actions">
                     {surprise === undefined ? (
                         <>
-                            <button type="button" className="btn btn--primary btn--lg" onClick={onPlayAgain} autoFocus>
+                            {struggled && canEase && (
+                                <button type="button" className="btn btn--primary btn--lg" onClick={onEasier}>
+                                    {labels.easier}
+                                </button>
+                            )}
+                            <button
+                                type="button"
+                                className={struggled && canEase ? 'btn btn--ghost' : 'btn btn--primary btn--lg'}
+                                onClick={onPlayAgain}
+                            >
                                 {labels.playAgain}
                             </button>
                             <button type="button" className="btn btn--ghost" onClick={onChangeMission}>
@@ -117,7 +145,7 @@ export default function MissionSummary({
                         </>
                     ) : (
                         <>
-                            <button type="button" className="btn btn--primary btn--lg" onClick={surprise.onAgain} autoFocus>
+                            <button type="button" className="btn btn--primary btn--lg" onClick={surprise.onAgain}>
                                 {surprise.againLabel}
                             </button>
                             <button type="button" className="btn btn--ghost" onClick={surprise.onHome}>

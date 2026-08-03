@@ -7,6 +7,16 @@ export type MissionPhase = 'ready' | 'answering' | 'feedback' | 'summary'
 
 export type AnswerOutcome = 'correct' | 'wrong' | 'timeout'
 
+/** A missed question, waiting to come back once the answer is not still on screen. */
+type Retry = { question: Question; dueAt: number }
+
+/**
+ * How many questions pass before a missed one returns. Far enough that the
+ * answer has to be recalled rather than remembered, close enough that it is
+ * still the same idea.
+ */
+const RETRY_GAP = 3
+
 export type MissionState = {
     language: Language
     rank: Rank
@@ -16,6 +26,10 @@ export type MissionState = {
     results: boolean[]
     /** Operations already used, so every chosen one is shown before any repeats. */
     shownOperations: Operation[]
+    /** Missed questions queued to be asked again, earliest first. */
+    retries: Retry[]
+    /** Prompts already requeued once, so a repeated miss cannot loop. */
+    retried: string[]
     streak: number
     bestStreak: number
     score: number
@@ -74,6 +88,8 @@ export function createMission({
         operations: pool,
         results: [],
         shownOperations: [question.operation],
+        retries: [],
+        retried: [],
         streak: 0,
         bestStreak: 0,
         score: 0,
@@ -87,18 +103,26 @@ export function createMission({
  *
  * A wrong answer costs the combo and a tick of accuracy — never the mission.
  * Every run always reaches {@link QUESTIONS_PER_MISSION} questions, so a
- * struggling child gets *more* practice, not less.
+ * struggling child gets *more* practice, not less. It also books the question
+ * to come back: a miss that is explained and never asked again is a miss.
  */
 export function scoreAnswer(state: MissionState, outcome: AnswerOutcome): MissionState {
     const wasCorrect = outcome === 'correct'
     const streak = wasCorrect ? state.streak + 1 : 0
     const results = [...state.results, wasCorrect]
+    const { prompt } = state.question
+    const requeue = !wasCorrect && !state.retried.includes(prompt)
+
     return {
         ...state,
         results,
         streak,
         bestStreak: Math.max(state.bestStreak, streak),
         score: state.score + (wasCorrect ? getPoints(streak) : 0),
+        retries: requeue
+            ? [...state.retries, { question: state.question, dueAt: results.length + RETRY_GAP }]
+            : state.retries,
+        retried: requeue ? [...state.retried, prompt] : state.retried,
         phase: results.length >= QUESTIONS_PER_MISSION ? 'summary' : 'feedback',
     }
 }
@@ -106,11 +130,18 @@ export function scoreAnswer(state: MissionState, outcome: AnswerOutcome): Missio
 /** Swaps in the next question and hands control back to the player. */
 export function advanceMission(state: MissionState, deps: MissionDeps = {}): MissionState {
     if (state.phase === 'summary') return state
+    const answered = getAnswered(state)
+
+    const [head, ...rest] = state.retries
+    if (head !== undefined && head.dueAt <= answered) {
+        return { ...state, question: head.question, retries: rest, phase: 'answering' }
+    }
+
     const question = drawQuestion(
         state.language,
         state.rank,
         state.operations,
-        getAnswered(state),
+        answered,
         state.shownOperations,
         deps,
     )

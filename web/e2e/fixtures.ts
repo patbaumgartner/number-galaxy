@@ -95,6 +95,9 @@ export const calculateArcadeAnswer = (prompt: string): string => {
 }
 
 export async function answerCurrentQuestion(page: Page): Promise<void> {
+    // Tiles stay disabled while a miss is on screen: it waits to be dismissed.
+    const gotIt = page.locator('.equation__next')
+    if (await gotIt.count() > 0) await gotIt.click()
     // The prompt has no accessible name; this stable component class is its public UI hook.
     await expect(page.locator('.answer-tile:not([disabled])').first()).toBeVisible()
     const prompt = page.locator('.equation__prompt')

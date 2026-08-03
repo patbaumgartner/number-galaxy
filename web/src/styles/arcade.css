@@ -273,6 +273,12 @@
   overflow-wrap: break-word;
 }
 
+.equation__next {
+  margin-top: var(--space-3);
+  min-height: 44px;
+  padding: var(--space-2) var(--space-5);
+}
+
 .equation__pop {
   position: absolute;
   top: var(--space-3);
@@ -558,6 +564,12 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+}
+
+.summary__hint {
+  color: var(--text-muted);
+  margin: 0 0 var(--space-5);
+  text-wrap: balance;
 }
 
 .summary__confetti {

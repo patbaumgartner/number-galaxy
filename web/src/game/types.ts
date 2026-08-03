@@ -156,12 +156,31 @@ export function getPoints(streak: number): number {
     return BASE_POINTS * getComboMultiplier(streak)
 }
 
-/** 0–3 stars from end-of-mission accuracy. */
+/**
+ * 0–3 stars from end-of-mission accuracy.
+ *
+ * The first star sits at 65 % rather than 50 %: with four options on every
+ * tile, guessing alone scores 25 %, so praising 50 % praises a coin toss and
+ * hides a mission whose numbers were simply too big. Below the first star the
+ * game offers smaller numbers instead of a score.
+ */
 export function getStars(correct: number, total: number): number {
     if (total <= 0) return 0
     const accuracy = correct / total
-    if (accuracy >= 0.9) return 3
-    if (accuracy >= 0.7) return 2
-    if (accuracy >= 0.5) return 1
+    if (accuracy >= 0.92) return 3
+    if (accuracy >= 0.8) return 2
+    if (accuracy >= 0.65) return 1
     return 0
 }
+
+/** Below this, a run says more about the numbers than about the child. */
+export const STRUGGLED_BELOW = 0.65
+
+/**
+ * Speed is only shown once accuracy is this high.
+ *
+ * Automaticity is a real goal, but fluency is flexibility, efficiency, accuracy
+ * *and* strategy — celebrating a fast wrong-heavy run teaches the wrong lesson,
+ * so the clock stays private until the maths is solid.
+ */
+export const SHOW_SPEED_ABOVE = 0.8

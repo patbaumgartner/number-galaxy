@@ -99,3 +99,49 @@ describe('mission transitions', () => {
         expect(aborted.results).toEqual(scored.results)
     })
 })
+
+describe('missed questions coming back', () => {
+    const start = () => createMission({ ...config, operations: [...config.operations], rng: createRng(3) })
+
+    it('asks a missed question again a few questions later, not straight away', () => {
+        const missed = start().question
+        let mission = scoreAnswer(start(), 'wrong')
+        expect(mission.retries).toHaveLength(1)
+
+        mission = advanceMission(mission, { rng: createRng(11) })
+        expect(mission.question.prompt).not.toBe(missed.prompt)
+
+        for (let i = 0; i < 3; i += 1) {
+            mission = advanceMission(scoreAnswer(mission, 'correct'), { rng: createRng(12 + i) })
+        }
+        expect(mission.question.prompt).toBe(missed.prompt)
+        expect(mission.retries).toHaveLength(0)
+    })
+
+    it('requeues a timeout the same way it requeues a wrong answer', () => {
+        expect(scoreAnswer(start(), 'timeout').retries).toHaveLength(1)
+        expect(scoreAnswer(start(), 'correct').retries).toHaveLength(0)
+    })
+
+    it('never queues the same prompt twice, so a repeated miss cannot loop', () => {
+        let mission = scoreAnswer(start(), 'wrong')
+        mission = advanceMission(mission, { rng: createRng(11) })
+        for (let i = 0; i < 3; i += 1) {
+            mission = advanceMission(scoreAnswer(mission, 'correct'), { rng: createRng(20 + i) })
+        }
+
+        const secondMiss = scoreAnswer(mission, 'wrong')
+        expect(secondMiss.retries).toHaveLength(0)
+        expect(secondMiss.retried).toHaveLength(1)
+    })
+
+    it('still stops at exactly one mission length however many were missed', () => {
+        let mission = start()
+        for (let i = 0; i < QUESTIONS_PER_MISSION; i += 1) {
+            mission = scoreAnswer(mission, i % 2 === 0 ? 'wrong' : 'correct')
+            if (mission.phase !== 'summary') mission = advanceMission(mission, { rng: createRng(30 + i) })
+        }
+        expect(mission.phase).toBe('summary')
+        expect(getAnswered(mission)).toBe(QUESTIONS_PER_MISSION)
+    })
+})

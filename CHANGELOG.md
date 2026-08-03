@@ -8,6 +8,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **A missed question comes back.** Every miss is queued and asked again three
+  questions later — near enough to still be the same idea, far enough that the
+  answer has to be recalled rather than remembered. Each question returns at most
+  once, so a mission is still exactly 25 long, and the repeat scores at base
+  points rather than at the combo: it is there to repair understanding, not to
+  rebuild a streak.
+- **A run that struggled is offered smaller numbers rather than a verdict.** Below
+  65 % the summary asks "those numbers were pretty big — want to try smaller
+  ones?" and drops one rank on a single tap, instead of showing three empty stars.
+- **A place to stop.** After two missions back to back the summary says, warmly,
+  that this is a good place to stop. "Play again" is no longer the pre-armed
+  default action.
+- **Missed answers are remembered, not just counted.** Which of the four tiles a
+  child reached for is kept on the device (the last 200), because that is what
+  separates "does not know it" from a nameable mistake such as taking the smaller
+  digit from the larger. Nothing is sent anywhere; it clears with every other
+  reset.
+
+### Changed
+- **A wrong answer now waits for the child.** The worked solution used to be swept
+  off the screen by a two-second timer, which is under the time it takes a
+  seven-year-old to read a two-step working. It now stays until they press
+  **Verstanden / Got it**, which takes keyboard focus. A correct answer still
+  advances on its own after a beat.
+- **Worked solutions show a route, not the answer restated.** `7 + 5 = ?` used to
+  be explained as `7 + 5 = 12` — the question with the answer filled in, which is
+  the one thing a child who just missed it already knows. Direct questions are now
+  explained the way they are taught: `55 + 6` as `55 + 5 = 60 → 60 + 1 = 61`
+  (Zehnerübergang), `7 + 8` as `7 + 7 = 14 → 14 + 1 = 15` (Nachbaraufgabe), `9 × 7`
+  as `10 × 7 − 7 = 70 − 7 = 63`, `14 ÷ 2` as `7 + 7 = 14`. Still pure maths
+  notation, so it needs no translation, and a route is never shown if one of its
+  steps would name a number above the rank's ceiling.
+- **The first star moved from 50 % to 65 %.** With four tiles on screen, guessing
+  alone scores 25 %, so a star at 50 % was praising a coin toss and hiding a
+  mission whose numbers were simply too big. Stars are now ⭐ at 65 %, ⭐⭐ at 80 %
+  and ⭐⭐⭐ at 92 %.
+- **Speed is shown only once the maths is solid.** The fastest-answer stat and the
+  ⚡ badge appear at 80 % accuracy or better, and 🏆 New record is withheld from a
+  run that struggled. Automaticity is still the goal and the times are still
+  kept — a fast run full of misses simply is not a faster child.
+
 - **One status strip for every game.** The arcade, the trainer and the beam each
   showed progress differently — a rich stat row, a bare "1 / 12" tucked inside a
   card, a plain line — so moving between them felt like moving between three

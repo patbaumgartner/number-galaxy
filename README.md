@@ -119,7 +119,13 @@ over.
 - **Combo:** ×2 after 3 in a row, ×3 after 6, ×4 after 10
 - **Wrong answer or time out:** the combo resets — the points and the mission both stay
 
-Stars come from accuracy over the whole mission: ⭐⭐⭐ at ≥ 90 %, ⭐⭐ at ≥ 70 %, ⭐ at ≥ 50 %.
+Stars come from accuracy over the whole mission: ⭐⭐⭐ at ≥ 92 %, ⭐⭐ at ≥ 80 %, ⭐ at ≥ 65 %.
+The first star sits above 65 % on purpose: with four tiles, guessing alone scores 25 %, so a
+lower run says more about the numbers than about the child — and is offered smaller numbers
+rather than a verdict.
+
+Speed is only ever shown once accuracy is at least 80 %. A fast run full of misses is not a
+faster child, and fluency is flexibility and accuracy before it is pace.
 
 ### How it adapts
 
@@ -128,13 +134,19 @@ Stars come from accuracy over the whole mission: ⭐⭐⭐ at ≥ 90 %, ⭐⭐ a
   less often.
 - **Weakness weighting.** Repeated misses on an operation raise its odds of being drawn
   next, so practice drifts toward what is not working.
-- **Worked solutions.** Every question carries its own step-by-step working — the inverse
-  operation for a missing number, both steps for a chain. It appears automatically after
-  a miss, and on demand from 💡 Help, which pauses the clock while it is open.
+- **A miss comes back.** Every missed question is queued and asked again a few questions
+  later — near enough to be the same idea, far enough that the answer has to be recalled
+  rather than remembered. Each one returns at most once, so a mission is still 25 long.
+- **Worked solutions.** Every question carries its own working, and it is a *route* rather
+  than the answer restated: `55 + 6` is explained as `55 + 5 = 60 → 60 + 1 = 61`, `9 × 7` as
+  `10 × 7 − 7 = 70 − 7 = 63`. It appears after a miss and **waits there until the child
+  presses Verstanden / Got it** — nothing takes it off the screen mid-read. It is also
+  available on demand from 💡 Help, which pauses the clock while it is open.
 - **Skill badges.** A rolling 30-answer accuracy history per operation, shown in
   Settings: 🥉 ≥ 45 %, 🥈 ≥ 65 %, 🥇 ≥ 80 %, 💎 ≥ 95 %.
-- **Personal bests.** The fastest correct answer per operation is kept and celebrated on
-  the summary screen.
+- **Personal bests.** The fastest correct answer per operation is kept, and shown on the
+  summary screen only when that run was at least 80 % accurate — see
+  [Scoring and stars](#scoring-and-stars).
 
 ### Controls
 

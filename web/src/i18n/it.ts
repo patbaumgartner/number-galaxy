@@ -59,6 +59,7 @@ export const it: Translations = {
         timeUp: 'Tempo scaduto!',
         theAnswerIs: 'La risposta era',
         untimed: 'Senza fretta',
+        gotIt: 'Ho capito',
     },
     summary: {
         complete: 'Missione compiuta!',
@@ -72,6 +73,10 @@ export const it: Translations = {
         playAgain: 'Ancora',
         changeMission: 'Cambia missione',
         seeScores: 'Classifica',
+        easier: 'Numeri più piccoli',
+        easierHint: 'Questi numeri erano piuttosto grandi. Vuoi provarne di più piccoli?',
+        stop: 'Per oggi basta',
+        stopHint: 'Bel lavoro — questo è un buon momento per fermarsi.',
     },
     settings: {
         title: 'Impostazioni',

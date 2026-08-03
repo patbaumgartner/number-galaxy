@@ -4,12 +4,14 @@ import { loadLegacyScores, loadScores, submitScore } from './scores'
 import {
     computeBadge,
     ensurePlayer,
+    getMisses,
     getPersonalBests,
     getPlayer,
     getSkillStats,
     getSpacedRepetition,
     getWeakness,
     recordAnswer,
+    recordMiss,
     savePlayer,
     updatePersonalBest,
 } from './progress'
@@ -22,6 +24,7 @@ export { RULESET_VERSION, scoreKeys } from './scores'
 
 export type {
     BadgeTier,
+    MissRecord,
     Player,
     SkillStats,
     SpacedRepetitionData,
@@ -47,6 +50,9 @@ export const store = {
     getSpacedRepetition,
     getSkillStats,
     recordAnswer,
+
+    getMisses,
+    recordMiss,
 
     getPersonalBests,
     updatePersonalBest,

@@ -12,6 +12,7 @@ function renderSummary(overrides: Partial<SummaryProps> = {}) {
     const onPlayAgain = vi.fn()
     const onChangeMission = vi.fn()
     const onSeeScores = vi.fn()
+    const onEasier = vi.fn()
     const defaults: SummaryProps = {
         score: 500,
         correct: 8,
@@ -21,15 +22,18 @@ function renderSummary(overrides: Partial<SummaryProps> = {}) {
         fastestMs: 1234,
         newRecord: false,
         newPersonalBest: false,
+        runs: 1,
+        canEase: true,
         labels,
         onPlayAgain,
+        onEasier,
         onChangeMission,
         onSeeScores,
     }
     const result = render(<MissionSummary {...defaults} {...overrides} />)
     const rerenderSummary = (next: Partial<SummaryProps> = {}) =>
         result.rerender(<MissionSummary {...defaults} {...next} />)
-    return { ...result, rerenderSummary, onPlayAgain, onChangeMission, onSeeScores }
+    return { ...result, rerenderSummary, onPlayAgain, onEasier, onChangeMission, onSeeScores }
 }
 
 describe('MissionSummary', () => {
@@ -102,5 +106,52 @@ describe('MissionSummary', () => {
 
         const dialog = screen.getByRole('dialog', { name: labels.complete })
         expect(dialog).toHaveAttribute('aria-modal', 'true')
+    })
+})
+
+describe('a run that struggled', () => {
+    const weak = { correct: 5, total: 25, stars: 0, newRecord: true, newPersonalBest: true, fastestMs: 900 }
+
+    it('offers smaller numbers instead of a verdict, and makes that the primary action', () => {
+        renderSummary(weak)
+
+        expect(screen.getByText(labels.easierHint)).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: labels.easier })).toHaveClass('btn--primary')
+        expect(screen.getByRole('button', { name: labels.playAgain })).toHaveClass('btn--ghost')
+    })
+
+    it('withholds praise the run did not earn', () => {
+        renderSummary(weak)
+
+        expect(screen.queryByText(new RegExp(labels.newRecord))).not.toBeInTheDocument()
+        expect(screen.queryByText(new RegExp(labels.newBest))).not.toBeInTheDocument()
+        expect(screen.queryByText(labels.fastest)).not.toBeInTheDocument()
+    })
+
+    it('says nothing about smaller numbers at the lowest rank, where there are none', () => {
+        renderSummary({ ...weak, canEase: false })
+
+        expect(screen.queryByText(labels.easierHint)).not.toBeInTheDocument()
+        expect(screen.getByRole('button', { name: labels.playAgain })).toHaveClass('btn--primary')
+    })
+})
+
+describe('speed and stopping', () => {
+    it('shows the fastest time only once the maths is solid', () => {
+        const { rerenderSummary } = renderSummary({ correct: 21, total: 25, fastestMs: 900, newPersonalBest: true })
+        expect(screen.getByText(labels.fastest)).toBeInTheDocument()
+        expect(screen.getByText(new RegExp(labels.newBest))).toBeInTheDocument()
+
+        rerenderSummary({ correct: 18, total: 25, fastestMs: 900, newPersonalBest: true })
+        expect(screen.queryByText(labels.fastest)).not.toBeInTheDocument()
+        expect(screen.queryByText(new RegExp(labels.newBest))).not.toBeInTheDocument()
+    })
+
+    it('says stopping is fine after a couple of runs back to back', () => {
+        const { rerenderSummary } = renderSummary({ runs: 1 })
+        expect(screen.queryByText(labels.stopHint)).not.toBeInTheDocument()
+
+        rerenderSummary({ runs: 2 })
+        expect(screen.getByText(labels.stopHint)).toBeInTheDocument()
     })
 })

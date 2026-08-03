@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
 import {
     QUESTIONS_PER_MISSION,
+    RANKS,
     abortMission,
     advanceMission,
     createMission,
@@ -40,7 +41,6 @@ import {
 } from '../sound'
 
 const CORRECT_MS = 650
-const WRONG_MS = 2000
 
 type Feedback = {
     outcome: AnswerOutcome
@@ -88,6 +88,7 @@ export default function GamePage() {
     const [feedback, setFeedback] = useState<Feedback | null>(null)
     const [helpOpen, setHelpOpen] = useState(false)
     const [result, setResult] = useState<MissionResult | null>(null)
+    const [runs, setRuns] = useState(1)
 
     const resolvedRef = useRef(false)
     const questionStartRef = useRef(0)
@@ -134,10 +135,17 @@ export default function GamePage() {
             const multiplier = getComboMultiplier(next.streak)
             if (multiplier > getComboMultiplier(mission.streak)) playCombo(multiplier)
             else playCorrect()
-        } else if (outcome === 'timeout') {
-            playTimeout()
         } else {
-            playWrong()
+            store.recordMiss({
+                operation: question.operation,
+                form: question.form,
+                prompt: question.prompt,
+                chosen: firedIndex === null ? '' : question.options[firedIndex],
+                answer: question.answer,
+                at: new Date().toISOString(),
+            })
+            if (outcome === 'timeout') playTimeout()
+            else playWrong()
         }
 
         setFeedback({
@@ -169,17 +177,23 @@ export default function GamePage() {
         questionStartRef.current = Date.now()
     }, [mission.phase, mission.question])
 
+    const proceed = useCallback(() => {
+        setFeedback(null)
+        setMission(current => advanceMission(current, {
+            weakness: store.getWeakness(),
+            srData: store.getSpacedRepetition(),
+        }))
+    }, [])
+
     useEffect(() => {
         if (mission.phase !== 'feedback') return
-        const timer = setTimeout(() => {
-            setFeedback(null)
-            setMission(current => advanceMission(current, {
-                weakness: store.getWeakness(),
-                srData: store.getSpacedRepetition(),
-            }))
-        }, feedback?.outcome === 'correct' ? CORRECT_MS : WRONG_MS)
+        // A correct answer needs only a beat of applause. A miss holds until the
+        // child says so: two seconds is under the time it takes to read a
+        // two-step working, and unread feedback teaches nothing.
+        if (feedback?.outcome !== 'correct') return
+        const timer = setTimeout(proceed, CORRECT_MS)
         return () => clearTimeout(timer)
-    }, [mission.phase, feedback?.outcome])
+    }, [mission.phase, feedback?.outcome, proceed])
 
     useEffect(() => {
         if (mission.phase !== 'summary' || submittedRef.current) return
@@ -226,8 +240,17 @@ export default function GamePage() {
         setResult(null)
         setFeedback(null)
         setHelpOpen(false)
+        setRuns(count => count + 1)
         setMission(freshMission())
     }, [])
+
+    /** Drops one rank and starts over — offered instead of a zero-star verdict. */
+    const easier = useCallback(() => {
+        const current = store.getSettings()
+        const index = RANKS.indexOf(current.rank)
+        if (index > 0) store.saveSettings({ ...current, rank: RANKS[index - 1] })
+        restart()
+    }, [restart])
 
     const answering = mission.phase === 'answering' && !helpOpen
     const example = getWorkedExample(mission.question.operation, mission.language)
@@ -290,6 +313,11 @@ export default function GamePage() {
                     {feedback && feedback.outcome !== 'correct' && settings.hints && (
                         <p className="equation__working">{feedback.workingOut}</p>
                     )}
+                    {feedback && feedback.outcome !== 'correct' && mission.phase === 'feedback' && (
+                        <button type="button" className="btn btn--primary equation__next" onClick={proceed} autoFocus>
+                            {t.game.gotIt}
+                        </button>
+                    )}
                     {feedback?.outcome === 'correct' && (
                         <span className="equation__pop" aria-hidden="true">+{feedback.points}</span>
                     )}
@@ -327,8 +355,11 @@ export default function GamePage() {
                     fastestMs={result.fastestMs}
                     newRecord={result.newRecord}
                     newPersonalBest={result.newPersonalBest}
+                    runs={runs}
+                    canEase={RANKS.indexOf(mission.rank) > 0}
                     labels={t.summary}
                     onPlayAgain={restart}
+                    onEasier={easier}
                     onChangeMission={() => navigate('/settings')}
                     onSeeScores={() => navigate('/hall-of-fame')}
                     surprise={surpriseActions}

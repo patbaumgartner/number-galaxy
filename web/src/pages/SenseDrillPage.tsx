@@ -181,8 +181,12 @@ function SenseDrill({ skill, onReplay }: { readonly skill: SenseSkill; readonly 
                     label={describe(question, t.sense)}
                 />
 
-                {isGlance && glanceOver && feedback === null && (
-                    <button type="button" className="btn btn--ghost" onClick={() => setGlanceOver(false)}>
+                {isGlance && feedback === null && (
+                    <button
+                        type="button"
+                        className={`btn btn--ghost${glanceOver ? '' : ' is-reserved'}`}
+                        onClick={() => setGlanceOver(false)}
+                    >
                         👁 {t.sense.lookAgain}
                     </button>
                 )}

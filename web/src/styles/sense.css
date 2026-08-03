@@ -140,3 +140,11 @@
 .sense-line__mark { color: var(--color-gold); }
 .sense-line__end--low { left: 0; transform: none; }
 .sense-line__end--high { right: 0; transform: none; }
+
+/* "Look again" only applies once the glance has ended, but appearing then pushed
+   the beam and its −/+ buttons ~60px down — moving the target just as the child
+   reached for it. It now always occupies its space and only turns visible.
+   `visibility: hidden` also keeps it out of the accessibility tree and tab order. */
+.is-reserved {
+  visibility: hidden;
+}

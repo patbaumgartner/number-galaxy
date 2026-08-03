@@ -16,7 +16,6 @@ All types of contributions are welcome — bug reports, feature suggestions, tra
   - [Adding Translations](#adding-translations)
   - [Submitting Code](#submitting-code)
 - [Development Setup](#development-setup)
-- [Project Structure](#project-structure)
 - [Style Guide](#style-guide)
 - [Commit Convention](#commit-convention)
 
@@ -94,72 +93,20 @@ The game supports German, Italian, English and French. To add another:
 
 ## Development Setup
 
+Everything you need — requirements, commands, architecture and the project tree — is in
+the **[Development guide](docs/DEVELOPMENT.md)**. The short version:
+
 ```bash
-# Clone the repository
-git clone https://github.com/patbaumgartner/math-invaders.git
-cd math-invaders/web
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Build for production (also type-checks)
-npm run build
-
-# Lint
-npm run lint
-
-# Unit tests (domain in Node, UI in jsdom)
-npm test
-npm run test:watch
-npm run test:coverage
-
-# End-to-end tests (builds and previews, then drives Chromium)
-npx playwright install chromium   # first time only
-npm run test:e2e
+cd web && npm install && npm run dev
 ```
 
-**Requirements:** Node.js 22+
+Before opening a pull request:
 
----
-
-## Project Structure
-
-```
-math-invaders/
-├── web/                      # React application
-│   ├── e2e/                  # Playwright end-to-end specs
-│   ├── src/
-│   │   ├── pages/            # Route-level pages, incl. trainer/ phases
-│   │   ├── components/       # Shared components; arcade/, trainer/, beam/
-│   │   │                     # hold the ones a single feature owns
-│   │   ├── game/             # Arcade domain: rng, equations, questions, mission
-│   │   ├── beam/             # Number Beam domain: skills, bars, drill, stars
-│   │   ├── timesTable/       # Trainer domain: facts, Leitner, sessions, stars
-│   │   ├── store/            # localStorage: settings, scores, progress
-│   │   ├── i18n/             # One file per language, plus the shared key type
-│   │   ├── styles/           # Design tokens and per-area stylesheets
-│   │   ├── test/             # Shared jsdom setup and render helpers
-│   │   ├── App.tsx           # Router
-│   │   ├── hooks.ts          # Countdown, page visibility, modal dialogs
-│   │   └── constants.ts      # Avatars, language names
-│   ├── vite.config.ts
-│   ├── vitest.config.ts      # Two projects: domain (node), ui (jsdom)
-│   ├── playwright.config.ts
-│   └── package.json
-├── .github/
-│   ├── workflows/            # GitHub Actions CI/CD
-│   └── ISSUE_TEMPLATE/       # Issue templates
-├── docs/                     # Screenshots and the Testing Guide
-├── LICENSE
-└── README.md
+```bash
+npm run lint && npm run typecheck && npm test && npm run build && npm run test:e2e
 ```
 
-Tests sit next to the code they cover. **The extension picks the environment:**
-`*.test.ts` runs in Node for pure logic, `*.test.tsx` runs in jsdom for anything that
-renders. See [docs/TESTING.md](docs/TESTING.md).
+**Requirements:** Node.js 22 or newer.
 
 ---
 

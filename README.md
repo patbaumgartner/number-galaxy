@@ -4,177 +4,104 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
-> A free, privacy-friendly maths arcade game for children. Play online at **[patbaumgartner.github.io/math-invaders](https://patbaumgartner.github.io/math-invaders)** with automatic GitHub Pages deployment—no backend required.
+> Three free maths games for children, in one page. No account, no ads, no tracking, and
+> it keeps working when the wifi does not.
 
-**[🎮 Play Now](https://patbaumgartner.github.io/math-invaders)** · **[📖 How to Play](#-how-to-play)** · **[🏗️ Architecture](#-architecture)** · **[🤝 Contributing](#-contributing)**
+**[🎮 Play now](https://patbaumgartner.github.io/math-invaders)** ·
+**[👩‍🏫 For teachers](#-for-teachers-and-parents)** ·
+**[🛸 The arcade](#-math-invaders--the-arcade-game)** ·
+**[✖️ Times tables](#️-times-tables-galaxy--the-multiplication-trainer)** ·
+**[📏 Number Beam](#-number-beam--doubling-halving-and-bar-models)** ·
+**[🛠 Development](docs/DEVELOPMENT.md)**
 
-| Home | Game |
-|------|------|
-| ![Home page](./docs/math-invaders-home.png) | ![Game page](./docs/math-invaders-game.png) |
-
-| Hall of Fame | Settings |
-|-------------|----------|
-| ![Hall of Fame](./docs/math-invaders-hall-of-fame.png) | ![Settings page](./docs/math-invaders-settings.png) |
-
-| Times Tables Galaxy | Trainer practice |
-|---------------------|------------------|
-| ![Times Tables Galaxy](./docs/math-invaders-times-tables.png) | ![Trainer practice](./docs/math-invaders-trainer-practice.png) |
-
-| Number Beam stations | Moving the alien on the bar |
-|----------------------|-----------------------------|
-| ![Number Beam station map](./docs/math-invaders-number-beam.png) | ![Number Beam drill](./docs/math-invaders-beam-drill.png) |
+![The home page, with the three games and the Surprise card](./docs/math-invaders-home.png)
 
 ---
 
-## 🎮 How to Play
+## 👩‍🏫 For teachers and parents
 
-1. **Press Play** — a profile is created for you, so you start straight away
-2. **Tap the alien** holding the right answer — one tap, no aiming
-3. **Chain correct answers** to build a combo multiplier
-4. **Finish all 25 questions** and collect up to ⭐⭐⭐
+### What each game practises
 
-Every mission is exactly 25 questions. A wrong answer costs your combo and a bit of
-accuracy, but it never ends the run — so a tricky day means *more* practice, not less.
+| Game | Maths it covers | Roughly |
+|------|-----------------|---------|
+| 🛸 **Math Invaders** | Addition, subtraction, multiplication, division and remainders — in five different question shapes, with numbers from ≤ 10 up to ≤ 1000 | ages 6–11 |
+| ✖️ **Times Tables Galaxy** | Recall of the tables: 1–12, squares to 25², the 15/20/25 shortcuts, and 13–19 | ages 7–11 |
+| 📏 **Number Beam** | Doubling, halving, quarters, fractions of an amount, ×10 ÷10, number bonds and partitioning — all drawn as bar models | ages 5–9 |
 
-## 🎲 Surprise me
+The ages are an indication, not a gate, and no curriculum is assumed. Each game sets its
+own difficulty from what the child has already done, so two children of different ages
+can share a device without either being handed the other's numbers.
 
-Surprise is offered as a fourth game in the picker rather than a button beside
-the other three, because that is what it is: the game whose subject is "whatever
-you need next".
+### What a session looks like
 
+A child presses Play and is answering a question within a second — there is no menu to
+learn and no account to make. A run is short and finite by design: **25 questions** in
+the arcade, **10** in a beam drill, one planet's worth of facts in the trainer. A wrong
+answer never ends a run early, so a hard day means *more* practice, not less.
 
-Three games on the picker is a decision to make before anything happens, which sits
-badly with a game whose first promise is "press Play — you start right away". **Surprise
-me** makes that decision for you.
+If you would rather not choose, **🎲 Surprise me** picks for them — see
+[below](#-surprise-me).
 
-It is deliberately *not* a uniform random pick:
+### How you can see progress
 
-- **Never anything locked.** A trainer planet or a beam station you have not opened
-  cannot be entered at all, so it is never offered.
-- **Never a difficulty you did not choose.** Rank stays exactly where you set it, and a
-  beam station runs at the tier your stars have already earned. Randomising difficulty
-  would throw Supernova numbers at a Rookie.
-- **Review first.** If the trainer has facts due today, Surprise sends you to the Daily
-  Mission rather than somewhere new.
-- **Never Learn.** That phase is a lesson, not a run.
+- **⭐ Stars** on every planet and station, and at the end of every arcade mission.
+- **A mastery map** in Times Tables Galaxy that colours each of the 144 facts as unseen,
+  learning, due for review, or mastered — the fastest way to see what is actually stuck.
+- **Skill badges** in Settings, one per arcade operation, from a rolling 30-answer
+  accuracy history.
+- **Worked solutions** after every miss, so a wrong answer teaches something.
 
-The point is *interleaving*: mixing topics beats practising one thing in a block, and
-switching between the arcade, the tables and the bar is exactly that mix. Because the
-game chose it, a surprise run ends with **Another surprise** and **Home** instead of
-"play again" — variety was the reason for pressing the button. A run you chose yourself
-still ends exactly as it always did.
+There is no dashboard and no report to log into: progress lives on the device the child
+plays on, and that is the whole privacy model.
 
-## ✖️ Times Tables Galaxy
+### What it never does
 
-Times Tables Galaxy is a focused multiplication trainer available from the game picker
-after a profile is created. Its planet map covers tables 1–12, squares, shortcuts
-(15, 20 and 25), and larger tables 13–19. Learn introduces skip-counting and a strategy
-card; Practice adapts to due and weak facts; and an accurate Speed Run unlocks after the
-first star. Earn ⭐ for Practice, ⭐⭐ for a fast accurate run, and ⭐⭐⭐ by mastering every
-fact. Leitner-style review builds a Daily Mission, while the mastery heatmap distinguishes
-unseen, learning, due, and mastered facts.
-
-## 📏 Number Beam
-
-Number Beam is the third section in the game picker, and it is about doubling, halving
-and the number sense that grows out of them. **Every question is drawn as a bar**: the
-whole on top, the parts that make it underneath. Both rows are measured against one
-shared scale, so a doubled bar really is twice as long — and unknown parts stay behind
-a `?` until you answer, then fill in with their numbers.
-
-**Every question is answered by moving an alien along the beam** — there are no answer
-tiles in this section at all. You drag the alien, nudge it with −/+ or walk it with the
-arrow keys, then land it on the answer. Underneath it is a native range slider, so it
-works with a finger, a mouse, a keyboard and a screen reader alike.
-
-Because the beam is the only input, every answer is guaranteed to sit on a stop. Each
-station declares the granularity its answers actually have — doubling only ever yields
-even numbers, ×10 only multiples of ten — so the beam can use a coarser, thumb-friendly
-step without ever putting the answer between two stops. Every beam has between 10 and
-70 stops, and the answer never sits at a fixed fraction of it.
-
-### Stations
-
-Nine stations in three zones. Each one opens once two stations in the zone before it
-have a star:
-
-| Zone | Stations | Example |
-|------|----------|---------|
-| 🔁 Doubling Deck | Double · Halve · Near doubles | `2 × 7 = ?` · `14 ÷ 2 = ?` · `7 + 8 = ?` |
-| 🧩 Parts Bay | Double twice · Quarters · Fraction of | `4 × 6 = ?` · `20 ÷ 4 = ?` · `¾ × 20 = ?` |
-| 🔟 Tens Belt | Ten times · Number bonds · Split | `10 × 7 = ?` · `? + 7 = 10` · `24 = 20 + ?` |
-
-Prompts are written in pure maths notation, so they read identically in all four
-languages — the station name carries the concept and the bar carries the meaning.
-
-Each station has **three tiers**, and the tier is simply how many stars you already
-hold: numbers widen as you improve, so a station you have mastered never goes stale.
-Ranges are bounded by what a beam can show — a bar of 900 units is not a picture a
-child can read. A drill is ten questions. ⭐ at 70 % accuracy, ⭐⭐ at 90 % once you hold one, and ⭐⭐⭐
-for a clean sweep once you hold two. Stars never fall.
-
-**Controls:**
-- **Touch / mouse:** tap or click an answer tile
-- **Keyboard:** `1`–`4` fire at that tile directly; arrow keys move focus, Enter/Space fires
-
-**Countdown:** off by default. Switch it on in Settings for time pressure — it pauses
-automatically when you open Help or switch tabs.
+No account. No advertising. No analytics, telemetry or third-party scripts. Nothing
+leaves the device — there is no server to send it to. After the first visit it works
+offline. See [Your data](#your-data).
 
 ---
 
-## 📐 Game Mechanics
+## 🛸 Math Invaders — the arcade game
 
-### Scoring
-- **Correct answer:** 10 points × your combo multiplier
-- **Combo:** ×2 after 3 correct in a row, ×3 after 6, ×4 after 10
-- **Wrong answer / time's up:** combo resets to ×1 — you keep your points and your mission
+Aliens hold four possible answers; the child taps the one that is right. One tap, no
+aiming, no dexterity requirement.
 
-### Stars
-Awarded at the end of a mission from accuracy:
+| Playing a mission | Best scores |
+|-------------------|-------------|
+| ![Arcade game](./docs/math-invaders-game.png) | ![Hall of Fame](./docs/math-invaders-hall-of-fame.png) |
 
-| Stars | Accuracy |
-|-------|----------|
-| ⭐⭐⭐ | ≥ 90 % |
-| ⭐⭐ | ≥ 70 % |
-| ⭐ | ≥ 50 % |
+### What it practises
 
-### Equation Forms
+| Operation | Example | Notes |
+|-----------|---------|-------|
+| ➕ Addition | `7 + 3 = ?` | |
+| ➖ Subtraction | `10 − 4 = ?` | Never goes below zero |
+| ✖️ Multiplication | `6 × 7 = ?` | Factors stay inside the ×12 tables |
+| ➗ Division | `20 ÷ 4 = ?` | Built from the answer outwards, so always exact |
+| 🔢 Division with remainder | `23 ÷ 5 = 4 r3` | Every option obeys `0 ≤ remainder < divisor` |
 
-The same five operations now appear in five different shapes, which is where most of
-the variety comes from:
+Several can be switched on at once. The same operations then appear in **five different
+question shapes**, which is where most of the variety comes from:
 
-| Form | Example | Asks for |
-|------|---------|----------|
+| Shape | Example | Asks for |
+|-------|---------|----------|
 | Direct | `7 + 5 = ?` | the result |
-| Missing right | `7 + ? = 12` | the second operand |
-| Missing left | `? + 5 = 12` | the first operand |
+| Missing right | `7 + ? = 12` | the second number |
+| Missing left | `? + 5 = 12` | the first number |
 | Missing operator | `7 ? 5 = 12` | which of `+ − × ÷` fits |
 | Chain | `(7 + 5) − 3 = ?` | a two-step result |
 
-Missing-operator prompts are generated by rejection sampling: a candidate is only kept
-when **exactly one** operator satisfies it, so genuinely ambiguous prompts like
-`4 ? 2 = 2` (both `−` and `÷`) or `2 ? 2 = 4` (both `+` and `×`) never appear.
+A missing-operator question is only ever shown when **exactly one** operator fits, so
+genuinely ambiguous prompts such as `4 ? 2 = 2` (both `−` and `÷`) never appear.
 
-### Math Operations
+### Difficulty: the rank ladder
 
-| Mode | Example | Notes |
-|------|---------|-------|
-| ➕ Addition | `7 + 3 = ?` | Basic arithmetic |
-| ➖ Subtraction | `10 − 4 = ?` | All results ≥ 0 |
-| ✖️ Multiplication | `6 × 7 = ?` | Factors stay within the ×12 tables |
-| ➗ Division | `20 ÷ 4 = ?` | Built from the answer outwards, so always exact |
-| 🔢 Division + Remainder | `23 ÷ 5 = 4 r3` | Every option obeys `0 ≤ remainder < divisor` |
+One setting controls how big the numbers get, how much time there is, and which question
+shapes are unlocked:
 
-Multiple operations can be active at once; the game weights its choice towards whatever
-you keep getting wrong (see [Adaptive Learning](#-adaptive-learning)). Remainders are a
-result *format* rather than a binary operator, so they always appear in direct form.
-
-### Ranks
-
-One ladder sets the numbers, the clock and the unlocked forms:
-
-| Rank | Numbers | Base time | Forms |
-|------|---------|-----------|-------|
+| Rank | Numbers | Time per question | Shapes |
+|------|---------|-------------------|--------|
 | 🌱 Rookie | ≤ 10 | 20 s | Direct |
 | ⭐ Cadet | ≤ 20 | 18 s | + Missing right |
 | 🚀 Pilot | ≤ 50 | 16 s | + Missing left |
@@ -182,305 +109,271 @@ One ladder sets the numbers, the clock and the unlocked forms:
 | 👑 Legend | ≤ 500 | 14 s | + Chain |
 | 💫 Supernova | ≤ 1000 | 13 s | All five |
 
-Harder forms add a few seconds of thinking time on top. Direct questions stay the most
-common form at every rank, so unlocking something new seasons a mission instead of
-taking it over.
+Harder shapes add a few seconds of thinking time. Direct questions stay the most common
+shape at every rank, so unlocking something new seasons a mission rather than taking it
+over.
+
+### Scoring and stars
+
+- **Correct answer:** 10 points × the current combo
+- **Combo:** ×2 after 3 in a row, ×3 after 6, ×4 after 10
+- **Wrong answer or time out:** the combo resets — the points and the mission both stay
+
+Stars come from accuracy over the whole mission: ⭐⭐⭐ at ≥ 90 %, ⭐⭐ at ≥ 70 %, ⭐ at ≥ 50 %.
+
+### How it adapts
+
+- **Spaced repetition.** Each operation carries a review interval (SM-2 inspired). One
+  the child gets wrong comes back almost immediately; one they have mastered appears
+  less often.
+- **Weakness weighting.** Repeated misses on an operation raise its odds of being drawn
+  next, so practice drifts toward what is not working.
+- **Worked solutions.** Every question carries its own step-by-step working — the inverse
+  operation for a missing number, both steps for a chain. It appears automatically after
+  a miss, and on demand from 💡 Help, which pauses the clock while it is open.
+- **Skill badges.** A rolling 30-answer accuracy history per operation, shown in
+  Settings: 🥉 ≥ 45 %, 🥈 ≥ 65 %, 🥇 ≥ 80 %, 💎 ≥ 95 %.
+- **Personal bests.** The fastest correct answer per operation is kept and celebrated on
+  the summary screen.
+
+### Controls
+
+- **Touch or mouse:** tap the answer.
+- **Keyboard:** `1`–`4` answer directly; arrow keys move focus, Enter or Space fires.
+
+**The countdown is off by default** — a first-time player should meet the maths, not a
+clock. Switch it on in Settings; it pauses when Help is open or the tab is hidden.
+
+### 🏆 Hall of Fame
+
+Reached from the Math Invaders section of the home page — the leaderboard belongs to this
+game, so the other two do not link to it.
+
+- **One best entry per rank and per clock setting**, so a relaxed run never overwrites a
+  timed one.
+- Scores stay in the browser. There is no backend and no global leaderboard.
+- Scores from before the 2.0 rework are kept read-only under "Earlier"; combo scoring and
+  the fixed 25-question mission make the old numbers incomparable.
+
+---
+
+## ✖️ Times Tables Galaxy — the multiplication trainer
+
+A focused trainer for *recall*, not calculation: the goal is knowing `7 × 8` rather than
+working it out. Answers are typed on a number pad, because recognising an answer among
+four is not the same skill as producing it.
+
+| The galaxy map | Practising a table |
+|----------------|--------------------|
+| ![Times Tables Galaxy](./docs/math-invaders-times-tables.png) | ![Trainer practice](./docs/math-invaders-trainer-practice.png) |
+
+### What it practises
+
+A planet map of 23 planets across four galaxies:
+
+| Galaxy | Covers |
+|--------|--------|
+| 🌟 Home Galaxy | Tables 1–12 |
+| ✨ Squares Nebula | Squares up to 25² |
+| 🪐 Shortcuts Belt | The 15, 20 and 25 tables |
+| 🌌 Deep Space | The larger tables, 13–19 |
+
+Later galaxies unlock with stars, so a child cannot wander into 17× before the basics
+are solid.
+
+### The four phases
+
+| Phase | What happens |
+|-------|--------------|
+| **Learn** | Skip-counting, the whole table laid out, and a strategy card — *why* `9 ×` works the way it does |
+| **Practice** | Adapts to the facts that are due or weak; a wrong answer is explained and re-queued |
+| **Speed Run** | Unlocks after the first star; the same facts against the clock |
+| **Daily Mission** | Whatever is due for review today, across every planet |
+
+### How it adapts
+
+Every fact is scheduled with a **Leitner system**: get it right and it moves to a slower
+box, get it wrong and it drops back to be seen again soon. The Daily Mission is simply
+whatever those boxes say is due today.
+
+### Progress
+
+⭐ for a good Practice run, ⭐⭐ for a fast and accurate Speed Run, ⭐⭐⭐ for mastering every
+fact on the planet. Stars never fall.
+
+The **mastery map** colours all 144 facts by state — unseen, learning, due, mastered — so
+a gap is visible at a glance rather than inferred from a score.
+
+---
+
+## 📏 Number Beam — doubling, halving and bar models
+
+The other two games ask a child to *produce a number*. This one shows them what a number
+is made of.
+
+| The station map | A question on the bar |
+|-----------------|-----------------------|
+| ![Number Beam stations](./docs/math-invaders-number-beam.png) | ![Number Beam drill](./docs/math-invaders-beam-drill.png) |
+
+### Every question is a bar
+
+The whole sits on top, the parts that make it underneath, and **both rows are measured
+against one shared scale** — so a doubled bar really is drawn twice as long. Unknown
+parts stay behind a `?` until the answer is given, then fill in with their numbers.
+
+That picture is the Singapore-style bar model, and it is the same one whether the
+question is doubling, a quarter, a fraction of an amount or a number bond.
+
+### Every answer is given by moving an alien along the beam
+
+There are no answer tiles in this game at all. The child drags the alien, nudges it with
+−/+, or walks it with the arrow keys, and lands it on the answer. Underneath is a native
+range slider, so it works with a finger, a mouse, a keyboard and a screen reader alike.
+
+This is deliberately harder than multiple choice: there is nothing to eliminate, and the
+child has to place the number on a line. Every beam has between 10 and 70 stops, the
+answer always sits exactly on one, and it never sits at a predictable fraction of the
+bar.
+
+### What it practises
+
+Nine stations in three zones. A zone opens once two stations in the one before it have a
+star:
+
+| Zone | Stations | Examples |
+|------|----------|----------|
+| 🔁 Doubling Deck | Double · Halve · Near doubles | `2 × 7 = ?` · `14 ÷ 2 = ?` · `7 + 8 = ?` |
+| 🧩 Parts Bay | Double twice · Quarters · Fraction of | `4 × 6 = ?` · `20 ÷ 4 = ?` · `¾ × 20 = ?` |
+| 🔟 Tens Belt | Ten times · Number bonds · Split | `10 × 7 = ?` · `? + 7 = 10` · `24 = 20 + ?` |
+
+Prompts are written in pure maths notation, so they read identically in all four
+languages — the station name carries the concept and the bar carries the meaning.
+
+### Difficulty and progress
+
+Each station has **three tiers, and the tier is simply how many stars the child already
+holds** — numbers widen as they improve, so a mastered station never goes stale. Number
+ranges are bounded by what a bar can actually show; a bar of 900 units is not a picture
+anyone can read.
+
+A drill is ten questions: ⭐ at 70 % accuracy, ⭐⭐ at 90 % once one star is held, and ⭐⭐⭐ for
+a clean sweep once two are. Stars never fall.
+
+---
+
+## 🎲 Surprise me
+
+A fourth card in the picker that chooses a game — the game whose subject is "whatever you
+need next".
+
+It is deliberately **not** a random roll:
+
+- **Never anything locked.** A planet or station that has not been opened is never
+  offered.
+- **Never a difficulty that was not earned.** Rank stays where it was set, and a station
+  runs at the tier its stars allow. Rolling a difficulty would hand Supernova numbers to
+  a beginner.
+- **Review first.** If facts are due in the trainer today, Surprise sends the child to
+  the Daily Mission rather than somewhere new.
+- **Never Learn.** That phase is a lesson, not a run.
+
+The point is *interleaving*: mixing topics beats practising one in a block, and switching
+between the arcade, the tables and the bar is exactly that mix. A surprise run ends with
+**Another surprise** and **Home** rather than "play again", because variety was the point.
+
+---
+
+## Across all three games
 
 ### Languages
 
-German · Italian · English · French
+**German · Italian · English · French.** The interface is fully translated and
+`<html lang>` follows the choice, so a screen reader uses the right voice. Worked
+solutions are written in pure maths notation (`12 − 7 = 5`) and read identically in every
+language.
 
-The UI is fully translated and `<html lang>` follows your choice. Flags in the picker
-are drawn as SVG rather than 🇩🇪-style emoji, which collapse to bare "DE"/"GB" letters
-on Windows and most Linux desktops. Worked solutions are
-written in pure maths notation (`12 − 7 = 5`), so they read identically in every language.
+### Settings
 
----
+![Settings page](./docs/math-invaders-settings.png)
 
-## 🧠 Adaptive Learning
+Settings are grouped by the game each control affects, because all three share one page.
 
-### Spaced Repetition
-Each operation carries a review interval (SM-2 inspired). Operations you get wrong come
-back on the next question; ones you have mastered are shown less often.
+| Setting | Applies to | Options | Default |
+|---------|-----------|---------|---------|
+| Practise | 🛸 Arcade | ➕ ➖ ✖️ ➗ 🔢, several at once | ➕ Addition |
+| Rank | 🛸 Arcade | Rookie → Supernova | 🌱 Rookie |
+| ⏱ Countdown | 🛸 Arcade | On / Off | Off |
+| 💡 Worked solutions | 🛸 Arcade | On / Off | On |
+| Strategy cards | ✖️ Trainer | On / Off | On |
+| Trainer progress | ✖️ Trainer | Reset | — |
+| 📏 Always show the bar | 📏 Beam | On / Off | On |
+| Beam progress | 📏 Beam | Reset | — |
+| Language | ⚙️ All games | German · Italian · English · French | German |
+| 🔊 Sound | ⚙️ All games | On / Off | On |
+| Delete all data | ⚙️ All games | — | — |
 
-### Weakness Weighting
-Repeated misses on an operation raise its odds of being drawn next.
+Each game's reset clears only its own progress, so wiping the trainer never touches
+arcade scores.
 
-### Worked Solutions
-Every question ships its own step-by-step working — the inverse operation for a missing
-operand, both steps for a chain. It appears automatically after a miss, and on demand
-from the 💡 Help button, which pauses the countdown while it is open.
+### Accessibility
 
-### Skill Mastery Badges
-Each operation keeps a rolling accuracy history (last 30 answers):
+Native buttons, visible focus rings, a 44 px minimum touch target, `prefers-reduced-motion`
+support, dialogs that trap focus and close on Escape, and labels that stay in the
+accessibility tree even when a phone hides the text.
 
-| Badge | Threshold |
-|-------|-----------|
-| 🥉 Bronze | ≥ 45 % |
-| 🥈 Silver | ≥ 65 % |
-| 🥇 Gold | ≥ 80 % |
-| 💎 Platinum | ≥ 95 % |
+Every route is audited against **WCAG 2.1 A/AA with axe**, on both a phone and a desktop
+viewport, and the test suite fails on a single violation.
 
-Badges appear on the operation buttons in Settings.
+### Your data
 
-### Personal Bests
-The fastest correct response per operation is tracked and celebrated on the summary screen.
+Everything is stored in the browser's `localStorage` on the device being used. There is
+no account, no server, no cloud and no analytics — nothing to send anywhere. Clearing the
+browser's data, or **Settings → ⚙️ All games → Delete all data**, removes it permanently.
 
----
-
-## ⚙️ Settings Reference
-
-Settings are grouped by the game they affect, because all three games share the page:
-
-- **🛸 Math Invaders** — what to practise, rank, countdown, worked solutions
-- **✖️ Times Tables Galaxy** — strategy cards, trainer progress reset
-- **📏 Number Beam** — always show the bar, beam progress reset
-- **⚙️ All games** — language, sound, clearing all data
-
-
-| Setting | Options | Default | Notes |
-|---------|---------|---------|-------|
-| Practise | ➕ ➖ ✖️ ➗ 🔢 | ➕ Addition | Several can be active at once |
-| Rank | Rookie → Supernova | 🌱 Rookie | Numbers, time and unlocked forms |
-| Language | German · Italian · English · French | German | UI language, picked by drawn flag |
-| ⏱ Countdown | On / Off | Off | Time pressure per question |
-| 🔊 Sound | On / Off | On | Hit and miss effects |
-| 💡 Worked solutions | On / Off | On | Working after a miss, plus the Help button |
-| ✖️ Strategy cards | On / Off | On | Optional hints during trainer practice |
-| ✖️ Trainer progress | Reset | — | Clears only trainer facts, stars and best times |
-| 📏 Always show the bar | On / Off | On | Off hides the bar model until a miss |
-| 📏 Beam progress | Reset | — | Clears only Number Beam stars and best scores |
-| 🗄 Data | — | — | Clear everything stored on this device |
-
----
-
-## 🏆 Hall of Fame
-
-Reached from the Math Invaders section on the home page — the leaderboard belongs to
-the arcade game, so the trainer does not link to it.
-
-- **One best entry per rank and per clock setting** — a relaxed run never overwrites a timed one
-- **No backend:** scores stay in your browser's `localStorage`
-- **Earlier scores** from before the rework are kept read-only under "Earlier". They are
-  not converted, because combo scoring and the fixed 25-question mission make the old
-  numbers incomparable
-
----
-
-## 🏗️ Architecture
-
-**Static React app on GitHub Pages** — No backend server required.
-
-```
-┌─ React 19 + TypeScript
-├─ Three games, one shell
-│  ├─ 🛸 Math Invaders      — the one-tap arcade game
-│  ├─ ✖️ Times Tables Galaxy — the multiplication trainer
-│  └─ 📏 Number Beam        — doubling and halving on a bar model
-├─ Pages
-│  ├─ Home: profile and the game picker
-│  ├─ Game: the arcade mission loop
-│  ├─ Hall of Fame: Math Invaders leaderboards
-│  ├─ Times Tables: galaxy map and the four trainer phases
-│  ├─ Number Beam: station map and the ten-question drill
-│  └─ Settings: grouped by which game each control affects
-├─ Storage
-│  └─ localStorage: Player data, game state, scores
-└─ Deploy
-   └─ GitHub Actions → GitHub Pages
-```
-
-### Tech Stack
-
-- **Frontend:** React 19.2, React Router 8.3, TypeScript 7.0
-- **Build:** Vite 8 (fast hot reload)
-- **Styling:** Token-driven CSS design system (deep-space palette, fluid type, `100dvh`)
-- **Storage:** Browser localStorage (zero tracking)
-- **Testing:** Vitest (domain in Node, UI in jsdom + Testing Library) and Playwright (desktop + mobile Chromium)
-- **Deploy:** GitHub Pages + GitHub Actions
-
-### Project Structure
-
-```
-web/
-├── public/
-│   ├── 404.html        # SPA redirect for GitHub Pages
-│   ├── manifest.json   # PWA manifest
-│   ├── sw.js           # Offline app-shell cache
-│   └── favicon.svg     # App icon
-├── e2e/                # Playwright specs — smoke, game, settings,
-│                       # hall of fame, times tables, a11y, responsive, PWA
-├── src/
-│   ├── pages/
-│   │   ├── HomePage.tsx        # Instant play + profile
-│   │   ├── GamePage.tsx        # Mission loop (phase machine)
-│   │   ├── HallOfFamePage.tsx  # Scores by rank
-│   │   ├── SettingsPage.tsx    # Three choices + advanced
-│   │   ├── TimesTablesPage.tsx # Times Tables Galaxy map
-│   │   ├── NumberBeamPage.tsx  # Number Beam station map
-│   │   ├── BeamDrillPage.tsx   # Number Beam drill loop
-│   │   └── trainer/            # Learn, Practice, Speed Run and Daily Mission
-│   ├── components/             # Shared at the top, feature-owned in folders
-│   │   ├── TopBar.tsx          # The one navigation bar, used by every game
-│   │   ├── PlayHud.tsx         # The status strip every game shows while playing
-│   │   ├── WorkedExampleDialog.tsx # The 💡 Help dialog, shared by two games
-│   │   ├── Flag.tsx            # Drawn language flags
-│   │   ├── ErrorBoundary.tsx   # Crash fallback
-│   │   ├── arcade/             # AnswerGrid, MissionSummary
-│   │   ├── trainer/            # NumberPad, FactHeatmap, SessionSummary, TrainerFrame
-│   │   └── beam/               # BarModel, BeamSlider
-│   ├── game/                   # Pure domain — no React, fully tested
-│   │   ├── types.ts            # Ranks, forms, scoring
-│   │   ├── rng.ts              # Seedable PRNG (deterministic tests)
-│   │   ├── equations.ts        # Per-operation arithmetic + operator rules
-│   │   ├── options.ts          # Distractor generation
-│   │   ├── questions.ts        # Assembles forms into questions
-│   │   ├── mission.ts          # Mission state reducer
-│   │   └── examples.ts         # Worked examples
-│   ├── beam/                   # Number Beam domain — no React, fully tested
-│   │   ├── types.ts            # Skills, bar model, tiers and stars
-│   │   ├── stations.ts         # Zones, stations, caps and unlocking
-│   │   ├── questions.ts        # One generator per skill
-│   │   ├── bars.ts             # Bar geometry and beam sizing
-│   │   ├── session.ts          # Drill reducer
-│   │   └── beamStore.ts        # Stars, bests and beam settings
-│   ├── store/                  # localStorage — no React
-│   │   ├── storage.ts          # Safe JSON read/write, shared by every store
-│   │   ├── settings.ts         # Settings + v1 migration
-│   │   ├── scores.ts           # Scores v2 + legacy records
-│   │   └── progress.ts         # Player, weakness, SR, badges
-│   ├── timesTable/             # Trainer domain, storage and routing
-│   ├── i18n/                   # One file per language + the shared key type
-│   │   ├── types.ts            # The `Translations` contract every language owes
-│   │   ├── de.ts it.ts en.ts fr.ts
-│   │   └── index.ts            # Lookup by language + `fill` for placeholders
-│   ├── styles/                 # Design tokens and one sheet per area
-│   │   ├── tokens.css          # Colours, spacing, type, radii, shadows
-│   │   ├── layout.css home.css arcade.css settings.css hall-of-fame.css
-│   │   ├── trainer.css beam.css motion.css chrome.css backdrop.css
-│   │   └── index.css           # The cascade order, imported once by App.tsx
-│   ├── test/                   # Shared jsdom setup and render helpers
-│   ├── App.tsx         # Router
-│   ├── surprise.ts     # Cross-game picker for the 🎲 button
-│   ├── hooks.ts        # Countdown, page visibility, modal dialogs, surprise runs
-│   ├── sound.ts        # Web Audio effects
-│   └── constants.ts    # Avatars, language names
-├── index.html
-├── vite.config.ts
-├── vitest.config.ts      # Two projects: domain (node) and ui (jsdom)
-├── playwright.config.ts  # Runs against the production build
-├── tsconfig.json
-├── eslint.config.js
-└── package.json
-```
-
-Tests live beside the code they cover: `*.test.ts` for pure logic, `*.test.tsx` for
-anything that renders.
-
----
-
-## 🚀 Development
-
-### Setup
-
-```bash
-cd web
-npm install
-npm run dev
-```
-
-Opens [http://localhost:5173/math-invaders](http://localhost:5173/math-invaders)
-
-### Build
-
-```bash
-npm run build
-```
-
-Output in `web/dist/` — deploy to GitHub Pages or any static host.
-
-### Test
-
-```bash
-npm test              # 377 unit tests (domain + UI)
-npm run test:coverage # with coverage, gated at 95 % statements
-npm run test:e2e      # 168 Playwright tests, desktop + mobile Chromium
-npm run test:all      # everything
-```
-
-Three layers: pure domain logic in Node, React components and pages in jsdom, and the
-built bundle driven through a real browser. See **[docs/TESTING.md](docs/TESTING.md)**
-for the full strategy, helpers and conventions.
-
-`npm run lint`, `npm run test:coverage`, `npm run build` and `npm run test:e2e` all run in CI.
-
-### Lint
-
-```bash
-npm run lint
-```
-
----
-
-## 🌐 Deployment
-
-**Automatic via GitHub Actions** on push to `main`:
-
-1. Install dependencies
-2. Build with Vite
-3. Deploy `dist/` to GitHub Pages
-4. Live at [patbaumgartner.github.io/math-invaders](https://patbaumgartner.github.io/math-invaders)
-
-See [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) for details.
-
----
-
-## 🎨 Design Philosophy
-
-- **No ads, no tracking, no monetization**
-- **Child-safe:** Pure black + neon colors, no hidden patterns
-- **Privacy-first:** All data stays on your device
-- **Offline-capable:** Works without internet after initial load
-- **Accessible:** Native buttons, visible focus rings, 44 px minimum touch targets,
-  `prefers-reduced-motion` support, dialogs that trap focus and close on Escape, and
-  labels that stay in the accessibility tree even when a phone hides them. Every
-  route is audited against WCAG 2.1 A/AA with axe on both a phone and a desktop
-  viewport, and the suite fails on a single violation
-- **Consistent:** all three games share one navigation bar, so the way out is always
-  the first control in the top-left, whichever game a child is in
+Because progress is per-device and per-browser, a child who plays on both a tablet and a
+laptop will have separate progress on each.
 
 ---
 
 ## ❓ FAQ
 
-**Q: Is my data private?**  
-A: Yes. Everything is stored locally using browser localStorage. No server, no cloud, no analytics.
+**Do I need to install anything?**
+No. It runs in a browser. You can add it to a home screen if you want it to open like an
+app.
 
-**Q: Can I play offline?**  
-A: Yes, after the initial page load, the app works offline.
+**Does it work offline?**
+Yes, after the first visit.
 
-**Q: How do I save my progress?**  
-A: Create a player profile. Scores auto-save to localStorage.
+**Is it really free, with no ads?**
+Yes. There is no monetisation of any kind, and no third-party scripts.
 
-**Q: Can I use it on mobile?**  
-A: Yes — the game screen is built mobile-first and fits a single portrait viewport. Just tap the answer you want.
+**How do I reset progress?**
+Settings → ⚙️ All games → Delete all data, or one of the per-game resets to clear only
+that game.
 
-**Q: How do I reset my data?**  
-A: Settings → More settings → Delete all data to wipe profile and scores.
+**Can several children share a device?**
+They will share one profile and one set of progress. Separate browser profiles, or
+separate devices, keep them apart.
+
+**Can I use it on a phone?**
+Yes — it is built mobile-first and every game fits a portrait screen.
 
 ---
+
+## 🛠 For developers
+
+- **[Development guide](docs/DEVELOPMENT.md)** — architecture, project structure, how to
+  run, build, check and deploy it
+- **[Testing guide](docs/TESTING.md)** — the three test layers and how to add to them
+- **[Contributing](CONTRIBUTING.md)** — workflow, style, adding a language
+- **[Code of Conduct](CODE_OF_CONDUCT.md)** · **[Security Policy](SECURITY.md)** ·
+  **[Changelog](CHANGELOG.md)**
+
+Contributions are very welcome — bug reports, translations, code and documentation alike.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 🤝 Contributing
-
-Contributions make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-Please read our [Contributing Guidelines](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before submitting a pull request. The [Testing Guide](docs/TESTING.md) explains how the three test layers fit together. We also have a [Security Policy](SECURITY.md) and [Changelog](CHANGELOG.md).
+MIT — see [LICENSE](LICENSE).
 
 ---
 

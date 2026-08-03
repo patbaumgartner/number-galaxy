@@ -80,12 +80,19 @@ from a number, and say roughly where a number sits. Those are not safe assumptio
 are the strongest predictors of later arithmetic, and every one of them is trainable. This
 is where a child who is not yet ready for `2 × 7` has somewhere to be.
 
-### Six stations in two zones
+### Seven stations in two zones, and a sandbox
 
 | Zone | Stations | What it asks |
 |------|----------|--------------|
 | 👀 **Sight Bay** | At a glance · Ten-frame · Bead rack | How many — without counting them |
-| 📍 **Number Line** | Place it · Count on · Dot array | Where the number goes, and where a jump lands |
+| 📍 **Number Line** | Place it · Count on · Dot array · **Roughly** | Where the number goes, where a jump lands, and about how many |
+
+**🧩 Explore numbers asks nothing at all.** Above the map sits the one screen in the app
+with no question, no clock, no score and no star. One number is shown four ways at once — a
+die-face pattern, a ten-frame, a bead rack and a place on the line — and the child moves it
+with −1 / −5 / −10 and +1 / +5 / +10. Seeing the same sixteen in all four *together* is the
+point; four unrelated pictures is what it looks like when they are only ever met one at a
+time. Nothing gates it, so it is always the first thing available.
 
 **Patterns are shown for a glance, not for a count.** A dot pattern appears for about a
 second and then goes. Scattered dots can only be counted one at a time, which trains
@@ -97,9 +104,12 @@ child wants, and the glance can be switched off entirely in Settings.
 of five, a bead rack grouped in fives, an empty number line with the jump drawn on it, a dot
 array read as rows and columns.
 
-**Placing a number allows a near miss.** Landing on 38 when the answer was 37 counts. The
-skill being built is a sense of how big a number is, and marking that wrong would be
-measuring something else. Everywhere a quantity is exact, it has to be exact.
+**Two stations allow a near miss, and only two.** Landing on 38 when the answer was 37
+counts, and so does answering 30 when 34 dots flashed past. The skill being built in both is
+a *sense* of size rather than a count, and marking those wrong would be measuring something
+else. 🍇 **Roughly** shows far more dots than anyone can take in at a glance and asks for
+about how many, inside a band of a fifth either way. Everywhere a quantity is exact, it
+still has to be exact.
 
 Answers are given on the same beam Number Beam uses — nothing to eliminate, and a number to
 commit to.
@@ -410,7 +420,10 @@ they run simplest first — the same order as the home screen.
 | 📖 Word problems | 🛸 Arcade | On / Off | Off |
 | Strategy cards | ✖️ Trainer | On / Off | On |
 | Trainer progress | ✖️ Trainer | Reset | — |
+| 🏅 Show points while playing | 🛸 Arcade | On / Off | On |
 | 🧠 Thinking time | ⚙️ All games | Normal · More · Most | Normal |
+| 🔤 Easier reading | ⚙️ All games | On / Off | Off |
+| 🖨 To print | ⚙️ All games | — | — |
 | 📋 Progress | ⚙️ All games | — | — |
 | Language | ⚙️ All games | German · Italian · English · French | German |
 | 🔊 Sound | ⚙️ All games | On / Off | On |
@@ -436,6 +449,24 @@ accessibility tree even when a phone hides the text.
 
 Every route is audited against **WCAG 2.1 A/AA with axe**, on both a phone and a desktop
 viewport, and the test suite fails on a single violation.
+
+**🔤 Easier reading** widens the space between letters, words and lines and switches to a
+plain sans-serif. It is spacing rather than a bespoke "dyslexia font" on purpose: the
+eye-tracking evidence for extra spacing is solid, the evidence for the special typefaces is
+not, and a font file would cost an offline app its weight for the weaker of the two. It
+applies on every screen, including mid-game.
+
+**🔊 Read aloud** appears beside a word problem when the device has a voice. Reading the
+situation is a second load on top of the arithmetic, and for a child who is fine at the maths
+and not yet at the reading it is the only thing in the way. It uses the browser's own
+speech — nothing is downloaded and nothing is sent.
+
+### 🖨 To print
+
+Settings → ⚙️ All games → **To print**. Three sheets for the part of a lesson that is not a
+screen: dot cards from three to nine for a flash routine, empty ten-frames, and empty number
+lines. Each prints on its own page, in outline on white. One device does not go round twenty
+children.
 
 ### Your data
 
@@ -515,6 +546,18 @@ Zyklus 2 ≈ 3.–6. Klasse.
 | Place it, larger ranges | `MA.1.A.2.c` | 1 | *"können im Zahlenraum bis 100 in 1er-, 2er-, 5er- und 10er-Schritten vorwärts zählen. können im 100er-Raum Zahlen ordnen (z.B. auf dem Zahlenstrahl und auf der 100er-Tafel)."* |
 | Count on | `MA.1.A.2.a` | 1 | *"können bis zu 20 Elemente auszählen und im Zahlenraum bis 10 von jeder möglichen Zahl aus vor- und rückwärts zählen."* |
 | Dot array | `MA.1.C.1.d` | 1 | *"erkennen in grafischen Modellen multiplikative Beziehungen, insbesondere Verdoppelungen und 1 · mehr bzw. 1 · weniger (z.B. 3 · 4 und 6 · 4 in einem Punktefeld als Verdoppelung)."* |
+
+**🧩 Explore numbers** serves `MA.1.C.2.a` — *"können Anzahlen verschieden darstellen (z.B. mit
+Punkten oder Strichen) und verschieden anordnen"* — which is precisely what showing one number
+four ways at once is for.
+
+**🍇 Roughly deliberately claims no code.** Lehrplan 21 uses *schätzen* only for **Grössen**
+(lengths, weights, money, time — `MA.3.A.2`) and *überschlagen* only for **calculations**
+(`MA.1.A.2.g`, *"können Grundoperationen mit natürlichen Zahlen überschlagen"*). Estimating how
+many objects are in front of you is neither, and no competency covers it directly. It is
+groundwork for both, and it is here because the research on early number sense supports it —
+not because the curriculum asks for it. Saying so is more use to a teacher than a code that
+does not quite fit.
 
 #### 📏 Number Beam
 

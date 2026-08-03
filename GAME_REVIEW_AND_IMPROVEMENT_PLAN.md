@@ -3,11 +3,11 @@
 **Reviewed:** August 2026 · **Commit:** `222fcc9` · **Scope:** running application, source, README
 **Target group under review:** children aged 6–12 · **README audience:** teachers and parents
 
-> **Status: Phases 1–3 implemented in full, plus Phase 4 items 4.3 and 4.6** (4.4 was
-> deliberately folded into 4.6 rather than shipped as specified). Items 4.1, 4.2, 4.5 and 4.7
-> remain open. See [Implementation record](#implementation-record) at the end for exactly what
-> shipped, what was softened and why, and what is still outstanding. The findings below are
-> kept as written at review time so the reasoning behind each change stays readable.
+> **Status: fully implemented.** Phases 1–3 in full, and every Phase 4 item — with 4.4
+> deliberately folded into 4.6 rather than shipped as specified. See
+> [Implementation record](#implementation-record) at the end for exactly what shipped, what
+> was softened and why, and the two places where checking the source changed the plan. The
+> findings below are kept as written at review time so the reasoning stays readable.
 
 ---
 
@@ -460,8 +460,13 @@ and it should get credit rather than a work item:
    rack and number line already exist as components — exposing them as toys is cheap and is
    the single biggest pedagogical addition available.
 2. **No estimation.** The number line supports "close enough" scoring already, but there is no
-   activity whose *goal* is approximation ("Is 47 nearer 40 or 50?"). This is core number
-   sense and LP21 names it explicitly in `MA.1.A.2.g` ("überschlagen") and `MA.3.A.2` ("schätzen").
+   activity whose *goal* is approximation. This is core number sense.
+   **Correction, found while implementing:** the claim that LP21 names it in `MA.1.A.2.g`
+   ("überschlagen") and `MA.3.A.2` ("schätzen") does not survive reading them. *überschlagen*
+   is only ever about estimating **calculations** and *schätzen* only ever about **Grössen** —
+   lengths, weights, money, time. No competency covers estimating how many objects are in
+   front of you. The station was still worth building, but on the research rather than on the
+   curriculum, and it claims no code.
 3. **Nothing beyond `MA.1`.** No geometry, measurement, or data — see B.2. Not necessarily a
    defect, but currently undeclared.
 4. **No cross-day loop.** Given C.2.2, the absence of any reason to return tomorrow limits
@@ -680,8 +685,32 @@ scrolled up **underneath the transparent game bar**. Caught by using the app, no
 suite. The tile bump was reverted — it was a nice-to-have, not part of the defect — and the
 absence of overlap is now measured (`barBottom 65 / hudTop 66`).
 
-### Still open
+### Phase 4, shipped in a second pass
 
-Phase 4 items **4.1** (free-play sandbox), **4.2** (estimation station), **4.5** (printable
-pack) and **4.7** (text-to-speech and a dyslexia-friendly font) are unbuilt. Each is a new
-feature rather than a fix, and 4.1 remains the highest-value single addition available.
+| Ref | Change | Evidence it works |
+|---|---|---|
+| 4.1 | **🧩 Explore numbers** — the only screen that asks nothing. One number shown as a die-face pattern, a ten-frame, a bead rack and a place on the line at once, moved by −/+ 1/5/10. Ungated, unscored, untimed. Serves `MA.1.C.2.a` | Used live at 360px; 4 unit tests, 1 e2e, WCAG audited |
+| 4.2 | **🍇 Roughly** — far too many dots to take in at a glance, answered inside a band of a fifth either way | Played live: 19 dots, `≈ ?`, beam 0–20; tolerance tests added |
+| 4.5 | **🖨 To print** — dot cards 3–9, empty ten-frames, empty number lines, each on its own page, outline on white | Verified under `emulateMedia('print')`: chrome hidden, sheets render |
+| 4.7 | **🔤 Easier reading** (spacing, not a font file) and **🔊 Read aloud** for word problems | Live: Verdana + 0.8px tracking + 1.7 leading, **survives navigation**; speaks in `de-CH` at rate 0.85 |
+
+### Two places where checking changed the plan
+
+**Estimation claims no curriculum code.** The plan asserted it would close `MA.1.A.2.g` and
+`MA.3.A.2`. Reading them showed *überschlagen* is only about estimating calculations and
+*schätzen* only about Grössen. Nothing in LP21 covers estimating a quantity of objects, so
+the README says that plainly instead of stretching a code to fit — which is the whole
+argument of Part A applied to my own work.
+
+**4.4 became a setting rather than a rank rule** — see above.
+
+### Three defects found by using the features, not by testing them
+
+- `patternFor(0)` returns `undefined` and crashed Explore at zero. The drills never ask for
+  none, so nothing had caught it.
+- The dot grid was three rows tall because no drill asks for more than twelve; Explore goes
+  to twenty and silently cut the fourth row off.
+- The number line drew its start marker at zero, printing a second `0` on top of the one
+  already at the end of the rail.
+
+All three lived in code shared with the drills, and none could surface there.

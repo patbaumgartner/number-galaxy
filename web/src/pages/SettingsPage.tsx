@@ -210,6 +210,14 @@ export default function SettingsPage() {
                             </div>
                             <Switch labels={t.settings} on={settings.hints} onToggle={() => update({ hints: !settings.hints })} />
                         </div>
+
+                        <div className="switch-row">
+                            <div>
+                                <h3 className="switch-row__title">📖 {t.settings.storiesTitle}</h3>
+                                <p className="panel__hint">{t.settings.storiesHint}</p>
+                            </div>
+                            <Switch labels={t.settings} on={settings.stories} onToggle={() => update({ stories: !settings.stories })} />
+                        </div>
                     </div>
                 </section>
 

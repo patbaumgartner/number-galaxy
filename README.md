@@ -139,6 +139,21 @@ rather than a verdict.
 Speed is only ever shown once accuracy is at least 80 %. A fast run full of misses is not a
 faster child, and fluency is flexibility and accuracy before it is pace.
 
+### Word problems
+
+**Off by default.** Switched on in Settings, a sum arrives inside a short situation rather
+than as bare numbers — because choosing the operation is a separate skill from carrying it
+out, and bare equations never exercise it.
+
+The distinction that matters most is inside division: *sharing* 24 apples between 6 children
+and *grouping* 24 apples into bags of 6 give the same answer for entirely different reasons,
+and a child who meets only one of them reliably comes unstuck on the other. Both are asked.
+A situation the numbers would make nonsense of — sharing 3 apples between 12 children — is
+never told at all.
+
+Reading a situation is a second load on top of the arithmetic, which is why it is the
+teacher's or parent's call when to add it.
+
 ### How it adapts
 
 - **Spaced repetition.** Each operation carries a review interval (SM-2 inspired). One
@@ -227,6 +242,21 @@ are solid.
 | **Practice** | Adapts to the facts that are due or weak; a wrong answer is explained and re-queued |
 | **Speed Run** | Unlocks after the first star; the same facts against the clock |
 | **Daily Mission** | Whatever is due for review today, across every planet |
+
+### Word problems
+
+**Off by default.** Switched on in Settings, a sum arrives inside a short situation rather
+than as bare numbers — because choosing the operation is a separate skill from carrying it
+out, and bare equations never exercise it.
+
+The distinction that matters most is inside division: *sharing* 24 apples between 6 children
+and *grouping* 24 apples into bags of 6 give the same answer for entirely different reasons,
+and a child who meets only one of them reliably comes unstuck on the other. Both are asked.
+A situation the numbers would make nonsense of — sharing 3 apples between 12 children — is
+never told at all.
+
+Reading a situation is a second load on top of the arithmetic, which is why it is the
+teacher's or parent's call when to add it.
 
 ### How it adapts
 
@@ -376,6 +406,7 @@ Settings are grouped by the game each control affects, because all three share o
 | ⏱ Countdown | 🛸 Arcade | Off · Gentle · On | Off |
 | 🧠 Thinking time | 🛸 Arcade · ✖️ Trainer | Normal · More · Most | Normal |
 | 💡 Worked solutions | 🛸 Arcade | On / Off | On |
+| 📖 Word problems | 🛸 Arcade | On / Off | Off |
 | Strategy cards | ✖️ Trainer | On / Off | On |
 | Trainer progress | ✖️ Trainer | Reset | — |
 | 📏 Always show the bar | 📏 Beam | On / Off | On |

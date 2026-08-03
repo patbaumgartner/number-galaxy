@@ -110,6 +110,8 @@ export const fr: Translations = {
         soundHint: 'Sons pour les réussites et les erreurs.',
         hintsTitle: 'Explications',
         hintsHint: 'Montre le calcul après une erreur, et le bouton aide.',
+        storiesTitle: 'Problèmes',
+        storiesHint: 'Désactivé : juste des nombres. Activé : le calcul est dans une petite histoire.',
         on: 'Oui',
         off: 'Non',
         dataTitle: 'Tes données',

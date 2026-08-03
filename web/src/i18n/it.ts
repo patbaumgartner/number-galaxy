@@ -110,6 +110,8 @@ export const it: Translations = {
         soundHint: 'Suoni per colpi ed errori.',
         hintsTitle: 'Spiegazioni',
         hintsHint: 'Mostra il procedimento dopo un errore e il pulsante aiuto.',
+        storiesTitle: 'Problemi',
+        storiesHint: 'Spento: solo numeri. Acceso: il calcolo sta dentro una storiella.',
         on: 'Sì',
         off: 'No',
         dataTitle: 'I tuoi dati',

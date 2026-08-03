@@ -12,6 +12,7 @@ import {
 } from './equations'
 import { buildNumericOptions, buildOperatorOptions, buildRemainderOptions } from './options'
 import { routeFor, strategyWorking } from './working'
+import { storyFor } from './stories'
 import { equationFor, fitsWithin, keyOf, pickFact, type ArithmeticFact } from './facts'
 import { reasonsByValue, tileDistractors } from './misconceptions'
 
@@ -30,25 +31,34 @@ const MAX_ATTEMPTS = 60
  */
 const DUE_FACT_SHARE = 0.5
 
-type Draft = Omit<Question, 'correctIndex' | 'factKey' | 'missReasons' | 'route'>
-    & Partial<Pick<Question, 'factKey' | 'missReasons' | 'route'>>
+type Draft = Omit<Question, 'correctIndex' | 'factKey' | 'missReasons' | 'route' | 'story'>
+    & Partial<Pick<Question, 'factKey' | 'missReasons' | 'route' | 'story'>>
 
 const finish = (draft: Draft): Question => ({
     factKey: '',
     missReasons: {},
     route: 'plain',
+    story: '',
     ...draft,
     correctIndex: draft.options.indexOf(draft.answer),
 })
 
 // ---------------------------------------------------------------- direct ----
 
-function directQuestion(rng: Rng, operation: BinaryOperation, equation: Equation, maxValue: number): Question {
+function directQuestion(
+    rng: Rng,
+    operation: BinaryOperation,
+    equation: Equation,
+    maxValue: number,
+    storyLanguage: Language | null = null,
+): Question {
     const { left, right, result, symbol } = equation
+    const story = storyLanguage === null ? null : storyFor(rng, storyLanguage, operation, equation)
     return finish({
         operation,
         form: 'direct',
         prompt: `${left} ${symbol} ${right} = ?`,
+        story: story ?? '',
         answer: String(result),
         options: buildNumericOptions(rng, result, tileDistractors(operation, equation, maxValue)),
         // A route to the answer, not the answer restated — see `working.ts`.
@@ -234,6 +244,8 @@ export type CreateQuestionOptions = {
     formAccuracy?: Partial<Record<QuestionForm, number>>
     /** The working ceiling inside the rank. Omit to use the rank's own. */
     maxValue?: number
+    /** Dress the sum in the situation it came from, so the child picks the operation. */
+    stories?: boolean
     rng?: Rng
 }
 
@@ -265,6 +277,7 @@ export function createQuestion({
     dueFacts = [],
     formAccuracy = {},
     maxValue = rankConfig[rank].maxValue,
+    stories = false,
     rng = defaultRng,
 }: CreateQuestionOptions): Question {
 
@@ -285,7 +298,9 @@ export function createQuestion({
         case 'missingRight':
             return missingOperandQuestion(rng, binary, equation, chosen)
         case 'direct':
-            return directQuestion(rng, binary, equation, maxValue)
+            // Only `direct` gets a story: a situation has one unknown, and the
+            // other shapes have already blanked something else out.
+            return directQuestion(rng, binary, equation, maxValue, stories ? language : null)
     }
 }
 

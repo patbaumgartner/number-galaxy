@@ -31,6 +31,14 @@ export type GameSettings = {
     thinkingTime: 1 | 1.5 | 2
     sound: boolean
     hints: boolean
+    /**
+     * Word problems instead of bare sums.
+     *
+     * Off by default, and deliberately: reading a situation is a second load on
+     * top of the arithmetic, and a child still working out the arithmetic should
+     * not be carrying both. It is the teacher's or parent's call when to add it.
+     */
+    stories: boolean
 }
 
 export const THINKING_TIMES: readonly GameSettings['thinkingTime'][] = [1, 1.5, 2]
@@ -49,6 +57,7 @@ export const defaultSettings: GameSettings = {
     thinkingTime: 1,
     sound: true,
     hints: true,
+    stories: false,
 }
 
 /**
@@ -104,6 +113,7 @@ function fromLegacy(legacy: LegacySettings): GameSettings {
         rank: legacyLevelToRank[String(legacy.level)] ?? defaultSettings.rank,
         timer: legacy.mode === 'drill' ? 'timed' : 'off',
         thinkingTime: defaultSettings.thinkingTime,
+        stories: defaultSettings.stories,
         sound: true,
         hints: legacy.tips !== false || legacy.workedExamples !== false,
     }
@@ -118,6 +128,7 @@ function sanitize(value: Partial<GameSettings> & { timed?: unknown }): GameSetti
         thinkingTime: asThinkingTime(value.thinkingTime),
         sound: value.sound !== false,
         hints: value.hints !== false,
+        stories: value.stories === true,
     }
 }
 

@@ -110,6 +110,8 @@ export const en: Translations = {
         soundHint: 'Sounds for hits and misses.',
         hintsTitle: 'Worked solutions',
         hintsHint: 'Shows the working after a miss, plus the help button.',
+        storiesTitle: 'Word problems',
+        storiesHint: 'Off: just numbers. On: the sum sits inside a short story.',
         on: 'On',
         off: 'Off',
         dataTitle: 'Your data',

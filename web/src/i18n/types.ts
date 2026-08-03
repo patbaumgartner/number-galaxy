@@ -93,6 +93,8 @@ export type Translations = {
         soundHint: string
         hintsTitle: string
         hintsHint: string
+        storiesTitle: string
+        storiesHint: string
         on: string
         off: string
         dataTitle: string

@@ -110,6 +110,8 @@ export const de: Translations = {
         soundHint: 'Klänge bei Treffern und Fehlern.',
         hintsTitle: 'Lösungswege',
         hintsHint: 'Zeigt den Rechenweg nach einem Fehler und den Hilfe-Knopf.',
+        storiesTitle: 'Sachaufgaben',
+        storiesHint: 'Aus: nur Zahlen. An: die Aufgabe steckt in einer kleinen Geschichte.',
         on: 'An',
         off: 'Aus',
         dataTitle: 'Deine Daten',

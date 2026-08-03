@@ -144,7 +144,7 @@ ten is the one to practise next."* No percentages, no red.
 `42 ÷ 6` and name the link.
 · `MA.1.B.1.b`
 
-## Tier 3 — Build the missing floor (new 4th game) — items 21–25 ✅ done
+## Tier 3 — Build the missing floor ✅ done
 
 A "Number Sense" game beside the existing three, roughly ages 4–7, LP21 Zyklus 1.
 
@@ -171,10 +171,10 @@ the factors given to a screen reader and the product left to be worked out.
 · Ebner et al. 2025 (CRA)
 · `MA.1.C.1.d` — *"erkennen in grafischen Modellen multiplikative Beziehungen… in einem Punktefeld"*
 
-**26. Word problems with context.** The app is 100 % symbolic. Children who compute fine still
-fail to *choose* an operation, and sharing-vs-grouping division is a documented split. A CGI-typed
-bank (join / separate / part-part-whole / compare). **The one item needing real translation work
-in four languages.**
+**26. Word problems with context.** ✅ **done** — join, part-whole, separate, compare, grouping,
+sharing and measuring, in all four languages, off by default. Sharing and grouping division are
+both asked, since that is the split children come unstuck on. A situation the numbers would make
+nonsense of is refused rather than told.
 · `MA.1.C.1`
 
 ## Tier 4 — Fluency without fear ✅ done
@@ -206,7 +206,7 @@ namespace on every call.
 
 ## Suggested order
 
-Items 26, 29 and 18 remain. `4` and `30` (both shipped)
+Items 29 and 18 remain. `4` and `30` (both shipped)
 unblock Tier 2 and Tier 1 respectively.
 
 ## Sources

@@ -50,14 +50,15 @@ test('answers on the beam and finishes a ten-question drill', async ({ page }) =
     await gotoApp(page, '/number-sense/drill/countOn')
 
     for (let index = 0; index < 10; index += 1) {
+        // Wait on the input rather than on the feedback: the applause lasts well
+        // under a second, and under parallel load it can come and go between polls.
+        await expect(page.locator('input[type=range]:not([disabled])')).toBeVisible()
         const prompt = (await page.locator('.equation__prompt').textContent()) ?? ''
         const match = /^(\d+) \+ (\d+) = \?$/.exec(prompt)
         if (match === null) break
         await page.locator('input[type=range]').fill(String(Number(match[1]) + Number(match[2])))
         await page.getByRole('button', { name: /Land on/ }).click()
-        await expect(page.locator('.equation--correct')).toBeVisible()
         if (await page.locator('.summary').count() > 0) break
-        await expect(page.locator('.equation--correct')).toBeHidden({ timeout: 5000 })
     }
 
     const summary = page.getByRole('dialog', { name: 'Station complete!' })

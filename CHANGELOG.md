@@ -8,6 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **📖 Word problems, off by default.** A child who can work out `24 ÷ 6`
+  perfectly well may still not know that this is the sum a question about
+  sharing apples is asking for — choosing the operation is a separate skill from
+  carrying it out, and a page of bare equations never exercises it. Switch it on
+  in Settings and sums arrive inside a short situation instead.
+  - The types are the standard ones, and the distinction that matters most is
+    inside division: *sharing* 24 apples between 6 children and *grouping* 24
+    apples into bags of 6 have the same answer for entirely different reasons,
+    and children who meet only one reliably come unstuck on the other. Both are
+    asked.
+  - A situation the numbers would make nonsense of is never told. Sharing 3
+    apples between 12 children is arithmetic that works and a picture that does
+    not, and picturing it is the whole point of asking this way.
+  - Off by default on purpose: reading a situation is a second load on top of the
+    arithmetic, and a child still working out the arithmetic should not carry
+    both. When to add it is the teacher's or the parent's call.
 - **👀 Number Sense: a fourth game, and the floor the other three stand on.** The
   arcade, the trainer and the beam all begin by assuming a child can already see
   a quantity, count on from a number, and say roughly where a number sits. Those

@@ -57,6 +57,8 @@ export type MissionDeps = {
     dueFacts?: readonly ArithmeticFact[]
     /** Rolling accuracy per question shape, so a shaky shape comes round more often. */
     formAccuracy?: Partial<Record<QuestionForm, number>>
+    /** Dress sums in the situations they came from. */
+    stories?: boolean
 }
 
 export type MissionConfig = {
@@ -132,11 +134,11 @@ function drawQuestion(
     recent: readonly Operation[],
     recentFacts: readonly string[],
     maxValue: number,
-    { rng = defaultRng, weakness, srData, dueFacts = [], formAccuracy = {} }: MissionDeps,
+    { rng = defaultRng, weakness, srData, dueFacts = [], formAccuracy = {}, stories = false }: MissionDeps,
 ): Question {
     const operation = pickOperation(rng, operations, weakness, srData, questionIndex, shown, recent)
     const fresh = dueFacts.filter(entry => !recentFacts.includes(factKey(entry.operation, entry.a, entry.b)))
-    return createQuestion({ language, operation, rank, rng, dueFacts: fresh, formAccuracy, maxValue })
+    return createQuestion({ language, operation, rank, rng, dueFacts: fresh, formAccuracy, maxValue, stories })
 }
 
 export function createMission({

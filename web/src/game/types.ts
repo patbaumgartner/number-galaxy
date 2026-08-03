@@ -61,6 +61,8 @@ export type Question = {
     factKey: string
     /** The kind of route it wants, so help can demonstrate that kind on other numbers. */
     route: Route
+    /** The situation the sum came from, when one was asked for. Prose, so translated. */
+    story: string
 }
 
 export const OPERATIONS: readonly Operation[] = [

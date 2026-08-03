@@ -94,6 +94,7 @@ function freshMission(): MissionState {
             srData: store.getSpacedRepetition(),
             dueFacts: store.getDueFacts(),
             formAccuracy: store.getFormAccuracy(),
+            stories: settings.stories,
         }),
         // Straight into the action — pressing Play already was the "start".
         phase: 'answering',
@@ -226,6 +227,7 @@ export default function GamePage() {
             srData: store.getSpacedRepetition(),
             dueFacts: store.getDueFacts(),
             formAccuracy: store.getFormAccuracy(),
+            stories: store.getSettings().stories,
         }))
     }, [])
 
@@ -357,7 +359,12 @@ export default function GamePage() {
                 />
 
                 <section className={`equation${feedback ? ` equation--${feedback.outcome}` : ''}`}>
-                    <p className="equation__prompt">{mission.question.prompt}</p>
+                    {mission.question.story.length > 0 && (
+                        <p className="equation__story">{mission.question.story}</p>
+                    )}
+                    <p className={`equation__prompt${mission.question.story.length > 0 ? ' equation__prompt--small' : ''}`}>
+                        {mission.question.story.length > 0 && feedback === null ? '?' : mission.question.prompt}
+                    </p>
                     <p className="equation__result" aria-live="polite">
                         {resultText || t.game.answerHint}
                     </p>

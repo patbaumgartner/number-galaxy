@@ -137,6 +137,32 @@ export function selectPlayer(id: string): void {
 }
 
 /**
+ * The four game routes, and the only values {@link getLastGame} will return.
+ * A stored value is checked against this list rather than trusted: a stray or
+ * tampered one would otherwise be handed straight to the router.
+ */
+const GAME_ROUTES = ['/number-sense', '/number-beam', '/game', '/times-tables'] as const
+
+export type GameRoute = (typeof GAME_ROUTES)[number]
+
+const lastGameKey = () => profileKey('last-game')
+
+/** Where this child was last playing, so "Weiterspielen" has somewhere to go. */
+export function getLastGame(): GameRoute | null {
+    const stored = readJson<string>(lastGameKey(), '')
+    return GAME_ROUTES.some(route => route === stored) ? (stored as GameRoute) : null
+}
+
+export function setLastGame(route: GameRoute): void {
+    writeJson(lastGameKey(), route)
+}
+
+/** The game a deep route belongs to, so Surprise me is remembered as its game. */
+export function gameRouteOf(path: string): GameRoute | null {
+    return GAME_ROUTES.find(route => path === route || path.startsWith(`${route}/`)) ?? null
+}
+
+/**
  * Removes a child and everything they own. The last profile stays — a device
  * with no profile has nowhere to put the next answer.
  */

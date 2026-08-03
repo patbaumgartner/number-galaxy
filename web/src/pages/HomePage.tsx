@@ -1,10 +1,13 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { store, type Player } from '../store'
+import { store, gameRouteOf, type Player } from '../store'
 import { avatars } from '../constants'
 import { fill, translations, type Translations } from '../i18n'
 import { useDocumentLanguage, useModalDialog } from '../hooks'
 import { nextSurprise, surpriseRoute } from '../surprise'
+import { localEpochDay } from '../review/leitner'
+import { countDueFacts } from '../timesTable/session'
+import { ttStore } from '../timesTable/ttStore'
 
 type ProfileView = 'none' | 'switch' | 'edit'
 
@@ -34,10 +37,33 @@ export default function HomePage() {
     const [adding, setAdding] = useState(false)
     const [name, setName] = useState(player?.playerName ?? '')
     const [avatar, setAvatar] = useState(player?.avatarId ?? avatars[0])
+    const lastGame = store.getLastGame()
+
+    /**
+     * How many table facts are due today — never how many days in a row.
+     *
+     * A day counter would work by making a missed day visible, which is loss
+     * aversion aimed at a seven-year-old. What is due is a fact about the
+     * material; how often a child turns up is not the game's business.
+     */
+    const [today] = useState(() => localEpochDay(Date.now(), new Date().getTimezoneOffset()))
+    const dueToday = useMemo(() => {
+        const stars = ttStore.getStars()
+        if (!Object.values(stars).some(star => (star ?? 0) > 0)) return 0
+        return countDueFacts(ttStore.getProgress(), today)
+    }, [today])
+
+    /** The picker shows before anyone is named, so the profile is created here instead. */
+    const openGame = (route: string) => {
+        store.ensurePlayer(t.home.defaultName, avatars[0])
+        const game = gameRouteOf(route)
+        if (game !== null) store.setLastGame(game)
+        navigate(route)
+    }
 
     const play = () => {
-        setPlayer(store.ensurePlayer(t.home.defaultName, avatars[0]))
-        setPlayers(store.getPlayers())
+        store.ensurePlayer(t.home.defaultName, avatars[0])
+        openGame(store.getLastGame() ?? GAMES[0].route)
     }
 
     /** Re-reads everything, because switching child switches every store at once. */
@@ -105,7 +131,9 @@ export default function HomePage() {
 
                 <button type="button" className="btn btn--primary btn--play" onClick={play}>
                     <span className="btn__icon" aria-hidden="true">🚀</span>
-                    {player ? t.home.playAgain : t.home.play}
+                    {lastGame === null
+                        ? t.home.play
+                        : `${t.home.playAgain} · ${t.home[GAMES.find(game => game.route === lastGame)?.name ?? 'gameSense']}`}
                 </button>
 
                 <button type="button" className="chip chip--player" onClick={openSwitcher}>
@@ -114,34 +142,37 @@ export default function HomePage() {
                     <span className="chip__edit" aria-hidden="true">✏️</span>
                 </button>
 
-                {player && (
-                    <section className="panel game-picker">
-                        <h2 className="panel__title">{t.home.chooseGame}</h2>
-                        <div className="game-picker__cards">
-                            {GAMES.map(game => (
-                                <button
-                                    key={game.route}
-                                    type="button"
-                                    className="game-picker__card"
-                                    onClick={() => navigate(game.route)}
-                                >
-                                    <span className="game-picker__emoji" aria-hidden="true">{game.emoji}</span>
-                                    <strong>{t.home[game.name]}</strong>
-                                    <small>{t.home[game.blurb]}</small>
-                                </button>
-                            ))}
+                <section className="panel game-picker">
+                    <h2 className="panel__title">{t.home.chooseGame}</h2>
+                    <div className="game-picker__cards">
+                        {GAMES.map(game => (
                             <button
+                                key={game.route}
                                 type="button"
-                                className="game-picker__card game-picker__card--surprise"
-                                onClick={() => navigate(surpriseRoute(nextSurprise()))}
+                                className="game-picker__card"
+                                onClick={() => openGame(game.route)}
                             >
-                                <span className="game-picker__emoji" aria-hidden="true">🎲</span>
-                                <strong>{t.surprise.title}</strong>
-                                <small>{t.surprise.blurb}</small>
+                                <span className="game-picker__emoji" aria-hidden="true">{game.emoji}</span>
+                                <strong>{t.home[game.name]}</strong>
+                                <small>{t.home[game.blurb]}</small>
+                                {game.route === '/times-tables' && dueToday > 0 && (
+                                    <span className="game-picker__due">
+                                        {fill(t.home.dueToday, { n: dueToday })}
+                                    </span>
+                                )}
                             </button>
-                        </div>
-                    </section>
-                )}
+                        ))}
+                        <button
+                            type="button"
+                            className="game-picker__card game-picker__card--surprise"
+                            onClick={() => openGame(surpriseRoute(nextSurprise()))}
+                        >
+                            <span className="game-picker__emoji" aria-hidden="true">🎲</span>
+                            <strong>{t.surprise.title}</strong>
+                            <small>{t.surprise.blurb}</small>
+                        </button>
+                    </div>
+                </section>
 
                 <nav className="home-nav">
                     <button type="button" className="btn btn--ghost" onClick={() => navigate('/settings')}>

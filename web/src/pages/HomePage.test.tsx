@@ -8,16 +8,45 @@ describe('HomePage', () => {
     beforeEach(() => seedLanguage('en'))
     afterEach(() => vi.restoreAllMocks())
 
-    it('creates a player before revealing the picker', async () => {
+    it('shows all four games before anyone has been named', () => {
+        renderWithRouter(<HomePage />)
+
+        // The picker used to be hidden until Play created a profile, so a parent
+        // opening the app was told it had four games while being shown none.
+        expect(store.getPlayer()).toBeNull()
+        expect(screen.getByRole('heading', { name: /choose your game/i })).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: /^Math Invaders/ })).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: /^Times Tables/ })).toBeInTheDocument()
+    })
+
+    it('names the child on the way into a game rather than up front', async () => {
         const user = userEvent.setup({ delay: null })
         renderWithRouter(<HomePage />)
 
-        expect(screen.getByRole('button', { name: /play/i })).toBeInTheDocument()
-
-        await user.click(screen.getByRole('button', { name: /play/i }))
+        await user.click(screen.getByRole('button', { name: /^Math Invaders/ }))
         expect(store.getPlayer()).not.toBeNull()
-        expect(screen.getByRole('button', { name: /keep playing/i })).toBeInTheDocument()
-        expect(screen.getByRole('heading', { name: /choose your game/i })).toBeInTheDocument()
+    })
+
+    it('sends the hero button somewhere instead of leaving it inert', async () => {
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<HomePage />)
+
+        // It read "Keep playing" and did nothing at all once a profile existed.
+        await user.click(screen.getByRole('button', { name: /play/i }))
+        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/number-sense')
+    })
+
+    it('resumes the game that was played last', async () => {
+        seedPlayer()
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<HomePage />)
+
+        await user.click(screen.getByRole('button', { name: /^Times Tables/ }))
+        expect(store.getLastGame()).toBe('/times-tables')
+
+        renderWithRouter(<HomePage />)
+        await user.click(screen.getAllByRole('button', { name: /keep playing/i })[0])
+        expect(screen.getAllByTestId(LOCATION_TEST_ID)[0]).toHaveTextContent('/times-tables')
     })
 
     it('leaves the arcade its own settings and leaderboard, rather than hosting them', () => {

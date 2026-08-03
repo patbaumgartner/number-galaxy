@@ -6,12 +6,17 @@ const untimed = { language: 'en', operations: ['addition'], rank: 'rookie', time
 
 test.describe.configure({ mode: 'parallel' })
 
-test('creates a profile and reveals the game picker after Play', async ({ page }) => {
+test('shows the game picker before anyone is named, and Play goes somewhere', async ({ page }) => {
     await seedStorage(page, { settings: untimed })
     await gotoApp(page)
-    await page.getByRole('button', { name: 'Play' }).click()
+
+    // The picker used to be hidden until Play created a profile, and Play itself
+    // then did nothing at all on every later visit.
     await expect(page.getByRole('heading', { name: 'Choose your game' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Math Invaders' })).toBeVisible()
+
+    await page.getByRole('button', { name: 'Play' }).click()
+    await expect(page).toHaveURL(/\/number-sense/)
 })
 
 test('completes a full mission with score accuracy and stars', async ({ page }) => {

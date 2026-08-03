@@ -5,11 +5,13 @@ import {
     addPlayer,
     adoptLegacyProfile,
     ensurePlayer,
+    getLastGame,
     getPlayer,
     getPlayers,
     removePlayer,
     savePlayer,
     selectPlayer,
+    setLastGame,
 } from './profiles'
 import {
     computeBadge,
@@ -42,8 +44,8 @@ export { THINKING_TIMES, TIMER_MODES, defaultSettings, legacyLevelToRank, settin
 export type { LegacyScoreEntry, ScoreEntry } from './scores'
 export { RULESET_VERSION, scoreKeys } from './scores'
 
-export type { Player } from './profiles'
-export { adoptLegacyProfile, profileKey, profileKeys, profilePrefix } from './profiles'
+export type { GameRoute, Player } from './profiles'
+export { adoptLegacyProfile, gameRouteOf, profileKey, profileKeys, profilePrefix } from './profiles'
 
 export type {
     ArcadeFacts,
@@ -78,6 +80,9 @@ export const store = {
     addPlayer,
     selectPlayer,
     removePlayer,
+
+    getLastGame,
+    setLastGame,
 
     getScores: loadScores,
     getLegacyScores: loadLegacyScores,

@@ -39,6 +39,12 @@ const ALL_PLANETS: readonly PlanetId[] = GALAXIES.flatMap(galaxy => galaxy.plane
  * numbers at a Rookie, so the pick is drawn only from what is unlocked and left
  * at the difficulty the player has already earned. Review comes first: if the
  * trainer has facts due today, that is what practice is for.
+ *
+ * Each of the three lists is non-empty for every possible star state, because
+ * the home galaxy and the opening zone of both map games are never locked — so
+ * none of them needs an emptiness check before being drawn from. What holds
+ * that is the no-stars-at-all case in `surprise.test.ts`: gate any first zone
+ * and it fails.
  */
 export function pickSurprise({ rng, ttStars, beamStars, senseStars, dueFactCount }: SurpriseInput): SurpriseTarget {
     const planets = ALL_PLANETS.filter(planetId => isPlanetUnlocked(planetId, ttStars))
@@ -51,9 +57,9 @@ export function pickSurprise({ rng, ttStars, beamStars, senseStars, dueFactCount
 
     const games: SurpriseTarget[] = [{ game: 'invaders' }]
     if (dueFactCount > 0) games.push({ game: 'tables', planetId: 'mission' })
-    else if (planets.length > 0) games.push({ game: 'tables', planetId: pick(rng, planets) })
-    if (stations.length > 0) games.push({ game: 'beam', skill: pick(rng, stations) })
-    if (senseStations.length > 0) games.push({ game: 'sense', skill: pick(rng, senseStations) })
+    else games.push({ game: 'tables', planetId: pick(rng, planets) })
+    games.push({ game: 'beam', skill: pick(rng, stations) })
+    games.push({ game: 'sense', skill: pick(rng, senseStations) })
 
     return pick(rng, games)
 }

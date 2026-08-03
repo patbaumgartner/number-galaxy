@@ -56,9 +56,15 @@ describe('surprise picker', () => {
         expect(games).toEqual(new Set(['invaders', 'tables', 'beam', 'sense']))
     })
 
-    it('offers Number Sense from the very first zone, which is never locked', () => {
+    /**
+     * The invariant `pickSurprise` draws on: the home galaxy and the opening zone
+     * of both map games are open from the start, so every list it picks from has
+     * something in it and none needs an emptiness check. Gate any first zone and
+     * this fails, which is the point.
+     */
+    it('reaches all four games with no stars at all, because no first zone is locked', () => {
         const games = new Set(draw(beginner).map(target => target.game))
-        expect(games).toContain('sense')
+        expect(games).toEqual(new Set(['invaders', 'tables', 'beam', 'sense']))
     })
 
     it('sends review to the daily mission whenever facts are due', () => {

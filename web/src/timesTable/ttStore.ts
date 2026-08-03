@@ -63,9 +63,10 @@ export const computeStars = (
     progress: Record<FactKey, FactProgress>,
     existingStars: StarLevel,
     sessionResult: SessionResult,
+    thinkingTime = 1,
 ): StarLevel => {
     const hasMasteredEveryFact = factsForPlanet(planetId)
-        .every((fact) => progress[fact.key] !== undefined && isMastered(progress[fact.key]))
+        .every((fact) => progress[fact.key] !== undefined && isMastered(progress[fact.key], thinkingTime))
 
     const earnedStars: StarLevel = hasMasteredEveryFact && existingStars >= 2
         ? 3

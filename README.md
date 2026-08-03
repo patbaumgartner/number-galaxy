@@ -164,7 +164,21 @@ faster child, and fluency is flexibility and accuracy before it is pace.
 - **Keyboard:** `1`–`4` answer directly; arrow keys move focus, Enter or Space fires.
 
 **The countdown is off by default** — a first-time player should meet the maths, not a
-clock. Switch it on in Settings; it pauses when Help is open or the tab is hidden.
+clock. Settings offers three settings rather than two:
+
+| Clock | What it does |
+|-------|--------------|
+| **Off** | No clock at all. |
+| **Gentle** | The bar shows the time going by, then simply stops. Nothing counts as a miss. |
+| **On** | Running out ends the question. |
+
+The clock's problem was never the clock; it was that running out counted against you. It
+pauses when Help is open or the tab is hidden.
+
+**🧠 More thinking time** stretches every clock, and the three-second line at which a fact
+counts as known by heart, by ×1.5 or ×2. That is the same standard measured with a fairer
+instrument — for a child working in a second language, with dyscalculia, or with a hand that
+does not do as it is told.
 
 ### 🏆 Hall of Fame
 
@@ -324,7 +338,8 @@ Settings are grouped by the game each control affects, because all three share o
 |---------|-----------|---------|---------|
 | Practise | 🛸 Arcade | ➕ ➖ ✖️ ➗ 🔢, several at once | ➕ Addition |
 | Rank | 🛸 Arcade | Rookie → Supernova | 🌱 Rookie |
-| ⏱ Countdown | 🛸 Arcade | On / Off | Off |
+| ⏱ Countdown | 🛸 Arcade | Off · Gentle · On | Off |
+| 🧠 Thinking time | 🛸 Arcade · ✖️ Trainer | Normal · More · Most | Normal |
 | 💡 Worked solutions | 🛸 Arcade | On / Off | On |
 | Strategy cards | ✖️ Trainer | On / Off | On |
 | Trainer progress | ✖️ Trainer | Reset | — |

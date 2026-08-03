@@ -3,10 +3,10 @@ import { isMastered } from '../review/leitner'
 
 export type CellState = 'unseen' | 'learning' | 'mastered'
 
-export function cellState(progress: Record<FactKey, FactProgress>, key: FactKey): CellState {
+export function cellState(progress: Record<FactKey, FactProgress>, key: FactKey, thinkingTime = 1): CellState {
     const p = progress[key]
     if (!p) return 'unseen'
-    if (isMastered(p)) return 'mastered'
+    if (isMastered(p, thinkingTime)) return 'mastered'
     return 'learning'
 }
 

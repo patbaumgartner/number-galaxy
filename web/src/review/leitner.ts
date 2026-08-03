@@ -37,10 +37,21 @@ export const applyAnswer = (
 export const isDue = (progress: FactProgress, todayEpochDay: number): boolean =>
     progress.lastDay + intervalForBox(progress.box) <= todayEpochDay
 
-export const isMastered = (progress: FactProgress): boolean =>
+/**
+ * Recall fast enough to count as knowing something by heart.
+ *
+ * Three seconds is the usual line between recalling a fact and working it out.
+ * It is also an unreasonable line for a child answering in a second language, or
+ * with dyscalculia, or with a hand that does not do as it is told — so it can be
+ * stretched. That is the same standard measured with a fairer instrument, not a
+ * lower one, which is why the multiplier lives here rather than in the criterion.
+ */
+export const RECALL_MS = 3000
+
+export const isMastered = (progress: FactProgress, thinkingTime = 1): boolean =>
     progress.box >= 4
   && progress.last3.length === 3
-  && progress.last3.every((answer) => answer.correct && answer.ms < 3000)
+  && progress.last3.every((answer) => answer.correct && answer.ms < RECALL_MS * thinkingTime)
 
 export const localEpochDay = (now: number, tzOffsetMin: number): number =>
     Math.floor((now - tzOffsetMin * 60_000) / 86_400_000)

@@ -72,14 +72,14 @@ describe('settings migration', () => {
 
     it('turns explore mode into an untimed run and drill into a timed one', () => {
         storage.setItem(settingsKeys.legacy, JSON.stringify({ level: 'starter', mode: 'explore' }))
-        expect(store.getSettings().timed).toBe(false)
+        expect(store.getSettings().timer).toBe('off')
 
         installStorage()
         globalThis.window.localStorage.setItem(
             settingsKeys.legacy,
             JSON.stringify({ level: 'starter', mode: 'drill' }),
         )
-        expect(store.getSettings().timed).toBe(true)
+        expect(store.getSettings().timer).toBe('timed')
     })
 
     it('collapses the old worked-example and tip switches into one hints flag', () => {
@@ -399,5 +399,27 @@ describe('the mistake that keeps coming up', () => {
         for (let index = 0; index < 40; index += 1) store.recordMiss(miss('offByOne'))
         for (let index = 0; index < 40; index += 1) store.recordMiss(miss('forgotCarry'))
         expect(store.getCommonMistake()).toBe('forgotCarry')
+    })
+})
+
+describe('the clock and the time to think', () => {
+    it('carries the old on/off switch onto the new three-way setting', () => {
+        storage.setItem(settingsKeys.current, JSON.stringify({ timed: true }))
+        expect(store.getSettings().timer).toBe('timed')
+
+        installStorage()
+        globalThis.window.localStorage.setItem(settingsKeys.current, JSON.stringify({ timed: false }))
+        expect(store.getSettings().timer).toBe('off')
+    })
+
+    it('starts with no clock and normal thinking time', () => {
+        expect(store.getSettings().timer).toBe('off')
+        expect(store.getSettings().thinkingTime).toBe(1)
+    })
+
+    it('refuses a thinking time or clock mode it does not offer', () => {
+        storage.setItem(settingsKeys.current, JSON.stringify({ timer: 'sideways', thinkingTime: 99 }))
+        expect(store.getSettings().timer).toBe('off')
+        expect(store.getSettings().thinkingTime).toBe(1)
     })
 })

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { BADGE_EMOJI, store, type GameSettings } from '../store'
+import { BADGE_EMOJI, THINKING_TIMES, TIMER_MODES, store, type GameSettings, type TimerMode } from '../store'
 import { OPERATIONS, RANKS, rankConfig, type Operation, type Rank } from '../game'
 import { languageNames } from '../constants'
 import Flag from '../components/Flag'
@@ -9,6 +9,12 @@ import { useDocumentLanguage } from '../hooks'
 import type { Language } from '../game'
 import { ttStore } from '../timesTable/ttStore'
 import { beamStore } from '../beam'
+
+const timerLabel = (t: Translations, mode: TimerMode): string =>
+    mode === 'off' ? t.settings.timerOff : mode === 'gentle' ? t.settings.timerGentle : t.settings.timerTimed
+
+const thinkingLabel = (t: Translations, value: GameSettings['thinkingTime']): string =>
+    value === 1 ? t.settings.thinkingNormal : value === 1.5 ? t.settings.thinkingMore : t.settings.thinkingMost
 
 export default function SettingsPage() {
     const navigate = useNavigate()
@@ -148,12 +154,39 @@ export default function SettingsPage() {
                     </div>
 
                     <div className="panel">
-                        <div className="switch-row">
-                            <div>
-                                <h3 className="switch-row__title">⏱ {t.settings.timerTitle}</h3>
-                                <p className="panel__hint">{t.settings.timerHint}</p>
-                            </div>
-                            <Switch labels={t.settings} on={settings.timed} onToggle={() => update({ timed: !settings.timed })} />
+                        <div>
+                            <h3 className="switch-row__title">⏱ {t.settings.timerTitle}</h3>
+                            <p className="panel__hint">{t.settings.timerHint}</p>
+                        </div>
+                        <div className="options options--row">
+                            {TIMER_MODES.map(mode => (
+                                <button
+                                    key={mode}
+                                    type="button"
+                                    className={`option${settings.timer === mode ? ' option--active' : ''}`}
+                                    aria-pressed={settings.timer === mode}
+                                    onClick={() => update({ timer: mode })}
+                                >
+                                    {timerLabel(t, mode)}
+                                </button>
+                            ))}
+                        </div>
+                        <p className="panel__hint">{t.settings.timerGentleHint}</p>
+
+                        <h3 className="switch-row__title">🧠 {t.settings.thinkingTitle}</h3>
+                        <p className="panel__hint">{t.settings.thinkingHint}</p>
+                        <div className="options options--row">
+                            {THINKING_TIMES.map(value => (
+                                <button
+                                    key={value}
+                                    type="button"
+                                    className={`option${settings.thinkingTime === value ? ' option--active' : ''}`}
+                                    aria-pressed={settings.thinkingTime === value}
+                                    onClick={() => update({ thinkingTime: value })}
+                                >
+                                    {thinkingLabel(t, value)}
+                                </button>
+                            ))}
                         </div>
 
                         <div className="switch-row">

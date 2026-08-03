@@ -177,15 +177,15 @@ bank (join / separate / part-part-whole / compare). **The one item needing real 
 in four languages.**
 · `MA.1.C.1`
 
-## Tier 4 — Fluency without fear
+## Tier 4 — Fluency without fear ✅ done
 
-**27. Timer as a pace guide.** Expiry currently scores a miss; make it reveal the working and
-requeue instead. Three settings: **Off / Gentle (guide bar, no expiry) / Timed**.
+**27. Timer as a pace guide.** ✅ **done** — Off / Gentle / On. Gentle runs the bar down and
+then stops, scoring nothing.
 · Maki et al. 2024 · `MA.1.A.3`
 
-**28. Adjustable mastery threshold.** `isMastered` requires `ms < 3000`. **Keep it** — it is a
-standard automaticity criterion. But add Settings → *More thinking time* (×1.5 / ×2) for
-dyscalculia, motor differences, or a second language. Never shown as failure.
+**28. Adjustable mastery threshold.** ✅ **done** — the 3 s recall line is kept as the criterion
+and multiplied by the child's thinking time, which also stretches the arcade clock. Never
+shown as failure.
 · Cezarotto & Battaiola 2021
 · LP21: *"Ein zu frühes, nicht vorstellungs- und verständnisorientiertes Automatisieren… behindert weiterführende Lernprozesse."*
 

@@ -57,10 +57,30 @@ describe('SettingsPage', () => {
         await user.click(switchFor(/strategy cards/i))
         expect(ttStore.getTTSettings().strategyCards).toBe(false)
 
-        await user.click(switchFor(/countdown/i))
         await user.click(switchFor(/sound/i))
         await user.click(switchFor(/worked solutions/i))
-        expect(store.getSettings()).toMatchObject({ timed: true, sound: false, hints: false })
+        expect(store.getSettings()).toMatchObject({ sound: false, hints: false })
+    })
+
+    it('offers a gentle clock between off and timed, and remembers the choice', async () => {
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<SettingsPage />)
+
+        expect(store.getSettings().timer).toBe('off')
+        await user.click(screen.getByRole('button', { name: 'Gentle' }))
+        expect(store.getSettings().timer).toBe('gentle')
+
+        await user.click(screen.getByRole('button', { name: 'On' }))
+        expect(store.getSettings().timer).toBe('timed')
+    })
+
+    it('lets a child who needs longer have longer', async () => {
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<SettingsPage />)
+
+        expect(store.getSettings().thinkingTime).toBe(1)
+        await user.click(screen.getByRole('button', { name: 'Most' }))
+        expect(store.getSettings().thinkingTime).toBe(2)
     })
 
     it('resets only trainer data after confirmation and does nothing when cancelled', async () => {

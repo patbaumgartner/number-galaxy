@@ -47,3 +47,22 @@ describe('day-based Leitner scheduler', () => {
         expect(localEpochDay(86_400_000, -120)).toBe(1)
     })
 })
+
+describe('thinking time', () => {
+    const quick = { box: 4 as const, lastDay: 0, last3: [
+        { correct: true, ms: 4000 }, { correct: true, ms: 4000 }, { correct: true, ms: 4000 },
+    ] }
+
+    it('holds the usual recall line by default', () => {
+        expect(isMastered(quick)).toBe(false)
+    })
+
+    it('measures the same standard with a fairer instrument when time is stretched', () => {
+        expect(isMastered(quick, 2)).toBe(true)
+    })
+
+    it('still requires the answers to be right, however long they took', () => {
+        const wrong = { ...quick, last3: [{ correct: false, ms: 100 }, { correct: true, ms: 100 }, { correct: true, ms: 100 }] }
+        expect(isMastered(wrong, 2)).toBe(false)
+    })
+})

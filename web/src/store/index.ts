@@ -33,8 +33,8 @@ import {
     updatePersonalBest,
 } from './progress'
 
-export type { GameSettings } from './settings'
-export { defaultSettings, legacyLevelToRank, settingsKeys } from './settings'
+export type { GameSettings, TimerMode } from './settings'
+export { THINKING_TIMES, TIMER_MODES, defaultSettings, legacyLevelToRank, settingsKeys } from './settings'
 
 export type { LegacyScoreEntry, ScoreEntry } from './scores'
 export { RULESET_VERSION, scoreKeys } from './scores'

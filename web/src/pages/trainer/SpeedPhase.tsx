@@ -116,7 +116,7 @@ export function SpeedPhase({ planetId }: { planetId: PlanetId }) {
             const acc = (correctsCount + (correct ? 1 : 0)) / session.length
             setAccuracy(acc)
             const oldStars = ttStore.getStars()[planetId] || 0
-            const newStars = computeStars(planetId, ttStore.getProgress(), oldStars, { phase: 'speed', accuracy: acc })
+            const newStars = computeStars(planetId, ttStore.getProgress(), oldStars, { phase: 'speed', accuracy: acc }, store.getSettings().thinkingTime)
             ttStore.raiseStars(planetId, newStars)
             setEarnedStars(newStars)
             setStarsChanged(newStars > oldStars)

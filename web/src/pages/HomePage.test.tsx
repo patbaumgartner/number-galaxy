@@ -11,7 +11,7 @@ describe('HomePage', () => {
     it('shows the configured mission chips and creates a player before revealing the picker', async () => {
         seedOperations(['addition', 'multiplication'])
         seedRank('cadet')
-        seedSettings({ timed: true })
+        seedSettings({ timer: 'timed' })
         const user = userEvent.setup({ delay: null })
         renderWithRouter(<HomePage />)
 

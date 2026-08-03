@@ -224,3 +224,51 @@ describe('review that does not narrow to a handful of sums', () => {
         for (const key of dueKeys) expect([...seen]).toContain(key)
     })
 })
+
+describe('showing that times and divide are the same fact', () => {
+    const both = { ...config, rank: 'ace' as const, operations: ['multiplication', 'division'] as const }
+
+    const always = () => 0
+    const never = () => 0.99
+
+    it('asks the same numbers back the other way round, straight away', () => {
+        const mission = createMission({ ...both, operations: [...both.operations], rng: createRng(3) })
+        const first = mission.question
+        const scored = scoreAnswer(mission, 'correct', always)
+        const next = advanceMission(scored, { rng: createRng(9) })
+
+        if (first.factKey.startsWith('multiplication')) {
+            expect(next.question.operation).toBe('division')
+        } else if (first.factKey.startsWith('division')) {
+            expect(next.question.operation).toBe('multiplication')
+        }
+        expect(next.question.factKey.split(':').slice(1)).toEqual(first.factKey.split(':').slice(1))
+    })
+
+    it('never chains a link off a link', () => {
+        const mission = createMission({ ...both, operations: [...both.operations], rng: createRng(3) })
+        const linked = advanceMission(scoreAnswer(mission, 'correct', always), { rng: createRng(9) })
+        expect(scoreAnswer(linked, 'correct', always).linkedFact).toBeNull()
+    })
+
+    it('never offers an operation the child did not choose to practise', () => {
+        const only = createMission({ ...config, rank: 'ace', operations: ['multiplication'], rng: createRng(3) })
+        expect(scoreAnswer(only, 'correct', always).linkedFact).toBeNull()
+    })
+
+    it('leaves a repaired miss in front of a link', () => {
+        let mission = createMission({ ...both, operations: [...both.operations], rng: createRng(5) })
+        const missed = mission.question.prompt
+        mission = advanceMission(scoreAnswer(mission, 'wrong', always), { rng: createRng(1) })
+        for (let index = 0; index < 3; index += 1) {
+            mission = advanceMission(scoreAnswer(mission, 'correct', always), { rng: createRng(index + 2) })
+        }
+        expect(mission.question.prompt).toBe(missed)
+    })
+
+    it('does not link after a wrong answer, or when the roll says no', () => {
+        const mission = createMission({ ...both, operations: [...both.operations], rng: createRng(3) })
+        expect(scoreAnswer(mission, 'wrong', always).linkedFact).toBeNull()
+        expect(scoreAnswer(mission, 'correct', never).linkedFact).toBeNull()
+    })
+})

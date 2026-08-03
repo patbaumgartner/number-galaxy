@@ -67,7 +67,7 @@ export function DailyPhase() {
         const stars = ttStore.getStars()
         for (const touchedPlanet of touchedPlanets) {
             const previous = stars[touchedPlanet] ?? 0
-            const next = computeStars(touchedPlanet, progress, previous, { phase: 'daily', accuracy: resultAccuracy })
+            const next = computeStars(touchedPlanet, progress, previous, { phase: 'daily', accuracy: resultAccuracy }, store.getSettings().thinkingTime)
             ttStore.raiseStars(touchedPlanet, next)
             if (next > previous) playLevelUp()
         }

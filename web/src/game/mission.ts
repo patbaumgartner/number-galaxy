@@ -2,6 +2,7 @@ import type { Language, Operation, Question, QuestionForm, Rank } from './types'
 import { QUESTIONS_PER_MISSION, getPoints, rankConfig } from './types'
 import { defaultRng, type Rng } from './rng'
 import { createQuestion, pickOperation, type SpacedRepetitionEntry } from './questions'
+import { parseFactKey } from './facts'
 import { factKey, type ArithmeticFact } from './facts'
 
 export type MissionPhase = 'ready' | 'answering' | 'feedback' | 'summary'
@@ -33,6 +34,10 @@ export type MissionState = {
     recentOperations: Operation[]
     /** Facts just asked, so review never narrows to the same handful of sums. */
     recentFacts: string[]
+    /** A fact to ask straight back the other way round, to make the link visible. */
+    linkedFact: ArithmeticFact | null
+    /** Whether the question on screen is itself a link, so links cannot chain. */
+    fromLink: boolean
     /** Missed questions queued to be asked again, earliest first. */
     retries: Retry[]
     /** Prompts already requeued once, so a repeated miss cannot loop. */
@@ -83,6 +88,41 @@ export const getAccuracy = (state: MissionState): number => {
  */
 const FACT_COOLDOWN = 4
 
+/**
+ * How often a correct answer is followed straight back by the same fact.
+ *
+ * `6 × 7` and `42 ÷ 6` are one fact wearing two faces, and a child who has just
+ * answered one is exactly the child for whom the other is a discovery rather
+ * than a fresh problem. Asking it immediately is what makes the link visible;
+ * waiting for the schedule to come round to it does not.
+ */
+const LINK_SHARE = 0.25
+
+/** `×` and `÷` are the same pair of numbers approached from opposite sides. */
+const INVERSE_OF = { multiplication: 'division', division: 'multiplication' } as const
+
+/**
+ * The same numbers, asked back the other way round.
+ *
+ * A child who has just worked out `6 × 7` is exactly the child for whom `42 ÷ 6`
+ * is a discovery rather than a fresh problem — but only straight away, while the
+ * first one is still in mind. Waiting for the schedule loses the moment.
+ *
+ * Never when the inverse is not one of the operations the child chose to
+ * practise, and never off the back of a link, so two facts cannot bounce between
+ * each other for a whole mission.
+ */
+function linkFrom(state: MissionState, rng: Rng): ArithmeticFact | null {
+    if (state.fromLink) return null
+    const parsed = parseFactKey(state.question.factKey)
+    if (parsed === null) return null
+    if (parsed.operation !== 'multiplication' && parsed.operation !== 'division') return null
+
+    const operation = INVERSE_OF[parsed.operation]
+    if (!state.operations.includes(operation)) return null
+    return rng() < LINK_SHARE ? { ...parsed, operation } : null
+}
+
 function drawQuestion(
     language: Language,
     rank: Rank,
@@ -119,6 +159,8 @@ export function createMission({
         shownOperations: [question.operation],
         recentOperations: [question.operation],
         recentFacts: [question.factKey],
+        linkedFact: null,
+        fromLink: false,
         retries: [],
         retried: [],
         streak: 0,
@@ -137,15 +179,17 @@ export function createMission({
  * struggling child gets *more* practice, not less. It also books the question
  * to come back: a miss that is explained and never asked again is a miss.
  */
-export function scoreAnswer(state: MissionState, outcome: AnswerOutcome): MissionState {
+export function scoreAnswer(state: MissionState, outcome: AnswerOutcome, rng: Rng = defaultRng): MissionState {
     const wasCorrect = outcome === 'correct'
     const streak = wasCorrect ? state.streak + 1 : 0
     const results = [...state.results, wasCorrect]
     const { prompt } = state.question
     const requeue = !wasCorrect && !state.retried.includes(prompt)
+    const link = wasCorrect ? linkFrom(state, rng) : null
 
     return {
         ...state,
+        linkedFact: link,
         results,
         streak,
         bestStreak: Math.max(state.bestStreak, streak),
@@ -165,7 +209,28 @@ export function advanceMission(state: MissionState, deps: MissionDeps = {}): Mis
 
     const [head, ...rest] = state.retries
     if (head !== undefined && head.dueAt <= answered) {
-        return { ...state, question: head.question, retries: rest, phase: 'answering' }
+        return { ...state, question: head.question, retries: rest, linkedFact: null, fromLink: false, phase: 'answering' }
+    }
+
+    if (state.linkedFact !== null) {
+        const question = createQuestion({
+            language: state.language,
+            operation: state.linkedFact.operation,
+            rank: state.rank,
+            maxValue: state.maxValue,
+            dueFacts: [state.linkedFact],
+            form: 'direct',
+            rng: deps.rng ?? defaultRng,
+        })
+        return {
+            ...state,
+            question,
+            linkedFact: null,
+            fromLink: true,
+            recentOperations: [...state.recentOperations, question.operation].slice(-4),
+            recentFacts: [...state.recentFacts, question.factKey].slice(-FACT_COOLDOWN),
+            phase: 'answering',
+        }
     }
 
     const question = drawQuestion(
@@ -191,6 +256,7 @@ export function advanceMission(state: MissionState, deps: MissionDeps = {}): Mis
         shownOperations: shown,
         recentOperations: [...state.recentOperations, question.operation].slice(-4),
         recentFacts: [...state.recentFacts, question.factKey].slice(-FACT_COOLDOWN),
+        fromLink: false,
         phase: 'answering',
     }
 }

@@ -68,7 +68,7 @@ describe('GamePage', () => {
     })
 
     it('records a timeout, hides help when hints are disabled, and stops showing workings after misses', () => {
-        seedSettings({ timed: true, hints: false })
+        seedSettings({ timer: 'timed', hints: false })
         renderWithRouter(<GamePage />)
         expect(screen.queryByRole('button', { name: /help/i })).not.toBeInTheDocument()
         for (let index = 0; index < 20; index += 1) act(() => vi.advanceTimersByTime(1000))
@@ -77,7 +77,7 @@ describe('GamePage', () => {
     })
 
     it('pauses a timed mission while help is open and closes the worked example', async () => {
-        seedSettings({ timed: true })
+        seedSettings({ timer: 'timed' })
         renderWithRouter(<GamePage />)
         fireEvent.click(screen.getByRole('button', { name: /help/i }))
         expect(screen.getByRole('dialog', { name: /how to work it out/i })).toBeInTheDocument()

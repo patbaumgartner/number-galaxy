@@ -100,6 +100,15 @@ export type Translations = {
         resetConfirm: string
         practiseNextTitle: string
         practiseNextHint: string
+        timerOff: string
+        timerGentle: string
+        timerTimed: string
+        timerGentleHint: string
+        thinkingTitle: string
+        thinkingHint: string
+        thinkingNormal: string
+        thinkingMore: string
+        thinkingMost: string
         groupInvaders: string
         groupInvadersHint: string
         groupTables: string

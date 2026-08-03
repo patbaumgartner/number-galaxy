@@ -153,7 +153,7 @@ export default function HomePage() {
                             <li className="chip">
                                 {fill(t.settings.rankRange, { max: rankConfig[settings.rank].maxValue })}
                             </li>
-                            <li className="chip">{settings.timed ? '⏱' : '∞'} {QUESTIONS_PER_MISSION}</li>
+                            <li className="chip">{settings.timer === 'off' ? '∞' : '⏱'} {QUESTIONS_PER_MISSION}</li>
                         </ul>
                     </div>
 

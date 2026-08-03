@@ -21,6 +21,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - A fact is only offered when every number it would show fits inside the rank,
     and never twice within four questions, so review can never narrow to the same
     handful of sums — the run a struggling beginner would otherwise have got.
+- **A gentle clock, between off and on.** The clock's problem was never the clock
+  — it was that running out counted against you. Gentle shows the time going by
+  and then simply stops: a pace guide rather than a threat.
+- **🧠 More thinking time.** Stretches every clock, and the three-second line at
+  which a fact counts as known by heart, by ×1.5 or ×2. That is the same standard
+  measured with a fairer instrument, not a lower one — for a child working in a
+  second language, with dyscalculia, or with a hand that does not do as it is told.
+- **Times and divide asked back to back.** `6 × 7` and `42 ÷ 6` are one pair of
+  numbers approached from opposite sides, and a child who has just worked out one
+  is exactly the child for whom the other is a discovery rather than a fresh
+  problem. A correct answer is now sometimes followed straight away by the same
+  numbers the other way round — only when both operations were chosen, and never
+  off the back of another link.
 - **💡 Help now shows the idea this question needs.** It used to show one fixed
   example per operation — every addition question, however it was shaped, was
   answered with `7 + 5`. It now matches the *route*: a bridging-ten question is

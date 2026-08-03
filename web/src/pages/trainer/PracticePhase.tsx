@@ -87,7 +87,7 @@ export function PracticePhase({ planetId }: { planetId: PlanetId }) {
             const acc = initialSessionSize > 0 ? (corrects + (newIsFirstCorrect ? 1 : 0)) / initialSessionSize : 1
             setAccuracy(acc)
             const oldStars = ttStore.getStars()[planetId] || 0
-            const newStars = computeStars(planetId, ttStore.getProgress(), oldStars, { phase: 'practice', accuracy: acc })
+            const newStars = computeStars(planetId, ttStore.getProgress(), oldStars, { phase: 'practice', accuracy: acc }, store.getSettings().thinkingTime)
             ttStore.raiseStars(planetId, newStars)
             setEarnedStars(newStars)
             setStarsChanged(newStars > oldStars)

@@ -1,6 +1,7 @@
 import type { FactKey, FactProgress } from '../../timesTable/types'
 import { cellState, VIEW_GRIDS } from '../../timesTable/heatmap'
 import { canonicalKey } from '../../timesTable/facts'
+import { store } from '../../store'
 
 type FactHeatmapProps = {
     readonly progress: Record<FactKey, FactProgress>
@@ -16,6 +17,7 @@ type FactHeatmapProps = {
  */
 export default function FactHeatmap({ progress, view }: FactHeatmapProps) {
     const grid = VIEW_GRIDS[view]
+    const { thinkingTime } = store.getSettings()
 
     if (view === 'squares') {
         return (
@@ -23,7 +25,7 @@ export default function FactHeatmap({ progress, view }: FactHeatmapProps) {
                 <div className="heatmap-grid" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
                     {grid.cols.map((num) => {
                         const key = canonicalKey(num, num)
-                        const state = cellState(progress, key)
+                        const state = cellState(progress, key, thinkingTime)
                         const answer = num * num
 
                         return (
@@ -60,7 +62,7 @@ export default function FactHeatmap({ progress, view }: FactHeatmapProps) {
                         <span className="heatmap-header">{r}</span>
                         {grid.cols.map(c => {
                             const key = canonicalKey(r, c)
-                            const state = cellState(progress, key)
+                            const state = cellState(progress, key, thinkingTime)
                             const answer = r * c
 
                             return (

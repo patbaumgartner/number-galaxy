@@ -88,7 +88,7 @@ function freshMission(): MissionState {
             language: settings.language,
             rank: settings.rank,
             maxValue: store.getWorkingMax(settings.rank),
-            timed: settings.timed,
+            timed: settings.timer === 'timed',
             operations: settings.operations,
             weakness: store.getWeakness(),
             srData: store.getSpacedRepetition(),
@@ -133,7 +133,7 @@ export default function GamePage() {
     useSoundSetting()
 
     const answered = getAnswered(mission)
-    const seconds = getQuestionSeconds(mission.rank, mission.question.form)
+    const seconds = Math.round(getQuestionSeconds(mission.rank, mission.question.form) * settings.thinkingTime)
     const visible = usePageVisible()
 
     /**
@@ -193,9 +193,10 @@ export default function GamePage() {
 
     const remaining = useCountdown({
         seconds,
-        running: mission.phase === 'answering' && mission.timed && !helpOpen && visible,
+        running: mission.phase === 'answering' && settings.timer !== 'off' && !helpOpen && visible,
         resetKey: answered,
-        onExpire: () => resolve('timeout', null, ''),
+        // A gentle clock shows the time going by and then simply stops.
+        onExpire: () => { if (settings.timer === 'timed') resolve('timeout', null, '') },
     })
 
     const fire = useCallback((index: number) => {
@@ -352,7 +353,7 @@ export default function GamePage() {
                     ]}
                     results={mission.results}
                     total={QUESTIONS_PER_MISSION}
-                    timer={{ seconds: mission.timed ? remaining : null, maxSeconds: seconds, untimed: t.game.untimed }}
+                    timer={{ seconds: settings.timer === 'off' ? null : remaining, maxSeconds: seconds, untimed: t.game.untimed }}
                 />
 
                 <section className={`equation${feedback ? ` equation--${feedback.outcome}` : ''}`}>

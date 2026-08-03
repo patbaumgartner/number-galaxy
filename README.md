@@ -12,6 +12,7 @@
 **[🛸 The arcade](#-math-invaders--the-arcade-game)** ·
 **[✖️ Times tables](#️-times-tables-galaxy--the-multiplication-trainer)** ·
 **[📏 Number Beam](#-number-beam--doubling-halving-and-bar-models)** ·
+**[👀 Number Sense](#-number-sense--seeing-how-many)** ·
 **[🛠 Development](docs/DEVELOPMENT.md)**
 
 ![The home page, with the three games and the Surprise card](./docs/math-invaders-home.png)
@@ -24,6 +25,7 @@
 
 | Game | Maths it covers | Roughly |
 |------|-----------------|---------|
+| 👀 **Number Sense** | Seeing quantities without counting them: dot patterns, ten-frames, a bead rack, placing numbers on a line, counting on, and dot arrays | ages 4–7 |
 | 🛸 **Math Invaders** | Addition, subtraction, multiplication, division and remainders — in five different question shapes, with numbers from ≤ 10 up to ≤ 1000 | ages 6–11 |
 | ✖️ **Times Tables Galaxy** | Recall of the tables: 1–12, squares to 25², the 15/20/25 shortcuts, and 13–19 | ages 7–11 |
 | 📏 **Number Beam** | Doubling, halving, quarters, fractions of an amount, ×10 ÷10, number bonds and partitioning — all drawn as bar models | ages 5–9 |
@@ -294,6 +296,39 @@ anyone can read.
 
 A drill is ten questions: ⭐ at 70 % accuracy, ⭐⭐ at 90 % once one star is held, and ⭐⭐⭐ for
 a clean sweep once two are. Stars never fall.
+
+---
+
+## 👀 Number Sense — seeing how many
+
+The other three games all begin by assuming a child can already see a quantity, count on
+from a number, and say roughly where a number sits. Those are not safe assumptions — they
+are the strongest predictors of later arithmetic, and every one of them is trainable. This
+is where a child who is not yet ready for `2 × 7` has somewhere to be.
+
+### Six stations in two zones
+
+| Zone | Stations | What it asks |
+|------|----------|--------------|
+| 👀 **Sight Bay** | At a glance · Ten-frame · Bead rack | How many — without counting them |
+| 📍 **Number Line** | Place it · Count on · Dot array | Where the number goes, and where a jump lands |
+
+**Patterns are shown for a glance, not for a count.** A dot pattern appears for about a
+second and then goes. Scattered dots can only be counted one at a time, which trains
+counting and little else; a die face or two rows of five can be *seen*, and it is that
+seeing which later becomes "7 is 5 and 2". 👁 **Look again** brings it back as often as a
+child wants, and the glance can be switched off entirely in Settings.
+
+**Every arrangement is one a child meets elsewhere** — a die face, a ten-frame in two rows
+of five, a bead rack grouped in fives, an empty number line with the jump drawn on it, a dot
+array read as rows and columns.
+
+**Placing a number allows a near miss.** Landing on 38 when the answer was 37 counts. The
+skill being built is a sense of how big a number is, and marking that wrong would be
+measuring something else. Everywhere a quantity is exact, it has to be exact.
+
+Answers are given on the same beam Number Beam uses — nothing to eliminate, and a number to
+commit to.
 
 ---
 

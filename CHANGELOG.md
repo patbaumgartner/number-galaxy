@@ -8,6 +8,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **👀 Number Sense: a fourth game, and the floor the other three stand on.** The
+  arcade, the trainer and the beam all begin by assuming a child can already see
+  a quantity, count on from a number, and say roughly where a number sits. Those
+  are the strongest predictors of later arithmetic, they are all trainable, and
+  none of them had anywhere to be practised. Six stations across two zones, for
+  roughly ages 4–7.
+  - **A pattern is shown for a glance, not for a count.** Dots appear for about a
+    second and then go. Scattered dots can only be counted one at a time; a die
+    face or two rows of five can be *seen*, and that seeing is what later becomes
+    "7 is 5 and 2". 👁 Look again brings it back as often as wanted, and the
+    glance can be switched off in Settings.
+  - **Every arrangement is one a child meets elsewhere**: die faces, dominoes, a
+    ten-frame in two rows of five, a bead rack grouped in fives, an empty number
+    line with the jump drawn on, a dot array read as rows and columns.
+  - **Placing a number allows a near miss** — 38 counts when the answer is 37,
+    because the skill is a sense of size and marking that wrong would measure
+    something else. Everywhere a quantity is exact, it must be exact.
+  - Answered on the beam, as in Number Beam: nothing to eliminate, a number to
+    commit to.
 - **The arcade now remembers facts, not operations.** Its memory used to have
   five buckets, one per operation, so it could know a child was "bad at addition"
   and nothing more — never that `7 + 8` is hard and `2 + 2` is not. Every pair of

@@ -105,6 +105,11 @@ export default function HomePage() {
                     <section className="panel game-picker">
                         <h2 className="panel__title">{t.home.chooseGame}</h2>
                         <div className="game-picker__cards">
+                            <button type="button" className="game-picker__card" onClick={() => navigate('/number-sense')}>
+                                <span aria-hidden="true">👀</span>
+                                <strong>{t.sense.title.replace('👀 ', '')}</strong>
+                                <small>{t.sense.tagline}</small>
+                            </button>
                             <button type="button" className="game-picker__card" onClick={() => navigate('/game')}>
                                 <span aria-hidden="true">🛸</span>
                                 <strong>{t.home.gameInvaders}</strong>

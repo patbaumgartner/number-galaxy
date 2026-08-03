@@ -9,6 +9,8 @@ import TimesTablesPage from './pages/TimesTablesPage'
 import TableTrainerPage from './pages/TableTrainerPage'
 import NumberBeamPage from './pages/NumberBeamPage'
 import BeamDrillPage from './pages/BeamDrillPage'
+import NumberSensePage from './pages/NumberSensePage'
+import SenseDrillPage from './pages/SenseDrillPage'
 
 export default function App() {
     return (
@@ -23,6 +25,8 @@ export default function App() {
                     <Route path="/times-tables/train/:planetId/:phase" element={<TableTrainerPage />} />
                     <Route path="/number-beam" element={<NumberBeamPage />} />
                     <Route path="/number-beam/drill/:skill" element={<BeamDrillPage />} />
+                    <Route path="/number-sense" element={<NumberSensePage />} />
+                    <Route path="/number-sense/drill/:skill" element={<SenseDrillPage />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </ErrorBoundary>

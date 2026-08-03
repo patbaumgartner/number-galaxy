@@ -1,0 +1,142 @@
+/* Number Sense — structured quantities, drawn from numbers */
+
+.sense-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 148px;
+  padding: var(--space-4);
+  background: var(--bg-surface-elevated);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+}
+
+/* The glance is the point: an empty frame, not a shrunken one, so the layout
+   does not jump when the pattern goes away. */
+.sense-visual--hidden::after {
+  content: '👁';
+  font-size: var(--text-2xl);
+  opacity: 0.35;
+}
+
+.sense-dots,
+.sense-array {
+  display: grid;
+  gap: var(--space-2);
+  justify-items: center;
+}
+
+.sense-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+}
+
+.sense-dot--g0 { background: var(--color-cyan); }
+.sense-dot--g1 { background: var(--color-pink); }
+.sense-dot--empty { background: transparent; }
+
+.sense-frames {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.sense-frame {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 2px;
+  border: 3px solid var(--border-highlight);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+}
+
+.sense-cell {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-sm);
+}
+
+.sense-cell--filled { background: var(--color-cyan); }
+
+.sense-rack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.sense-rack__row {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.sense-bead {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  opacity: 0.3;
+}
+
+.sense-bead--red { background: var(--color-danger); }
+.sense-bead--white { background: var(--text-main); }
+.sense-bead--pushed { opacity: 1; }
+
+/* Beads a child has pushed across sit together, which is what makes the
+   grouping by five readable rather than decorative. */
+.sense-bead--pushed + .sense-bead:not(.sense-bead--pushed) { margin-left: var(--space-4); }
+
+.sense-line {
+  position: relative;
+  width: 100%;
+  height: 96px;
+}
+
+.sense-line__rail {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--border-highlight);
+  border-radius: var(--radius-pill);
+}
+
+.sense-line__jump {
+  position: absolute;
+  top: 30px;
+  height: 30px;
+  border-top: 3px solid var(--color-gold);
+  border-left: 3px solid var(--color-gold);
+  border-right: 3px solid var(--color-gold);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+}
+
+.sense-line__jump-label {
+  position: absolute;
+  top: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--color-gold);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.sense-line__mark,
+.sense-line__end {
+  position: absolute;
+  top: 68px;
+  transform: translateX(-50%);
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.sense-line__mark { color: var(--color-gold); }
+.sense-line__end--low { left: 0; transform: none; }
+.sense-line__end--high { right: 0; transform: none; }

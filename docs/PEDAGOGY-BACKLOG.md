@@ -144,30 +144,30 @@ ten is the one to practise next."* No percentages, no red.
 `42 ÷ 6` and name the link.
 · `MA.1.B.1.b`
 
-## Tier 3 — Build the missing floor (new 4th game)
+## Tier 3 — Build the missing floor (new 4th game) — items 21–25 ✅ done
 
 A "Number Sense" game beside the existing three, roughly ages 4–7, LP21 Zyklus 1.
 
-**21. Subitizing and ten-frames.** Briefly-shown structured dot patterns, answered on the
-existing `BeamSlider`. Ten-frames, dice and domino arrangements — structured, not random.
+**21. Subitizing and ten-frames.** ✅ **done** — die faces, dominoes and rows of five, shown
+for ~1.4 s with 👁 Look again and a Settings switch to disable the glance.
 · Baroody et al. 2025; Ebner et al. 2025
 · `MA.1.A.2.b` — *"können Fingerbilder von 1 bis 10 spontan zeigen sowie Anzahlen bis 5 ohne Zählen erfassen"*
 
-**22. A rekenrek.** Sibling component to `BarModel`: two rows of ten beads, 5 red / 5 white.
-Attach to `nearDouble` and a new `makeTen` station. Pure SVG.
+**22. A rekenrek.** ✅ **done** — its own station, beads grouped in fives, pushed beads sitting
+together so the grouping reads.
 · Frykholm 2010 · `MA.1.A.1.c` (*Zehner, Einer*), `MA.1.A.3.a`
 
-**23. Number-line estimation.** Reuse `BeamSlider` with labels removed: "Put 37 where it
-belongs on 0–100." Score by distance, not exactness. **Highest research value per line of
-code on this list — the UI already exists.**
+**23. Number-line estimation.** ✅ **done** — the beam *is* the line, and a near miss counts
+(a tenth of the line), because the skill is magnitude rather than precision.
 · Siegler & Opfer 2003; Booth & Siegler 2006
 · `MA.1.A.2.c` — *"können im 100er-Raum Zahlen ordnen (z.B. auf dem Zahlenstrahl…)"*
 
-**24. Counting-on with number-line jumps.** Animate `8 + 5` as 8, then +2 to reach 10, then +3.
+**24. Counting-on with number-line jumps.** ✅ **done** — the start is marked and the jump is
+drawn as an arc over the line, which is LP21's `Rechenstrich`.
 · LP21 names the `Rechenstrich` explicitly · `MA.1.C.1.c`, `MA.1.A.2.a`
 
-**25. Arrays for multiplication.** The `sq-core` card *describes* a dot grid but nothing draws
-it. Show `6 × 7` split as `5 × 7 + 1 × 7`.
+**25. Arrays for multiplication.** ✅ **done** — its own station, rows × columns of dots, with
+the factors given to a screen reader and the product left to be worked out.
 · Ebner et al. 2025 (CRA)
 · `MA.1.C.1.d` — *"erkennen in grafischen Modellen multiplikative Beziehungen… in einem Punktefeld"*
 
@@ -206,7 +206,7 @@ namespace on every call.
 
 ## Suggested order
 
-`23` is the highest-value change remaining. `4` and `30` (both shipped)
+Items 26, 29 and 18 remain. `4` and `30` (both shipped)
 unblock Tier 2 and Tier 1 respectively.
 
 ## Sources

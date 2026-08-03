@@ -1,4 +1,5 @@
 import type { BeamSkill, BeamZoneId } from '../beam'
+import type { SenseSkill, SenseZoneId } from '../sense'
 import type { MissReason, Operation, Rank } from '../game'
 
 export type Translations = {
@@ -115,6 +116,8 @@ export type Translations = {
         groupTablesHint: string
         groupBeam: string
         groupBeamHint: string
+        groupSense: string
+        groupSenseHint: string
         groupShared: string
         groupSharedHint: string
     }
@@ -156,6 +159,26 @@ export type Translations = {
         title: string
         blurb: string
         again: string
+    }
+    sense: {
+        title: string
+        tagline: string
+        mapTitle: string
+        mapHint: string
+        lockedHint: string
+        zones: Record<SenseZoneId, string>
+        zoneTaglines: Record<SenseZoneId, string>
+        skills: Record<SenseSkill, string>
+        howMany: string
+        placeIt: string
+        lookAgain: string
+        glanceHint: string
+        closeEnough: string
+        pictureLabel: string
+        settingsGlance: string
+        settingsGlanceHint: string
+        settingsReset: string
+        settingsResetConfirm: string
     }
     beam: {
         title: string

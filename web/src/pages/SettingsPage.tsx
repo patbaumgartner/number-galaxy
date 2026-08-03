@@ -9,6 +9,7 @@ import { useDocumentLanguage } from '../hooks'
 import type { Language } from '../game'
 import { ttStore } from '../timesTable/ttStore'
 import { beamStore } from '../beam'
+import { senseStore } from '../sense'
 
 const timerLabel = (t: Translations, mode: TimerMode): string =>
     mode === 'off' ? t.settings.timerOff : mode === 'gentle' ? t.settings.timerGentle : t.settings.timerTimed
@@ -21,6 +22,7 @@ export default function SettingsPage() {
     const [settings, setSettings] = useState<GameSettings>(() => store.getSettings())
     const [trainerSettings, setTrainerSettings] = useState(() => ttStore.getTTSettings())
     const [beamSettings, setBeamSettings] = useState(() => beamStore.getBeamSettings())
+    const [senseSettings, setSenseSettings] = useState(() => senseStore.getSenseSettings())
     const t = translations[settings.language]
     const skills = useMemo(() => store.getSkillStats(), [])
     const mistake = useMemo(() => store.getCommonMistake(), [])
@@ -54,6 +56,18 @@ export default function SettingsPage() {
         const next = { alwaysShowBar }
         setBeamSettings(next)
         beamStore.saveBeamSettings(next)
+    }
+
+    const updateSense = (briefGlance: boolean) => {
+        const next = { briefGlance }
+        setSenseSettings(next)
+        senseStore.saveSenseSettings(next)
+    }
+
+    const resetSense = () => {
+        if (!confirm(t.sense.settingsResetConfirm)) return
+        senseStore.resetSenseProgress()
+        setSenseSettings(senseStore.getSenseSettings())
     }
 
     const resetTrainer = () => {
@@ -219,6 +233,30 @@ export default function SettingsPage() {
                         </div>
                         <div className="panel__action">
                             <button type="button" className="btn btn--danger" onClick={resetTrainer}>{t.tt.settingsReset}</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="group">
+                    <div className="group__head">
+                        <h2 className="group__title">{t.settings.groupSense}</h2>
+                        <p className="group__hint">{t.settings.groupSenseHint}</p>
+                    </div>
+
+                    <div className="panel">
+                        <div className="switch-row">
+                            <div>
+                                <h3 className="switch-row__title">👁 {t.sense.settingsGlance}</h3>
+                                <p className="panel__hint">{t.sense.settingsGlanceHint}</p>
+                            </div>
+                            <Switch
+                                labels={t.settings}
+                                on={senseSettings.briefGlance}
+                                onToggle={() => updateSense(!senseSettings.briefGlance)}
+                            />
+                        </div>
+                        <div className="panel__action">
+                            <button type="button" className="btn btn--danger" onClick={resetSense}>{t.sense.settingsReset}</button>
                         </div>
                     </div>
                 </section>

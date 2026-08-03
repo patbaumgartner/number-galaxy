@@ -22,13 +22,19 @@ for (const route of routes) {
     })
 }
 
-test('gives the profile dialog modal semantics and autofocus', async ({ page }) => {
+test('gives both profile dialogs modal semantics, and the editor autofocus', async ({ page }) => {
     await seedStorage(page, { settings })
     await gotoApp(page)
     await page.getByRole('button', { name: 'Change name' }).click()
-    const dialog = page.getByRole('dialog', { name: 'Change name' })
-    await expect(dialog).toBeVisible()
-    await expect(dialog).toHaveAttribute('aria-modal', 'true')
+
+    const switcher = page.getByRole('dialog', { name: 'Who is playing?' })
+    await expect(switcher).toBeVisible()
+    await expect(switcher).toHaveAttribute('aria-modal', 'true')
+
+    await switcher.getByRole('button', { name: /change name/i }).click()
+    const editor = page.getByRole('dialog', { name: 'Change name' })
+    await expect(editor).toBeVisible()
+    await expect(editor).toHaveAttribute('aria-modal', 'true')
     await expect(page.getByRole('textbox', { name: 'Name' })).toBeFocused()
 })
 

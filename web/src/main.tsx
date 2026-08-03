@@ -1,6 +1,10 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.tsx'
+import { adoptLegacyProfile } from './store'
+
+// Before the first render, so no screen reads a key the migration is about to move.
+adoptLegacyProfile()
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>

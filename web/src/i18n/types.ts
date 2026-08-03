@@ -16,6 +16,13 @@ export type Translations = {
         avatarLabel: string
         save: string
         cancel: string
+        whoIsPlaying: string
+        addPlayer: string
+        newPlayer: string
+        removePlayer: string
+        removeConfirm: string
+        switchTo: string
+        playingNow: string
         missionTitle: string
         change: string
         chooseGame: string

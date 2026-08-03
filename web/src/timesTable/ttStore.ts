@@ -1,13 +1,14 @@
 import { factsForPlanet } from './facts'
 import { isMastered } from './leitner'
-import { isRecord, readJson, readRecord, removeByPrefix, storageKey, writeJson } from '../store/storage'
+import { isRecord, readJson, readRecord, removeByPrefix, writeJson } from '../store/storage'
+import { profileKey } from '../store/profiles'
 import type { FactKey, FactProgress, Phase, PlanetId, StarLevel } from './types'
 
-const PROGRESS_STORAGE_KEY = storageKey('tt-progress')
-const STARS_STORAGE_KEY = storageKey('tt-stars')
-const BESTS_STORAGE_KEY = storageKey('tt-bests')
-const SETTINGS_STORAGE_KEY = storageKey('tt-settings')
-const TRAINER_STORAGE_PREFIX = storageKey('tt-')
+const progressStorageKey = () => profileKey('tt-progress')
+const starsStorageKey = () => profileKey('tt-stars')
+const bestsStorageKey = () => profileKey('tt-bests')
+const settingsStorageKey = () => profileKey('tt-settings')
+const trainerStoragePrefix = () => profileKey('tt-')
 
 type TTSettings = {
     readonly strategyCards: boolean
@@ -36,22 +37,22 @@ const isBest = (value: unknown): value is number =>
     typeof value === 'number' && Number.isFinite(value)
 
 const getProgress = (): Record<FactKey, FactProgress> => Object.fromEntries(
-    Object.entries(readRecord(PROGRESS_STORAGE_KEY))
+    Object.entries(readRecord(progressStorageKey()))
         .filter((entry): entry is [FactKey, FactProgress] => isFactProgress(entry[1])),
 )
 
 const getStars = (): Partial<Record<PlanetId, StarLevel>> => Object.fromEntries(
-    Object.entries(readRecord(STARS_STORAGE_KEY))
+    Object.entries(readRecord(starsStorageKey()))
         .filter((entry): entry is [PlanetId, StarLevel] => isStarLevel(entry[1])),
 )
 
 const getBests = (): Partial<Record<PlanetId, number>> => Object.fromEntries(
-    Object.entries(readRecord(BESTS_STORAGE_KEY))
+    Object.entries(readRecord(bestsStorageKey()))
         .filter((entry): entry is [PlanetId, number] => isBest(entry[1])),
 )
 
 const parseSettings = (): TTSettings => {
-    const stored = readJson<unknown>(SETTINGS_STORAGE_KEY, null)
+    const stored = readJson<unknown>(settingsStorageKey(), null)
     return isRecord(stored) && typeof stored.strategyCards === 'boolean'
         ? { strategyCards: stored.strategyCards }
         : { ...defaultSettings }
@@ -83,7 +84,7 @@ export const ttStore = {
     },
 
     saveFactProgress(key: FactKey, progress: FactProgress): void {
-        writeJson(PROGRESS_STORAGE_KEY, { ...this.getProgress(), [key]: progress })
+        writeJson(progressStorageKey(), { ...this.getProgress(), [key]: progress })
     },
 
     getStars(): Partial<Record<PlanetId, StarLevel>> {
@@ -93,7 +94,7 @@ export const ttStore = {
     raiseStars(planetId: PlanetId, level: StarLevel): void {
         const stars = this.getStars()
         const highest = Math.max(stars[planetId] ?? 0, level) as StarLevel
-        writeJson(STARS_STORAGE_KEY, { ...stars, [planetId]: highest })
+        writeJson(starsStorageKey(), { ...stars, [planetId]: highest })
     },
 
     getBests(): Partial<Record<PlanetId, number>> {
@@ -105,7 +106,7 @@ export const ttStore = {
         const current = bests[planetId]
         if (current !== undefined && totalMs >= current) return false
 
-        writeJson(BESTS_STORAGE_KEY, { ...bests, [planetId]: totalMs })
+        writeJson(bestsStorageKey(), { ...bests, [planetId]: totalMs })
         return true
     },
 
@@ -114,10 +115,10 @@ export const ttStore = {
     },
 
     saveTTSettings(settings: TTSettings): void {
-        writeJson(SETTINGS_STORAGE_KEY, settings)
+        writeJson(settingsStorageKey(), settings)
     },
 
     resetTrainerProgress(): void {
-        removeByPrefix(TRAINER_STORAGE_PREFIX)
+        removeByPrefix(trainerStoragePrefix())
     },
 }

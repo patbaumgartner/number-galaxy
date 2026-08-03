@@ -188,17 +188,18 @@ accuracy trend, "practise next", per game. JSON export + print stylesheet. No ac
 server. Pairs with a printable sheet generated from the child's own weak facts.
 · ICO EdTech audit 2024 — data portability is the most-missed standard even in privacy-conscious products
 
-**30. Multiple profiles on one device.** The FAQ concedes siblings share one profile, which
-corrupts every adaptive signal in items 8, 9 and 13 and makes classroom use impractical.
-Namespace `storageKey()` by `playerId`; `ensurePlayer` already generates IDs. **Land this
-before 8–9 if the app is ever used in a classroom.**
+**30. Multiple profiles on one device.** ✅ **done** — shipped ahead of Tier 1, because it
+reshapes storage and every adaptive feature added later writes per-child data. Every
+per-child key is namespaced by profile id; a pre-profile install is adopted on next launch.
+Deriving a key is pure, so a blocked `localStorage` can no longer hand out a fresh, empty
+namespace on every call.
 
 ---
 
 ## Suggested order
 
-`8, 9, 23` are the three highest-value changes remaining. `30` should precede `8–9` for
-classroom use, because shared profiles poison adaptive data. `4` (shipped) unblocks Tier 2.
+`8, 9, 23` are the three highest-value changes remaining. `4` and `30` (both shipped)
+unblock Tier 2 and Tier 1 respectively.
 
 ## Sources
 

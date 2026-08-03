@@ -4,7 +4,7 @@ import type { ReactElement } from 'react'
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router'
 import type { Language, Operation, Rank } from '../game'
 import { beamStore, type BeamSkill, type BeamStarLevel } from '../beam'
-import { store, type GameSettings } from '../store'
+import { profileKeys, store, type GameSettings } from '../store'
 import type { FactKey, FactProgress, PlanetId, StarLevel } from '../timesTable/types'
 import { ttStore } from '../timesTable/ttStore'
 
@@ -63,7 +63,7 @@ export const seedRank = (rank: Rank): void => void seedSettings({ rank })
 
 export function seedPlayer(playerName = 'Testpilot', avatarId = '🚀') {
     return store.savePlayer({
-        id: 'test-player-id',
+        id: profileKeys.defaultId,
         playerName,
         avatarId,
         createdAt: '2026-01-01T00:00:00.000Z',

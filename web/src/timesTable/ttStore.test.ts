@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { factsForPlanet } from './facts'
 import { computeStars, ttStore } from './ttStore'
+import { profileKey } from '../store/profiles'
 import type { FactKey, FactProgress, PlanetId } from './types'
 
 type MemoryStorage = Storage & {
@@ -80,10 +81,10 @@ describe('trainer persistence', () => {
 
     it('returns defaults for missing or corrupt JSON', () => {
     // Given: corrupt data at every trainer storage key
-        localStorage.setItem('math-invaders-tt-progress', '{')
-        localStorage.setItem('math-invaders-tt-stars', '{')
-        localStorage.setItem('math-invaders-tt-bests', '{')
-        localStorage.setItem('math-invaders-tt-settings', '{')
+        localStorage.setItem(profileKey('tt-progress'), '{')
+        localStorage.setItem(profileKey('tt-stars'), '{')
+        localStorage.setItem(profileKey('tt-bests'), '{')
+        localStorage.setItem(profileKey('tt-settings'), '{')
 
         // When: the stores are read
         // Then: safe defaults are returned without throwing
@@ -94,18 +95,18 @@ describe('trainer persistence', () => {
     })
 
     it('removes only trainer storage keys', () => {
-    // Given: trainer keys and the primary player key
+    // Given: trainer keys and one key belonging to another game
         ttStore.saveFactProgress('2x3', factProgress)
         ttStore.raiseStars('t2', 1)
         ttStore.updateBest('t2', 12_345)
         ttStore.saveTTSettings({ strategyCards: false })
-        localStorage.setItem('math-invaders-player', 'preserve me')
+        localStorage.setItem(profileKey('scores-v2'), 'preserve me')
 
         // When: trainer progress is reset
         ttStore.resetTrainerProgress()
 
-        // Then: trainer state is removed but player data remains
-        expect(localStorage.keys()).toEqual(['math-invaders-player'])
+        // Then: trainer state is removed but the other game's data remains
+        expect(localStorage.keys()).toEqual([profileKey('scores-v2')])
     })
 
     it('uses only the namespaced trainer keys', () => {
@@ -117,7 +118,7 @@ describe('trainer persistence', () => {
 
         // When: keys are inspected
         // Then: each uses the trainer prefix
-        expect(localStorage.keys().every((key) => key.startsWith('math-invaders-tt-'))).toBe(true)
+        expect(localStorage.keys().every((key) => key.startsWith(profileKey('tt-')))).toBe(true)
     })
 })
 

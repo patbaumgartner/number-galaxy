@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
-import { store } from '../store'
+import { store, type Player } from '../store'
 import { QUESTIONS_PER_MISSION, rankConfig } from '../game'
 import { avatars } from '../constants'
 import { fill, translations, type Translations } from '../i18n'
 import { useDocumentLanguage, useModalDialog } from '../hooks'
 import { nextSurprise, surpriseRoute } from '../surprise'
+
+type ProfileView = 'none' | 'switch' | 'edit'
 
 export default function HomePage() {
     const navigate = useNavigate()
@@ -14,30 +16,68 @@ export default function HomePage() {
     useDocumentLanguage(settings.language)
 
     const [player, setPlayer] = useState(() => store.getPlayer())
-    const [editing, setEditing] = useState(false)
+    const [players, setPlayers] = useState<Player[]>(() => store.getPlayers())
+    const [view, setView] = useState<ProfileView>('none')
+    const [adding, setAdding] = useState(false)
     const [name, setName] = useState(player?.playerName ?? '')
     const [avatar, setAvatar] = useState(player?.avatarId ?? avatars[0])
 
     const play = () => {
         setPlayer(store.ensurePlayer(t.home.defaultName, avatars[0]))
+        setPlayers(store.getPlayers())
+    }
+
+    /** Re-reads everything, because switching child switches every store at once. */
+    const refresh = () => {
+        setPlayer(store.getPlayer())
+        setPlayers(store.getPlayers())
+        setView('none')
     }
 
     const saveProfile = () => {
-        const current = store.ensurePlayer(t.home.defaultName, avatars[0])
-        setPlayer(store.savePlayer({
-            ...current,
-            playerName: name.trim() || t.home.defaultName,
-            avatarId: avatar,
-        }))
-        setEditing(false)
+        const chosen = name.trim() || t.home.defaultName
+        if (adding) {
+            // Progress starts fresh, but language and sound describe the
+            // household rather than the child, so they carry over.
+            const { language, sound } = store.getSettings()
+            store.addPlayer(chosen, avatar)
+            store.saveSettings({ ...store.getSettings(), language, sound })
+        } else {
+            const current = store.ensurePlayer(t.home.defaultName, avatars[0])
+            store.savePlayer({ ...current, playerName: chosen, avatarId: avatar })
+        }
+        setAdding(false)
+        refresh()
     }
 
-    const openEditor = () => {
+    const openSwitcher = () => {
+        // Always the list, even for one child: it is the only route to "add someone".
         const current = store.ensurePlayer(t.home.defaultName, avatars[0])
+        setPlayers(store.getPlayers())
         setPlayer(current)
         setName(current.playerName)
         setAvatar(current.avatarId)
-        setEditing(true)
+        setAdding(false)
+        setView('switch')
+    }
+
+    const openEditor = (forNewPlayer: boolean) => {
+        setAdding(forNewPlayer)
+        setName(forNewPlayer ? '' : (player?.playerName ?? ''))
+        setAvatar(forNewPlayer ? avatars[0] : (player?.avatarId ?? avatars[0]))
+        setView('edit')
+    }
+
+    const choosePlayer = (id: string) => {
+        store.selectPlayer(id)
+        refresh()
+    }
+
+    const dropPlayer = (target: Player) => {
+        if (!window.confirm(fill(t.home.removeConfirm, { name: target.playerName }))) return
+        store.removePlayer(target.id)
+        setPlayers(store.getPlayers())
+        setPlayer(store.getPlayer())
     }
 
     return (
@@ -55,7 +95,7 @@ export default function HomePage() {
                     {player ? t.home.playAgain : t.home.play}
                 </button>
 
-                <button type="button" className="chip chip--player" onClick={openEditor}>
+                <button type="button" className="chip chip--player" onClick={openSwitcher}>
                     <span aria-hidden="true">{player?.avatarId ?? avatars[0]}</span>
                     {player ? fill(t.home.greeting, { name: player.playerName }) : t.home.rename}
                     <span className="chip__edit" aria-hidden="true">✏️</span>
@@ -163,23 +203,110 @@ export default function HomePage() {
                 </nav>
             </main>
 
-            {editing && (
+            {view === 'switch' && (
+                <PlayerSwitcher
+                    labels={t.home}
+                    players={players}
+                    activeId={player?.id ?? ''}
+                    onChoose={choosePlayer}
+                    onRemove={dropPlayer}
+                    onAdd={() => openEditor(true)}
+                    onRename={() => openEditor(false)}
+                    onCancel={() => setView('none')}
+                />
+            )}
+
+            {view === 'edit' && (
                 <ProfileEditor
                     labels={t.home}
+                    title={adding ? t.home.newPlayer : t.home.rename}
                     name={name}
                     avatar={avatar}
                     onName={setName}
                     onAvatar={setAvatar}
                     onSave={saveProfile}
-                    onCancel={() => setEditing(false)}
+                    onCancel={() => setView('none')}
                 />
             )}
         </div>
     )
 }
 
+type PlayerSwitcherProps = {
+    labels: Translations['home']
+    players: Player[]
+    activeId: string
+    onChoose: (id: string) => void
+    onRemove: (player: Player) => void
+    onAdd: () => void
+    onRename: () => void
+    onCancel: () => void
+}
+
+function PlayerSwitcher({
+    labels,
+    players,
+    activeId,
+    onChoose,
+    onRemove,
+    onAdd,
+    onRename,
+    onCancel,
+}: PlayerSwitcherProps) {
+    const dialog = useModalDialog<HTMLDivElement>(onCancel)
+
+    return (
+        <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="switcher-title" ref={dialog}>
+            <div className="overlay__card">
+                <h2 className="overlay__title" id="switcher-title">{labels.whoIsPlaying}</h2>
+
+                <ul className="players">
+                    {players.map(entry => (
+                        <li key={entry.id} className="players__row">
+                            <button
+                                type="button"
+                                className={`players__pick${entry.id === activeId ? ' players__pick--active' : ''}`}
+                                aria-current={entry.id === activeId}
+                                aria-label={fill(labels.switchTo, { name: entry.playerName })}
+                                onClick={() => onChoose(entry.id)}
+                            >
+                                <span aria-hidden="true">{entry.avatarId}</span>
+                                <strong>{entry.playerName}</strong>
+                                {entry.id === activeId && <small>{labels.playingNow}</small>}
+                            </button>
+                            {players.length > 1 && (
+                                <button
+                                    type="button"
+                                    className="btn btn--ghost btn--sm"
+                                    aria-label={`${labels.removePlayer} ${entry.playerName}`}
+                                    onClick={() => onRemove(entry)}
+                                >
+                                    🗑
+                                </button>
+                            )}
+                        </li>
+                    ))}
+                </ul>
+
+                <div className="overlay__actions">
+                    <button type="button" className="btn btn--primary" onClick={onAdd}>
+                        ➕ {labels.addPlayer}
+                    </button>
+                    <button type="button" className="btn btn--ghost" onClick={onRename}>
+                        ✏️ {labels.rename}
+                    </button>
+                    <button type="button" className="btn btn--ghost" onClick={onCancel}>
+                        {labels.cancel}
+                    </button>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 type ProfileEditorProps = {
     labels: Translations['home']
+    title: string
     name: string
     avatar: string
     onName: (name: string) => void
@@ -188,13 +315,13 @@ type ProfileEditorProps = {
     onCancel: () => void
 }
 
-function ProfileEditor({ labels, name, avatar, onName, onAvatar, onSave, onCancel }: ProfileEditorProps) {
+function ProfileEditor({ labels, title, name, avatar, onName, onAvatar, onSave, onCancel }: ProfileEditorProps) {
     const dialog = useModalDialog<HTMLDivElement>(onCancel)
 
     return (
         <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="profile-title" ref={dialog}>
             <div className="overlay__card">
-                <h2 className="overlay__title" id="profile-title">{labels.rename}</h2>
+                <h2 className="overlay__title" id="profile-title">{title}</h2>
 
                 <label className="field">
                     <span className="field__label">{labels.nameLabel}</span>

@@ -47,6 +47,7 @@ describe('HomePage', () => {
         const user = userEvent.setup({ delay: null })
         renderWithRouter(<HomePage />)
         await user.click(screen.getByRole('button', { name: /hi, old name/i }))
+        await user.click(screen.getByRole('button', { name: /change name/i }))
 
         const input = screen.getByRole('textbox', { name: 'Name' })
         expect(input).toHaveAttribute('maxlength', '20')
@@ -58,15 +59,67 @@ describe('HomePage', () => {
         expect(store.getPlayer()).toMatchObject({ playerName: 'Nova', avatarId: '👾' })
 
         await user.click(screen.getByRole('button', { name: /hi, nova/i }))
+        await user.click(screen.getByRole('button', { name: /change name/i }))
         await user.clear(screen.getByRole('textbox', { name: 'Name' }))
         await user.click(screen.getByRole('button', { name: 'Save' }))
         expect(store.getPlayer()?.playerName).toBe('Ace')
 
         await user.click(screen.getByRole('button', { name: /hi, ace/i }))
+        await user.click(screen.getByRole('button', { name: /change name/i }))
         await user.clear(screen.getByRole('textbox', { name: 'Name' }))
         await user.type(screen.getByRole('textbox', { name: 'Name' }), 'Discarded')
         await user.click(screen.getByRole('button', { name: 'Cancel' }))
         expect(store.getPlayer()?.playerName).toBe('Ace')
+    })
+
+    it('adds a second child, switches between them, and keeps their things apart', async () => {
+        seedPlayer('Mia', '🚀')
+        seedRank('legend')
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<HomePage />)
+
+        await user.click(screen.getByRole('button', { name: /hi, mia/i }))
+        await user.click(screen.getByRole('button', { name: /add someone/i }))
+        await user.type(screen.getByRole('textbox', { name: 'Name' }), 'Jonas')
+        await user.click(screen.getByRole('button', { name: 'Save' }))
+
+        expect(screen.getByRole('button', { name: /hi, jonas/i })).toBeInTheDocument()
+        // A brand new child starts at the beginning, not on Mia's rank.
+        expect(store.getSettings().rank).toBe('rookie')
+
+        await user.click(screen.getByRole('button', { name: /hi, jonas/i }))
+        await user.click(screen.getByRole('button', { name: /switch to mia/i }))
+        expect(screen.getByRole('button', { name: /hi, mia/i })).toBeInTheDocument()
+        expect(store.getSettings().rank).toBe('legend')
+    })
+
+    it('removes a child and everything they had, once confirmed', async () => {
+        seedPlayer('Mia', '🚀')
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<HomePage />)
+
+        await user.click(screen.getByRole('button', { name: /hi, mia/i }))
+        await user.click(screen.getByRole('button', { name: /add someone/i }))
+        await user.type(screen.getByRole('textbox', { name: 'Name' }), 'Jonas')
+        await user.click(screen.getByRole('button', { name: 'Save' }))
+        await user.click(screen.getByRole('button', { name: /hi, jonas/i }))
+
+        vi.spyOn(window, 'confirm').mockReturnValue(false)
+        await user.click(screen.getByRole('button', { name: /remove jonas/i }))
+        expect(store.getPlayers()).toHaveLength(2)
+
+        vi.spyOn(window, 'confirm').mockReturnValue(true)
+        await user.click(screen.getByRole('button', { name: /remove jonas/i }))
+        expect(store.getPlayers().map(entry => entry.playerName)).toEqual(['Mia'])
+    })
+
+    it('never offers to remove the only child on the device', async () => {
+        seedPlayer('Mia', '🚀')
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<HomePage />)
+
+        await user.click(screen.getByRole('button', { name: /hi, mia/i }))
+        expect(screen.queryByRole('button', { name: /remove mia/i })).not.toBeInTheDocument()
     })
 
     it('renders in the stored language and sets the document language', () => {

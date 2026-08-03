@@ -1,5 +1,6 @@
 import type { Operation, Rank } from '../game'
-import { readJson, storageKey, writeJson } from './storage'
+import { readJson, writeJson } from './storage'
+import { profileKey } from './profiles'
 
 /**
  * Bumped whenever scoring changes. Records from an older ruleset are never
@@ -32,8 +33,8 @@ export type LegacyScoreEntry = {
     answeredCount: number
 }
 
-const SCORES_KEY = storageKey('scores-v2')
-const LEGACY_SCORES_KEY = storageKey('hall-of-fame')
+const scoresKey = () => profileKey('scores-v2')
+const legacyScoresKey = () => profileKey('hall-of-fame')
 
 const byScore = (a: ScoreEntry, b: ScoreEntry) =>
     b.score - a.score || b.stars - a.stars || b.correct - a.correct
@@ -46,7 +47,7 @@ const sameSlot = (a: ScoreEntry, b: ScoreEntry) =>
     a.timed === b.timed
 
 export function loadScores(): ScoreEntry[] {
-    const entries = readJson<ScoreEntry[]>(SCORES_KEY, [])
+    const entries = readJson<ScoreEntry[]>(scoresKey(), [])
     if (!Array.isArray(entries)) return []
     return entries.filter(entry => entry && typeof entry.score === 'number').sort(byScore)
 }
@@ -67,16 +68,16 @@ export function submitScore(entry: ScoreEntry): { improved: boolean; entries: Sc
     }
 
     all.sort(byScore)
-    writeJson(SCORES_KEY, all)
+    writeJson(scoresKey(), all)
     return { improved, entries: all }
 }
 
 export function loadLegacyScores(): LegacyScoreEntry[] {
-    const entries = readJson<LegacyScoreEntry[]>(LEGACY_SCORES_KEY, [])
+    const entries = readJson<LegacyScoreEntry[]>(legacyScoresKey(), [])
     if (!Array.isArray(entries)) return []
     return entries
         .filter(entry => entry && typeof entry.score === 'number')
         .sort((a, b) => b.score - a.score)
 }
 
-export const scoreKeys = { current: SCORES_KEY, legacy: LEGACY_SCORES_KEY }
+export const scoreKeys = { current: scoresKey(), legacy: legacyScoresKey() }

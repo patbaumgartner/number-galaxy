@@ -342,6 +342,10 @@ Everything is stored in the browser's `localStorage` on the device being used. T
 no account, no server, no cloud and no analytics — nothing to send anywhere. Clearing the
 browser's data, or **Settings → ⚙️ All games → Delete all data**, removes it permanently.
 
+Each child on the device gets their own namespace, so removing one child removes only their
+things. An install from before profiles existed is adopted by the first child automatically,
+with nothing lost.
+
 Because progress is per-device and per-browser, a child who plays on both a tablet and a
 laptop will have separate progress on each.
 
@@ -364,8 +368,10 @@ Settings → ⚙️ All games → Delete all data, or one of the per-game resets
 that game.
 
 **Can several children share a device?**
-They will share one profile and one set of progress. Separate browser profiles, or
-separate devices, keep them apart.
+Yes. Tap the name on the home screen to open **Who is playing?**, and add one profile per
+child. Each keeps their own rank, stars, review schedule and best scores, so what one child
+practises never changes what another is given — and nobody sees anybody else's scores.
+Language and sound are shared, because those belong to the household rather than the child.
 
 **Can I use it on a phone?**
 Yes — it is built mobile-first and every game fits a portrait screen.

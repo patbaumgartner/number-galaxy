@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **One profile per child on a shared device.** Tap the name on the home screen
+  for **Who is playing?**, and add a profile for each child. Every key a child
+  owns — rank, settings, stars, the review schedule, weak facts and best scores —
+  is namespaced by them, so what one child practises never changes what another
+  is given. Before this, siblings sharing a tablet were one composite child that
+  the adaptive schedule described accurately for nobody.
+  - The score board is per child too, on purpose: shared, it would stop being a
+    private record of personal bests and become a leaderboard with visible peers.
+  - Language and sound carry over to a new child, because they describe the
+    household rather than the child; rank and progress start fresh.
+  - An install from before profiles existed is adopted by the first child on next
+    launch, with nothing lost — including one where nobody ever entered a name.
+  - Removing a child removes exactly their things. The last profile always stays.
 - **A missed question comes back.** Every miss is queued and asked again three
   questions later — near enough to still be the same idea, far enough that the
   answer has to be recalled rather than remembered. Each question returns at most

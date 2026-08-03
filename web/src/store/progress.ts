@@ -1,24 +1,17 @@
 import type { Operation, QuestionForm } from '../game'
-import { readJson, storageKey, writeJson } from './storage'
-
-export type Player = {
-    id: string
-    playerName: string
-    avatarId: string
-    createdAt: string
-}
+import { readJson, writeJson } from './storage'
+import { profileKey } from './profiles'
 
 export type SpacedRepetitionEntry = { interval: number; due: number }
 export type SpacedRepetitionData = Record<string, SpacedRepetitionEntry>
 export type SkillStats = Record<string, { history: boolean[] }>
 export type BadgeTier = 'none' | 'bronze' | 'silver' | 'gold' | 'platinum'
 
-const PLAYER_KEY = storageKey('player')
-const WEAKNESS_KEY = storageKey('weakness')
-const SR_KEY = storageKey('sr')
-const SKILL_KEY = storageKey('skill-stats')
-const BESTS_KEY = storageKey('personal-bests')
-const MISSES_KEY = storageKey('misses')
+const weaknessKey = () => profileKey('weakness')
+const srKey = () => profileKey('sr')
+const skillKey = () => profileKey('skill-stats')
+const bestsKey = () => profileKey('personal-bests')
+const missesKey = () => profileKey('misses')
 
 const SKILL_HISTORY_LIMIT = 60
 const BADGE_WINDOW = 30
@@ -63,51 +56,26 @@ export function computeBadge(history: boolean[]): BadgeTier {
     return 'none'
 }
 
-export function getPlayer(): Player | null {
-    const player = readJson<Player | null>(PLAYER_KEY, null)
-    return player && typeof player.id === 'string' ? player : null
-}
-
-export function savePlayer(player: Player): Player {
-    writeJson(PLAYER_KEY, player)
-    return player
-}
-
-/**
- * Guarantees a profile exists so the player can hit Play without filling in a
- * form first. Naming and avatar stay editable afterwards.
- */
-export function ensurePlayer(defaultName: string, defaultAvatar: string): Player {
-    const existing = getPlayer()
-    if (existing) return existing
-    return savePlayer({
-        id: crypto.randomUUID(),
-        playerName: defaultName,
-        avatarId: defaultAvatar,
-        createdAt: new Date().toISOString(),
-    })
-}
-
 export function getWeakness(): Record<string, number> {
-    return readJson<Record<string, number>>(WEAKNESS_KEY, {})
+    return readJson<Record<string, number>>(weaknessKey(), {})
 }
 
 export function recordAnswer(operation: Operation, correct: boolean, questionIndex: number): void {
     const weakness = getWeakness()
     const current = weakness[operation] ?? 0
     weakness[operation] = correct ? Math.max(0, current - 1) : current + 1
-    writeJson(WEAKNESS_KEY, weakness)
+    writeJson(weaknessKey(), weakness)
 
     const stats = getSkillStats()
     const history = [...(stats[operation]?.history ?? []), correct].slice(-SKILL_HISTORY_LIMIT)
     stats[operation] = { history }
-    writeJson(SKILL_KEY, stats)
+    writeJson(skillKey(), stats)
 
     updateSpacedRepetition(operation, correct, questionIndex)
 }
 
 export function getSpacedRepetition(): SpacedRepetitionData {
-    return readJson<SpacedRepetitionData>(SR_KEY, {})
+    return readJson<SpacedRepetitionData>(srKey(), {})
 }
 
 /** SM-2 flavoured: mastery pushes an operation out, a miss pulls it right back. */
@@ -120,24 +88,24 @@ function updateSpacedRepetition(operation: Operation, correct: boolean, question
     } else {
         data[operation] = { interval: 1, due: questionIndex + 1 }
     }
-    writeJson(SR_KEY, data)
+    writeJson(srKey(), data)
 }
 
 export function getSkillStats(): SkillStats {
-    return readJson<SkillStats>(SKILL_KEY, {})
+    return readJson<SkillStats>(skillKey(), {})
 }
 
 export function getPersonalBests(): Record<string, number> {
-    return readJson<Record<string, number>>(BESTS_KEY, {})
+    return readJson<Record<string, number>>(bestsKey(), {})
 }
 
 export function getMisses(): MissRecord[] {
-    const entries = readJson<MissRecord[]>(MISSES_KEY, [])
+    const entries = readJson<MissRecord[]>(missesKey(), [])
     return Array.isArray(entries) ? entries.filter(entry => entry && typeof entry.prompt === 'string') : []
 }
 
 export function recordMiss(entry: MissRecord): void {
-    writeJson(MISSES_KEY, [...getMisses(), entry].slice(-MISS_LIMIT))
+    writeJson(missesKey(), [...getMisses(), entry].slice(-MISS_LIMIT))
 }
 
 export function updatePersonalBest(operation: Operation, elapsedMs: number): boolean {
@@ -145,15 +113,14 @@ export function updatePersonalBest(operation: Operation, elapsedMs: number): boo
     const current = bests[operation]
     if (current !== undefined && elapsedMs >= current) return false
     bests[operation] = elapsedMs
-    writeJson(BESTS_KEY, bests)
+    writeJson(bestsKey(), bests)
     return true
 }
 
 export const progressKeys = {
-    player: PLAYER_KEY,
-    weakness: WEAKNESS_KEY,
-    spacedRepetition: SR_KEY,
-    skills: SKILL_KEY,
-    bests: BESTS_KEY,
-    misses: MISSES_KEY,
+    get weakness() { return weaknessKey() },
+    get spacedRepetition() { return srKey() },
+    get skills() { return skillKey() },
+    get bests() { return bestsKey() },
+    get misses() { return missesKey() },
 }

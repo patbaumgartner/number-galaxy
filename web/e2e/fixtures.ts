@@ -16,6 +16,15 @@ type StorageSeed = {
 
 const APP_PATH = '/math-invaders'
 
+/**
+ * Where a key lives once the app owns it.
+ *
+ * `seedStorage` deliberately writes the pre-profile layout, so every run also
+ * exercises the migration. Anything written *after* the app has started must use
+ * this instead, or the migration will decline to move it over what is already there.
+ */
+export const profileStorageKey = (name: string): string => `math-invaders-ume-${name}`
+
 const storageEntries = (seed: StorageSeed): readonly [string, unknown][] => [
     ['math-invaders-settings-v2', seed.settings],
     ['math-invaders-player', seed.player],

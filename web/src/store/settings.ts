@@ -1,6 +1,7 @@
 import type { Language, Operation, Rank } from '../game'
 import { OPERATIONS, RANKS } from '../game'
-import { hasKey, readJson, storageKey, writeJson } from './storage'
+import { hasKey, readJson, writeJson } from './storage'
+import { profileKey } from './profiles'
 
 export type GameSettings = {
     language: Language
@@ -12,8 +13,8 @@ export type GameSettings = {
     hints: boolean
 }
 
-const SETTINGS_KEY = storageKey('settings-v2')
-const LEGACY_SETTINGS_KEY = storageKey('settings')
+const settingsKey = () => profileKey('settings-v2')
+const legacySettingsKey = () => profileKey('settings')
 
 const LANGUAGES: Language[] = ['de', 'it', 'en', 'fr']
 
@@ -89,20 +90,20 @@ function sanitize(value: Partial<GameSettings>): GameSettings {
  * migration runs at most a single time and never re-clobbers later edits.
  */
 export function loadSettings(): GameSettings {
-    if (hasKey(SETTINGS_KEY)) {
-        return sanitize(readJson<Partial<GameSettings>>(SETTINGS_KEY, {}))
+    if (hasKey(settingsKey())) {
+        return sanitize(readJson<Partial<GameSettings>>(settingsKey(), {}))
     }
-    if (hasKey(LEGACY_SETTINGS_KEY)) {
-        const migrated = fromLegacy(readJson<LegacySettings>(LEGACY_SETTINGS_KEY, {}))
-        writeJson(SETTINGS_KEY, migrated)
+    if (hasKey(legacySettingsKey())) {
+        const migrated = fromLegacy(readJson<LegacySettings>(legacySettingsKey(), {}))
+        writeJson(settingsKey(), migrated)
         return migrated
     }
     return { ...defaultSettings, operations: [...defaultSettings.operations] }
 }
 
 export function saveSettings(settings: GameSettings): void {
-    writeJson(SETTINGS_KEY, sanitize(settings))
+    writeJson(settingsKey(), sanitize(settings))
 }
 
-export const settingsKeys = { current: SETTINGS_KEY, legacy: LEGACY_SETTINGS_KEY }
+export const settingsKeys = { current: settingsKey(), legacy: legacySettingsKey() }
 export { legacyLevelToRank }

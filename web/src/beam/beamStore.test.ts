@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { beamStore, defaultBeamSettings } from './beamStore'
+import { profileKey } from '../store/profiles'
 
 /**
  * The domain project runs in `node`, so these suites install the same minimal
@@ -63,16 +64,16 @@ describe('beam store', () => {
     })
 
     it('drops entries that are not a known station or a legal value', () => {
-        write('math-invaders-beam-stars', { double: 2, nonsense: 3, halve: 9 })
-        write('math-invaders-beam-bests', { quarter: 0.5, bond: 4, nope: 0.5 })
+        write(profileKey('beam-stars'), { double: 2, nonsense: 3, halve: 9 })
+        write(profileKey('beam-bests'), { quarter: 0.5, bond: 4, nope: 0.5 })
         expect(beamStore.getStars()).toEqual({ double: 2 })
         expect(beamStore.getBests()).toEqual({ quarter: 0.5 })
     })
 
     it('falls back to defaults when storage holds something that is not an object', () => {
-        write('math-invaders-beam-stars', 'corrupt')
-        write('math-invaders-beam-bests', [1, 2, 3])
-        write('math-invaders-beam-settings', 42)
+        write(profileKey('beam-stars'), 'corrupt')
+        write(profileKey('beam-bests'), [1, 2, 3])
+        write(profileKey('beam-settings'), 42)
         expect(beamStore.getStars()).toEqual({})
         expect(beamStore.getBests()).toEqual({})
         expect(beamStore.getBeamSettings()).toEqual(defaultBeamSettings)
@@ -82,14 +83,14 @@ describe('beam store', () => {
         beamStore.raiseStars('double', 3)
         beamStore.updateBest('double', 1)
         beamStore.saveBeamSettings({ alwaysShowBar: false })
-        write('math-invaders-scores-v2', ['keep me'])
+        write(profileKey('scores-v2'), ['keep me'])
 
         beamStore.resetBeamProgress()
 
         expect(beamStore.getStars()).toEqual({})
         expect(beamStore.getBests()).toEqual({})
         expect(beamStore.getBeamSettings()).toEqual(defaultBeamSettings)
-        expect(fakeStorage.getItem('math-invaders-scores-v2')).toBe('["keep me"]')
+        expect(fakeStorage.getItem(profileKey('scores-v2'))).toBe('["keep me"]')
     })
 
     it('does nothing on a reset when there is no window at all', () => {

@@ -1,11 +1,12 @@
-import { isRecord, readJson, readRecord, removeByPrefix, storageKey, writeJson } from '../store/storage'
+import { isRecord, readJson, readRecord, removeByPrefix, writeJson } from '../store/storage'
+import { profileKey } from '../store/profiles'
 import { isBeamSkill, type BeamStars } from './stations'
 import type { BeamSkill, BeamStarLevel } from './types'
 
-const STARS_KEY = storageKey('beam-stars')
-const BESTS_KEY = storageKey('beam-bests')
-const SETTINGS_KEY = storageKey('beam-settings')
-const BEAM_PREFIX = storageKey('beam-')
+const starsKey = () => profileKey('beam-stars')
+const bestsKey = () => profileKey('beam-bests')
+const settingsKey = () => profileKey('beam-settings')
+const beamPrefix = () => profileKey('beam-')
 
 export type BeamSettings = {
     /** False keeps the bar hidden until a miss, for children ready to work in their head. */
@@ -27,7 +28,7 @@ const isAccuracy = (value: unknown): value is number =>
  */
 function readStars(): BeamStars {
     return Object.fromEntries(
-        Object.entries(readRecord(STARS_KEY))
+        Object.entries(readRecord(starsKey()))
             .filter((entry): entry is [BeamSkill, BeamStarLevel] =>
                 isBeamSkill(entry[0]) && isStarLevel(entry[1])),
     )
@@ -35,7 +36,7 @@ function readStars(): BeamStars {
 
 function readBests(): Partial<Record<BeamSkill, number>> {
     return Object.fromEntries(
-        Object.entries(readRecord(BESTS_KEY))
+        Object.entries(readRecord(bestsKey()))
             .filter((entry): entry is [BeamSkill, number] => isBeamSkill(entry[0]) && isAccuracy(entry[1])),
     )
 }
@@ -49,7 +50,7 @@ export const beamStore = {
     raiseStars(skill: BeamSkill, level: BeamStarLevel): void {
         const stars = readStars()
         const highest = Math.max(stars[skill] ?? 0, level) as BeamStarLevel
-        writeJson(STARS_KEY, { ...stars, [skill]: highest })
+        writeJson(starsKey(), { ...stars, [skill]: highest })
     },
 
     getBests(): Partial<Record<BeamSkill, number>> {
@@ -61,23 +62,23 @@ export const beamStore = {
         const bests = readBests()
         const current = bests[skill]
         if (current !== undefined && accuracy <= current) return false
-        writeJson(BESTS_KEY, { ...bests, [skill]: accuracy })
+        writeJson(bestsKey(), { ...bests, [skill]: accuracy })
         return true
     },
 
     getBeamSettings(): BeamSettings {
-        const stored = readJson<unknown>(SETTINGS_KEY, null)
+        const stored = readJson<unknown>(settingsKey(), null)
         return isRecord(stored) && typeof stored.alwaysShowBar === 'boolean'
             ? { alwaysShowBar: stored.alwaysShowBar }
             : { ...defaultBeamSettings }
     },
 
     saveBeamSettings(settings: BeamSettings): void {
-        writeJson(SETTINGS_KEY, settings)
+        writeJson(settingsKey(), settings)
     },
 
     resetBeamProgress(): void {
-        removeByPrefix(BEAM_PREFIX)
+        removeByPrefix(beamPrefix())
     },
 }
 

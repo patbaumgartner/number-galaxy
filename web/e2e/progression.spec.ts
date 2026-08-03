@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { answerCurrentFact, gotoApp } from './fixtures'
+import { answerCurrentFact, gotoApp, profileStorageKey } from './fixtures'
 
 test.setTimeout(180_000)
 
@@ -99,10 +99,10 @@ test('earns the Times Tables Galaxy unlock ladder through play', async ({ page }
     await expect(two.locator('[aria-label="3 stars"]')).toBeVisible()
 
     // Deep Space alone is seeded because replaying all eleven 2-star tables is too slow.
-    await page.evaluate(() => {
+    await page.evaluate((key) => {
         const stars = Object.fromEntries(Array.from({ length: 11 }, (_, index) => [`t${index + 2}`, 2]))
-        window.localStorage.setItem('math-invaders-tt-stars', JSON.stringify(stars))
-    })
+        window.localStorage.setItem(key, JSON.stringify(stars))
+    }, profileStorageKey('tt-stars'))
     await gotoApp(page, '/times-tables')
     await expect(planetButton(page, 13)).toBeEnabled()
 })

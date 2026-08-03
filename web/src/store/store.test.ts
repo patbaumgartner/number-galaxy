@@ -5,6 +5,7 @@ import {
     computeBadge,
     defaultSettings,
     legacyLevelToRank,
+    profileKeys,
     progressKeys,
     scoreKeys,
     settingsKeys,
@@ -277,9 +278,9 @@ describe('corrupt storage', () => {
         }
     })
 
-    it('reports no player rather than throwing when the profile is junk', () => {
+    it('reports no player rather than throwing when the registry is junk', () => {
         for (const junk of corruptions) {
-            storage.setItem(progressKeys.player, junk)
+            storage.setItem(profileKeys.players, junk)
             expect(store.getPlayer()).toBeNull()
         }
     })

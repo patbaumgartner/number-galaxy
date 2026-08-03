@@ -2,6 +2,10 @@ const PREFIX = 'math-invaders-'
 
 export const storageKey = (name: string): string => `${PREFIX}${name}`
 
+/** Strips the shared prefix, so a key can be re-homed under a profile. */
+export const storageName = (key: string): string =>
+    key.startsWith(PREFIX) ? key.slice(PREFIX.length) : key
+
 const available = (): Storage | null => {
     try {
         return typeof window === 'undefined' ? null : window.localStorage
@@ -91,6 +95,36 @@ export function removeByPrefix(prefix: string): void {
         doomed.forEach(key => storage.removeItem(key))
     } catch {
         /* nothing to clear */
+    }
+}
+
+/** Every key this app owns, snapshotted so callers may write while iterating. */
+export function listKeys(): string[] {
+    const storage = available()
+    if (!storage) return []
+    try {
+        const keys: string[] = []
+        for (let i = 0; i < storage.length; i += 1) {
+            const key = storage.key(i)
+            if (key !== null && key.startsWith(PREFIX)) keys.push(key)
+        }
+        return keys
+    } catch {
+        return []
+    }
+}
+
+/** Re-homes a stored value, leaving anything already at `to` untouched. */
+export function moveKey(from: string, to: string): void {
+    const storage = available()
+    if (!storage) return
+    try {
+        const value = storage.getItem(from)
+        if (value === null || storage.getItem(to) !== null) return
+        storage.setItem(to, value)
+        storage.removeItem(from)
+    } catch {
+        /* a full or blocked quota leaves the original where it is */
     }
 }
 

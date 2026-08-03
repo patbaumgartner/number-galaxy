@@ -1,4 +1,6 @@
 import type { Operation, QuestionForm } from '../game'
+import { parseFactKey, type ArithmeticFact } from '../game'
+import { applyAnswer, isDue, localEpochDay, type FactProgress } from '../review/leitner'
 import { readJson, writeJson } from './storage'
 import { profileKey } from './profiles'
 
@@ -12,6 +14,18 @@ const srKey = () => profileKey('sr')
 const skillKey = () => profileKey('skill-stats')
 const bestsKey = () => profileKey('personal-bests')
 const missesKey = () => profileKey('misses')
+const arcadeFactsKey = () => profileKey('arcade-facts')
+const formStatsKey = () => profileKey('form-stats')
+
+/**
+ * How many arcade facts are scheduled.
+ *
+ * Unlike the times tables, the arcade's fact space has no natural end — Supernova
+ * alone can write hundreds of thousands of sums. Keeping the most recently seen
+ * facts bounds the key while still covering everything a child is working on;
+ * anything that falls off was, by definition, not recently practised.
+ */
+const TRACKED_FACTS = 400
 
 const SKILL_HISTORY_LIMIT = 60
 const BADGE_WINDOW = 30
@@ -95,6 +109,29 @@ export function getSkillStats(): SkillStats {
     return readJson<SkillStats>(skillKey(), {})
 }
 
+export type FormStats = Partial<Record<QuestionForm, boolean[]>>
+
+export function getFormStats(): FormStats {
+    const stored = readJson<FormStats>(formStatsKey(), {})
+    return stored !== null && typeof stored === 'object' && !Array.isArray(stored) ? stored : {}
+}
+
+export function recordForm(form: QuestionForm, correct: boolean): void {
+    const stats = getFormStats()
+    const history = [...(stats[form] ?? []), correct].slice(-SKILL_HISTORY_LIMIT)
+    writeJson(formStatsKey(), { ...stats, [form]: history })
+}
+
+/** Rolling accuracy per shape, for the shapes met often enough to judge. */
+export function getFormAccuracy(): Partial<Record<QuestionForm, number>> {
+    const accuracy: Partial<Record<QuestionForm, number>> = {}
+    for (const [form, history] of Object.entries(getFormStats())) {
+        if (!Array.isArray(history) || history.length < 5) continue
+        accuracy[form as QuestionForm] = history.filter(Boolean).length / history.length
+    }
+    return accuracy
+}
+
 export function getPersonalBests(): Record<string, number> {
     return readJson<Record<string, number>>(bestsKey(), {})
 }
@@ -108,6 +145,38 @@ export function recordMiss(entry: MissRecord): void {
     writeJson(missesKey(), [...getMisses(), entry].slice(-MISS_LIMIT))
 }
 
+export type ArcadeFacts = Record<string, FactProgress>
+
+export function getArcadeFacts(): ArcadeFacts {
+    const stored = readJson<ArcadeFacts>(arcadeFactsKey(), {})
+    return stored !== null && typeof stored === 'object' && !Array.isArray(stored) ? stored : {}
+}
+
+const today = (): number => localEpochDay(Date.now(), new Date().getTimezoneOffset())
+
+/** Moves one fact along the review schedule, keeping only the newest entries. */
+export function recordFact(key: string, correct: boolean, ms: number): void {
+    if (key.length === 0) return
+    const facts = getArcadeFacts()
+    const next = applyAnswer(facts[key], correct, ms, today())
+
+    // Re-inserting last makes the record its own recency list, so the oldest
+    // untouched facts are the ones the cap drops.
+    delete facts[key]
+    const kept = Object.entries({ ...facts, [key]: next }).slice(-TRACKED_FACTS)
+    writeJson(arcadeFactsKey(), Object.fromEntries(kept))
+}
+
+/** Facts the schedule says are worth revisiting today, newest first. */
+export function getDueFacts(): ArithmeticFact[] {
+    const now = today()
+    return Object.entries(getArcadeFacts())
+        .filter(([, progress]) => isDue(progress, now))
+        .map(([key]) => parseFactKey(key))
+        .filter((entry): entry is ArithmeticFact => entry !== null)
+        .reverse()
+}
+
 export function updatePersonalBest(operation: Operation, elapsedMs: number): boolean {
     const bests = getPersonalBests()
     const current = bests[operation]
@@ -118,6 +187,8 @@ export function updatePersonalBest(operation: Operation, elapsedMs: number): boo
 }
 
 export const progressKeys = {
+    get arcadeFacts() { return arcadeFactsKey() },
+    get formStats() { return formStatsKey() },
     get weakness() { return weaknessKey() },
     get spacedRepetition() { return srKey() },
     get skills() { return skillKey() },

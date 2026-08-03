@@ -1,7 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { canonicalKey } from '../timesTable/facts'
-import { localEpochDay } from '../timesTable/leitner'
+import { localEpochDay } from '../review/leitner'
 import { ttStore } from '../timesTable/ttStore'
 import { LOCATION_TEST_ID, renderWithRouter, seedFactProgress, seedLanguage, seedStars, userEvent } from '../test/utils'
 import TimesTablesPage from './TimesTablesPage'

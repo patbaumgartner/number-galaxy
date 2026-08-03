@@ -145,3 +145,82 @@ describe('missed questions coming back', () => {
         expect(getAnswered(mission)).toBe(QUESTIONS_PER_MISSION)
     })
 })
+
+describe('keeping a mixed mission mixed', () => {
+    const mixed = { ...config, operations: ['addition', 'multiplication'] as const }
+
+    it('never lets one operation run past three questions in a row', () => {
+        const runs: number[] = []
+        for (let seed = 1; seed <= 40; seed += 1) {
+            let mission = createMission({ ...mixed, operations: [...mixed.operations], rng: createRng(seed) })
+            let run = 1
+            let longest = 1
+            let previous = mission.question.operation
+
+            for (let index = 1; index < QUESTIONS_PER_MISSION; index += 1) {
+                mission = advanceMission(scoreAnswer(mission, 'correct'), { rng: createRng(seed * 31 + index) })
+                if (mission.phase === 'summary') break
+                run = mission.question.operation === previous ? run + 1 : 1
+                previous = mission.question.operation
+                longest = Math.max(longest, run)
+            }
+            runs.push(longest)
+        }
+
+        expect(Math.max(...runs)).toBeLessThanOrEqual(3)
+    })
+
+    it('still gives a single-operation mission that one operation throughout', () => {
+        let mission = createMission({ ...config, operations: ['addition'], rng: createRng(4) })
+        for (let index = 1; index < 8; index += 1) {
+            mission = advanceMission(scoreAnswer(mission, 'correct'), { rng: createRng(index) })
+            expect(mission.question.operation).toBe('addition')
+        }
+    })
+})
+
+describe('review that does not narrow to a handful of sums', () => {
+    // Ace, because 7 + 8 = 15 is above Rookie's ceiling and would be filtered out.
+    const roomy = { ...config, rank: 'ace' as const, operations: ['addition'] as const }
+    const due = [
+        { operation: 'addition' as const, a: 7, b: 8 },
+        { operation: 'addition' as const, a: 6, b: 9 },
+        { operation: 'addition' as const, a: 5, b: 8 },
+    ]
+    const dueKeys = due.map(entry => `addition:${entry.a}:${entry.b}`)
+
+    it('never offers the same due fact twice inside the cooldown', () => {
+        for (let seed = 1; seed <= 30; seed += 1) {
+            let mission = createMission({ ...roomy, operations: [...roomy.operations], dueFacts: due, rng: createRng(seed) })
+            const drawn: string[] = [mission.question.factKey]
+
+            for (let index = 1; index < 14; index += 1) {
+                const before = mission.retries.length
+                mission = advanceMission(scoreAnswer(mission, 'correct'), {
+                    dueFacts: due,
+                    rng: createRng(seed * 17 + index),
+                })
+                if (mission.phase === 'summary') break
+                const key = mission.question.factKey
+                // Only the scheduled pool is guarded; a random draw may collide by chance.
+                if (dueKeys.includes(key) && before === mission.retries.length) {
+                    expect(drawn.slice(-3)).not.toContain(key)
+                }
+                drawn.push(key)
+            }
+        }
+    })
+
+    it('still reaches every due fact across a mission', () => {
+        let mission = createMission({ ...roomy, operations: [...roomy.operations], dueFacts: due, rng: createRng(9) })
+        const seen = new Set<string>([mission.question.factKey])
+
+        for (let index = 1; index < QUESTIONS_PER_MISSION; index += 1) {
+            mission = advanceMission(scoreAnswer(mission, 'correct'), { dueFacts: due, rng: createRng(index * 13) })
+            if (mission.phase === 'summary') break
+            seen.add(mission.question.factKey)
+        }
+
+        for (const key of dueKeys) expect([...seen]).toContain(key)
+    })
+})

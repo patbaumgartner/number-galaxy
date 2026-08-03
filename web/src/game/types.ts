@@ -49,6 +49,8 @@ export type Question = {
      * needs no translation and stays readable in all four languages.
      */
     workingOut: string
+    /** The pair of numbers behind it, for the review schedule. Empty for remainders. */
+    factKey: string
 }
 
 export const OPERATIONS: readonly Operation[] = [

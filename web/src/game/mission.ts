@@ -1,7 +1,8 @@
-import type { Language, Operation, Question, Rank } from './types'
+import type { Language, Operation, Question, QuestionForm, Rank } from './types'
 import { QUESTIONS_PER_MISSION, getPoints } from './types'
 import { defaultRng, type Rng } from './rng'
 import { createQuestion, pickOperation, type SpacedRepetitionEntry } from './questions'
+import { factKey, type ArithmeticFact } from './facts'
 
 export type MissionPhase = 'ready' | 'answering' | 'feedback' | 'summary'
 
@@ -26,6 +27,10 @@ export type MissionState = {
     results: boolean[]
     /** Operations already used, so every chosen one is shown before any repeats. */
     shownOperations: Operation[]
+    /** The operations of the last few questions, so no one of them runs on too long. */
+    recentOperations: Operation[]
+    /** Facts just asked, so review never narrows to the same handful of sums. */
+    recentFacts: string[]
     /** Missed questions queued to be asked again, earliest first. */
     retries: Retry[]
     /** Prompts already requeued once, so a repeated miss cannot loop. */
@@ -41,6 +46,10 @@ export type MissionDeps = {
     rng?: Rng
     weakness?: Record<string, number>
     srData?: Record<string, SpacedRepetitionEntry>
+    /** Facts the review schedule says are worth revisiting today. */
+    dueFacts?: readonly ArithmeticFact[]
+    /** Rolling accuracy per question shape, so a shaky shape comes round more often. */
+    formAccuracy?: Partial<Record<QuestionForm, number>>
 }
 
 export type MissionConfig = {
@@ -60,16 +69,29 @@ export const getAccuracy = (state: MissionState): number => {
     return answered === 0 ? 0 : getCorrect(state) / answered
 }
 
+/**
+ * How many questions must pass before the schedule may offer a fact again.
+ *
+ * Without it, a child missing everything meets the same three sums over and
+ * over: every miss keeps a fact due, and a due fact is half of every draw. The
+ * narrowest, most discouraging run in the game would be the one a struggling
+ * beginner gets.
+ */
+const FACT_COOLDOWN = 4
+
 function drawQuestion(
     language: Language,
     rank: Rank,
     operations: Operation[],
     questionIndex: number,
     shown: readonly Operation[],
-    { rng = defaultRng, weakness, srData }: MissionDeps,
+    recent: readonly Operation[],
+    recentFacts: readonly string[],
+    { rng = defaultRng, weakness, srData, dueFacts = [], formAccuracy = {} }: MissionDeps,
 ): Question {
-    const operation = pickOperation(rng, operations, weakness, srData, questionIndex, shown)
-    return createQuestion({ language, operation, rank, rng })
+    const operation = pickOperation(rng, operations, weakness, srData, questionIndex, shown, recent)
+    const fresh = dueFacts.filter(entry => !recentFacts.includes(factKey(entry.operation, entry.a, entry.b)))
+    return createQuestion({ language, operation, rank, rng, dueFacts: fresh, formAccuracy })
 }
 
 export function createMission({
@@ -80,7 +102,7 @@ export function createMission({
     ...deps
 }: MissionConfig): MissionState {
     const pool = operations.length > 0 ? operations : (['addition'] as Operation[])
-    const question = drawQuestion(language, rank, pool, 0, [], deps)
+    const question = drawQuestion(language, rank, pool, 0, [], [], [], deps)
     return {
         language,
         rank,
@@ -88,6 +110,8 @@ export function createMission({
         operations: pool,
         results: [],
         shownOperations: [question.operation],
+        recentOperations: [question.operation],
+        recentFacts: [question.factKey],
         retries: [],
         retried: [],
         streak: 0,
@@ -143,6 +167,8 @@ export function advanceMission(state: MissionState, deps: MissionDeps = {}): Mis
         state.operations,
         answered,
         state.shownOperations,
+        state.recentOperations,
+        state.recentFacts,
         deps,
     )
     // Once every chosen operation has been shown the cycle restarts, so the
@@ -151,7 +177,14 @@ export function advanceMission(state: MissionState, deps: MissionDeps = {}): Mis
         ? [question.operation]
         : [...state.shownOperations, question.operation]
 
-    return { ...state, question, shownOperations: shown, phase: 'answering' }
+    return {
+        ...state,
+        question,
+        shownOperations: shown,
+        recentOperations: [...state.recentOperations, question.operation].slice(-4),
+        recentFacts: [...state.recentFacts, question.factKey].slice(-FACT_COOLDOWN),
+        phase: 'answering',
+    }
 }
 
 /** Ends the mission early at the player's request, keeping what they earned. */

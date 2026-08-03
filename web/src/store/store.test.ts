@@ -311,3 +311,53 @@ describe('computeBadge', () => {
         expect(computeBadge([...Array(50).fill(false), ...Array(30).fill(true)])).toBe('platinum')
     })
 })
+
+describe('arcade fact scheduling', () => {
+    const key = 'addition:7:8'
+
+    it('brings a missed fact back the same day and pushes a known one away', () => {
+        store.recordFact(key, false, 4000)
+        expect(store.getDueFacts()).toContainEqual({ operation: 'addition', a: 7, b: 8 })
+
+        store.recordFact(key, true, 1200)
+        expect(store.getDueFacts()).toEqual([])
+    })
+
+    it('keeps no record for a question that has no fact behind it', () => {
+        store.recordFact('', false, 1000)
+        expect(store.getArcadeFacts()).toEqual({})
+    })
+
+    it('drops the least recently practised facts once the cap is reached', () => {
+        for (let index = 0; index < 420; index += 1) store.recordFact(`addition:1:${index}`, false, 900)
+
+        const tracked = Object.keys(store.getArcadeFacts())
+        expect(tracked).toHaveLength(400)
+        expect(tracked).not.toContain('addition:1:0')
+        expect(tracked).toContain('addition:1:419')
+    })
+
+    it('counts practising a fact again as recent, so it is not the next one dropped', () => {
+        store.recordFact('addition:1:0', false, 900)
+        for (let index = 1; index < 400; index += 1) store.recordFact(`addition:1:${index}`, false, 900)
+        store.recordFact('addition:1:0', false, 900)
+        store.recordFact('addition:2:2', false, 900)
+
+        expect(Object.keys(store.getArcadeFacts())).toContain('addition:1:0')
+    })
+
+    it('ignores a stored key that is not a fact at all', () => {
+        storage.setItem(progressKeys.arcadeFacts, JSON.stringify({
+            'not a fact': { box: 1, lastDay: 0, last3: [] },
+        }))
+        expect(store.getDueFacts()).toEqual([])
+    })
+
+    it('survives a corrupt fact blob', () => {
+        for (const junk of ['null', '[1,2,3]', '{{{not json', '"a string"', '123']) {
+            storage.setItem(progressKeys.arcadeFacts, junk)
+            expect(() => store.getDueFacts()).not.toThrow()
+            expect(store.getDueFacts()).toEqual([])
+        }
+    })
+})

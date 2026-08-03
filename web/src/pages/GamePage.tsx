@@ -71,6 +71,8 @@ function freshMission(): MissionState {
             operations: settings.operations,
             weakness: store.getWeakness(),
             srData: store.getSpacedRepetition(),
+            dueFacts: store.getDueFacts(),
+            formAccuracy: store.getFormAccuracy(),
         }),
         // Straight into the action — pressing Play already was the "start".
         phase: 'answering',
@@ -124,11 +126,13 @@ export default function GamePage() {
         const { question } = mission
         const wasCorrect = outcome === 'correct'
         const next = scoreAnswer(mission, outcome)
+        const elapsed = Date.now() - questionStartRef.current
 
         store.recordAnswer(question.operation, wasCorrect, answered)
+        store.recordFact(question.factKey, wasCorrect, elapsed)
+        store.recordForm(question.form, wasCorrect)
 
         if (wasCorrect) {
-            const elapsed = Date.now() - questionStartRef.current
             if (store.updatePersonalBest(question.operation, elapsed)) newBestRef.current = true
             if (fastestRef.current === null || elapsed < fastestRef.current) fastestRef.current = elapsed
 
@@ -182,6 +186,8 @@ export default function GamePage() {
         setMission(current => advanceMission(current, {
             weakness: store.getWeakness(),
             srData: store.getSpacedRepetition(),
+            dueFacts: store.getDueFacts(),
+            formAccuracy: store.getFormAccuracy(),
         }))
     }, [])
 

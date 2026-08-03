@@ -1,4 +1,12 @@
-import type { FactProgress } from './types'
+/** What the schedule remembers about one fact, whatever kind of fact it is. */
+export type FactProgress = {
+    readonly box: 1 | 2 | 3 | 4 | 5
+    readonly lastDay: number
+    readonly last3: readonly {
+        readonly correct: boolean
+        readonly ms: number
+    }[]
+}
 
 const nextBoxes: Record<FactProgress['box'], FactProgress['box']> = {
     1: 2,

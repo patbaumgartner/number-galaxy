@@ -72,10 +72,12 @@ the built game in a browser.
 
 ## Tier 1 — Make the arcade adaptive
 
-**8. Fact-level memory in the arcade.** Reuse `canonicalKey` (generalise to
-`${op}:${min}${sym}${max}`) and `applyAnswer`/`isDue` from `timesTable/leitner.ts` verbatim.
-Draw due/weak facts first; fall back to random generation. Keep operation-level weighting as
-the outer loop. *The largest single win available.*
+**8. Fact-level memory in the arcade.** ✅ **done** — `game/facts.ts` keys a fact by its pair
+of operands, canonical across commutativity *and* across inverse (`12 − 5` ≡ `12 − 7`,
+`6 × 7` ≡ `42 ÷ 6`). Scheduling reuses the Leitner boxes, moved to `review/leitner.ts` so the
+arcade and the trainer share one algorithm. Half of each mission is drawn from what is due,
+bounded to 400 tracked facts, filtered to the rank's ceiling, with a four-question cooldown
+so review cannot narrow to the same few sums.
 · Murray et al. 2025 · `MA.1.A.3`
 
 **9. Auto-tune the number range to 80–85 % accuracy.** Keep `rank` as the ceiling the child
@@ -94,14 +96,13 @@ multiplication.
 `NumberPad` once it reaches Leitner box 3+. Recognition ≠ production.
 · Reed et al. 2014 — recall practice produces greater fluency gains than choosing · `MA.1.A.3.d`
 
-**12. Guarantee interleaving inside a mission.** `pickOperation` already shows every chosen
-operation before repeating; add a cap of 3 consecutive same-operation questions, and hint in
-Settings that 2–3 operations together beats one.
+**12. Guarantee interleaving inside a mission.** ✅ **done** — no operation may run past three
+questions before another is forced in.
 · Rohrer & Taylor 2007; Brunmair & Richter 2019 · `MA.1.B.1`
 
-**13. Adaptive form selection.** `missingLeft` (`? + 5 = 12`) is the algebra-readiness form and
-is drawn at flat weight regardless of skill. Track accuracy per `QuestionForm` and weight
-toward weak-but-unlocked forms.
+**13. Adaptive form selection.** ✅ **done** — rolling accuracy per shape tilts the draw, with
+the boost expressed against `DIRECT_FORM_WEIGHT` so a struggling shape can never overtake
+`direct` and turn a mission into a run of the hardest thing the child has met.
 · `MA.1.B.1`
 
 **14. Fade the worked examples.** Keyed off item 8's box: box 1–2 full working, box 3 first
@@ -198,7 +199,7 @@ namespace on every call.
 
 ## Suggested order
 
-`8, 9, 23` are the three highest-value changes remaining. `4` and `30` (both shipped)
+`9, 23` are the highest-value changes remaining. `4` and `30` (both shipped)
 unblock Tier 2 and Tier 1 respectively.
 
 ## Sources

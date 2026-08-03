@@ -1,5 +1,5 @@
 import { factsForPlanet } from './facts'
-import { isDue } from './leitner'
+import { isDue } from '../review/leitner'
 import { GALAXIES } from './tables'
 import type { Fact, FactKey, FactProgress, PlanetId, StarLevel } from './types'
 

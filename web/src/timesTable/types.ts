@@ -37,11 +37,4 @@ export type Fact = {
 
 export type StarLevel = 0 | 1 | 2 | 3
 
-export type FactProgress = {
-    readonly box: 1 | 2 | 3 | 4 | 5
-    readonly lastDay: number
-    readonly last3: readonly {
-        readonly correct: boolean
-        readonly ms: number
-    }[]
-}
+export type { FactProgress } from '../review/leitner'

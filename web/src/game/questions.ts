@@ -12,12 +12,22 @@ import {
 } from './equations'
 import { buildNumericOptions, buildOperatorOptions, buildRemainderOptions } from './options'
 import { strategyWorking } from './working'
+import { equationFor, fitsWithin, keyOf, pickFact, type ArithmeticFact } from './facts'
 
 /** Unlocking a new form should season a mission, not take it over. */
 const DIRECT_FORM_WEIGHT = 3
 
 /** Generation is rejection-sampled; this bounds the worst case. */
 const MAX_ATTEMPTS = 60
+
+/**
+ * How often a mission reaches for something already known to be shaky.
+ *
+ * Not always: a run made only of a child's worst facts is a run made only of
+ * things they get wrong, which is discouraging and crowds out the new ground
+ * that turns into tomorrow's review.
+ */
+const DUE_FACT_SHARE = 0.5
 
 function finish(
     operation: Operation,
@@ -26,14 +36,14 @@ function finish(
     answer: string,
     options: string[],
     workingOut: string,
+    factKey = '',
 ): Question {
-    return { operation, form, prompt, answer, options, correctIndex: options.indexOf(answer), workingOut }
+    return { operation, form, prompt, answer, options, correctIndex: options.indexOf(answer), workingOut, factKey }
 }
 
 // ---------------------------------------------------------------- direct ----
 
-function directQuestion(rng: Rng, operation: BinaryOperation, maxValue: number): Question {
-    const equation = createEquation(rng, operation, maxValue)
+function directQuestion(rng: Rng, operation: BinaryOperation, equation: Equation, maxValue: number): Question {
     const { left, right, result, symbol } = equation
     const nearMisses = [
         result + 1,
@@ -53,6 +63,7 @@ function directQuestion(rng: Rng, operation: BinaryOperation, maxValue: number):
         buildNumericOptions(rng, result, nearMisses),
         // A route to the answer, not the answer restated — see `working.ts`.
         strategyWorking(equation, maxValue),
+        keyOf(operation, equation),
     )
 }
 
@@ -93,10 +104,9 @@ function inverseWorking(equation: Equation, form: 'missingLeft' | 'missingRight'
 function missingOperandQuestion(
     rng: Rng,
     operation: BinaryOperation,
-    maxValue: number,
+    equation: Equation,
     form: 'missingLeft' | 'missingRight',
 ): Question {
-    const equation = createEquation(rng, operation, maxValue)
     const { left, right, result, symbol } = equation
     const answer = form === 'missingRight' ? right : left
     const other = form === 'missingRight' ? left : right
@@ -112,14 +122,22 @@ function missingOperandQuestion(
         String(answer),
         buildNumericOptions(rng, answer, nearMisses),
         inverseWorking(equation, form),
+        keyOf(operation, equation),
     )
 }
 
 // ------------------------------------------------------- missing operator ----
 
-function missingOperatorQuestion(rng: Rng, operation: BinaryOperation, maxValue: number): Question | null {
+function missingOperatorQuestion(
+    rng: Rng,
+    operation: BinaryOperation,
+    seed: Equation,
+    maxValue: number,
+): Question | null {
     for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt += 1) {
-        const { left, right, result, symbol } = createEquation(rng, operation, maxValue)
+        // The targeted fact gets first refusal; only an ambiguous one is redrawn.
+        const equation = attempt === 0 ? seed : createEquation(rng, operation, maxValue)
+        const { left, right, result, symbol } = equation
         // Reject prompts where more than one operator satisfies the equation.
         if (!hasUniqueOperator(left, right, result)) continue
         return finish(
@@ -129,6 +147,7 @@ function missingOperatorQuestion(rng: Rng, operation: BinaryOperation, maxValue:
             symbol,
             buildOperatorOptions(rng),
             `${left} ${symbol} ${right} = ${result}`,
+            keyOf(operation, equation),
         )
     }
     return null
@@ -173,13 +192,38 @@ function chainQuestion(rng: Rng, operation: BinaryOperation, maxValue: number): 
 
 // ------------------------------------------------------------ public API ----
 
-/** Picks a form unlocked at `rank`, keeping `direct` the most common. */
-export function pickForm(rng: Rng, rank: Rank, operation: Operation): QuestionForm {
+/**
+ * The most weight a shaky shape may reach.
+ *
+ * Expressed against `DIRECT_FORM_WEIGHT` rather than as a number of its own, so
+ * that boosting a struggling shape can never quietly overtake `direct` and turn
+ * a mission into a run of the hardest thing the child has met.
+ */
+const MAX_FORM_WEIGHT = DIRECT_FORM_WEIGHT - 0.5
+
+/**
+ * Picks a form unlocked at `rank`, keeping `direct` the most common.
+ *
+ * `formAccuracy` tilts the draw toward shapes that are not yet secure. Without
+ * it every unlocked shape is equally likely forever, so `? + 5 = 12` — the one
+ * that rehearses the inverse, and the one children find hardest — turns up no
+ * more often for the child who needs it than for the child who has it.
+ */
+export function pickForm(
+    rng: Rng,
+    rank: Rank,
+    operation: Operation,
+    formAccuracy: Partial<Record<QuestionForm, number>> = {},
+): QuestionForm {
     // Remainders are a result *format*, not a binary operator: blanking an
     // operand or the operator would produce nonsense.
     if (operation === 'remainders') return 'direct'
     const forms = rankConfig[rank].forms
-    const weights = forms.map(form => (form === 'direct' ? DIRECT_FORM_WEIGHT : 1))
+    const weights = forms.map(form => {
+        if (form === 'direct') return DIRECT_FORM_WEIGHT
+        const accuracy = formAccuracy[form]
+        return accuracy === undefined ? 1 : 1 + (MAX_FORM_WEIGHT - 1) * (1 - accuracy)
+    })
     return forms[pickWeighted(rng, weights)]
 }
 
@@ -189,7 +233,31 @@ export type CreateQuestionOptions = {
     rank: Rank
     /** Omit to let the rank decide. */
     form?: QuestionForm
+    /** Facts the schedule says are worth revisiting, in any operation. */
+    dueFacts?: readonly ArithmeticFact[]
+    /** Rolling accuracy per question shape, 0–1, for the shapes already met. */
+    formAccuracy?: Partial<Record<QuestionForm, number>>
     rng?: Rng
+}
+
+/**
+ * The pair of numbers this question will be written from.
+ *
+ * A fact the schedule has flagged is used when one fits inside the rank, which
+ * is what turns "practice drifts toward what is not working" from a claim about
+ * whole operations into one about the handful of facts actually missing.
+ */
+function chooseEquation(
+    rng: Rng,
+    operation: BinaryOperation,
+    maxValue: number,
+    dueFacts: readonly ArithmeticFact[],
+): Equation {
+    if (rng() >= DUE_FACT_SHARE) return createEquation(rng, operation, maxValue)
+
+    const fitting = dueFacts.filter(entry => entry.operation === operation && fitsWithin(entry, maxValue))
+    const target = pickFact(rng, fitting)
+    return target === null ? createEquation(rng, operation, maxValue) : equationFor(target, rng)
 }
 
 export function createQuestion({
@@ -197,6 +265,8 @@ export function createQuestion({
     operation,
     rank,
     form,
+    dueFacts = [],
+    formAccuracy = {},
     rng = defaultRng,
 }: CreateQuestionOptions): Question {
     const { maxValue } = rankConfig[rank]
@@ -204,19 +274,21 @@ export function createQuestion({
     if (operation === 'remainders') return remainderQuestion(rng, language, maxValue)
 
     const binary = operation as BinaryOperation
-    const chosen = form ?? pickForm(rng, rank, operation)
+    const chosen = form ?? pickForm(rng, rank, operation, formAccuracy)
+    const equation = chooseEquation(rng, binary, maxValue, dueFacts)
 
     switch (chosen) {
         case 'missingOperator':
             // Falls back to `direct` when no unambiguous prompt was found.
-            return missingOperatorQuestion(rng, binary, maxValue) ?? directQuestion(rng, binary, maxValue)
+            return missingOperatorQuestion(rng, binary, equation, maxValue)
+                ?? directQuestion(rng, binary, equation, maxValue)
         case 'chain':
-            return chainQuestion(rng, binary, maxValue) ?? directQuestion(rng, binary, maxValue)
+            return chainQuestion(rng, binary, maxValue) ?? directQuestion(rng, binary, equation, maxValue)
         case 'missingLeft':
         case 'missingRight':
-            return missingOperandQuestion(rng, binary, maxValue, chosen)
+            return missingOperandQuestion(rng, binary, equation, chosen)
         case 'direct':
-            return directQuestion(rng, binary, maxValue)
+            return directQuestion(rng, binary, equation, maxValue)
     }
 }
 
@@ -224,6 +296,16 @@ export type SpacedRepetitionEntry = { interval: number; due: number }
 
 /** A struggled operation may be favoured, but never to the point of crowding out the rest. */
 const MAX_WEAKNESS_BOOST = 3
+
+/**
+ * The longest run of one operation before another is forced in.
+ *
+ * Choosing two kinds of maths and being handed nine additions in a row is a
+ * blocked practice set wearing an interleaved one's clothes, and blocking is the
+ * arrangement that reliably loses to mixing — because what a mixed set trains is
+ * choosing the operation, not just carrying it out.
+ */
+const MAX_SAME_OPERATION_RUN = 3
 
 /**
  * Weights the pool towards operations the player struggles with or that are
@@ -241,6 +323,7 @@ export function pickOperation(
     srData: Record<string, SpacedRepetitionEntry> = {},
     questionIndex = 0,
     shown: readonly Operation[] = [],
+    recent: readonly Operation[] = [],
 ): Operation {
     if (pool.length === 0) return 'addition'
     if (pool.length === 1) return pool[0]
@@ -248,7 +331,14 @@ export function pickOperation(
     // Anything the player picked is shown before anything repeats, so choosing
     // five kinds of maths always means seeing five kinds of maths.
     const unseen = pool.filter(operation => !shown.includes(operation))
-    const candidates = unseen.length > 0 ? unseen : pool
+    const available = unseen.length > 0 ? unseen : pool
+
+    const tail = recent.slice(-MAX_SAME_OPERATION_RUN)
+    const stale = tail.length === MAX_SAME_OPERATION_RUN && tail.every(entry => entry === tail[0])
+        ? tail[0]
+        : null
+    const varied = available.filter(operation => operation !== stale)
+    const candidates = varied.length > 0 ? varied : available
 
     const weights = candidates.map(operation => {
         const weaknessBoost = Math.min(weakness[operation] ?? 0, MAX_WEAKNESS_BOOST)

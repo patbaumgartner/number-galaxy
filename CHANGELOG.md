@@ -8,6 +8,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **The arcade now remembers facts, not operations.** Its memory used to have
+  five buckets, one per operation, so it could know a child was "bad at addition"
+  and nothing more — never that `7 + 8` is hard and `2 + 2` is not. Every pair of
+  numbers now carries its own review schedule, the same Leitner boxes the times
+  tables use, and about half of each mission is drawn from whatever is due.
+  - A fact is the *pair*, not the question written from it. `12 − 5` and `12 − 7`
+    are one fact asked from two sides, as are `6 × 7` and `42 ÷ 6`, so answering
+    either moves the schedule for both — which is the relationship the game is
+    trying to teach in the first place. Which side gets asked is random, so
+    owning a fact means owning it both ways round.
+  - A fact is only offered when every number it would show fits inside the rank,
+    and never twice within four questions, so review can never narrow to the same
+    handful of sums — the run a struggling beginner would otherwise have got.
+- **Question shapes adapt too.** `? + 5 = 12` — the shape that rehearses the
+  inverse, and the one children find hardest — used to turn up exactly as often
+  for the child who had it as for the child who did not. A rolling accuracy per
+  shape now tilts the draw, capped so `direct` stays the backbone of every rank.
 - **One profile per child on a shared device.** Tap the name on the home screen
   for **Who is playing?**, and add a profile for each child. Every key a child
   owns — rank, settings, stars, the review schedule, weak facts and best scores —
@@ -40,6 +57,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   reset.
 
 ### Changed
+- **A mixed mission is now actually mixed.** Choosing two kinds of maths could
+  still hand out nine additions in a row, which is a blocked practice set wearing
+  an interleaved one's clothes. No operation may now run past three questions
+  before another is forced in — what a mixed set trains is *choosing* the
+  operation, not only carrying it out.
 - **A wrong answer now waits for the child.** The worked solution used to be swept
   off the screen by a two-second timer, which is under the time it takes a
   seven-year-old to read a two-step working. It now stays until they press

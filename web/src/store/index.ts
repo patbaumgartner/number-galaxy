@@ -13,12 +13,18 @@ import {
 } from './profiles'
 import {
     computeBadge,
+    getArcadeFacts,
+    getDueFacts,
+    getFormAccuracy,
+    getFormStats,
     getMisses,
     getPersonalBests,
     getSkillStats,
     getSpacedRepetition,
     getWeakness,
     recordAnswer,
+    recordFact,
+    recordForm,
     recordMiss,
     updatePersonalBest,
 } from './progress'
@@ -33,7 +39,9 @@ export type { Player } from './profiles'
 export { adoptLegacyProfile, profileKey, profileKeys, profilePrefix } from './profiles'
 
 export type {
+    ArcadeFacts,
     BadgeTier,
+    FormStats,
     MissRecord,
     SkillStats,
     SpacedRepetitionData,
@@ -68,6 +76,14 @@ export const store = {
 
     getMisses,
     recordMiss,
+
+    getArcadeFacts,
+    getDueFacts,
+    recordFact,
+
+    getFormStats,
+    getFormAccuracy,
+    recordForm,
 
     getPersonalBests,
     updatePersonalBest,

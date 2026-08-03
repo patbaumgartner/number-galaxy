@@ -1,5 +1,5 @@
 import type { FactKey, FactProgress } from './types'
-import { isMastered } from './leitner'
+import { isMastered } from '../review/leitner'
 
 export type CellState = 'unseen' | 'learning' | 'mastered'
 

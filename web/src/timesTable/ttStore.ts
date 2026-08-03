@@ -1,5 +1,5 @@
 import { factsForPlanet } from './facts'
-import { isMastered } from './leitner'
+import { isMastered } from '../review/leitner'
 import { isRecord, readJson, readRecord, removeByPrefix, writeJson } from '../store/storage'
 import { profileKey } from '../store/profiles'
 import type { FactKey, FactProgress, Phase, PlanetId, StarLevel } from './types'

@@ -387,3 +387,37 @@ describe('scoring', () => {
         expect(getStars(17, 25)).toBe(1)
     })
 })
+
+describe('pickForm and shaky shapes', () => {
+    it('draws a shape the child keeps missing more often than a secure one', () => {
+        const counts = { weak: 0, strong: 0 }
+        for (let seed = 1; seed <= 400; seed += 1) {
+            const form = pickForm(createRng(seed), 'ace', 'addition', {
+                missingLeft: 0.2,
+                missingRight: 1,
+                missingOperator: 1,
+            })
+            if (form === 'missingLeft') counts.weak += 1
+            if (form === 'missingRight') counts.strong += 1
+        }
+        expect(counts.weak).toBeGreaterThan(counts.strong)
+    })
+
+    it('keeps direct the most common shape even when another is shaky', () => {
+        const seen: Record<string, number> = {}
+        for (let seed = 1; seed <= 400; seed += 1) {
+            const form = pickForm(createRng(seed), 'ace', 'addition', { missingLeft: 0 })
+            seen[form] = (seen[form] ?? 0) + 1
+        }
+        const most = Object.entries(seen).sort((a, b) => b[1] - a[1])[0][0]
+        expect(most).toBe('direct')
+    })
+
+    it('treats an unmet shape as neutral rather than urgent', () => {
+        const withNoHistory = Array.from({ length: 200 }, (_, index) =>
+            pickForm(createRng(index + 1), 'ace', 'addition')).filter(form => form === 'missingLeft').length
+        const withPerfect = Array.from({ length: 200 }, (_, index) =>
+            pickForm(createRng(index + 1), 'ace', 'addition', { missingLeft: 1 })).filter(form => form === 'missingLeft').length
+        expect(withNoHistory).toBe(withPerfect)
+    })
+})

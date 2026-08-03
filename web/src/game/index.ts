@@ -60,3 +60,6 @@ export type { WorkedExample } from './examples'
 export { getWorkedExample } from './examples'
 
 export { strategyWorking } from './working'
+
+export type { ArithmeticFact, FactKey } from './facts'
+export { equationFor, factKey, factOf, fitsWithin, keyOf, parseFactKey, peakOf, pickFact } from './facts'

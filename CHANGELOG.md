@@ -40,14 +40,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   restoration to the control that opened it.
 
 ### Changed
-- **Settings and navigation are now split by game.** Both games shared one page with
+- **Settings and navigation are now split by game.** Every game shared one page with
   no indication of which control changed what; settings are grouped under 🛸 Math
-  Invaders, ✖️ Times Tables Galaxy and ⚙️ Both games. The trainer's top bar no longer
+  Invaders, ✖️ Times Tables Galaxy, 📏 Number Beam and ⚙️ All games. The trainer's top bar no longer
   links to the arcade leaderboard, and the shared settings page no longer sends you
   into the arcade game when you leave it.
 - **The home page explains each game separately** — the how-to section only ever
   described Math Invaders — and each game picker card now carries a one-line summary.
-- **One navigation bar for every game screen, in both games.** The arcade had its
+- **One navigation bar for every game screen, in every game.** The arcade had its
   own bar, the trainer stacked two, and the arcade's Hall of Fame had none at all —
   three patterns for the same job. A shared `TopBar` now puts the exit in the same
   corner everywhere, and each screen has exactly one `h1` (the arcade game screen

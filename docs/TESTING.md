@@ -61,7 +61,7 @@ What each area locks down:
 - **`game/options`** — always exactly four distinct options, one of which is the answer; every remainder distractor is itself legal.
 - **`game/questions`** — structural validity for every rank × operation × form, and that missing-operator prompts are only kept when exactly one operator fits.
 - **`game/mission`** — the mission reducer: streaks, combo scoring, phase transitions, and the guarantee that a run always reaches 25 questions.
-- **`beam/`** — every station × tier across 200 seeds: four distinct options, an answer that lands on a beam stop but never at its very end, both bar rows measured against one scale, a fraction's wanted parts summing to the answer, zone unlocking and the star ladder.
+- **`beam/`** — every station × tier across 200 seeds: a beam stop always exactly on the answer and never at either end, a beam long enough to be a number line and short enough to aim at, an answer that does not sit at a fixed fraction of the beam, both bar rows measured against one scale, a fraction's wanted parts summing to the answer, numbers that grow tier to tier, zone unlocking and the star ladder.
 - **`store/`** — the v1→v2 settings migration, score keying per rank and clock, badge tiers, and that tampered or corrupt localStorage degrades to defaults instead of throwing.
 - **`timesTable/`** — Leitner scheduling, session building, planet unlocking, star awards and strategy cards.
 - **`translations`** — full key parity across `de`/`it`/`en`/`fr`, equal array lengths, and matching `{placeholder}` sets.
@@ -140,8 +140,8 @@ Two projects run each spec: `chromium-desktop` (1280×800) and `chromium-mobile`
 | `settings.spec.ts` | Every control survives a reload; the last operation cannot be switched off; clearing data |
 | `hall-of-fame.spec.ts` | Empty state, grouping by rank and clock, medals, the legacy section |
 | `times-tables.spec.ts` | Galaxy map and locks, phase chooser, Learn end to end, Practice earning a star, Speed Run gating and timing, Daily Mission, heatmap tabs |
-| `number-beam.spec.ts` | Station map and zone locks, a full ten-question drill across both inputs, dragging/nudging/arrow-keying the alien along the beam, the bar revealing its numbers after a miss, hiding the bar, resetting beam progress |
-| `progression.spec.ts` | Rank and star progression across both games |
+| `number-beam.spec.ts` | Station map and zone locks, a full ten-question drill answered entirely on the beam with the tile grid asserted absent, dragging/nudging/arrow-keying the alien, the bar revealing its numbers after a miss, hiding the bar, resetting beam progress |
+| `progression.spec.ts` | Rank and star progression across the arcade and the trainer |
 | `a11y.spec.ts` | Heading structure, keyboard reachability, accessible names, dialog semantics, no positive `tabindex` |
 | `responsive.spec.ts` | No horizontal overflow and adequate touch targets at 360×640, 768×1024 and 1280×800 |
 | `pwa.spec.ts` | Manifest validity, service worker registration, survival across reload, the `404.html` redirect |

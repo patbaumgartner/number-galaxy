@@ -76,7 +76,7 @@ The game supports German, Italian, English and French. To add another:
 6. Add the remainder separator in `web/src/game/equations.ts` (`remainderSeparator`)
 7. Run `npm test` — `i18n/translations.test.ts` checks key parity, array lengths and
    `{placeholder}` parity across every language, so a missing key fails the build
-8. Check every screen in the new language, including Settings and both trainers
+8. Check every screen in the new language, including Settings and all three games
 9. Submit a PR titled `feat: add [language] translation`
 
 ### Submitting Code

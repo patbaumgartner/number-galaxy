@@ -10,9 +10,9 @@ type TopBarProps = {
 }
 
 /**
- * The single navigation bar for every game screen, in both games.
+ * The single navigation bar for every game screen, in every game.
  *
- * Both games previously invented their own chrome: the arcade had one bar, the
+ * Each game previously invented its own chrome: the arcade had one bar, the
  * trainer stacked two, and the arcade's Hall of Fame had none at all. One
  * component keeps the exit in the same corner wherever a child happens to be.
  */

@@ -14,7 +14,7 @@ export function useDocumentLanguage(language: Language): void {
  * Applies the stored sound preference.
  *
  * `sound.ts` keeps one module-level flag for the whole app, so every screen that
- * makes a noise has to set it. Both games call this: without it, a child who
+ * makes a noise has to set it. Every game calls this: without it, a child who
  * switched sound off and went straight to the trainer still heard it, because
  * only the arcade game was applying the setting.
  */

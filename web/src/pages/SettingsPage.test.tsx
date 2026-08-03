@@ -128,7 +128,7 @@ describe('SettingsPage', () => {
         expect(store.getPlayer()).not.toBeNull()
     })
 
-    it('offers only game-neutral navigation, because both games share this page', () => {
+    it('offers only game-neutral navigation, because every game shares this page', () => {
         seedLanguage('en')
         renderWithRouter(<SettingsPage />)
 

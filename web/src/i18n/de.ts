@@ -103,7 +103,7 @@ export const de: Translations = {
         groupTablesHint: 'Gilt nur für den Einmaleins-Trainer.',
         groupBeam: '📏 Zahlenbalken',
         groupBeamHint: 'Gilt nur für die Balken-Stationen.',
-        groupShared: '⚙️ Beide Spiele',
+        groupShared: '⚙️ Alle Spiele',
         groupSharedHint: 'Gilt für alles.',
         resetConfirm: 'Wirklich alle Daten löschen?',
     },

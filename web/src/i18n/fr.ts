@@ -103,7 +103,7 @@ export const fr: Translations = {
         groupTablesHint: 'Ne concerne que l’entraîneur de tables.',
         groupBeam: '📏 Barre des nombres',
         groupBeamHint: 'Ne concerne que les stations de la barre.',
-        groupShared: '⚙️ Les deux jeux',
+        groupShared: '⚙️ Tous les jeux',
         groupSharedHint: 'Concerne tout.',
         resetConfirm: 'Vraiment tout effacer ?',
     },

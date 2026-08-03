@@ -103,7 +103,7 @@ export const en: Translations = {
         groupTablesHint: 'Applies to the times tables trainer only.',
         groupBeam: '📏 Number Beam',
         groupBeamHint: 'Applies to the beam stations only.',
-        groupShared: '⚙️ Both games',
+        groupShared: '⚙️ All games',
         groupSharedHint: 'Applies to everything.',
         resetConfirm: 'Really delete all data?',
     },

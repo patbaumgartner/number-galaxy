@@ -103,7 +103,7 @@ export const it: Translations = {
         groupTablesHint: 'Vale solo per l’allenatore di tabelline.',
         groupBeam: '📏 Barra dei numeri',
         groupBeamHint: 'Vale solo per le stazioni della barra.',
-        groupShared: '⚙️ Entrambi i giochi',
+        groupShared: '⚙️ Tutti i giochi',
         groupSharedHint: 'Vale per tutto.',
         resetConfirm: 'Cancellare davvero tutti i dati?',
     },

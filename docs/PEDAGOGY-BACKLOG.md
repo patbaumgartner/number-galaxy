@@ -116,12 +116,14 @@ faded level was unreachable. Two levels, and never nothing.
 
 ## Tier 2 — Teach strategy, not just answers
 
-**15. Misconception-shaped distractors.** Tag each with a `reason`: `smallerFromLarger`,
-`placeValueSplit` (`42 + 19 → 511`), `forgotCarry`, `offByOneGroup`, `addedInsteadOfMultiplied`.
+**15. Misconception-shaped distractors.** ✅ **done** — `game/misconceptions.ts` derives the
+documented bugs and tags each with its reason. Tiles are filtered to the rank: `74 + 26 → 910`
+is real but implausible, and offering it would turn a choice of four into a choice of three.
+The full catalogue is kept keyed by value, so a typed answer is diagnosed as readily as a tap.
 · Ashlock; Yorulmaz & Önal 2017 · `MA.1.A.1`
 
-**16. Error-specific feedback from those tags.** When the chosen tile carries a `reason`, show
-the matching line instead of the generic working. ~8 new strings × 4 languages.
+**16. Error-specific feedback from those tags.** ✅ **done** — the named mistake is shown above
+the route, in all four languages.
 · Töllner et al. 2026 · `MA.1.C.1`
 
 **17. Strategy hints in the arcade.** 💡 Help currently shows one static example per operation

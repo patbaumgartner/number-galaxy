@@ -1,3 +1,5 @@
+import type { MissReason } from './misconceptions'
+
 export type Language = 'de' | 'it' | 'en' | 'fr'
 
 export type Operation =
@@ -43,6 +45,11 @@ export type Question = {
     answer: string
     /** Exactly four distinct display strings; exactly one equals `answer`. */
     options: string[]
+    /**
+     * What a given wrong answer would have meant, keyed by the answer itself so
+     * a typed entry can be diagnosed as readily as a tapped tile.
+     */
+    missReasons: Record<string, MissReason>
     correctIndex: number
     /**
      * Language-neutral working, e.g. `"12 − 7 = 5"`. Pure maths notation, so it

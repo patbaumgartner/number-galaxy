@@ -68,6 +68,15 @@ export const it: Translations = {
         untimed: 'Senza fretta',
         gotIt: 'Ho capito',
     },
+    misses: {
+        offByOne: 'Quasi — manca uno. Riconta l’ultimo passo.',
+        smallerFromLarger: 'Hai tolto la cifra piccola da quella grande. Guarda ancora: quale numero sta sopra?',
+        forgotCarry: 'Le unità fanno più di dieci: una decina deve spostarsi.',
+        placeValueSplit: 'Decine e unità sono state scritte separate. Resta un numero solo, non due.',
+        offByOneGroup: 'Un gruppo in più, o uno in meno. Riconta le righe.',
+        addedInsteadOfMultiplied: 'Questa era un’addizione, non una moltiplicazione. Per vuol dire tanti gruppi.',
+    },
+
     summary: {
         complete: 'Missione compiuta!',
         perfect: 'Perfetto!',

@@ -21,6 +21,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - A fact is only offered when every number it would show fits inside the rank,
     and never twice within four questions, so review can never narrow to the same
     handful of sums — the run a struggling beginner would otherwise have got.
+- **Wrong answers now say what went wrong.** Distractors were near misses, which
+  is right, but they were shaped only by arithmetic distance — a tempting wrong
+  answer without being a *diagnostic* one. The tiles now carry the documented
+  mistakes: taking the smaller digit from the larger (`51 − 26 → 35`), dropping a
+  carry (`42 + 19 → 51`), losing or gaining one group, adding instead of
+  multiplying. Reach for one and the game names it — "You took the smaller digit
+  from the bigger one. Look again: which number is on top?" — before showing the
+  route.
+  - Mistakes too large to be plausible stay off the tiles. Adding column by
+    column turns `74 + 26` into `910`, which is a real thing a child does and a
+    useless thing to offer: nobody picks it, so the question quietly becomes a
+    choice of three. It is still recognised if a child types it.
 - **A fact you own is typed, not picked from four.** Recognising an answer among
   four tiles and producing one are not the same skill, and it is producing it
   that predicts being able to use the fact anywhere else. Once a fact reaches the

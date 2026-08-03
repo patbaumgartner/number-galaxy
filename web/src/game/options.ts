@@ -2,23 +2,26 @@ import type { Language } from './types'
 import { OPERATOR_SYMBOLS } from './types'
 import { shuffle, type Rng } from './rng'
 import { remainderLabel } from './equations'
+import type { Distractor } from './misconceptions'
 
 export const OPTION_COUNT = 4
+
 
 /**
  * Four distinct non-negative integers, one of which is `answer`.
  *
- * `nearMisses` carries the mistakes a child actually makes (off-by-one, adding
- * instead of multiplying, forgetting to carry), so the wrong tiles are
- * tempting rather than obviously absurd.
+ * `candidates` carries the mistakes a child actually makes, each with the
+ * thinking behind it, so a wrong tile is tempting rather than absurd *and* says
+ * something about why it was chosen. They are taken in order, most diagnostic
+ * first, and only then padded with bare neighbours.
  */
-export function buildNumericOptions(rng: Rng, answer: number, nearMisses: number[]): string[] {
+export function buildNumericOptions(rng: Rng, answer: number, candidates: readonly Distractor[]): string[] {
     const values = new Set<number>([answer])
 
-    for (const candidate of shuffle(rng, nearMisses)) {
+    for (const candidate of candidates) {
         if (values.size >= OPTION_COUNT) break
-        if (!Number.isInteger(candidate) || candidate < 0) continue
-        values.add(candidate)
+        if (!Number.isInteger(candidate.value) || candidate.value < 0) continue
+        values.add(candidate.value)
     }
 
     // Widen outwards until four distinct values exist. Always terminates

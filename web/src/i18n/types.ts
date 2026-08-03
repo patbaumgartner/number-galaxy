@@ -1,5 +1,5 @@
 import type { BeamSkill, BeamZoneId } from '../beam'
-import type { Operation, Rank } from '../game'
+import type { MissReason, Operation, Rank } from '../game'
 
 export type Translations = {
     nav: { home: string; hallOfFame: string; settings: string }
@@ -57,6 +57,8 @@ export type Translations = {
         untimed: string
         gotIt: string
     }
+    misses: Record<Exclude<MissReason, 'none'>, string>
+
     summary: {
         complete: string
         perfect: string

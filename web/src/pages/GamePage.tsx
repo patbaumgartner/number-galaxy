@@ -60,6 +60,8 @@ type Feedback = {
     outcome: AnswerOutcome
     answer: string
     workingOut: string
+    /** What this particular wrong tile meant, when it meant anything. */
+    missNote: string
     firedIndex: number | null
     points: number
 }
@@ -176,15 +178,18 @@ export default function GamePage() {
             else playWrong()
         }
 
+        const reason = question.missReasons[chosen] ?? 'none'
+
         setFeedback({
             outcome,
             answer: question.answer,
+            missNote: reason === 'none' ? '' : t.misses[reason],
             workingOut: fadeWorking(question.workingOut, priorBox),
             firedIndex,
             points: next.score - mission.score,
         })
         setMission(next)
-    }, [mission, answered])
+    }, [mission, answered, t])
 
     const remaining = useCountdown({
         seconds,
@@ -355,6 +360,9 @@ export default function GamePage() {
                     <p className="equation__result" aria-live="polite">
                         {resultText || t.game.answerHint}
                     </p>
+                    {feedback && feedback.missNote.length > 0 && settings.hints && (
+                        <p className="equation__note">{feedback.missNote}</p>
+                    )}
                     {feedback && feedback.outcome !== 'correct' && settings.hints && (
                         <p className="equation__working">{feedback.workingOut}</p>
                     )}

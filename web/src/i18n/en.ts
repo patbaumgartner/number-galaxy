@@ -68,6 +68,15 @@ export const en: Translations = {
         untimed: 'No time pressure',
         gotIt: 'Got it',
     },
+    misses: {
+        offByOne: 'So close — just one out. Count that last step again.',
+        smallerFromLarger: 'You took the smaller digit from the bigger one. Look again: which number is on top?',
+        forgotCarry: 'The ones make more than ten, so a ten has to travel across.',
+        placeValueSplit: 'The tens and the ones were written down separately. It stays one number, not two.',
+        offByOneGroup: 'One group too many, or one too few. Count the rows again.',
+        addedInsteadOfMultiplied: 'That was adding, not multiplying. Times means that many groups of the number.',
+    },
+
     summary: {
         complete: 'Mission complete!',
         perfect: 'Perfect!',

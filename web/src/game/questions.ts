@@ -13,6 +13,8 @@ import {
 import { buildNumericOptions, buildOperatorOptions, buildRemainderOptions } from './options'
 import { strategyWorking } from './working'
 import { equationFor, fitsWithin, keyOf, pickFact, type ArithmeticFact } from './facts'
+import { reasonsByValue, tileDistractors } from './misconceptions'
+import type { MissReason } from './misconceptions'
 
 /** Unlocking a new form should season a mission, not take it over. */
 const DIRECT_FORM_WEIGHT = 3
@@ -37,33 +39,35 @@ function finish(
     options: string[],
     workingOut: string,
     factKey = '',
+    missReasons: Record<string, MissReason> = {},
 ): Question {
-    return { operation, form, prompt, answer, options, correctIndex: options.indexOf(answer), workingOut, factKey }
+    return {
+        operation,
+        form,
+        prompt,
+        answer,
+        options,
+        missReasons,
+        correctIndex: options.indexOf(answer),
+        workingOut,
+        factKey,
+    }
 }
 
 // ---------------------------------------------------------------- direct ----
 
 function directQuestion(rng: Rng, operation: BinaryOperation, equation: Equation, maxValue: number): Question {
     const { left, right, result, symbol } = equation
-    const nearMisses = [
-        result + 1,
-        result - 1,
-        result + 2,
-        result - 2,
-        left + right,
-        Math.abs(left - right),
-        symbol === '×' ? result + left : result + 10,
-        symbol === '×' ? result - right : Math.max(0, result - 10),
-    ]
     return finish(
         operation,
         'direct',
         `${left} ${symbol} ${right} = ?`,
         String(result),
-        buildNumericOptions(rng, result, nearMisses),
+        buildNumericOptions(rng, result, tileDistractors(operation, equation, maxValue)),
         // A route to the answer, not the answer restated — see `working.ts`.
         strategyWorking(equation, maxValue),
         keyOf(operation, equation),
+        reasonsByValue(operation, equation),
     )
 }
 
@@ -115,6 +119,7 @@ function missingOperandQuestion(
         : `? ${symbol} ${right} = ${result}`
 
     const nearMisses = [answer + 1, answer - 1, answer + 2, answer - 2, result, other, result - other]
+        .map(value => ({ value, reason: 'none' as const }))
     return finish(
         operation,
         form,
@@ -178,6 +183,7 @@ function chainQuestion(rng: Rng, operation: BinaryOperation, maxValue: number): 
         if (result === null || result < 1) continue
 
         const nearMisses = [result + 1, result - 1, result + 2, result - 2, middle, middle + step, left + right]
+            .map(value => ({ value, reason: 'none' as const }))
         return finish(
             operation,
             'chain',

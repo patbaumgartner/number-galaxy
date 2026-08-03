@@ -3,10 +3,12 @@ import { buildNumericOptions, buildOperatorOptions, buildRemainderOptions, OPTIO
 import { createRng } from './rng'
 import { OPERATOR_SYMBOLS } from './types'
 
+const plain = (...values: number[]) => values.map(value => ({ value, reason: 'none' as const }))
+
 describe('buildNumericOptions', () => {
     it('returns four distinct non-negative integer strings including the answer', () => {
         for (let seed = 0; seed < 200; seed += 1) {
-            const options = buildNumericOptions(createRng(seed), 12, [11, 13, 14])
+            const options = buildNumericOptions(createRng(seed), 12, plain(11, 13, 14))
             expect(options).toHaveLength(OPTION_COUNT)
             expect(new Set(options).size).toBe(OPTION_COUNT)
             expect(options).toContain('12')
@@ -15,7 +17,7 @@ describe('buildNumericOptions', () => {
     })
 
     it('rejects negative and non-integer near misses before widening useful choices', () => {
-        const options = buildNumericOptions(createRng(1), 5, [-1, 1.5, Number.NaN, 6])
+        const options = buildNumericOptions(createRng(1), 5, plain(-1, 1.5, Number.NaN, 6))
         expect(options).toContain('5')
         expect(options).toContain('6')
         expect(options).not.toContain('-1')
@@ -23,12 +25,13 @@ describe('buildNumericOptions', () => {
     })
 
     it('terminates at zero and widens outward when near misses add no choices', () => {
-        const zero = buildNumericOptions(createRng(2), 0, [0, 0, 0])
+        const zero = buildNumericOptions(createRng(2), 0, plain(0, 0, 0))
         expect(new Set(zero)).toEqual(new Set(['0', '1', '2', '3']))
 
-        const drift = buildNumericOptions(createRng(3), 50, [50, 50])
+        const drift = buildNumericOptions(createRng(3), 50, plain(50, 50))
         expect(new Set(drift)).toEqual(new Set(['50', '51', '49', '52']))
     })
+
 })
 
 describe('other option builders', () => {

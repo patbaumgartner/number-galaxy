@@ -68,6 +68,15 @@ export const de: Translations = {
         untimed: 'Ohne Zeitdruck',
         gotIt: 'Verstanden',
     },
+    misses: {
+        offByOne: 'Ganz knapp daneben — zähl noch einmal genau nach.',
+        smallerFromLarger: 'Du hast die kleinere Ziffer von der grösseren abgezogen. Schau nochmal: welche Zahl steht oben?',
+        forgotCarry: 'Die Einer ergeben mehr als zehn — der Zehner muss weiterwandern.',
+        placeValueSplit: 'Zehner und Einer wurden getrennt aufgeschrieben. Es bleibt eine Zahl, keine zwei.',
+        offByOneGroup: 'Eine Gruppe zu viel oder zu wenig. Zähl die Reihen noch einmal.',
+        addedInsteadOfMultiplied: 'Das war Plus statt Mal. Mal heisst: so viele Gruppen von dieser Zahl.',
+    },
+
     summary: {
         complete: 'Mission geschafft!',
         perfect: 'Perfekt!',

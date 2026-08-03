@@ -68,6 +68,15 @@ export const fr: Translations = {
         untimed: 'Sans chrono',
         gotIt: 'J’ai compris',
     },
+    misses: {
+        offByOne: 'Tout près — il manque un. Recompte ce dernier pas.',
+        smallerFromLarger: 'Tu as enlevé le petit chiffre du grand. Regarde encore : quel nombre est en haut ?',
+        forgotCarry: 'Les unités font plus de dix : une dizaine doit passer à côté.',
+        placeValueSplit: 'Les dizaines et les unités ont été écrites séparément. Cela reste un seul nombre.',
+        offByOneGroup: 'Un groupe de trop, ou un de moins. Recompte les rangées.',
+        addedInsteadOfMultiplied: 'C’était une addition, pas une multiplication. Fois veut dire autant de groupes.',
+    },
+
     summary: {
         complete: 'Mission accomplie !',
         perfect: 'Parfait !',

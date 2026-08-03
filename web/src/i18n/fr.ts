@@ -183,6 +183,11 @@ export const fr: Translations = {
         settingsReset: 'Réinitialiser les progrès',
         settingsResetConfirm: 'Réinitialiser tous les progrès des tables ?',
     },
+    surprise: {
+        title: '🎲 Surprends-moi',
+        blurb: 'Le jeu choisit pour toi — il prend ce dont tu as le plus besoin.',
+        again: 'Une autre surprise',
+    },
     beam: {
         title: '📏 Barre des nombres',
         tagline: 'Doubler, partager en deux et en parts — toujours sur la barre',

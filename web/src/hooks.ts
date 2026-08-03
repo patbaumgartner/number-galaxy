@@ -1,7 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router'
 import type { Language } from './game'
 import { setSoundEnabled } from './sound'
 import { store } from './store'
+import { nextSurprise, surpriseRoute, SURPRISE_PARAM } from './surprise'
 
 /** Mirrors the chosen UI language onto `<html lang>` for screen readers. */
 export function useDocumentLanguage(language: Language): void {
@@ -159,4 +161,45 @@ export function useModalDialog<T extends HTMLElement>(onClose?: () => void) {
     }, [])
 
     return ref
+}
+
+/**
+ * What a summary renders instead of "play again" after a surprise run.
+ *
+ * Labels ride along because the three summaries take their own translation
+ * slice, and these two strings are shared across all of them.
+ */
+export type SurpriseActions = {
+    readonly againLabel: string
+    readonly homeLabel: string
+    readonly onAgain: () => void
+    readonly onHome: () => void
+}
+
+export type SurpriseRun = {
+    /** True when the player did not choose this game — the picker did. */
+    readonly active: boolean
+    readonly again: () => void
+    readonly home: () => void
+}
+
+/**
+ * Whether this run came from the Surprise button, and where to go next.
+ *
+ * A chosen game ends with "Play again", which is right because the player asked
+ * for that game. A surprise run ends with another surprise, because variety was
+ * the point of pressing the button.
+ */
+export function useSurpriseRun(): SurpriseRun {
+    const navigate = useNavigate()
+    const { search } = useLocation()
+    const active = new URLSearchParams(search).get(SURPRISE_PARAM) === '1'
+
+    const again = useCallback(() => {
+        navigate(surpriseRoute(nextSurprise()), { replace: true })
+    }, [navigate])
+
+    const home = useCallback(() => navigate('/'), [navigate])
+
+    return { active, again, home }
 }

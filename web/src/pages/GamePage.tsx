@@ -14,15 +14,22 @@ import {
     scoreAnswer,
     type AnswerOutcome,
     type MissionState,
-    type WorkedExample,
 } from '../game'
 import { RULESET_VERSION, store } from '../store'
 import { translations } from '../i18n'
-import AnswerGrid from '../components/AnswerGrid'
+import AnswerGrid from '../components/arcade/AnswerGrid'
 import TopBar from '../components/TopBar'
-import GameHud from '../components/GameHud'
-import MissionSummary from '../components/MissionSummary'
-import { useCountdown, useDocumentLanguage, useModalDialog, usePageVisible, useSoundSetting } from '../hooks'
+import WorkedExampleDialog from '../components/WorkedExampleDialog'
+import GameHud from '../components/arcade/GameHud'
+import MissionSummary from '../components/arcade/MissionSummary'
+import {
+    useCountdown,
+    useDocumentLanguage,
+    usePageVisible,
+    useSoundSetting,
+    useSurpriseRun,
+    type SurpriseActions,
+} from '../hooks'
 import {
     playCombo,
     playCorrect,
@@ -87,6 +94,16 @@ export default function GamePage() {
     const fastestRef = useRef<number | null>(null)
     const newBestRef = useRef(false)
     const submittedRef = useRef(false)
+    const surprise = useSurpriseRun()
+
+    const surpriseActions: SurpriseActions | undefined = surprise.active
+        ? {
+            againLabel: t.surprise.again,
+            homeLabel: t.nav.home,
+            onAgain: surprise.again,
+            onHome: surprise.home,
+        }
+        : undefined
 
     useSoundSetting()
 
@@ -293,7 +310,7 @@ export default function GamePage() {
             </main>
 
             {helpOpen && (
-                <HelpOverlay
+                <WorkedExampleDialog
                     title={t.game.helpTitle}
                     close={t.game.helpClose}
                     example={example}
@@ -315,35 +332,9 @@ export default function GamePage() {
                     onPlayAgain={restart}
                     onChangeMission={() => navigate('/settings')}
                     onSeeScores={() => navigate('/hall-of-fame')}
+                    surprise={surpriseActions}
                 />
             )}
-        </div>
-    )
-}
-
-type HelpOverlayProps = {
-    title: string
-    close: string
-    example: WorkedExample
-    onClose: () => void
-}
-
-function HelpOverlay({ title, close, example, onClose }: HelpOverlayProps) {
-    const dialog = useModalDialog<HTMLDivElement>(onClose)
-
-    return (
-        <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="help-title" ref={dialog}>
-            <div className="overlay__card">
-                <h2 className="overlay__title" id="help-title">💡 {title}</h2>
-                <p className="overlay__example">
-                    <span>{example.prompt}</span>
-                    <strong>{example.answer}</strong>
-                </p>
-                <p className="overlay__steps">{example.steps}</p>
-                <button type="button" className="btn btn--primary" onClick={onClose} autoFocus>
-                    {close}
-                </button>
-            </div>
         </div>
     )
 }

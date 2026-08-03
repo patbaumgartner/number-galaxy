@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { NumberPad } from '../../components/NumberPad'
-import { SessionSummary } from '../../components/SessionSummary'
-import TrainerFrame from '../../components/TrainerFrame'
+import { NumberPad } from '../../components/trainer/NumberPad'
+import { SessionSummary } from '../../components/trainer/SessionSummary'
+import TrainerFrame from '../../components/trainer/TrainerFrame'
 import { playCorrect, playLevelUp, playWrong } from '../../sound'
 import { store } from '../../store'
 import { factsForPlanet } from '../../timesTable/facts'
@@ -11,7 +11,7 @@ import { explainFact, getStrategyCard } from '../../timesTable/strategies'
 import { GALAXIES, getPlanet } from '../../timesTable/tables'
 import { computeStars, ttStore } from '../../timesTable/ttStore'
 import type { Fact, FactKey, PlanetId } from '../../timesTable/types'
-import { useModalDialog, useSoundSetting } from '../../hooks'
+import { useModalDialog, useSoundSetting, useSurpriseRun, type SurpriseActions } from '../../hooks'
 import { translations } from '../../i18n'
 
 const planetForFact = (fact: Fact): PlanetId => {
@@ -29,6 +29,15 @@ export function DailyPhase() {
     const settings = store.getSettings()
     useSoundSetting()
     const t = translations[settings.language].tt
+    const surprise = useSurpriseRun()
+    const surpriseActions: SurpriseActions | undefined = surprise.active
+        ? {
+            againLabel: translations[settings.language].surprise.again,
+            homeLabel: translations[settings.language].nav.home,
+            onAgain: surprise.again,
+            onHome: surprise.home,
+        }
+        : undefined
     const [today] = useState(() => localEpochDay(Date.now(), new Date().getTimezoneOffset()))
     const [session, setSession] = useState(() => buildDailyMission(ttStore.getProgress(), ttStore.getStars(), today))
     const [index, setIndex] = useState(0)
@@ -101,6 +110,7 @@ export function DailyPhase() {
         return (
             <TrainerFrame title={t.dailyMission} exit={t.trainExit}>
                 <SessionSummary
+                    surprise={surpriseActions}
                     phase="daily"
                     planetId="mission"
                     accuracy={accuracy}

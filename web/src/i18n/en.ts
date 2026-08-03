@@ -183,6 +183,11 @@ export const en: Translations = {
         settingsReset: 'Reset trainer progress',
         settingsResetConfirm: 'Really reset all times tables progress?',
     },
+    surprise: {
+        title: '🎲 Surprise me',
+        blurb: 'Let the game choose — it picks what you need most right now.',
+        again: 'Another surprise',
+    },
     beam: {
         title: '📏 Number Beam',
         tagline: 'Double, halve and share out — always drawn on the bar',

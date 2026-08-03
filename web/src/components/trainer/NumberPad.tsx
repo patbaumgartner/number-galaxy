@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
-import { store } from '../store'
-import { translations } from '../i18n'
+import { store } from '../../store'
+import { translations } from '../../i18n'
 
 type NumberPadProps = {
     readonly value: string

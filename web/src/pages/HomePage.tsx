@@ -5,6 +5,7 @@ import { QUESTIONS_PER_MISSION, rankConfig } from '../game'
 import { avatars } from '../constants'
 import { fill, translations, type Translations } from '../i18n'
 import { useDocumentLanguage, useModalDialog } from '../hooks'
+import { nextSurprise, surpriseRoute } from '../surprise'
 
 export default function HomePage() {
     const navigate = useNavigate()
@@ -79,6 +80,16 @@ export default function HomePage() {
                                 <strong>{t.home.gameBeam}</strong>
                                 <small>{t.home.gameBeamBlurb}</small>
                             </button>
+                        </div>
+                        <div className="game-picker__surprise">
+                            <button
+                                type="button"
+                                className="btn btn--primary"
+                                onClick={() => navigate(surpriseRoute(nextSurprise()))}
+                            >
+                                {t.surprise.title}
+                            </button>
+                            <p className="panel__hint">{t.surprise.blurb}</p>
                         </div>
                     </section>
                 )}

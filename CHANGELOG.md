@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **🎲 Surprise me** on the home picker: one button that chooses a game for you.
+  It only ever offers content you have unlocked, never changes the rank or tier you
+  have earned, and sends you to the Daily Mission first when trainer facts are due.
+  A run the picker chose ends with "Another surprise" and "Home" rather than "play
+  again"; a run you chose yourself is unchanged. The marker rides in the query
+  string, so it survives a reload and the GitHub Pages redirect.
 - **📏 Number Beam:** a third section for doubling, halving and the number sense that
   grows out of them. Nine stations across three zones — Doubling Deck (double, halve,
   near doubles), Parts Bay (double twice, quarters, fraction of) and Tens Belt
@@ -30,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Mission phases for tables, squares, shortcuts and advanced facts.
 - Leitner-style review, persistent stars and best times, strategy cards, a mastery
   heatmap and independent trainer-progress reset in Settings.
-- **Three-layer test suite, 483 tests.** Domain logic in Node, React components and
+- **Three-layer test suite, 526 tests.** Domain logic in Node, React components and
   pages in jsdom via Testing Library, and the built bundle driven through desktop and
   mobile Chromium with Playwright. Coverage is gated at 95 % statements / 92 % branches
   and the end-to-end suite runs in CI. See [docs/TESTING.md](docs/TESTING.md).

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import TopBar from '../../components/TopBar'
-import { NumberPad } from '../../components/NumberPad'
+import { NumberPad } from '../../components/trainer/NumberPad'
 import { playCorrect, playWrong } from '../../sound'
 import { useSoundSetting } from '../../hooks'
 import { store } from '../../store'

@@ -36,6 +36,29 @@
 Every mission is exactly 25 questions. A wrong answer costs your combo and a bit of
 accuracy, but it never ends the run — so a tricky day means *more* practice, not less.
 
+## 🎲 Surprise me
+
+Three games on the picker is a decision to make before anything happens, which sits
+badly with a game whose first promise is "press Play — you start right away". **Surprise
+me** makes that decision for you.
+
+It is deliberately *not* a uniform random pick:
+
+- **Never anything locked.** A trainer planet or a beam station you have not opened
+  cannot be entered at all, so it is never offered.
+- **Never a difficulty you did not choose.** Rank stays exactly where you set it, and a
+  beam station runs at the tier your stars have already earned. Randomising difficulty
+  would throw Supernova numbers at a Rookie.
+- **Review first.** If the trainer has facts due today, Surprise sends you to the Daily
+  Mission rather than somewhere new.
+- **Never Learn.** That phase is a lesson, not a run.
+
+The point is *interleaving*: mixing topics beats practising one thing in a block, and
+switching between the arcade, the tables and the bar is exactly that mix. Because the
+game chose it, a surprise run ends with **Another surprise** and **Home** instead of
+"play again" — variety was the reason for pressing the button. A run you chose yourself
+still ends exactly as it always did.
+
 ## ✖️ Times Tables Galaxy
 
 Times Tables Galaxy is a focused multiplication trainer available from the game picker
@@ -292,18 +315,14 @@ web/
 │   │   ├── NumberBeamPage.tsx  # Number Beam station map
 │   │   ├── BeamDrillPage.tsx   # Number Beam drill loop
 │   │   └── trainer/            # Learn, Practice, Speed Run and Daily Mission
-│   ├── components/
-│   │   ├── AnswerGrid.tsx      # 2x2 one-tap answer tiles
-│   │   ├── GameHud.tsx         # Score, combo, timer ring, trail
-│   │   ├── MissionSummary.tsx  # Stars, stats, play again
-│   │   ├── NumberPad.tsx       # Trainer numeric input
-│   │   ├── BarModel.tsx        # Whole-and-parts bar with aliens
-│   │   ├── BeamSlider.tsx      # Move the alien along the beam
-│   │   ├── FactHeatmap.tsx     # Trainer mastery grid
-│   │   ├── SessionSummary.tsx  # Trainer results
-│   │   ├── TopBar.tsx         # The one navigation bar, used by every game
-│   │   ├── Flag.tsx           # Drawn language flags
-│   │   └── ErrorBoundary.tsx   # Crash fallback
+│   ├── components/             # Shared at the top, feature-owned in folders
+│   │   ├── TopBar.tsx          # The one navigation bar, used by every game
+│   │   ├── WorkedExampleDialog.tsx # The 💡 Help dialog, shared by two games
+│   │   ├── Flag.tsx            # Drawn language flags
+│   │   ├── ErrorBoundary.tsx   # Crash fallback
+│   │   ├── arcade/             # AnswerGrid, GameHud, MissionSummary
+│   │   ├── trainer/            # NumberPad, FactHeatmap, SessionSummary, TrainerFrame
+│   │   └── beam/               # BarModel, BeamSlider
 │   ├── game/                   # Pure domain — no React, fully tested
 │   │   ├── types.ts            # Ranks, forms, scoring
 │   │   ├── rng.ts              # Seedable PRNG (deterministic tests)
@@ -336,7 +355,8 @@ web/
 │   │   └── index.css           # The cascade order, imported once by App.tsx
 │   ├── test/                   # Shared jsdom setup and render helpers
 │   ├── App.tsx         # Router
-│   ├── hooks.ts        # Countdown, page visibility, modal dialogs
+│   ├── surprise.ts     # Cross-game picker for the 🎲 button
+│   ├── hooks.ts        # Countdown, page visibility, modal dialogs, surprise runs
 │   ├── sound.ts        # Web Audio effects
 │   └── constants.ts    # Avatars, language names
 ├── index.html
@@ -376,9 +396,9 @@ Output in `web/dist/` — deploy to GitHub Pages or any static host.
 ### Test
 
 ```bash
-npm test              # 345 unit tests (domain + UI)
+npm test              # 376 unit tests (domain + UI)
 npm run test:coverage # with coverage, gated at 95 % statements
-npm run test:e2e      # 138 Playwright tests, desktop + mobile Chromium
+npm run test:e2e      # 150 Playwright tests, desktop + mobile Chromium
 npm run test:all      # everything
 ```
 

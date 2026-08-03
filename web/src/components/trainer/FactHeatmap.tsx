@@ -1,6 +1,6 @@
-import type { FactKey, FactProgress } from '../timesTable/types'
-import { cellState, VIEW_GRIDS } from '../timesTable/heatmap'
-import { canonicalKey } from '../timesTable/facts'
+import type { FactKey, FactProgress } from '../../timesTable/types'
+import { cellState, VIEW_GRIDS } from '../../timesTable/heatmap'
+import { canonicalKey } from '../../timesTable/facts'
 
 type FactHeatmapProps = {
     readonly progress: Record<FactKey, FactProgress>

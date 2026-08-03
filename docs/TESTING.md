@@ -4,11 +4,11 @@ Math Invaders is tested in three layers, each answering a different question.
 
 | Layer | Question it answers | Runner | Count |
 |-------|--------------------|--------|-------|
-| **Domain** | Is the maths correct? | Vitest (`node`) | 196 tests · 22 files |
-| **UI** | Does the interface behave? | Vitest (`jsdom`) + Testing Library | 149 tests · 24 files |
-| **End-to-end** | Does the shipped bundle work? | Playwright (Chromium desktop + mobile) | 138 tests · 10 files |
+| **Domain** | Is the maths correct? | Vitest (`node`) | 207 tests · 23 files |
+| **UI** | Does the interface behave? | Vitest (`jsdom`) + Testing Library | 169 tests · 28 files |
+| **End-to-end** | Does the shipped bundle work? | Playwright (Chromium desktop + mobile) | 150 tests · 11 files |
 
-**483 tests total.** Everything below runs from `web/`.
+**526 tests total.** Everything below runs from `web/`.
 
 ```bash
 npm test              # both Vitest projects
@@ -61,6 +61,7 @@ What each area locks down:
 - **`game/options`** — always exactly four distinct options, one of which is the answer; every remainder distractor is itself legal.
 - **`game/questions`** — structural validity for every rank × operation × form, and that missing-operator prompts are only kept when exactly one operator fits.
 - **`game/mission`** — the mission reducer: streaks, combo scoring, phase transitions, and the guarantee that a run always reaches 25 questions.
+- **`surprise`** — the cross-game picker: a locked planet or station is never chosen for any star state, all three games are reachable once unlocked, review wins while facts are due, and every route it produces carries the marker and never points at Learn.
 - **`beam/`** — every station × tier across 200 seeds: a beam stop always exactly on the answer and never at either end, a beam long enough to be a number line and short enough to aim at, an answer that does not sit at a fixed fraction of the beam, both bar rows measured against one scale, a fraction's wanted parts summing to the answer, numbers that grow tier to tier, zone unlocking and the star ladder.
 - **`store/`** — the v1→v2 settings migration, score keying per rank and clock, badge tiers, and that tampered or corrupt localStorage degrades to defaults instead of throwing.
 - **`timesTable/`** — Leitner scheduling, session building, planet unlocking, star awards and strategy cards.
@@ -140,6 +141,7 @@ Two projects run each spec: `chromium-desktop` (1280×800) and `chromium-mobile`
 | `settings.spec.ts` | Every control survives a reload; the last operation cannot be switched off; clearing data |
 | `hall-of-fame.spec.ts` | Empty state, grouping by rank and clock, medals, the legacy section |
 | `times-tables.spec.ts` | Galaxy map and locks, phase chooser, Learn end to end, Practice earning a star, Speed Run gating and timing, Daily Mission, heatmap tabs |
+| `surprise.spec.ts` | Surprise never offers locked content, marks the run, ends it with another surprise and a way home, leaves a chosen run's ending untouched, and survives a reload |
 | `number-beam.spec.ts` | Station map and zone locks, a full ten-question drill answered entirely on the beam with the tile grid asserted absent, dragging/nudging/arrow-keying the alien, the bar revealing its numbers after a miss, hiding the bar, resetting beam progress |
 | `progression.spec.ts` | Rank and star progression across the arcade and the trainer |
 | `a11y.spec.ts` | Heading structure, keyboard reachability, accessible names, dialog semantics, no positive `tabindex` |

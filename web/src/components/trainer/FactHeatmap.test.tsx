@@ -1,10 +1,10 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import FactHeatmap from './FactHeatmap'
-import { canonicalKey } from '../timesTable/facts'
-import { VIEW_GRIDS } from '../timesTable/heatmap'
-import type { FactKey, FactProgress } from '../timesTable/types'
-import { masteredFact } from '../test/utils'
+import { canonicalKey } from '../../timesTable/facts'
+import { VIEW_GRIDS } from '../../timesTable/heatmap'
+import type { FactKey, FactProgress } from '../../timesTable/types'
+import { masteredFact } from '../../test/utils'
 
 const learning: FactProgress = { box: 1, lastDay: 0, last3: [] }
 

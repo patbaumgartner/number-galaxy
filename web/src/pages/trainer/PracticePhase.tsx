@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import TrainerFrame from '../../components/TrainerFrame'
-import { NumberPad } from '../../components/NumberPad'
-import { SessionSummary } from '../../components/SessionSummary'
+import TrainerFrame from '../../components/trainer/TrainerFrame'
+import { NumberPad } from '../../components/trainer/NumberPad'
+import { SessionSummary } from '../../components/trainer/SessionSummary'
 import { playCorrect, playLevelUp, playWrong } from '../../sound'
 import { store } from '../../store'
 import { applyAnswer, localEpochDay } from '../../timesTable/leitner'
@@ -11,7 +11,7 @@ import { getPlanet } from '../../timesTable/tables'
 import { computeStars, ttStore } from '../../timesTable/ttStore'
 import type { Fact, FactKey, PlanetId, StarLevel } from '../../timesTable/types'
 import type { Language } from '../../game'
-import { useModalDialog, useSoundSetting } from '../../hooks'
+import { useModalDialog, useSoundSetting, useSurpriseRun, type SurpriseActions } from '../../hooks'
 import { translations } from '../../i18n'
 
 export function PracticePhase({ planetId }: { planetId: PlanetId }) {
@@ -19,6 +19,15 @@ export function PracticePhase({ planetId }: { planetId: PlanetId }) {
     useSoundSetting()
     const ttSettings = ttStore.getTTSettings()
     const t = translations[lang]
+    const surprise = useSurpriseRun()
+    const surpriseActions: SurpriseActions | undefined = surprise.active
+        ? {
+            againLabel: t.surprise.again,
+            homeLabel: t.nav.home,
+            onAgain: surprise.again,
+            onHome: surprise.home,
+        }
+        : undefined
     const planet = getPlanet(planetId)!
     const [todayEpochDay] = useState(() => localEpochDay(Date.now(), new Date().getTimezoneOffset()))
     const [initialSession] = useState<Fact[]>(
@@ -54,6 +63,7 @@ export function PracticePhase({ planetId }: { planetId: PlanetId }) {
         return (
             <TrainerFrame title={title} exit={t.tt.trainExit}>
                 <SessionSummary
+                    surprise={surpriseActions}
                     phase="practice"
                     planetId={planetId}
                     accuracy={accuracy}

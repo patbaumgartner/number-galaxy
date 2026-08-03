@@ -122,6 +122,11 @@ export type Translations = {
         settingsTitle: string; settingsStrategyCards: string; settingsStrategyHint: string
         settingsReset: string; settingsResetConfirm: string
     }
+    surprise: {
+        title: string
+        blurb: string
+        again: string
+    }
     beam: {
         title: string
         tagline: string

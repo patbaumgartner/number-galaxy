@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import BarModelView from './BarModel'
-import { buildBar, type BarSpec } from '../beam/bars'
+import { buildBar, type BarSpec } from '../../beam/bars'
 
 const doubling: BarSpec = [
     { totalKnown: true, parts: [{ value: 7, known: true }] },

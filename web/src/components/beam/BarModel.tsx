@@ -1,5 +1,5 @@
-import { describeBar } from '../beam/bars'
-import type { BarModel } from '../beam/types'
+import { describeBar } from '../../beam/bars'
+import type { BarModel } from '../../beam/types'
 
 type BarModelProps = {
     readonly model: BarModel

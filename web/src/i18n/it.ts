@@ -183,6 +183,11 @@ export const it: Translations = {
         settingsReset: 'Azzera i progressi',
         settingsResetConfirm: 'Azzerare davvero tutti i progressi delle tabelline?',
     },
+    surprise: {
+        title: '🎲 Sorprendimi',
+        blurb: 'Sceglie il gioco per te — prende quello che ti serve di più.',
+        again: 'Un’altra sorpresa',
+    },
     beam: {
         title: '📏 Barra dei numeri',
         tagline: 'Raddoppiare, dimezzare e dividere — sempre sulla barra',

@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router'
-import { store } from '../store'
-import { translations } from '../i18n'
-import type { Phase, PlanetId } from '../timesTable/types'
+import type { SurpriseActions } from '../../hooks'
+import { store } from '../../store'
+import { translations } from '../../i18n'
+import type { Phase, PlanetId } from '../../timesTable/types'
 
 type SessionSummaryProps = {
     phase: Phase
@@ -13,10 +14,12 @@ type SessionSummaryProps = {
     starsChanged: boolean
     isNewBest?: boolean
     timeMs?: number
+    /** Set when the picker chose this game, not the player. */
+    surprise?: SurpriseActions | undefined
 }
 
 export function SessionSummary({
-    phase, accuracy, streak, leveledUpCount, earnedStars, starsChanged, isNewBest, timeMs,
+    phase, accuracy, streak, leveledUpCount, earnedStars, starsChanged, isNewBest, timeMs, surprise,
 }: SessionSummaryProps) {
     const lang = store.getSettings().language
     const t = translations[lang]
@@ -60,10 +63,21 @@ export function SessionSummary({
                 <p>{t.tt.summaryKeepPracticing}</p>
             )}
 
-            <div className="summary-actions" style={{ marginTop: '1rem' }}>
-                <button className="btn btn--primary" onClick={() => navigate('/times-tables')}>
-                    {t.tt.trainExit}
-                </button>
+            <div className="summary-actions">
+                {surprise === undefined ? (
+                    <button type="button" className="btn btn--primary" onClick={() => navigate('/times-tables')}>
+                        {t.tt.trainExit}
+                    </button>
+                ) : (
+                    <>
+                        <button type="button" className="btn btn--primary" onClick={surprise.onAgain}>
+                            {surprise.againLabel}
+                        </button>
+                        <button type="button" className="btn btn--ghost" onClick={surprise.onHome}>
+                            {surprise.homeLabel}
+                        </button>
+                    </>
+                )}
             </div>
         </div>
     )

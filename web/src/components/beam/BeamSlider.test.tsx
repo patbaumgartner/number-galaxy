@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react'
 import { useState } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 import BeamSlider from './BeamSlider'
-import { userEvent } from '../test/utils'
+import { userEvent } from '../../test/utils'
 
 const labels = {
     move: 'Move the alien along the beam',

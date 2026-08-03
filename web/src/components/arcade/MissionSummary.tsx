@@ -1,5 +1,6 @@
-import type { Translations } from '../i18n'
-import { useModalDialog } from '../hooks'
+import type { Translations } from '../../i18n'
+import type { SurpriseActions } from '../../hooks'
+import { useModalDialog } from '../../hooks'
 
 const CONFETTI_PIECES = 16
 
@@ -16,6 +17,8 @@ type MissionSummaryProps = {
     onPlayAgain: () => void
     onChangeMission: () => void
     onSeeScores: () => void
+    /** Set when the picker chose this game, not the player. */
+    surprise?: SurpriseActions | undefined
 }
 
 export default function MissionSummary({
@@ -28,6 +31,7 @@ export default function MissionSummary({
     newRecord,
     newPersonalBest,
     labels,
+    surprise,
     onPlayAgain,
     onChangeMission,
     onSeeScores,
@@ -99,15 +103,28 @@ export default function MissionSummary({
                 </dl>
 
                 <div className="summary__actions">
-                    <button type="button" className="btn btn--primary btn--lg" onClick={onPlayAgain} autoFocus>
-                        {labels.playAgain}
-                    </button>
-                    <button type="button" className="btn btn--ghost" onClick={onChangeMission}>
-                        {labels.changeMission}
-                    </button>
-                    <button type="button" className="btn btn--ghost" onClick={onSeeScores}>
-                        {labels.seeScores}
-                    </button>
+                    {surprise === undefined ? (
+                        <>
+                            <button type="button" className="btn btn--primary btn--lg" onClick={onPlayAgain} autoFocus>
+                                {labels.playAgain}
+                            </button>
+                            <button type="button" className="btn btn--ghost" onClick={onChangeMission}>
+                                {labels.changeMission}
+                            </button>
+                            <button type="button" className="btn btn--ghost" onClick={onSeeScores}>
+                                {labels.seeScores}
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <button type="button" className="btn btn--primary btn--lg" onClick={surprise.onAgain} autoFocus>
+                                {surprise.againLabel}
+                            </button>
+                            <button type="button" className="btn btn--ghost" onClick={surprise.onHome}>
+                                {surprise.homeLabel}
+                            </button>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

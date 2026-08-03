@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import MissionSummary from './MissionSummary'
-import { translations } from '../i18n'
-import { userEvent } from '../test/utils'
+import { translations } from '../../i18n'
+import { userEvent } from '../../test/utils'
 
 const labels = translations.en.summary
 

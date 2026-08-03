@@ -232,3 +232,14 @@
   .bar-row__track { height: 56px; }
   .beam-drill .equation { min-height: 140px; }
 }
+
+/* --------------------------------------------------------------- surprise -- */
+
+.game-picker__surprise {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.game-picker__surprise .btn { width: 100%; }
+.game-picker__surprise .panel__hint { margin: 0; text-align: center; }

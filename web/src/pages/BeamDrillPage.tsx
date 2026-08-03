@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router'
-import BarModelView from '../components/BarModel'
-import BeamSlider from '../components/BeamSlider'
+import BarModelView from '../components/beam/BarModel'
+import BeamSlider from '../components/beam/BeamSlider'
 import TopBar from '../components/TopBar'
+import WorkedExampleDialog from '../components/WorkedExampleDialog'
 import {
     BEAM_ALIENS,
     advanceDrill,
@@ -19,7 +20,7 @@ import {
     type BeamSkill,
     type BeamStarLevel,
 } from '../beam'
-import { useDocumentLanguage, useModalDialog, useSoundSetting } from '../hooks'
+import { useDocumentLanguage, useModalDialog, useSoundSetting, useSurpriseRun, type SurpriseActions } from '../hooks'
 import { playCorrect, playShoot, playVictory, playWrong } from '../sound'
 import { store } from '../store'
 import { fill, translations, type Translations } from '../i18n'
@@ -76,6 +77,16 @@ function BeamDrill({ skill, onReplay }: { readonly skill: BeamSkill; readonly on
     const [helpOpen, setHelpOpen] = useState(false)
     const [result, setResult] = useState<DrillResult | null>(null)
     const savedRef = useRef(false)
+    const surprise = useSurpriseRun()
+
+    const surpriseActions: SurpriseActions | undefined = surprise.active
+        ? {
+            againLabel: t.surprise.again,
+            homeLabel: t.nav.home,
+            onAgain: surprise.again,
+            onHome: surprise.home,
+        }
+        : undefined
 
     const question = currentQuestion(drill)
     const answering = drill.phase === 'answering' && !helpOpen
@@ -189,7 +200,12 @@ function BeamDrill({ skill, onReplay }: { readonly skill: BeamSkill; readonly on
             </main>
 
             {helpOpen && (
-                <HelpOverlay labels={t.beam} sample={station.sample} onClose={() => setHelpOpen(false)} />
+                <WorkedExampleDialog
+                    title={t.beam.helpTitle}
+                    close={t.beam.helpClose}
+                    example={station.sample}
+                    onClose={() => setHelpOpen(false)}
+                />
             )}
 
             {result !== null && (
@@ -198,34 +214,9 @@ function BeamDrill({ skill, onReplay }: { readonly skill: BeamSkill; readonly on
                     result={result}
                     onPlayAgain={onReplay}
                     onExit={() => navigate('/number-beam')}
+                    surprise={surpriseActions}
                 />
             )}
-        </div>
-    )
-}
-
-type HelpOverlayProps = {
-    readonly labels: Translations['beam']
-    readonly sample: { readonly prompt: string; readonly answer: string; readonly steps: string }
-    readonly onClose: () => void
-}
-
-function HelpOverlay({ labels, sample, onClose }: HelpOverlayProps) {
-    const dialog = useModalDialog<HTMLDivElement>(onClose)
-
-    return (
-        <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="beam-help-title" ref={dialog}>
-            <div className="overlay__card">
-                <h2 className="overlay__title" id="beam-help-title">💡 {labels.helpTitle}</h2>
-                <p className="overlay__example">
-                    <span>{sample.prompt}</span>
-                    <strong>{sample.answer}</strong>
-                </p>
-                <p className="overlay__steps">{sample.steps}</p>
-                <button type="button" className="btn btn--primary" onClick={onClose} autoFocus>
-                    {labels.helpClose}
-                </button>
-            </div>
         </div>
     )
 }
@@ -235,9 +226,11 @@ type DrillSummaryProps = {
     readonly result: DrillResult
     readonly onPlayAgain: () => void
     readonly onExit: () => void
+    /** Set when the picker chose this station, not the player. */
+    readonly surprise?: SurpriseActions | undefined
 }
 
-function DrillSummary({ labels, result, onPlayAgain, onExit }: DrillSummaryProps) {
+function DrillSummary({ labels, result, onPlayAgain, onExit, surprise }: DrillSummaryProps) {
     const dialog = useModalDialog<HTMLDivElement>()
 
     return (
@@ -256,12 +249,25 @@ function DrillSummary({ labels, result, onPlayAgain, onExit }: DrillSummaryProps
                 {result.newBest && <p className="overlay__note">{labels.summaryNewBest}</p>}
                 {!result.gained && result.stars === 0 && <p className="overlay__note">{labels.summaryKeepGoing}</p>}
                 <div className="overlay__actions">
-                    <button type="button" className="btn btn--primary" onClick={onPlayAgain}>
-                        {labels.playAgain}
-                    </button>
-                    <button type="button" className="btn btn--ghost" onClick={onExit}>
-                        {labels.exit}
-                    </button>
+                    {surprise === undefined ? (
+                        <>
+                            <button type="button" className="btn btn--primary" onClick={onPlayAgain}>
+                                {labels.playAgain}
+                            </button>
+                            <button type="button" className="btn btn--ghost" onClick={onExit}>
+                                {labels.exit}
+                            </button>
+                        </>
+                    ) : (
+                        <>
+                            <button type="button" className="btn btn--primary" onClick={surprise.onAgain}>
+                                {surprise.againLabel}
+                            </button>
+                            <button type="button" className="btn btn--ghost" onClick={surprise.onHome}>
+                                {surprise.homeLabel}
+                            </button>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

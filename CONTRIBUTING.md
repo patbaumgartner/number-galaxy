@@ -133,7 +133,8 @@ math-invaders/
 │   ├── e2e/                  # Playwright end-to-end specs
 │   ├── src/
 │   │   ├── pages/            # Route-level pages, incl. trainer/ phases
-│   │   ├── components/       # Reusable UI components
+│   │   ├── components/       # Shared components; arcade/, trainer/, beam/
+│   │   │                     # hold the ones a single feature owns
 │   │   ├── game/             # Arcade domain: rng, equations, questions, mission
 │   │   ├── beam/             # Number Beam domain: skills, bars, drill, stars
 │   │   ├── timesTable/       # Trainer domain: facts, Leitner, sessions, stars

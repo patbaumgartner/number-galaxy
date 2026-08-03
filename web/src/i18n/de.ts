@@ -181,6 +181,11 @@ export const de: Translations = {
         settingsReset: 'Trainer-Fortschritt löschen',
         settingsResetConfirm: 'Einmaleins-Fortschritt wirklich löschen?',
     },
+    surprise: {
+        title: '🎲 Überrasch mich',
+        blurb: 'Das Spiel wählt für dich — und nimmt das, was du gerade brauchst.',
+        again: 'Noch eine Überraschung',
+    },
     beam: {
         title: '📏 Zahlenbalken',
         tagline: 'Verdoppeln, halbieren und teilen — immer auf dem Balken',

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import AnswerGrid from './AnswerGrid'
-import { userEvent } from '../test/utils'
+import { userEvent } from '../../test/utils'
 
 const options = ['12', '15', '18', '21']
 

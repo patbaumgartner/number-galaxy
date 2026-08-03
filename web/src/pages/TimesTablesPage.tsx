@@ -1,6 +1,6 @@
 import { useMemo, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
-import FactHeatmap from '../components/FactHeatmap'
+import FactHeatmap from '../components/trainer/FactHeatmap'
 import TopBar from '../components/TopBar'
 import { useDocumentLanguage, useModalDialog } from '../hooks'
 import { translations } from '../i18n'

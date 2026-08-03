@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import TopBar from './TopBar'
+import TopBar from '../TopBar'
 
 type TrainerFrameProps = {
     /** A node, not a string: most phases title themselves with a planet emoji and label. */

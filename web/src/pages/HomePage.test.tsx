@@ -75,4 +75,18 @@ describe('HomePage', () => {
         expect(screen.getByRole('button', { name: /jouer/i })).toBeInTheDocument()
         expect(document.documentElement.lang).toBe('fr')
     })
+
+    it('sends the player straight into a game the picker chose', async () => {
+        seedLanguage('en')
+        seedPlayer()
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<HomePage />)
+
+        await user.click(screen.getByRole('button', { name: /Surprise me/ }))
+
+        // A fresh player has nothing unlocked beyond the arcade, the home galaxy
+        // and the Doubling Deck, so those are the only legal destinations.
+        const path = screen.getByTestId(LOCATION_TEST_ID).textContent ?? ''
+        expect(path).toMatch(/^\/(game|times-tables\/train\/t\d+\/practice|number-beam\/drill\/(double|halve|nearDouble))$/)
+    })
 })

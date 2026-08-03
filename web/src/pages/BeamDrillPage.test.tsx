@@ -189,4 +189,24 @@ describe('BeamDrillPage', () => {
         answerCorrectly()
         expect(screen.getByText('Correct!')).toBeInTheDocument()
     })
+
+    it('offers another surprise instead of a replay when the picker chose this station', () => {
+        renderWithRouter(<BeamDrillPage />, {
+            route: '/number-beam/drill/double?surprise=1',
+            path: '/number-beam/drill/:skill',
+        })
+        playThrough(() => true)
+
+        expect(screen.getByRole('button', { name: 'Another surprise' })).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: 'Home' })).toBeInTheDocument()
+        expect(screen.queryByRole('button', { name: 'Play again' })).not.toBeInTheDocument()
+    })
+
+    it('leaves a chosen run with its own replay actions', () => {
+        renderDrill('double')
+        playThrough(() => true)
+
+        expect(screen.getByRole('button', { name: 'Play again' })).toBeInTheDocument()
+        expect(screen.queryByRole('button', { name: 'Another surprise' })).not.toBeInTheDocument()
+    })
 })

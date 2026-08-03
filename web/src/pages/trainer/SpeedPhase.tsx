@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
-import TrainerFrame from '../../components/TrainerFrame'
-import { NumberPad } from '../../components/NumberPad'
-import { SessionSummary } from '../../components/SessionSummary'
+import TrainerFrame from '../../components/trainer/TrainerFrame'
+import { NumberPad } from '../../components/trainer/NumberPad'
+import { SessionSummary } from '../../components/trainer/SessionSummary'
 import { playCorrect, playLevelUp, playWrong } from '../../sound'
-import { useSoundSetting } from '../../hooks'
+import { useSoundSetting, useSurpriseRun, type SurpriseActions } from '../../hooks'
 import { store } from '../../store'
 import { applyAnswer, localEpochDay } from '../../timesTable/leitner'
 import { buildSpeedSession } from '../../timesTable/session'
@@ -17,6 +17,15 @@ export function SpeedPhase({ planetId }: { planetId: PlanetId }) {
     const lang = store.getSettings().language
     useSoundSetting()
     const t = translations[lang]
+    const surprise = useSurpriseRun()
+    const surpriseActions: SurpriseActions | undefined = surprise.active
+        ? {
+            againLabel: t.surprise.again,
+            homeLabel: t.nav.home,
+            onAgain: surprise.again,
+            onHome: surprise.home,
+        }
+        : undefined
     const navigate = useNavigate()
     const planet = getPlanet(planetId)!
     const [todayEpochDay] = useState(() => localEpochDay(Date.now(), new Date().getTimezoneOffset()))
@@ -67,6 +76,7 @@ export function SpeedPhase({ planetId }: { planetId: PlanetId }) {
         return (
             <TrainerFrame title={title} exit={t.tt.trainExit}>
                 <SessionSummary
+                    surprise={surpriseActions}
                     phase="speed"
                     planetId={planetId}
                     accuracy={accuracy}

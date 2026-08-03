@@ -1,25 +1,18 @@
 import { screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { store } from '../store'
-import { LOCATION_TEST_ID, renderWithRouter, seedLanguage, seedOperations, seedPlayer, seedRank, seedSettings, userEvent } from '../test/utils'
+import { LOCATION_TEST_ID, renderWithRouter, seedLanguage, seedOperations, seedPlayer, seedRank, userEvent } from '../test/utils'
 import HomePage from './HomePage'
 
 describe('HomePage', () => {
     beforeEach(() => seedLanguage('en'))
     afterEach(() => vi.restoreAllMocks())
 
-    it('shows the configured mission chips and creates a player before revealing the picker', async () => {
-        seedOperations(['addition', 'multiplication'])
-        seedRank('cadet')
-        seedSettings({ timer: 'timed' })
+    it('creates a player before revealing the picker', async () => {
         const user = userEvent.setup({ delay: null })
         renderWithRouter(<HomePage />)
 
         expect(screen.getByRole('button', { name: /play/i })).toBeInTheDocument()
-        expect(screen.getByText('➕ Plus')).toBeInTheDocument()
-        expect(screen.getByText('✖️ Times')).toBeInTheDocument()
-        expect(screen.getByText('⭐ Cadet')).toBeInTheDocument()
-        expect(screen.getByText(/⏱ 25/)).toBeInTheDocument()
 
         await user.click(screen.getByRole('button', { name: /play/i }))
         expect(store.getPlayer()).not.toBeNull()
@@ -27,7 +20,17 @@ describe('HomePage', () => {
         expect(screen.getByRole('heading', { name: /choose your game/i })).toBeInTheDocument()
     })
 
-    it('navigates from the picker and the hall and settings controls', async () => {
+    it('leaves the arcade its own settings and leaderboard, rather than hosting them', () => {
+        seedOperations(['addition', 'multiplication'])
+        seedRank('cadet')
+        renderWithRouter(<HomePage />)
+
+        // Both belong to Math Invaders alone, and home now serves all four games.
+        expect(screen.queryByText('⭐ Cadet')).not.toBeInTheDocument()
+        expect(screen.queryByRole('button', { name: /best scores/i })).not.toBeInTheDocument()
+    })
+
+    it('navigates from the picker and the settings control', async () => {
         seedPlayer()
         const user = userEvent.setup({ delay: null })
         renderWithRouter(<HomePage />)
@@ -36,8 +39,6 @@ describe('HomePage', () => {
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/game')
         await user.click(screen.getByRole('button', { name: /^Times Tables/ }))
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/times-tables')
-        await user.click(screen.getByRole('button', { name: /best scores/i }))
-        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/hall-of-fame')
         await user.click(screen.getByRole('button', { name: /settings/i }))
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/settings')
     })
@@ -46,9 +47,8 @@ describe('HomePage', () => {
         seedPlayer()
         renderWithRouter(<HomePage />)
 
-        const cards = screen.getAllByRole('button')
-            .map(button => button.textContent ?? '')
-            .filter(text => /from 4|from 5|from 6|from 7/.test(text))
+        const cards = [...document.querySelectorAll('.game-picker__card:not(.game-picker__card--surprise)')]
+            .map(card => card.textContent ?? '')
 
         expect(cards).toHaveLength(4)
         expect(cards[0]).toContain('Number Sense')
@@ -163,7 +163,7 @@ describe('HomePage', () => {
         // only legal destinations.
         const path = screen.getByTestId(LOCATION_TEST_ID).textContent ?? ''
         expect(path).toMatch(
-            /^\/(game|times-tables\/train\/t\d+\/practice|number-beam\/drill\/(double|halve|nearDouble)|number-sense\/drill\/(subitize|tenFrame|rekenrek))$/,
+            /^\/(game\/play|times-tables\/train\/t\d+\/practice|number-beam\/drill\/(double|halve|nearDouble)|number-sense\/drill\/(subitize|tenFrame|rekenrek))$/,
         )
     })
 })

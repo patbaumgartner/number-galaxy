@@ -7,6 +7,12 @@
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border-hairline);
   min-height: 48px;
+  /* The stage is positioned and would otherwise paint over this bar once a short
+     screen — a phone held sideways — squeezes the column, putting Back, Help and
+     Finish under it with no way out of the mission. */
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .game-bar__player {

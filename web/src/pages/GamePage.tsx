@@ -334,7 +334,7 @@ export default function GamePage() {
     return (
         <div className="page page--game">
             <TopBar
-                back={{ label: t.nav.home, to: '/' }}
+                back={{ label: t.game.exit, to: '/game' }}
                 title={<>🛸<span className="game-bar__hide-sm"> {t.home.gameInvaders}</span></>}
                 actions={<>
                     <span className="game-bar__player">

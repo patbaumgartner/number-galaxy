@@ -123,10 +123,28 @@ export async function answerCurrentQuestion(page: Page): Promise<void> {
             await page.locator('.numpad-btn').filter({ hasText: new RegExp(`^${digit}$`) }).click()
         }
         await page.locator('.numpad-btn-action').last().click()
+        await dismissStrategyAsk(page)
         return
     }
 
     await page.getByRole('button', { name: answer, exact: true }).click()
+    await dismissStrategyAsk(page)
+}
+
+/**
+ * Answers "How did you work it out?" when it appears.
+ *
+ * It follows about one correct answer in eight, and holds the mission on that
+ * question for 3.6s rather than the usual 0.65s — several times the pause
+ * callers wait between questions, so leaving it up makes them read the same
+ * question twice and blame the timing.
+ */
+async function dismissStrategyAsk(page: Page): Promise<void> {
+    // The ask renders with the feedback, so once that is on screen its absence
+    // is real rather than a frame too early.
+    await expect(page.locator('.equation--correct, .equation--wrong, .equation--timeout').first()).toBeVisible()
+    const option = page.locator('.strategy__option').first()
+    if (await option.count() > 0) await option.click()
 }
 
 export async function answerCurrentFact(page: Page): Promise<void> {

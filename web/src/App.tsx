@@ -1,6 +1,7 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
 import './styles/index.css'
 import HomePage from './pages/HomePage'
+import ArcadePage from './pages/ArcadePage'
 import GamePage from './pages/GamePage'
 import HallOfFamePage from './pages/HallOfFamePage'
 import SettingsPage from './pages/SettingsPage'
@@ -19,7 +20,8 @@ export default function App() {
             <ErrorBoundary>
                 <Routes>
                     <Route path="/" element={<HomePage />} />
-                    <Route path="/game" element={<GamePage />} />
+                    <Route path="/game" element={<ArcadePage />} />
+                    <Route path="/game/play" element={<GamePage />} />
                     <Route path="/hall-of-fame" element={<HallOfFamePage />} />
                     <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/progress" element={<ProgressPage />} />

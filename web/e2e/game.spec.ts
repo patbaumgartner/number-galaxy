@@ -16,7 +16,7 @@ test('creates a profile and reveals the game picker after Play', async ({ page }
 
 test('completes a full mission with score accuracy and stars', async ({ page }) => {
     await seedStorage(page, { settings: untimed, player })
-    await gotoApp(page, '/game')
+    await gotoApp(page, '/game/play')
     for (let index = 0; index < 25; index += 1) {
         await answerCurrentQuestion(page)
     }
@@ -29,7 +29,7 @@ test('completes a full mission with score accuracy and stars', async ({ page }) 
 
 test('shows a worked solution after a wrong answer and continues the mission', async ({ page }) => {
     await seedStorage(page, { settings: untimed, player })
-    await gotoApp(page, '/game')
+    await gotoApp(page, '/game/play')
     const answer = calculateArcadeAnswer((await page.locator('.equation__prompt').textContent()) ?? '')
     const wrongTile = page.locator('.answer-tile').filter({ hasNotText: answer }).first()
     await wrongTile.click()
@@ -50,7 +50,7 @@ test('shows a worked solution after a wrong answer and continues the mission', a
 
 test('names the mistake when a wrong answer is a known one', async ({ page }) => {
     await seedStorage(page, { settings: { ...untimed, operations: ['subtraction'], rank: 'ace' }, player })
-    await gotoApp(page, '/game')
+    await gotoApp(page, '/game/play')
 
     // Take the smaller digit from the larger in each column — the documented
     // subtraction bug — and check the game names it rather than only correcting it.
@@ -88,7 +88,7 @@ test('names the mistake when a wrong answer is a known one', async ({ page }) =>
 
 test('asks a missed question again later in the same mission', async ({ page }) => {
     await seedStorage(page, { settings: untimed, player })
-    await gotoApp(page, '/game')
+    await gotoApp(page, '/game/play')
     const missed = (await page.locator('.equation__prompt').textContent()) ?? ''
     const answer = calculateArcadeAnswer(missed)
     await page.locator('.answer-tile').filter({ hasNotText: answer }).first().click()
@@ -105,14 +105,14 @@ test('asks a missed question again later in the same mission', async ({ page }) 
 
 test('raises the combo multiplier to x2 after three correct answers', async ({ page }) => {
     await seedStorage(page, { settings: untimed, player })
-    await gotoApp(page, '/game')
+    await gotoApp(page, '/game/play')
     for (let index = 0; index < 3; index += 1) await answerCurrentQuestion(page)
     await expect(page.locator('.hud__stat--combo')).toContainText('×2')
 })
 
 test('pauses the timed countdown while Help is open and closes the overlay', async ({ page }) => {
     await seedStorage(page, { settings: { ...untimed, timed: true }, player })
-    await gotoApp(page, '/game')
+    await gotoApp(page, '/game/play')
     const timer = page.locator('.hud__timer-value')
     const before = await timer.textContent()
     await page.getByRole('button', { name: /help/i }).click()
@@ -125,7 +125,7 @@ test('pauses the timed countdown while Help is open and closes the overlay', asy
 
 test('finishes immediately when Quit is selected and Play again starts fresh', async ({ page }) => {
     await seedStorage(page, { settings: untimed, player })
-    await gotoApp(page, '/game')
+    await gotoApp(page, '/game/play')
     await answerCurrentQuestion(page)
     await page.getByRole('button', { name: 'Finish' }).click()
     await expect(page.getByRole('dialog')).toBeVisible()
@@ -136,7 +136,7 @@ test('finishes immediately when Quit is selected and Play again starts fresh', a
 
 test('fires tiles with digits and moves the roving answer focus with arrows', async ({ page }) => {
     await seedStorage(page, { settings: untimed, player })
-    await gotoApp(page, '/game')
+    await gotoApp(page, '/game/play')
     const tiles = page.locator('.answer-tile')
     await expect(tiles).toHaveCount(4)
     await page.keyboard.press('ArrowRight')

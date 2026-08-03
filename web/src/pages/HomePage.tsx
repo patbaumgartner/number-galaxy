@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { store, type Player } from '../store'
-import { QUESTIONS_PER_MISSION, rankConfig } from '../game'
 import { avatars } from '../constants'
 import { fill, translations, type Translations } from '../i18n'
 import { useDocumentLanguage, useModalDialog } from '../hooks'
@@ -17,10 +16,10 @@ type ProfileView = 'none' | 'switch' | 'edit'
  * at recall. Ages are a hint, never a gate.
  */
 const GAMES = [
-    { route: '/number-sense', emoji: '👀', name: 'gameSense', blurb: 'gameSenseBlurb', ages: 'agesSense' },
-    { route: '/number-beam', emoji: '📏', name: 'gameBeam', blurb: 'gameBeamBlurb', ages: 'agesBeam' },
-    { route: '/game', emoji: '🛸', name: 'gameInvaders', blurb: 'gameInvadersBlurb', ages: 'agesInvaders' },
-    { route: '/times-tables', emoji: '✖️', name: 'gameTables', blurb: 'gameTablesBlurb', ages: 'agesTables' },
+    { route: '/number-sense', emoji: '👀', name: 'gameSense', blurb: 'gameSenseBlurb' },
+    { route: '/number-beam', emoji: '📏', name: 'gameBeam', blurb: 'gameBeamBlurb' },
+    { route: '/game', emoji: '🛸', name: 'gameInvaders', blurb: 'gameInvadersBlurb' },
+    { route: '/times-tables', emoji: '✖️', name: 'gameTables', blurb: 'gameTablesBlurb' },
 ] as const
 
 export default function HomePage() {
@@ -129,7 +128,6 @@ export default function HomePage() {
                                     <span className="game-picker__emoji" aria-hidden="true">{game.emoji}</span>
                                     <strong>{t.home[game.name]}</strong>
                                     <small>{t.home[game.blurb]}</small>
-                                    <span className="chip chip--sm">{t.home[game.ages]}</span>
                                 </button>
                             ))}
                             <button
@@ -145,29 +143,7 @@ export default function HomePage() {
                     </section>
                 )}
 
-                <section className="panel">
-                    <div className="panel__head">
-                        <h2 className="panel__title">🛸 {t.home.missionTitle}</h2>
-                        <button type="button" className="btn btn--ghost btn--sm" onClick={() => navigate('/settings')}>
-                            {t.home.change}
-                        </button>
-                    </div>
-                    <ul className="chips">
-                        {settings.operations.map(operation => (
-                            <li key={operation} className="chip">{t.operations[operation]}</li>
-                        ))}
-                        <li className="chip chip--rank">{t.ranks[settings.rank]}</li>
-                        <li className="chip">
-                            {fill(t.settings.rankRange, { max: rankConfig[settings.rank].maxValue })}
-                        </li>
-                        <li className="chip">{settings.timer === 'off' ? '∞' : '⏱'} {QUESTIONS_PER_MISSION}</li>
-                    </ul>
-                </section>
-
                 <nav className="home-nav">
-                    <button type="button" className="btn btn--ghost" onClick={() => navigate('/hall-of-fame')}>
-                        🏆 {t.nav.hallOfFame}
-                    </button>
                     <button type="button" className="btn btn--ghost" onClick={() => navigate('/settings')}>
                         ⚙️ {t.nav.settings}
                     </button>

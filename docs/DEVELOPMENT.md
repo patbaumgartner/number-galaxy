@@ -24,7 +24,7 @@ free, private and offline-capable at the same time.
 │  ├─ Home: profile, the game picker and 🎲 Surprise
 │  ├─ Number Sense: zone map and the drill
 │  ├─ Number Beam: station map and the ten-question drill
-│  ├─ Game: the arcade mission loop
+│  ├─ Math Invaders: the mission on offer, best scores, then the mission loop
 │  ├─ Times Tables: galaxy map and the four trainer phases
 │  ├─ Hall of Fame: arcade leaderboards
 │  ├─ Progress: the parent and teacher view

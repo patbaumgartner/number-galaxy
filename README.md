@@ -38,8 +38,10 @@ can share a device without either being handed the other's numbers.
 
 ### What a session looks like
 
-A child presses Play and is answering a question within a second — there is no menu to
-learn and no account to make. A run is short and finite by design: **25 questions** in
+A child presses Play, picks one of four games, and is answering a question within a couple
+of taps — there is no menu to learn and no account to make. Each game opens on its own
+screen: a map of stations or planets, or for Math Invaders the mission it is about to
+serve, with its best scores beside it. A run is short and finite by design: **25 questions** in
 the arcade, **10** in a beam drill, one planet's worth of facts in the trainer. A wrong
 answer never ends a run early, so a hard day means *more* practice, not less.
 
@@ -294,8 +296,8 @@ does not do as it is told.
 
 ### 🏆 Hall of Fame
 
-Reached from the Math Invaders section of the home page — the leaderboard belongs to this
-game, so the other two do not link to it.
+Reached from the Math Invaders screen and from the end of a mission — the leaderboard
+belongs to this game, so the other three do not link to it.
 
 - **One best entry per rank and per clock setting**, so a relaxed run never overwrites a
   timed one.

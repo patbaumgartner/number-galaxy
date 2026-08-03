@@ -55,7 +55,7 @@ describe('HallOfFamePage', () => {
         const details = screen.getByText('Earlier', { selector: 'summary' }).closest('details')
         expect(details).not.toHaveAttribute('open')
         expect(details).toBeInTheDocument()
-        await user.click(screen.getByRole('button', { name: /home/i }))
+        await user.click(screen.getByRole('button', { name: /back/i }))
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/')
         await user.click(screen.getByRole('button', { name: /settings/i }))
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/settings')

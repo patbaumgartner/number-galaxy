@@ -18,8 +18,15 @@ describe('App routing', () => {
         expect(screen.getByRole('heading', { level: 1, name: new RegExp(translations.de.home.appName, 'i') })).toBeInTheDocument()
     })
 
-    it('renders the game page', () => {
+    it('renders the arcade hub, which is what /game opens now', () => {
         renderAt('/game')
+
+        expect(screen.getByRole('heading', { level: 1, name: /Math Invaders/ })).toBeInTheDocument()
+        expect(screen.getByRole('button', { name: new RegExp(translations.de.nav.hallOfFame) })).toBeInTheDocument()
+    })
+
+    it('renders the mission itself one level down', () => {
+        renderAt('/game/play')
 
         expect(screen.getByRole('group')).toBeInTheDocument()
         expect(screen.getAllByRole('button', { name: /^\d+$/ }).length).toBeGreaterThan(0)

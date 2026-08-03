@@ -107,7 +107,7 @@ describe('surprise routes', () => {
     })
 
     it('maps each game to the screen a run actually starts on', () => {
-        expect(surpriseRoute({ game: 'invaders' })).toBe('/game?surprise=1')
+        expect(surpriseRoute({ game: 'invaders' })).toBe('/game/play?surprise=1')
         expect(surpriseRoute({ game: 'tables', planetId: 'mission' }))
             .toBe('/times-tables/train/mission/daily?surprise=1')
         expect(surpriseRoute({ game: 'beam', skill: 'double' }))

@@ -74,7 +74,7 @@ export function surpriseRoute(target: SurpriseTarget): string {
     const mark = `?${SURPRISE_PARAM}=1`
     switch (target.game) {
         case 'invaders':
-            return `/game${mark}`
+            return `/game/play${mark}`
         case 'tables':
             return target.planetId === 'mission'
                 ? `/times-tables/train/mission/daily${mark}`

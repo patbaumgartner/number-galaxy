@@ -23,7 +23,7 @@ for (const viewport of viewports) {
     test(`keeps game and trainer targets readable at ${viewport.width}x${viewport.height}`, async ({ page }) => {
         await page.setViewportSize(viewport)
         await seedStorage(page, { settings, player })
-        await gotoApp(page, '/game')
+        await gotoApp(page, '/game/play')
         expect(await page.evaluate(() => document.documentElement.scrollHeight <= window.innerHeight)).toBeTruthy()
         for (const target of await page.locator('.answer-tile').all()) {
             const box = await target.boundingBox()
@@ -66,5 +66,29 @@ for (const viewport of viewports) {
             })
             if (inset !== null) expect(inset).toBeGreaterThanOrEqual(8)
         }
+    })
+}
+
+/**
+ * A phone held sideways is the shortest screen the game meets, and the arcade is
+ * the one screen whose stage is positioned — so it was painting over the bar
+ * holding Back, Help and Finish, leaving no way out of a mission.
+ */
+for (const viewport of [{ width: 844, height: 390 }, { width: 667, height: 375 }] as const) {
+    test(`keeps every way out of a mission tappable at ${viewport.width}x${viewport.height}`, async ({ page }) => {
+        await page.setViewportSize(viewport)
+        await seedStorage(page, { settings, player })
+        await gotoApp(page, '/game/play')
+        await expect(page.locator('.equation__prompt')).toBeVisible()
+
+        const covered = await page.locator('.game-bar .btn').evaluateAll(buttons => buttons
+            .filter(button => {
+                const box = button.getBoundingClientRect()
+                const hit = document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2)
+                return !(hit === button || button.contains(hit))
+            })
+            .map(button => button.textContent?.trim() ?? ''))
+
+        expect(covered).toEqual([])
     })
 }

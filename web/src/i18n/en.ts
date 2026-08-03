@@ -28,10 +28,6 @@ export const en: Translations = {
         chooseGame: 'Choose your game',
         gameSense: 'Number Sense',
         gameSenseBlurb: 'See how many, without counting.',
-        agesSense: 'from 4',
-        agesBeam: 'from 5',
-        agesInvaders: 'from 6',
-        agesTables: 'from 7',
         howToSenseTitle: 'How to play: Number Sense',
         howToPlay: 'How to play',
         howToSenseSteps: [
@@ -46,7 +42,7 @@ export const en: Translations = {
         gameTablesBlurb: 'Learn the times tables planet by planet.',
         gameBeamBlurb: 'Double and halve — drawn on a bar you can see.',
         howToTitle: 'How to play: Math Invaders',
-        howToTablesTitle: 'How to play: Times Tables Galaxy',
+        howToTablesTitle: 'How to play: Times Tables',
         howToTablesSteps: [
             'Pick a planet on the star map.',
             'Learn shows you the table, Practice makes it stick.',
@@ -65,6 +61,7 @@ export const en: Translations = {
         ],
     },
     game: {
+        exit: 'Back',
         score: 'Score',
         combo: 'Combo',
         question: 'Question',

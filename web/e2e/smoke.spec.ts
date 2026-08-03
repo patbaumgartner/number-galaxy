@@ -7,6 +7,7 @@ test.describe.configure({ mode: 'parallel' })
 
 for (const route of [
     ['/', 'Number Galaxy'],
+    ['/game', '🛸 Math Invaders'],
     ['/hall-of-fame', 'Best scores'],
     ['/settings', 'Settings'],
     ['/times-tables', 'Times Tables'],

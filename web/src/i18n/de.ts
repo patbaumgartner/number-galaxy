@@ -28,10 +28,6 @@ export const de: Translations = {
         chooseGame: 'Wähle dein Spiel',
         gameSense: 'Zahlenblick',
         gameSenseBlurb: 'Mengen sehen, ohne zu zählen.',
-        agesSense: 'ab 4',
-        agesBeam: 'ab 5',
-        agesInvaders: 'ab 6',
-        agesTables: 'ab 7',
         howToSenseTitle: 'So geht’s: Zahlenblick',
         howToPlay: 'So geht’s',
         howToSenseSteps: [
@@ -46,7 +42,7 @@ export const de: Translations = {
         gameTablesBlurb: 'Lerne die Reihen Planet für Planet.',
         gameBeamBlurb: 'Verdopple und halbiere — sichtbar auf dem Balken.',
         howToTitle: 'So geht’s: Math Invaders',
-        howToTablesTitle: 'So geht’s: Einmaleins-Galaxie',
+        howToTablesTitle: 'So geht’s: Einmaleins',
         howToTablesSteps: [
             'Wähle einen Planeten auf der Sternenkarte.',
             'Lernen zeigt dir die Reihe, Üben festigt sie.',
@@ -65,6 +61,7 @@ export const de: Translations = {
         ],
     },
     game: {
+        exit: 'Zurück',
         score: 'Punkte',
         combo: 'Kombo',
         question: 'Aufgabe',

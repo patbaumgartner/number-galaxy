@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   one app named nothing.
   - The site address and the repository keep the old name, so every existing
     link and bookmark still works.
+- **Math Invaders has a front door now.** It was the only game without one:
+  the other three open onto a map, while the arcade dropped a child straight
+  into a mission. That is why its two pre-flight pieces — the mission on offer
+  and the leaderboard — had ended up on the home page, which belongs to all four
+  games equally. Both now live on the arcade's own screen at `/game`, with the
+  mission loop one step further in.
 - **❓ How to play, inside each game.** The rules for all four games used to sit
   on the home page, where they were read once and then scrolled past forever —
   furthest from the moment anyone needs them. Each game now carries its own
@@ -188,6 +194,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     only ever clears the current namespace, so a child's name would have sat on
     the device permanently with nothing in the interface able to reach it.
   - The address and the repository are unchanged, so no link breaks.
+- **The home page stopped being the arcade's.** It carried "Your mission" — the
+  arcade's operations, rank and clock — and 🏆 Best scores, neither of which the
+  other three games have any part in. Home is now the four games and nothing
+  else.
+- **The ages came off the game cards.** A number under each game reads as an
+  entry requirement, which is the opposite of what it meant: the ramp is already
+  in the order the games sit in, and the ages stay in the README where a grown-up
+  is the one reading them.
 - **Everything runs simplest first.** The home picker, the settings groups and
   the README now all run 👀 Number Sense → 📏 Number Beam → 🛸 Math Invaders →
   ✖️ Times Tables, which is the order a child actually grows through them.
@@ -284,6 +298,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   restoration to the control that opened it.
 
 ### Fixed
+- **A "How to play" title still said Times Tables Galaxy** in all four languages,
+  which the rename had missed.
+- **A phone held sideways left no way out of a mission.** The arcade's stage is
+  positioned and its top bar was not, so on a short screen the stage painted
+  straight over Back, How to play, Help and Finish — every exit at once. Only the
+  arcade was affected; the other games' bars sit above their stages already.
 - **"Place it" asked the question and answered it in the same breath.** The
   heading showed the instruction rather than the numeral, and the question
   carried a number-line picture with the answer already marked on it — so the

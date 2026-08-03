@@ -8,7 +8,7 @@ const player = { id: 'surprise-pilot', playerName: 'Nova', avatarId: '🚀', cre
  * Everything a fresh player can legally be sent to: the arcade, the home galaxy,
  * the Doubling Deck and the first Number Sense zone, which is open from the start.
  */
-const LEGAL_TARGET = /\/math-invaders\/(game|times-tables\/train\/t\d+\/practice|number-beam\/drill\/(double|halve|nearDouble)|number-sense\/drill\/(subitize|tenFrame|rekenrek))\?surprise=1$/
+const LEGAL_TARGET = /\/math-invaders\/(game\/play|times-tables\/train\/t\d+\/practice|number-beam\/drill\/(double|halve|nearDouble)|number-sense\/drill\/(subitize|tenFrame|rekenrek))\?surprise=1$/
 
 test.describe.configure({ mode: 'parallel' })
 

@@ -186,8 +186,10 @@ describe('GamePage', () => {
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/settings')
         fireEvent.click(screen.getByRole('button', { name: 'Best scores' }))
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/hall-of-fame')
-        fireEvent.click(screen.getByRole('button', { name: /home/i }))
-        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/')
+        // The mission sits behind the arcade hub now, the way every drill sits
+        // behind its map, so leaving it goes there rather than all the way home.
+        fireEvent.click(screen.getByRole('button', { name: /back/i }))
+        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/game')
     })
 
     it('offers smaller numbers after a poor run, and actually drops the rank', () => {

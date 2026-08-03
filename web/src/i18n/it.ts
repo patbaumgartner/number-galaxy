@@ -28,10 +28,6 @@ export const it: Translations = {
         chooseGame: 'Scegli il tuo gioco',
         gameSense: 'Senso del numero',
         gameSenseBlurb: 'Vedere quanti sono, senza contare.',
-        agesSense: 'da 4 anni',
-        agesBeam: 'da 5 anni',
-        agesInvaders: 'da 6 anni',
-        agesTables: 'da 7 anni',
         howToSenseTitle: 'Come si gioca: Senso del numero',
         howToPlay: 'Come si gioca',
         howToSenseSteps: [
@@ -46,7 +42,7 @@ export const it: Translations = {
         gameTablesBlurb: 'Impara le tabelline pianeta per pianeta.',
         gameBeamBlurb: 'Raddoppia e dimezza — disegnato sulla barra.',
         howToTitle: 'Come si gioca: Math Invaders',
-        howToTablesTitle: 'Come si gioca: Galassia delle tabelline',
+        howToTablesTitle: 'Come si gioca: Tabelline',
         howToTablesSteps: [
             'Scegli un pianeta sulla mappa stellare.',
             'Impara ti mostra la tabellina, Esercitati la fissa.',
@@ -65,6 +61,7 @@ export const it: Translations = {
         ],
     },
     game: {
+        exit: 'Indietro',
         score: 'Punti',
         combo: 'Combo',
         question: 'Domanda',

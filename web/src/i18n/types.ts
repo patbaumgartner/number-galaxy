@@ -30,10 +30,6 @@ export type Translations = {
         chooseGame: string
         gameSense: string
         gameSenseBlurb: string
-        agesSense: string
-        agesBeam: string
-        agesInvaders: string
-        agesTables: string
         howToSenseTitle: string
         howToPlay: string
         howToSenseSteps: string[]
@@ -51,6 +47,7 @@ export type Translations = {
         howToBeamSteps: string[]
     }
     game: {
+        exit: string
         score: string
         combo: string
         question: string

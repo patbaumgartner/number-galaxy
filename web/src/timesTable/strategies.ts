@@ -38,7 +38,7 @@ export const STRATEGY_CARDS: Partial<Record<PlanetId, LocalizedCards>> = {
         fr: 'Multiplier par 1 garde le même nombre.',
     }),
     t2: skipCountCard(2, {
-        de: 'Mal 2 heißt: die Zahl verdoppeln.',
+        de: 'Mal 2 heisst: die Zahl verdoppeln.',
         it: 'Per 2 vuol dire raddoppiare.',
         en: 'Times 2 means double the number.',
         fr: 'Multiplier par 2, c’est doubler.',
@@ -50,7 +50,7 @@ export const STRATEGY_CARDS: Partial<Record<PlanetId, LocalizedCards>> = {
         fr: 'Trois fois, c’est le double plus encore une fois.',
     }),
     t4: skipCountCard(4, {
-        de: 'Mal 4 heißt: zweimal verdoppeln.',
+        de: 'Mal 4 heisst: zweimal verdoppeln.',
         it: 'Per 4 vuol dire raddoppiare due volte.',
         en: 'Times 4 means double twice.',
         fr: 'Multiplier par 4, c’est doubler deux fois.',
@@ -74,7 +74,7 @@ export const STRATEGY_CARDS: Partial<Record<PlanetId, LocalizedCards>> = {
         fr: 'Multiplier par 7, c’est multiplier par 5 plus deux fois le nombre.',
     }),
     t8: skipCountCard(8, {
-        de: 'Mal 8 heißt: dreimal verdoppeln.',
+        de: 'Mal 8 heisst: dreimal verdoppeln.',
         it: 'Per 8 vuol dire raddoppiare tre volte.',
         en: 'Times 8 means double three times.',
         fr: 'Multiplier par 8, c’est doubler trois fois.',
@@ -123,8 +123,8 @@ export const STRATEGY_CARDS: Partial<Record<PlanetId, LocalizedCards>> = {
     },
     'sq-deep': {
         de: {
-            title: 'Große Quadrate bauen',
-            lines: ['Bei großen Quadraten hilft die Formel n².', 'Nahe Quadrate unterscheiden sich um ungerade Zahlen: 15² − 14² = 29.'],
+            title: 'Grosse Quadrate bauen',
+            lines: ['Bei grossen Quadraten hilft die Formel n².', 'Nahe Quadrate unterscheiden sich um ungerade Zahlen: 15² − 14² = 29.'],
         },
         it: {
             title: 'Costruire quadrati grandi',

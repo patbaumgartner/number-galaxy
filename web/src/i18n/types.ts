@@ -28,6 +28,8 @@ export type Translations = {
         missionTitle: string
         change: string
         chooseGame: string
+        missionLength: string
+        dueToday: string
         gameSense: string
         gameSenseBlurb: string
         howToSenseTitle: string
@@ -106,6 +108,8 @@ export type Translations = {
         hintsHint: string
         storiesTitle: string
         storiesHint: string
+        showScoreTitle: string
+        showScoreHint: string
         on: string
         off: string
         dataTitle: string

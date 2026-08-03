@@ -96,4 +96,12 @@ describe('translation integrity', () => {
     it('fills supplied placeholders while leaving unknown placeholders intact', () => {
         expect(fill('Hi {name}, up to {max}; {unknown}', { name: 'Ace', max: 12 })).toBe('Hi Ace, up to 12; {unknown}')
     })
+
+    // Swiss Standard German has no ß, and this app is written for Swiss schools.
+    it('writes German in Swiss orthography, never with ß', () => {
+        const offenders = Object.entries(stringsByPath(translations.de))
+            .filter(([, text]) => text.includes('ß'))
+            .map(([path, text]) => `${path}: ${text}`)
+        expect(offenders).toEqual([])
+    })
 })

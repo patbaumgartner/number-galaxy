@@ -109,16 +109,20 @@ export default function TimesTablesPage() {
                             return (
                                 <button
                                     key={view}
+                                    id={`heatmap-tab-${view}`}
                                     type="button"
                                     role="tab"
                                     className="btn btn--ghost btn--sm"
-                                    aria-pressed={heatmapView === view}
+                                    aria-selected={heatmapView === view}
+                                    aria-controls="heatmap-panel"
                                     onClick={() => setHeatmapView(view)}
                                 >{label}</button>
                             )
                         })}
                     </div>
-                    <FactHeatmap progress={progress} view={heatmapView} />
+                    <div id="heatmap-panel" role="tabpanel" aria-labelledby={`heatmap-tab-${heatmapView}`}>
+                        <FactHeatmap progress={progress} view={heatmapView} />
+                    </div>
                 </section>
             </main>
 

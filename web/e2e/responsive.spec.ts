@@ -39,3 +39,32 @@ for (const viewport of viewports) {
         expect(await page.locator('.trainer-header, .question-display, .numpad-btn').evaluateAll(elements => elements.every(element => element.scrollWidth <= element.clientWidth + 1))).toBeTruthy()
     })
 }
+
+for (const viewport of viewports) {
+    test(`gives top-bar buttons room around their labels at ${viewport.width}x${viewport.height}`, async ({ page }) => {
+        await page.setViewportSize(viewport)
+        await seedStorage(page, { settings, player })
+        await gotoApp(page, '/times-tables/train/t1/practice')
+
+        const buttons = await page.locator('.game-bar .btn').all()
+        expect(buttons.length).toBeGreaterThan(0)
+
+        for (const button of buttons) {
+            const box = await button.boundingBox()
+            expect(box?.width).toBeGreaterThanOrEqual(44)
+            expect(box?.height).toBeGreaterThanOrEqual(44)
+
+            // A label flush against the rounded background reads as a button too
+            // small for its own contents, which is what `padding: 0` used to do.
+            const inset = await button.evaluate(element => {
+                const label = element.querySelector('.game-bar__hide-sm')
+                if (label === null) return null
+                const labelBox = label.getBoundingClientRect()
+                if (labelBox.width <= 1) return null
+                const buttonBox = element.getBoundingClientRect()
+                return Math.min(labelBox.left - buttonBox.left, buttonBox.right - labelBox.right)
+            })
+            if (inset !== null) expect(inset).toBeGreaterThanOrEqual(8)
+        }
+    })
+}

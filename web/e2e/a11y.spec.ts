@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { AxeBuilder } from '@axe-core/playwright'
 import { gotoApp, seedStorage } from './fixtures'
 
 const settings = { language: 'en', operations: ['addition'], rank: 'rookie', timed: false, sound: false, hints: true }
@@ -39,3 +40,29 @@ test('gives the phase chooser modal semantics and autofocus', async ({ page }) =
     await expect(dialog).toHaveAttribute('aria-modal', 'true')
     await expect(page.getByRole('button', { name: 'Learn' })).toBeFocused()
 })
+
+/**
+ * A real WCAG audit, not just the structural checks above.
+ *
+ * The structural assertions in this file pass happily on markup that is still
+ * inaccessible: they caught neither `aria-pressed` on a `role="tab"` nor 144
+ * heatmap labels silently discarded because a bare span takes no accessible
+ * name. axe catches that class, so it runs on every route at both widths.
+ */
+for (const route of routes) {
+    test(`has no WCAG 2.1 A/AA violations on ${route}`, async ({ page }) => {
+        await seedStorage(page, {
+            settings, player,
+            ttStars: { t2: 2, t3: 1 },
+            beamStars: { double: 1, halve: 1 },
+        })
+        await gotoApp(page, route)
+        await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+
+        const results = await new AxeBuilder({ page })
+            .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+            .analyze()
+
+        expect(results.violations.map(v => `${v.id}: ${v.help} (${v.nodes.length})`)).toEqual([])
+    })
+}

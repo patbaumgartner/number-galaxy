@@ -6,9 +6,9 @@ Math Invaders is tested in three layers, each answering a different question.
 |-------|--------------------|--------|-------|
 | **Domain** | Is the maths correct? | Vitest (`node`) | 207 tests · 23 files |
 | **UI** | Does the interface behave? | Vitest (`jsdom`) + Testing Library | 170 tests · 28 files |
-| **End-to-end** | Does the shipped bundle work? | Playwright (Chromium desktop + mobile) | 150 tests · 11 files |
+| **End-to-end** | Does the shipped bundle work? | Playwright (Chromium desktop + mobile) | 168 tests · 11 files |
 
-**527 tests total.** Everything below runs from `web/`.
+**545 tests total.** Everything below runs from `web/`.
 
 ```bash
 npm test              # both Vitest projects
@@ -144,8 +144,8 @@ Two projects run each spec: `chromium-desktop` (1280×800) and `chromium-mobile`
 | `surprise.spec.ts` | Surprise never offers locked content, marks the run, ends it with another surprise and a way home, leaves a chosen run's ending untouched, and survives a reload |
 | `number-beam.spec.ts` | Station map and zone locks, a full ten-question drill answered entirely on the beam with the tile grid asserted absent, dragging/nudging/arrow-keying the alien, the bar revealing its numbers after a miss, hiding the bar, resetting beam progress |
 | `progression.spec.ts` | Rank and star progression across the arcade and the trainer |
-| `a11y.spec.ts` | Heading structure, keyboard reachability, accessible names, dialog semantics, no positive `tabindex` |
-| `responsive.spec.ts` | No horizontal overflow and adequate touch targets at 360×640, 768×1024 and 1280×800 |
+| `a11y.spec.ts` | Heading structure, keyboard reachability, accessible names, dialog semantics, no positive `tabindex`, and a full axe WCAG 2.1 A/AA audit of every route |
+| `responsive.spec.ts` | No horizontal overflow, adequate touch targets, and top-bar labels that are not flush against their button, at 360×640, 768×1024 and 1280×800 |
 | `pwa.spec.ts` | Manifest validity, service worker registration, survival across reload, the `404.html` redirect |
 
 ### Seeding state

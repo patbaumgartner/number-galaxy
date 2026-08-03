@@ -51,9 +51,9 @@ describe('TimesTablesPage', () => {
         renderWithRouter(<TimesTablesPage />)
         expect(screen.getByText('All caught up!')).toBeInTheDocument()
         await user.click(screen.getByRole('tab', { name: /extended/i }))
-        expect(screen.getByRole('tab', { name: /extended/i })).toHaveAttribute('aria-pressed', 'true')
+        expect(screen.getByRole('tab', { name: /extended/i })).toHaveAttribute('aria-selected', 'true')
         await user.click(screen.getByRole('tab', { name: /squares/i }))
-        expect(screen.getByRole('tab', { name: /squares/i })).toHaveAttribute('aria-pressed', 'true')
+        expect(screen.getByRole('tab', { name: /squares/i })).toHaveAttribute('aria-selected', 'true')
 
         const today = localEpochDay(Date.now(), new Date().getTimezoneOffset())
         seedStars({ t1: 1 })

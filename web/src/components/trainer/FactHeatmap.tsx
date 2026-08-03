@@ -7,6 +7,13 @@ type FactHeatmapProps = {
     readonly view: 'core' | 'extended' | 'squares'
 }
 
+/**
+ * Each cell is `role="img"` rather than a bare span.
+ *
+ * A span with no role is generic, and a generic element takes no accessible
+ * name — every one of these 144 `aria-label`s was being discarded, so the map
+ * was a wall of unlabelled colour to a screen reader.
+ */
 export default function FactHeatmap({ progress, view }: FactHeatmapProps) {
     const grid = VIEW_GRIDS[view]
 
@@ -22,8 +29,10 @@ export default function FactHeatmap({ progress, view }: FactHeatmapProps) {
                         return (
                             <span
                                 key={key}
+                                role="img"
                                 className={`heatmap-cell heatmap-cell-${state}`}
-                                title={`${num}×${num} = ${answer}`} aria-label={`${num} times ${num} equals ${answer}`}
+                                title={`${num}×${num} = ${answer}`}
+                                aria-label={`${num} times ${num} equals ${answer}`}
                             >
                                 {num}²
                             </span>
@@ -57,10 +66,11 @@ export default function FactHeatmap({ progress, view }: FactHeatmapProps) {
                             return (
                                 <span
                                     key={key}
+                                    role="img"
                                     className={`heatmap-cell heatmap-cell-${state}`}
-                                    title={`${r}×${c} = ${answer}`} aria-label={`${r} times ${c} equals ${answer}`}
-                                >
-                                </span>
+                                    title={`${r}×${c} = ${answer}`}
+                                    aria-label={`${r} times ${c} equals ${answer}`}
+                                />
                             )
                         })}
                     </div>

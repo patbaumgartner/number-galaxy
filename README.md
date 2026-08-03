@@ -404,7 +404,7 @@ Output in `web/dist/` — deploy to GitHub Pages or any static host.
 ```bash
 npm test              # 377 unit tests (domain + UI)
 npm run test:coverage # with coverage, gated at 95 % statements
-npm run test:e2e      # 150 Playwright tests, desktop + mobile Chromium
+npm run test:e2e      # 168 Playwright tests, desktop + mobile Chromium
 npm run test:all      # everything
 ```
 
@@ -443,8 +443,9 @@ See [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) for details.
 - **Offline-capable:** Works without internet after initial load
 - **Accessible:** Native buttons, visible focus rings, 44 px minimum touch targets,
   `prefers-reduced-motion` support, dialogs that trap focus and close on Escape, and
-  labels that stay in the accessibility tree even when a phone hides them — all
-  verified by the automated accessibility and responsive suites
+  labels that stay in the accessibility tree even when a phone hides them. Every
+  route is audited against WCAG 2.1 A/AA with axe on both a phone and a desktop
+  viewport, and the suite fails on a single violation
 - **Consistent:** all three games share one navigation bar, so the way out is always
   the first control in the top-left, whichever game a child is in
 

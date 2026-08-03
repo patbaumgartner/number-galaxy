@@ -43,7 +43,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Mission phases for tables, squares, shortcuts and advanced facts.
 - Leitner-style review, persistent stars and best times, strategy cards, a mastery
   heatmap and independent trainer-progress reset in Settings.
-- **Three-layer test suite, 527 tests.** Domain logic in Node, React components and
+- **Three-layer test suite, 545 tests.** Domain logic in Node, React components and
   pages in jsdom via Testing Library, and the built bundle driven through desktop and
   mobile Chromium with Playwright. Coverage is gated at 95 % statements / 92 % branches
   and the end-to-end suite runs in CI. See [docs/TESTING.md](docs/TESTING.md).
@@ -51,6 +51,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   console errors, horizontal overflow and undersized touch targets fail the build.
 - `useModalDialog` hook giving every modal Escape-to-close, a focus trap and focus
   restoration to the control that opened it.
+
+### Fixed
+- **Top-bar buttons had no room around their labels.** `.btn--icon` zeroed the
+  horizontal padding, so above 560px the background ended exactly where the text
+  did and the button read as too small for its own contents. Covered now by a
+  responsive test that fails when a label sits flush against its button.
+- **Two real WCAG violations on the times-tables map**, found by adding an axe
+  audit: the heatmap tabs used `aria-pressed`, which is prohibited on
+  `role="tab"` and meant the selected tab was never announced; and all 144
+  heatmap cells were bare spans, which take no accessible name, so every one of
+  their `aria-label`s was silently discarded. The tabs are a proper tablist with
+  `aria-selected` and a labelled panel, and the cells are `role="img"`.
 
 ### Changed
 - **Settings and navigation are now split by game.** Every game shared one page with

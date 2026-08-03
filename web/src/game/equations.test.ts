@@ -67,3 +67,42 @@ describe('operator rules', () => {
         expect(hasUniqueOperator(7, 5, 12)).toBe(true)
     })
 })
+
+describe('keeping a big rank mental', () => {
+    const BINARY = ['addition', 'subtraction'] as const
+
+    it('uses round numbers once three digits are in play', () => {
+        // `195 + 87` on four tiles is elimination, not mental arithmetic.
+        for (const operation of BINARY) {
+            for (const maxValue of [500, 1000]) {
+                for (let seed = 1; seed < 120; seed += 1) {
+                    const { left, right } = createEquation(createRng(seed), operation, maxValue)
+                    expect(left % 10).toBe(0)
+                    expect(right % 10).toBe(0)
+                }
+            }
+        }
+    })
+
+    it('leaves the smaller ranks exactly as they were', () => {
+        const seen = new Set<number>()
+        for (let seed = 1; seed < 120; seed += 1) {
+            const { left, right } = createEquation(createRng(seed), 'addition', 100)
+            seen.add(left % 10)
+            seen.add(right % 10)
+        }
+        expect(seen.size).toBeGreaterThan(1)
+    })
+
+    it('still respects the ceiling and stays above zero', () => {
+        for (const operation of BINARY) {
+            for (const maxValue of [10, 20, 50, 100, 500, 1000]) {
+                for (let seed = 1; seed < 80; seed += 1) {
+                    const { left, right, result } = createEquation(createRng(seed), operation, maxValue)
+                    expect(Math.max(left, right, result)).toBeLessThanOrEqual(maxValue)
+                    expect(Math.min(left, right, result)).toBeGreaterThan(0)
+                }
+            }
+        }
+    })
+})

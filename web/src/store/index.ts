@@ -17,6 +17,7 @@ import {
     getDueFacts,
     getFormAccuracy,
     getFormStats,
+    getWorkingMax,
     getMisses,
     getPersonalBests,
     getSkillStats,
@@ -25,6 +26,7 @@ import {
     recordAnswer,
     recordFact,
     recordForm,
+    recordRankAnswer,
     recordMiss,
     updatePersonalBest,
 } from './progress'
@@ -42,6 +44,7 @@ export type {
     ArcadeFacts,
     BadgeTier,
     FormStats,
+    RankTunings,
     MissRecord,
     SkillStats,
     SpacedRepetitionData,
@@ -84,6 +87,9 @@ export const store = {
     getFormStats,
     getFormAccuracy,
     recordForm,
+
+    getWorkingMax,
+    recordRankAnswer,
 
     getPersonalBests,
     updatePersonalBest,

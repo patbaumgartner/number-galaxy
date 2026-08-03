@@ -21,6 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - A fact is only offered when every number it would show fits inside the rank,
     and never twice within four questions, so review can never narrow to the same
     handful of sums — the run a struggling beginner would otherwise have got.
+- **The numbers tune themselves inside the rank.** A rank is a wide band, and a
+  child at the wrong end of it is either bored or drowning. A rolling window of
+  the last 20 answers now nudges a working ceiling up or down within the rank,
+  aiming at roughly 80 % — the rate at which people learn fastest. It never
+  leaves the rank that was chosen, never falls below the rank underneath, and is
+  never announced: the point is to keep the practice fitting, not to grade it.
 - **Question shapes adapt too.** `? + 5 = 12` — the shape that rehearses the
   inverse, and the one children find hardest — used to turn up exactly as often
   for the child who had it as for the child who did not. A rolling accuracy per
@@ -57,6 +63,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   reset.
 
 ### Changed
+- **Big ranks add and subtract in round numbers.** Legend and Supernova were
+  generating things like `195 + 87` and asking a child to tap one of four tiles,
+  which is not mental arithmetic — it is elimination, or column arithmetic
+  without the paper, and a four-option tap cannot tell either from a lucky guess.
+  Past 100 the operands are multiples of ten (`340 + 200`), which is a real
+  mental strategy and a real thing to get better at. Multiplication and division
+  needed no change: their factors were already capped at the ×12 tables.
 - **A mixed mission is now actually mixed.** Choosing two kinds of maths could
   still hand out nine additions in a row, which is a blocked practice set wearing
   an interleaved one's clothes. No operation may now run past three questions

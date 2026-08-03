@@ -1,5 +1,5 @@
 import type { Language, Operation, Question, QuestionForm, Rank } from './types'
-import { QUESTIONS_PER_MISSION, getPoints } from './types'
+import { QUESTIONS_PER_MISSION, getPoints, rankConfig } from './types'
 import { defaultRng, type Rng } from './rng'
 import { createQuestion, pickOperation, type SpacedRepetitionEntry } from './questions'
 import { factKey, type ArithmeticFact } from './facts'
@@ -21,6 +21,8 @@ const RETRY_GAP = 3
 export type MissionState = {
     language: Language
     rank: Rank
+    /** Fixed when the mission starts, so the numbers never shift mid-run. */
+    maxValue: number
     timed: boolean
     operations: Operation[]
     /** One entry per answered question, in order — drives the progress trail. */
@@ -57,6 +59,8 @@ export type MissionConfig = {
     rank: Rank
     timed: boolean
     operations: Operation[]
+    /** Omit to use the rank's own ceiling. */
+    maxValue?: number
 } & MissionDeps
 
 export const getAnswered = (state: MissionState): number => state.results.length
@@ -87,11 +91,12 @@ function drawQuestion(
     shown: readonly Operation[],
     recent: readonly Operation[],
     recentFacts: readonly string[],
+    maxValue: number,
     { rng = defaultRng, weakness, srData, dueFacts = [], formAccuracy = {} }: MissionDeps,
 ): Question {
     const operation = pickOperation(rng, operations, weakness, srData, questionIndex, shown, recent)
     const fresh = dueFacts.filter(entry => !recentFacts.includes(factKey(entry.operation, entry.a, entry.b)))
-    return createQuestion({ language, operation, rank, rng, dueFacts: fresh, formAccuracy })
+    return createQuestion({ language, operation, rank, rng, dueFacts: fresh, formAccuracy, maxValue })
 }
 
 export function createMission({
@@ -99,13 +104,15 @@ export function createMission({
     rank,
     timed,
     operations,
+    maxValue = rankConfig[rank].maxValue,
     ...deps
 }: MissionConfig): MissionState {
     const pool = operations.length > 0 ? operations : (['addition'] as Operation[])
-    const question = drawQuestion(language, rank, pool, 0, [], [], [], deps)
+    const question = drawQuestion(language, rank, pool, 0, [], [], [], maxValue, deps)
     return {
         language,
         rank,
+        maxValue,
         timed,
         operations: pool,
         results: [],
@@ -169,6 +176,7 @@ export function advanceMission(state: MissionState, deps: MissionDeps = {}): Mis
         state.shownOperations,
         state.recentOperations,
         state.recentFacts,
+        state.maxValue,
         deps,
     )
     // Once every chosen operation has been shown the cycle restarts, so the

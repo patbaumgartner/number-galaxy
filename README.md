@@ -111,7 +111,17 @@ shapes are unlocked:
 
 Harder shapes add a few seconds of thinking time. Direct questions stay the most common
 shape at every rank, so unlocking something new seasons a mission rather than taking it
-over.
+over. A shape a child keeps missing comes round a little more often than one they have.
+
+**Past 100, adding and subtracting use round numbers** — `340 + 200`, not `195 + 87`.
+Tapping one of four tiles cannot honestly tell a three-digit column sum from a lucky guess,
+whereas round-number arithmetic is a real mental strategy and a real thing to get better at.
+Multiplication and division need no such rule: their factors never leave the ×12 tables.
+
+**Inside the rank, the numbers tune themselves.** A rolling window of the last 20 answers
+nudges a working ceiling up or down within the rank, aiming to keep a child somewhere around
+80 % — the rate at which people learn fastest. It never leaves the rank that was chosen, and
+never says anything about it: the point is to keep the practice fitting, not to grade it.
 
 ### Scoring and stars
 

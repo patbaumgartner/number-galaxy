@@ -237,6 +237,8 @@ export type CreateQuestionOptions = {
     dueFacts?: readonly ArithmeticFact[]
     /** Rolling accuracy per question shape, 0–1, for the shapes already met. */
     formAccuracy?: Partial<Record<QuestionForm, number>>
+    /** The working ceiling inside the rank. Omit to use the rank's own. */
+    maxValue?: number
     rng?: Rng
 }
 
@@ -267,9 +269,9 @@ export function createQuestion({
     form,
     dueFacts = [],
     formAccuracy = {},
+    maxValue = rankConfig[rank].maxValue,
     rng = defaultRng,
 }: CreateQuestionOptions): Question {
-    const { maxValue } = rankConfig[rank]
 
     if (operation === 'remainders') return remainderQuestion(rng, language, maxValue)
 

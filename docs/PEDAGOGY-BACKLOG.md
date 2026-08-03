@@ -80,9 +80,10 @@ bounded to 400 tracked facts, filtered to the rank's ceiling, with a four-questi
 so review cannot narrow to the same few sums.
 · Murray et al. 2025 · `MA.1.A.3`
 
-**9. Auto-tune the number range to 80–85 % accuracy.** Keep `rank` as the ceiling the child
-chose; add an internal `workingMax` that walks within it from a rolling 20-answer window.
-Never announce a demotion.
+**9. Auto-tune the number range to 80–85 % accuracy.** ✅ **done** — `game/tuning.ts` walks a
+working ceiling within the chosen rank from a rolling 20-answer window, bounded below by the
+previous rank's ceiling so "Ace" never quietly serves Rookie sums. Fixed at mission start, so
+the numbers never shift under a child mid-run, and never announced.
 · Lau et al. 2018; Bjork & Bjork 2011 · `MA.1.A.2`
 
 **10. Split mental from written ranges.** Legend/Supernova generate 3-digit addition answered
@@ -199,7 +200,7 @@ namespace on every call.
 
 ## Suggested order
 
-`9, 23` are the highest-value changes remaining. `4` and `30` (both shipped)
+`23` is the highest-value change remaining. `4` and `30` (both shipped)
 unblock Tier 2 and Tier 1 respectively.
 
 ## Sources

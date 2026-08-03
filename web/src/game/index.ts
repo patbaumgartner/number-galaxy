@@ -63,3 +63,6 @@ export { strategyWorking } from './working'
 
 export type { ArithmeticFact, FactKey } from './facts'
 export { equationFor, factKey, factOf, fitsWithin, keyOf, parseFactKey, peakOf, pickFact } from './facts'
+
+export type { RankTuning } from './tuning'
+export { TUNING_WINDOW, floorFor, tuneAfter, workingMaxFor } from './tuning'

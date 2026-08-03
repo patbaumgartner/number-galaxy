@@ -67,6 +67,7 @@ function freshMission(): MissionState {
         ...createMission({
             language: settings.language,
             rank: settings.rank,
+            maxValue: store.getWorkingMax(settings.rank),
             timed: settings.timed,
             operations: settings.operations,
             weakness: store.getWeakness(),
@@ -131,6 +132,7 @@ export default function GamePage() {
         store.recordAnswer(question.operation, wasCorrect, answered)
         store.recordFact(question.factKey, wasCorrect, elapsed)
         store.recordForm(question.form, wasCorrect)
+        store.recordRankAnswer(mission.rank, wasCorrect)
 
         if (wasCorrect) {
             if (store.updatePersonalBest(question.operation, elapsed)) newBestRef.current = true

@@ -1,5 +1,5 @@
 import type { Operation, QuestionForm } from '../game'
-import { parseFactKey, type ArithmeticFact } from '../game'
+import { parseFactKey, tuneAfter, workingMaxFor, type ArithmeticFact, type Rank, type RankTuning } from '../game'
 import { applyAnswer, isDue, localEpochDay, type FactProgress } from '../review/leitner'
 import { readJson, writeJson } from './storage'
 import { profileKey } from './profiles'
@@ -16,6 +16,7 @@ const bestsKey = () => profileKey('personal-bests')
 const missesKey = () => profileKey('misses')
 const arcadeFactsKey = () => profileKey('arcade-facts')
 const formStatsKey = () => profileKey('form-stats')
+const tuningKey = () => profileKey('rank-tuning')
 
 /**
  * How many arcade facts are scheduled.
@@ -109,6 +110,21 @@ export function getSkillStats(): SkillStats {
     return readJson<SkillStats>(skillKey(), {})
 }
 
+export type RankTunings = Partial<Record<Rank, RankTuning>>
+
+function getTunings(): RankTunings {
+    const stored = readJson<RankTunings>(tuningKey(), {})
+    return stored !== null && typeof stored === 'object' && !Array.isArray(stored) ? stored : {}
+}
+
+/** The ceiling this rank is currently working at, inside the rank's own. */
+export const getWorkingMax = (rank: Rank): number => workingMaxFor(rank, getTunings()[rank])
+
+export function recordRankAnswer(rank: Rank, correct: boolean): void {
+    const tunings = getTunings()
+    writeJson(tuningKey(), { ...tunings, [rank]: tuneAfter(rank, tunings[rank], correct) })
+}
+
 export type FormStats = Partial<Record<QuestionForm, boolean[]>>
 
 export function getFormStats(): FormStats {
@@ -189,6 +205,7 @@ export function updatePersonalBest(operation: Operation, elapsedMs: number): boo
 export const progressKeys = {
     get arcadeFacts() { return arcadeFactsKey() },
     get formStats() { return formStatsKey() },
+    get tuning() { return tuningKey() },
     get weakness() { return weaknessKey() },
     get spacedRepetition() { return srKey() },
     get skills() { return skillKey() },

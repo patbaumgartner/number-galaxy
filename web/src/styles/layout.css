@@ -27,6 +27,15 @@
   padding-bottom: var(--space-8);
 }
 
+/* The app was mobile-first to the point of being mobile-only: a 600px column on
+   a 1280px laptop left well over half the screen empty. The picker grid is
+   auto-fit, so widening the shell is all it takes for the cards to run 3-up. */
+@media (min-width: 1024px) {
+  .shell {
+    max-width: 880px;
+  }
+}
+
 /* Play, the profile chip and the game picker are three separate decisions and
    need to read as three, not one block. */
 .btn--play {

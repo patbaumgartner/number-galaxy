@@ -17,6 +17,7 @@ export default function SettingsPage() {
     const [beamSettings, setBeamSettings] = useState(() => beamStore.getBeamSettings())
     const t = translations[settings.language]
     const skills = useMemo(() => store.getSkillStats(), [])
+    const mistake = useMemo(() => store.getCommonMistake(), [])
     const badges = useMemo(
         () => new Map(OPERATIONS.map(op => [op, store.computeBadge(skills[op]?.history ?? [])])),
         [skills],
@@ -81,6 +82,14 @@ export default function SettingsPage() {
                         <h2 className="group__title">{t.settings.groupInvaders}</h2>
                         <p className="group__hint">{t.settings.groupInvadersHint}</p>
                     </div>
+
+                    {mistake !== null && (
+                        <div className="panel">
+                            <h3 className="panel__title">{t.settings.practiseNextTitle}</h3>
+                            <p className="panel__hint">{t.settings.practiseNextHint}</p>
+                            <p className="equation__note">{t.misses[mistake]}</p>
+                        </div>
+                    )}
 
                     <div className="panel">
                         <h3 className="panel__title">{t.settings.practiceTitle}</h3>

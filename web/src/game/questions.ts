@@ -11,10 +11,9 @@ import {
     type Equation,
 } from './equations'
 import { buildNumericOptions, buildOperatorOptions, buildRemainderOptions } from './options'
-import { strategyWorking } from './working'
+import { routeFor, strategyWorking } from './working'
 import { equationFor, fitsWithin, keyOf, pickFact, type ArithmeticFact } from './facts'
 import { reasonsByValue, tileDistractors } from './misconceptions'
-import type { MissReason } from './misconceptions'
 
 /** Unlocking a new form should season a mission, not take it over. */
 const DIRECT_FORM_WEIGHT = 3
@@ -31,57 +30,46 @@ const MAX_ATTEMPTS = 60
  */
 const DUE_FACT_SHARE = 0.5
 
-function finish(
-    operation: Operation,
-    form: QuestionForm,
-    prompt: string,
-    answer: string,
-    options: string[],
-    workingOut: string,
-    factKey = '',
-    missReasons: Record<string, MissReason> = {},
-): Question {
-    return {
-        operation,
-        form,
-        prompt,
-        answer,
-        options,
-        missReasons,
-        correctIndex: options.indexOf(answer),
-        workingOut,
-        factKey,
-    }
-}
+type Draft = Omit<Question, 'correctIndex' | 'factKey' | 'missReasons' | 'route'>
+    & Partial<Pick<Question, 'factKey' | 'missReasons' | 'route'>>
+
+const finish = (draft: Draft): Question => ({
+    factKey: '',
+    missReasons: {},
+    route: 'plain',
+    ...draft,
+    correctIndex: draft.options.indexOf(draft.answer),
+})
 
 // ---------------------------------------------------------------- direct ----
 
 function directQuestion(rng: Rng, operation: BinaryOperation, equation: Equation, maxValue: number): Question {
     const { left, right, result, symbol } = equation
-    return finish(
+    return finish({
         operation,
-        'direct',
-        `${left} ${symbol} ${right} = ?`,
-        String(result),
-        buildNumericOptions(rng, result, tileDistractors(operation, equation, maxValue)),
+        form: 'direct',
+        prompt: `${left} ${symbol} ${right} = ?`,
+        answer: String(result),
+        options: buildNumericOptions(rng, result, tileDistractors(operation, equation, maxValue)),
         // A route to the answer, not the answer restated — see `working.ts`.
-        strategyWorking(equation, maxValue),
-        keyOf(operation, equation),
-        reasonsByValue(operation, equation),
-    )
+        workingOut: strategyWorking(equation, maxValue),
+        route: routeFor(equation, maxValue),
+        factKey: keyOf(operation, equation),
+        missReasons: reasonsByValue(operation, equation),
+    })
 }
 
 function remainderQuestion(rng: Rng, language: Language, maxValue: number): Question {
     const { dividend, divisor, quotient, remainder } = createRemainderEquation(rng, maxValue)
     const answer = remainderLabel(language, quotient, remainder)
-    return finish(
-        'remainders',
-        'direct',
-        `${dividend} ÷ ${divisor} = ?`,
+    return finish({
+        operation: 'remainders',
+        form: 'direct',
+        prompt: `${dividend} ÷ ${divisor} = ?`,
         answer,
-        buildRemainderOptions(rng, language, divisor, quotient, remainder),
-        `${divisor} × ${quotient} = ${divisor * quotient}, ${dividend} ${MINUS} ${divisor * quotient} = ${remainder}`,
-    )
+        options: buildRemainderOptions(rng, language, divisor, quotient, remainder),
+        workingOut: `${divisor} × ${quotient} = ${divisor * quotient}, ${dividend} ${MINUS} ${divisor * quotient} = ${remainder}`,
+    })
 }
 
 // -------------------------------------------------------- missing operand ----
@@ -120,15 +108,16 @@ function missingOperandQuestion(
 
     const nearMisses = [answer + 1, answer - 1, answer + 2, answer - 2, result, other, result - other]
         .map(value => ({ value, reason: 'none' as const }))
-    return finish(
+    return finish({
         operation,
         form,
         prompt,
-        String(answer),
-        buildNumericOptions(rng, answer, nearMisses),
-        inverseWorking(equation, form),
-        keyOf(operation, equation),
-    )
+        answer: String(answer),
+        options: buildNumericOptions(rng, answer, nearMisses),
+        workingOut: inverseWorking(equation, form),
+        route: 'inverse',
+        factKey: keyOf(operation, equation),
+    })
 }
 
 // ------------------------------------------------------- missing operator ----
@@ -145,15 +134,15 @@ function missingOperatorQuestion(
         const { left, right, result, symbol } = equation
         // Reject prompts where more than one operator satisfies the equation.
         if (!hasUniqueOperator(left, right, result)) continue
-        return finish(
+        return finish({
             operation,
-            'missingOperator',
-            `${left} ? ${right} = ${result}`,
-            symbol,
-            buildOperatorOptions(rng),
-            `${left} ${symbol} ${right} = ${result}`,
-            keyOf(operation, equation),
-        )
+            form: 'missingOperator',
+            prompt: `${left} ? ${right} = ${result}`,
+            answer: symbol,
+            options: buildOperatorOptions(rng),
+            workingOut: `${left} ${symbol} ${right} = ${result}`,
+            factKey: keyOf(operation, equation),
+        })
     }
     return null
 }
@@ -184,14 +173,14 @@ function chainQuestion(rng: Rng, operation: BinaryOperation, maxValue: number): 
 
         const nearMisses = [result + 1, result - 1, result + 2, result - 2, middle, middle + step, left + right]
             .map(value => ({ value, reason: 'none' as const }))
-        return finish(
+        return finish({
             operation,
-            'chain',
-            `(${left} ${symbol} ${right}) ${stepSymbol} ${step} = ?`,
-            String(result),
-            buildNumericOptions(rng, result, nearMisses),
-            `${left} ${symbol} ${right} = ${middle} → ${middle} ${stepSymbol} ${step} = ${result}`,
-        )
+            form: 'chain',
+            prompt: `(${left} ${symbol} ${right}) ${stepSymbol} ${step} = ?`,
+            answer: String(result),
+            options: buildNumericOptions(rng, result, nearMisses),
+            workingOut: `${left} ${symbol} ${right} = ${middle} → ${middle} ${stepSymbol} ${step} = ${result}`,
+        })
     }
     return null
 }

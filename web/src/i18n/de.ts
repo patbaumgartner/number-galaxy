@@ -127,6 +127,8 @@ export const de: Translations = {
         groupShared: '⚙️ Alle Spiele',
         groupSharedHint: 'Gilt für alles.',
         resetConfirm: 'Wirklich alle Daten löschen?',
+        practiseNextTitle: 'Woran du gerade arbeitest',
+        practiseNextHint: 'Das kommt in letzter Zeit am häufigsten vor:',
     },
     hof: {
         title: 'Bestenliste',

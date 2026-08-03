@@ -152,6 +152,7 @@ export default function GamePage() {
         // Read before recording: a miss drops the box, and how much of the route
         // to show depends on what the child knew going in, not coming out.
         const priorBox = store.getFactBox(question.factKey)
+        const reason = question.missReasons[chosen] ?? 'none'
 
         store.recordAnswer(question.operation, wasCorrect, answered)
         store.recordFact(question.factKey, wasCorrect, elapsed)
@@ -171,14 +172,13 @@ export default function GamePage() {
                 form: question.form,
                 prompt: question.prompt,
                 chosen,
+                reason,
                 answer: question.answer,
                 at: new Date().toISOString(),
             })
             if (outcome === 'timeout') playTimeout()
             else playWrong()
         }
-
-        const reason = question.missReasons[chosen] ?? 'none'
 
         setFeedback({
             outcome,
@@ -303,7 +303,7 @@ export default function GamePage() {
         () => canBeTyped(mission.question) && store.getFactBox(mission.question.factKey) >= TYPED_FROM_BOX,
         [mission.question],
     )
-    const example = getWorkedExample(mission.question.operation, mission.language)
+    const example = getWorkedExample(mission.question.operation, mission.language, mission.question.route)
     const resultText = feedback && (feedback.outcome === 'correct'
         ? `${t.game.correct} +${feedback.points}`
         : `${feedback.outcome === 'timeout' ? t.game.timeUp : t.game.wrong} ${t.game.theAnswerIs} ${feedback.answer}`)

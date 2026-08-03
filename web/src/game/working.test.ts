@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { createEquation, type BinaryOperation } from './equations'
 import { createRng } from './rng'
 import { RANKS, rankConfig, MINUS } from './types'
-import { fadeWorking, strategyWorking } from './working'
+import { fadeWorking, routeFor, strategyWorking } from './working'
 
 const equation = (left: number, right: number, result: number, symbol: '+' | '−' | '×' | '÷') =>
     ({ left, right, result, symbol }) as const
@@ -87,5 +87,55 @@ describe('fading a working as a fact becomes known', () => {
 
     it('keeps a single-step working whole, having no step to hide', () => {
         expect(fadeWorking(oneStep, 4)).toBe(oneStep)
+    })
+})
+
+describe('naming the route a question wants', () => {
+    it('recognises a neighbouring double, and only a true neighbour', () => {
+        expect(routeFor(equation(7, 8, 15, '+'), 100)).toBe('nearDouble')
+        expect(routeFor(equation(7, 5, 12, '+'), 100)).toBe('bridgeTen')
+    })
+
+    it('recognises filling up to a ten, in both directions', () => {
+        expect(routeFor(equation(55, 6, 61, '+'), 100)).toBe('bridgeTen')
+        expect(routeFor(equation(13, 4, 9, MINUS), 100)).toBe('bridgeTen')
+    })
+
+    it('recognises counting up when the two numbers are close', () => {
+        expect(routeFor(equation(12, 9, 3, MINUS), 100)).toBe('countUp')
+    })
+
+    it('recognises place value when no ten is crossed', () => {
+        expect(routeFor(equation(40, 13, 27, MINUS), 100)).toBe('placeValue')
+    })
+
+    it('always names the route the working actually took', () => {
+        const routed: Record<string, string> = {
+            nearDouble: '+ +', bridgeTen: '→', placeValue: '→', countUp: '+',
+            inverse: '', timesTable: '×', plain: '',
+        }
+        for (const operation of BINARY) {
+            for (const maxValue of [10, 20, 50, 100, 500]) {
+                for (let seed = 1; seed < 40; seed += 1) {
+                    const built = createEquation(createRng(seed), operation, maxValue)
+                    const route = routeFor(built, maxValue)
+                    expect(Object.keys(routed)).toContain(route)
+                    // A named route means a real working; plain means the bare fact.
+                    const working = strategyWorking(built, maxValue)
+                    if (route === 'plain') {
+                        expect(working).not.toContain('→')
+                    }
+                }
+            }
+        }
+    })
+
+    it('sends the two operations with their own routes to those routes', () => {
+        expect(routeFor(equation(6, 7, 42, '×'), 100)).toBe('timesTable')
+        expect(routeFor(equation(24, 6, 4, '÷'), 100)).toBe('inverse')
+    })
+
+    it('says plain when the rank leaves nothing to decompose', () => {
+        expect(routeFor(equation(2, 8, 10, '+'), 10)).toBe('plain')
     })
 })

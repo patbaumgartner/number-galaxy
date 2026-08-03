@@ -98,6 +98,8 @@ export type Translations = {
         dataInfo: string[]
         reset: string
         resetConfirm: string
+        practiseNextTitle: string
+        practiseNextHint: string
         groupInvaders: string
         groupInvadersHint: string
         groupTables: string

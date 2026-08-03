@@ -127,6 +127,8 @@ export const fr: Translations = {
         groupShared: '⚙️ Tous les jeux',
         groupSharedHint: 'Concerne tout.',
         resetConfirm: 'Vraiment tout effacer ?',
+        practiseNextTitle: 'Ce sur quoi tu travailles',
+        practiseNextHint: 'Voici ce qui revient le plus en ce moment :',
     },
     hof: {
         title: 'Meilleurs scores',

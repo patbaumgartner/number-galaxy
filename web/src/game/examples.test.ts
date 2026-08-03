@@ -29,3 +29,24 @@ describe('getWorkedExample', () => {
         }
     })
 })
+
+describe('help that matches the route rather than the operation', () => {
+    it('shows a bridging example for a bridging question, and a doubles one for doubles', () => {
+        expect(getWorkedExample('addition', 'en', 'bridgeTen').steps).toContain('= 10 →')
+        expect(getWorkedExample('addition', 'en', 'nearDouble').steps).toContain('7 + 7')
+    })
+
+    it('never reuses the numbers a child is looking at', () => {
+        // Help is asked for before answering, so the example must not be the answer.
+        const example = getWorkedExample('addition', 'en', 'bridgeTen')
+        expect(example.prompt).toBe('7 + 5 = ?')
+    })
+
+    it('falls back to the operation when a question has no route of its own', () => {
+        expect(getWorkedExample('multiplication', 'en').steps).toBe(getWorkedExample('multiplication', 'en', 'timesTable').steps)
+    })
+
+    it('keeps the remainder example whatever route is asked for', () => {
+        expect(getWorkedExample('remainders', 'en', 'nearDouble').prompt).toBe('14 ÷ 4 = ?')
+    })
+})

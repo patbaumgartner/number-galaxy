@@ -59,7 +59,8 @@ export {
 export type { WorkedExample } from './examples'
 export { getWorkedExample } from './examples'
 
-export { fadeWorking, strategyWorking } from './working'
+export type { Route } from './working'
+export { fadeWorking, routeFor, strategyWorking } from './working'
 
 export type { Distractor, MissReason } from './misconceptions'
 export { MISS_REASONS, distractorsFor, reasonsByValue, tileDistractors } from './misconceptions'

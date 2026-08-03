@@ -21,6 +21,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - A fact is only offered when every number it would show fits inside the rank,
     and never twice within four questions, so review can never narrow to the same
     handful of sums — the run a struggling beginner would otherwise have got.
+- **💡 Help now shows the idea this question needs.** It used to show one fixed
+  example per operation — every addition question, however it was shaped, was
+  answered with `7 + 5`. It now matches the *route*: a bridging-ten question is
+  helped with a bridging-ten example, a near-double with a near-double, a
+  division with the multiplication behind it. Always on different numbers, since
+  help is asked for before answering and an example built from the live question
+  would simply hand over the answer.
+- **Settings names the mistake that keeps coming up.** One plain sentence — "you
+  took the smaller digit from the bigger one" — drawn from the last forty misses,
+  and only when one kind of error is clearly ahead. A parent can act on that; a
+  percentage is not something anyone can act on.
 - **Wrong answers now say what went wrong.** Distractors were near misses, which
   is right, but they were shaped only by arithmetic distance — a tempting wrong
   answer without being a *diagnostic* one. The tiles now carry the documented

@@ -14,6 +14,7 @@ import {
 import {
     computeBadge,
     getArcadeFacts,
+    getCommonMistake,
     getDueFacts,
     getFactBox,
     getFormAccuracy,
@@ -45,6 +46,7 @@ export type {
     ArcadeFacts,
     BadgeTier,
     FormStats,
+    NamedMissReason,
     RankTunings,
     MissRecord,
     SkillStats,
@@ -78,6 +80,7 @@ export const store = {
     getSkillStats,
     recordAnswer,
 
+    getCommonMistake,
     getMisses,
     recordMiss,
 

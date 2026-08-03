@@ -361,3 +361,43 @@ describe('arcade fact scheduling', () => {
         }
     })
 })
+
+describe('the mistake that keeps coming up', () => {
+    const miss = (reason: string) => ({
+        operation: 'subtraction' as const,
+        form: 'direct' as const,
+        prompt: '51 − 26 = ?',
+        chosen: '35',
+        reason: reason as never,
+        answer: '25',
+        at: '2026-01-01T00:00:00.000Z',
+    })
+
+    it('says nothing until a pattern is more than bad luck', () => {
+        store.recordMiss(miss('smallerFromLarger'))
+        store.recordMiss(miss('smallerFromLarger'))
+        expect(store.getCommonMistake()).toBeNull()
+
+        store.recordMiss(miss('smallerFromLarger'))
+        expect(store.getCommonMistake()).toBe('smallerFromLarger')
+    })
+
+    it('says nothing when two mistakes are equally common', () => {
+        for (let index = 0; index < 3; index += 1) {
+            store.recordMiss(miss('smallerFromLarger'))
+            store.recordMiss(miss('forgotCarry'))
+        }
+        expect(store.getCommonMistake()).toBeNull()
+    })
+
+    it('ignores misses that meant nothing in particular', () => {
+        for (let index = 0; index < 10; index += 1) store.recordMiss(miss('none'))
+        expect(store.getCommonMistake()).toBeNull()
+    })
+
+    it('follows what is recent rather than what is oldest', () => {
+        for (let index = 0; index < 40; index += 1) store.recordMiss(miss('offByOne'))
+        for (let index = 0; index < 40; index += 1) store.recordMiss(miss('forgotCarry'))
+        expect(store.getCommonMistake()).toBe('forgotCarry')
+    })
+})

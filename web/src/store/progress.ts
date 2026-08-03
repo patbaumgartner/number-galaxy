@@ -1,5 +1,5 @@
 import type { Operation, QuestionForm } from '../game'
-import { parseFactKey, tuneAfter, workingMaxFor, type ArithmeticFact, type Rank, type RankTuning } from '../game'
+import { parseFactKey, tuneAfter, workingMaxFor, type ArithmeticFact, type MissReason, type Rank, type RankTuning } from '../game'
 import { applyAnswer, isDue, localEpochDay, type FactProgress } from '../review/leitner'
 import { readJson, writeJson } from './storage'
 import { profileKey } from './profiles'
@@ -41,6 +41,15 @@ const BADGE_WINDOW = 30
  */
 const MISS_LIMIT = 200
 
+/** A mistake with something to say about it — everything but the catch-all. */
+export type NamedMissReason = Exclude<MissReason, 'none'>
+
+/** How many recent misses are weighed when looking for a pattern. */
+const MISTAKE_WINDOW = 40
+
+/** Fewer than this is a run of bad luck, not a habit worth naming. */
+const MISTAKE_THRESHOLD = 3
+
 /** One missed question, kept for later diagnosis rather than for scoring. */
 export type MissRecord = {
     operation: Operation
@@ -49,6 +58,8 @@ export type MissRecord = {
     /** The option the child chose, or `''` when the clock ran out. */
     chosen: string
     answer: string
+    /** What that particular wrong answer meant, when it meant anything. */
+    reason?: MissReason
     at: string
 }
 
@@ -184,6 +195,28 @@ export function recordFact(key: string, correct: boolean, ms: number): void {
     delete facts[key]
     const kept = Object.entries({ ...facts, [key]: next }).slice(-TRACKED_FACTS)
     writeJson(arcadeFactsKey(), Object.fromEntries(kept))
+}
+
+/**
+ * The mistake a child has made most often lately, if one stands out.
+ *
+ * Turning the miss log into one plain sentence is the whole point: a child (or a
+ * parent) can act on "subtraction across ten is the one to practise", and cannot
+ * act on a percentage. Nothing is shown unless a single kind of error is clearly
+ * ahead, because naming a pattern that is not there is worse than saying nothing.
+ */
+export function getCommonMistake(): NamedMissReason | null {
+    const counts = new Map<NamedMissReason, number>()
+    for (const miss of getMisses().slice(-MISTAKE_WINDOW)) {
+        const reason = miss.reason
+        if (reason === undefined || reason === 'none') continue
+        counts.set(reason, (counts.get(reason) ?? 0) + 1)
+    }
+
+    const ranked = [...counts.entries()].sort((a, b) => b[1] - a[1])
+    const [top, next] = ranked
+    if (top === undefined || top[1] < MISTAKE_THRESHOLD) return null
+    return next === undefined || top[1] > next[1] ? top[0] : null
 }
 
 /** Facts the schedule says are worth revisiting today, newest first. */

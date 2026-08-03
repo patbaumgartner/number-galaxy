@@ -20,12 +20,23 @@ import { MINUS } from './types'
  * explained as `10 × 8 − 8`, but that names 80, which must never surface in a
  * mission whose numbers stop at 72. Parsing keeps the two in step for free.
  */
-type Candidate = { readonly text: string; readonly values: readonly number[] }
+type Candidate = { readonly text: string; readonly values: readonly number[]; readonly route: Route }
 
-const candidate = (text: string): Candidate => ({
+const candidate = (route: Route, text: string): Candidate => ({
+    route,
     text,
     values: (text.match(/\d+/g) ?? []).map(Number),
 })
+
+/** The kind of route a question wants, so help can show that kind on other numbers. */
+export type Route =
+    | 'nearDouble'
+    | 'bridgeTen'
+    | 'placeValue'
+    | 'countUp'
+    | 'inverse'
+    | 'timesTable'
+    | 'plain'
 
 /** The smallest neighbouring double still worth naming as one. */
 const MIN_DOUBLE = 3
@@ -44,7 +55,7 @@ function additionCandidates({ left, right, result }: Equation): Candidate[] {
     // neighbours: at a gap of two, filling up to the ten is the shorter route.
     if (gap === 1 && small >= MIN_DOUBLE) {
         const doubled = small * 2
-        found.push(candidate(`${small} + ${small} = ${doubled} → ${doubled} + ${gap} = ${result}`))
+        found.push(candidate('nearDouble', `${small} + ${small} = ${doubled} → ${doubled} + ${gap} = ${result}`))
     }
 
     // Zehnerübergang — fill one addend up to a ten, then add what is left over.
@@ -52,7 +63,7 @@ function additionCandidates({ left, right, result }: Equation): Candidate[] {
         const nextTen = Math.ceil(anchor / 10) * 10
         const toTen = nextTen - anchor
         if (toTen > 0 && toTen < addend) {
-            found.push(candidate(`${anchor} + ${toTen} = ${nextTen} → ${nextTen} + ${addend - toTen} = ${result}`))
+            found.push(candidate('bridgeTen', `${anchor} + ${toTen} = ${nextTen} → ${nextTen} + ${addend - toTen} = ${result}`))
         }
     }
 
@@ -60,7 +71,7 @@ function additionCandidates({ left, right, result }: Equation): Candidate[] {
     const tens = tensOf(right)
     const ones = right % 10
     if (tens > 0 && ones > 0) {
-        found.push(candidate(`${left} + ${tens} = ${left + tens} → ${left + tens} + ${ones} = ${result}`))
+        found.push(candidate('placeValue', `${left} + ${tens} = ${left + tens} → ${left + tens} + ${ones} = ${result}`))
     }
 
     return found
@@ -68,7 +79,7 @@ function additionCandidates({ left, right, result }: Equation): Candidate[] {
 
 function subtractionCandidates({ left, right, result }: Equation): Candidate[] {
     const found: Candidate[] = []
-    const inverse = candidate(`${right} + ${result} = ${left}`)
+    const inverse = candidate('countUp', `${right} + ${result} = ${left}`)
 
     // Ergänzen — with the two numbers this close, counting up is the short way.
     if (result <= MAX_COUNT_UP) found.push(inverse)
@@ -77,13 +88,13 @@ function subtractionCandidates({ left, right, result }: Equation): Candidate[] {
     const prevTen = tensOf(left)
     const toTen = left - prevTen
     if (toTen > 0 && toTen < right) {
-        found.push(candidate(`${left} ${MINUS} ${toTen} = ${prevTen} → ${prevTen} ${MINUS} ${right - toTen} = ${result}`))
+        found.push(candidate('bridgeTen', `${left} ${MINUS} ${toTen} = ${prevTen} → ${prevTen} ${MINUS} ${right - toTen} = ${result}`))
     }
 
     const tens = tensOf(right)
     const ones = right % 10
     if (tens > 0 && ones > 0) {
-        found.push(candidate(`${left} ${MINUS} ${tens} = ${left - tens} → ${left - tens} ${MINUS} ${ones} = ${result}`))
+        found.push(candidate('placeValue', `${left} ${MINUS} ${tens} = ${left - tens} → ${left - tens} ${MINUS} ${ones} = ${result}`))
     }
 
     // The inverse always says something the prompt does not, so it closes the list.
@@ -145,7 +156,7 @@ function multiplicationCandidates({ left, right, result }: Equation): Candidate[
             const other = left === factor ? right : right === factor ? left : null
             if (other === null) continue
             const steps = build(factor, other)
-            if (steps !== null) found.push(candidate(`${left} × ${right} = ${steps} = ${result}`))
+            if (steps !== null) found.push(candidate('timesTable', `${left} × ${right} = ${steps} = ${result}`))
         }
     }
 
@@ -155,9 +166,9 @@ function multiplicationCandidates({ left, right, result }: Equation): Candidate[
 function divisionCandidates({ left, right, result }: Equation): Candidate[] {
     // Halving is the one division a child meets as its own idea rather than as
     // the multiplication run backwards, so it gets said that way.
-    if (right === 2) return [candidate(`${result} + ${result} = ${left}`)]
-    if (result === 2) return [candidate(`${right} + ${right} = ${left}`)]
-    return [candidate(`${right} × ${result} = ${left}`)]
+    if (right === 2) return [candidate('inverse', `${result} + ${result} = ${left}`)]
+    if (result === 2) return [candidate('inverse', `${right} + ${right} = ${left}`)]
+    return [candidate('inverse', `${right} × ${result} = ${left}`)]
 }
 
 function candidatesFor(equation: Equation): Candidate[] {
@@ -195,9 +206,30 @@ export function fadeWorking(workingOut: string, box: number): string {
     return rest.length === 0 ? workingOut : `${first} → …`
 }
 
+/**
+ * The best in-range strategy for `equation`, or the plain fact when nothing fits
+ * inside `maxValue` — at the smallest ranks there is genuinely nothing to
+ * decompose, and an honest restatement beats a working that names numbers the
+ * child has never been shown.
+ */
+const fittingCandidate = (equation: Equation, maxValue: number): Candidate | undefined =>
+    candidatesFor(equation).find(entry => entry.values.every(value => value <= maxValue))
+
 export function strategyWorking(equation: Equation, maxValue: number): string {
     const { left, right, result, symbol } = equation
-    const fitting = candidatesFor(equation)
-        .find(entry => entry.values.every(value => value <= maxValue))
-    return fitting?.text ?? `${left} ${symbol} ${right} = ${result}`
+    return fittingCandidate(equation, maxValue)?.text ?? `${left} ${symbol} ${right} = ${result}`
+}
+
+/**
+ * Which route {@link strategyWorking} took.
+ *
+ * Read from the chosen candidate rather than derived a second time, so help can
+ * never demonstrate an idea other than the one the working would have used.
+ *
+ * Help is asked for *before* an answer, which is why it needs the route at all:
+ * the working itself would hand the answer over, while the route lets the same
+ * idea be shown on smaller numbers the child can carry back.
+ */
+export function routeFor(equation: Equation, maxValue: number): Route {
+    return fittingCandidate(equation, maxValue)?.route ?? 'plain'
 }

@@ -1,4 +1,5 @@
 import type { MissReason } from './misconceptions'
+import type { Route } from './working'
 
 export type Language = 'de' | 'it' | 'en' | 'fr'
 
@@ -58,6 +59,8 @@ export type Question = {
     workingOut: string
     /** The pair of numbers behind it, for the review schedule. Empty for remainders. */
     factKey: string
+    /** The kind of route it wants, so help can demonstrate that kind on other numbers. */
+    route: Route
 }
 
 export const OPERATIONS: readonly Operation[] = [

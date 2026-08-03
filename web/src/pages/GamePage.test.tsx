@@ -73,6 +73,17 @@ describe('GamePage', () => {
         expect(screen.getAllByRole('button', { name: /^\d+$/ })).toHaveLength(4)
     })
 
+    it('drops points and combo from the HUD when the adult turns them off', () => {
+        seedSettings({ showScore: false })
+        renderWithRouter(<GamePage />)
+
+        expect(screen.queryByText('Score')).not.toBeInTheDocument()
+        expect(screen.queryByText('Combo')).not.toBeInTheDocument()
+        // The question counter is progress, not reward, so it stays.
+        expect(screen.getByText(/Question/)).toBeInTheDocument()
+        expect(screen.getAllByRole('button', { name: /^\d+$/ })).toHaveLength(4)
+    })
+
     it('scores a right answer, advances after feedback, and grows the combo', async () => {
         renderWithRouter(<GamePage />)
         answerCorrectly()
@@ -120,7 +131,7 @@ describe('GamePage', () => {
 
     it('quits early and completes all twenty-five answers with a submitted score and replay reset', async () => {
         const view = renderWithRouter(<GamePage />)
-        fireEvent.click(screen.getByRole('button', { name: 'Finish' }))
+        fireEvent.click(screen.getByRole('button', { name: /Finish/ }))
         expect(screen.getByRole('dialog', { name: /mission complete/i })).toBeInTheDocument()
         expect(store.getScores()).toEqual([])
         view.unmount()
@@ -181,7 +192,7 @@ describe('GamePage', () => {
 
     it('navigates from summary actions and the back button', async () => {
         renderWithRouter(<GamePage />)
-        fireEvent.click(screen.getByRole('button', { name: 'Finish' }))
+        fireEvent.click(screen.getByRole('button', { name: /Finish/ }))
         fireEvent.click(screen.getByRole('button', { name: 'Change mission' }))
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/settings')
         fireEvent.click(screen.getByRole('button', { name: 'Best scores' }))

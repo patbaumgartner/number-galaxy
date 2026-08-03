@@ -30,7 +30,7 @@ export default function ArcadePage() {
                 title={<>🛸 {t.home.gameInvaders}</>}
                 actions={<>
                     <button type="button" className="btn btn--icon" onClick={() => setHowToOpen(true)}>
-                        ❓<span className="game-bar__hide-sm"> {t.home.howToPlay}</span>
+                        📖<span className="game-bar__hide-sm"> {t.home.howToPlay}</span>
                     </button>
                     <button type="button" className="btn btn--icon" onClick={() => navigate('/settings')}>
                         ⚙️<span className="game-bar__hide-sm"> {t.nav.settings}</span>
@@ -54,7 +54,12 @@ export default function ArcadePage() {
                         <li className="chip">
                             {fill(t.settings.rankRange, { max: rankConfig[settings.rank].maxValue })}
                         </li>
-                        <li className="chip">{settings.timer === 'off' ? '∞' : '⏱'} {QUESTIONS_PER_MISSION}</li>
+                        <li className="chip">
+                            {settings.timer === 'off'
+                                ? `∞ ${t.game.untimed}`
+                                : `⏱ ${settings.timer === 'gentle' ? t.settings.timerGentle : t.settings.timerTimed}`}
+                        </li>
+                        <li className="chip">{fill(t.home.missionLength, { n: QUESTIONS_PER_MISSION })}</li>
                     </ul>
                 </section>
 

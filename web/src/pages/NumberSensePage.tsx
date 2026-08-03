@@ -25,7 +25,7 @@ export default function NumberSensePage() {
                 title={t.sense.title}
                 actions={<>
                     <button type="button" className="btn btn--icon" onClick={() => setHowToOpen(true)}>
-                        ❓<span className="game-bar__hide-sm"> {t.home.howToPlay}</span>
+                        📖<span className="game-bar__hide-sm"> {t.home.howToPlay}</span>
                     </button>
                     <button type="button" className="btn btn--icon" onClick={() => navigate('/settings')}>
                         ⚙️<span className="game-bar__hide-sm"> {t.nav.settings}</span>

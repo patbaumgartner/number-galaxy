@@ -15,14 +15,16 @@ describe('ArcadePage', () => {
         expect(screen.getByText('➕ Plus')).toBeInTheDocument()
         expect(screen.getByText('✖️ Times')).toBeInTheDocument()
         expect(screen.getByText('⭐ Cadet')).toBeInTheDocument()
-        expect(screen.getByText(/⏱ 25/)).toBeInTheDocument()
+        expect(screen.getByText(/⏱/)).toBeInTheDocument()
+        expect(screen.getByText('25 questions')).toBeInTheDocument()
     })
 
     it('marks an untimed mission with ∞ rather than a clock', () => {
         seedSettings({ timer: 'off' })
         renderWithRouter(<ArcadePage />)
 
-        expect(screen.getByText(/∞ 25/)).toBeInTheDocument()
+        expect(screen.getByText(/∞ No time pressure/)).toBeInTheDocument()
+        expect(screen.getByText('25 questions')).toBeInTheDocument()
     })
 
     it('starts the mission one level down, so the hub is not in the way of playing again', async () => {

@@ -39,6 +39,16 @@ export type GameSettings = {
      * not be carrying both. It is the teacher's or parent's call when to add it.
      */
     stories: boolean
+    /**
+     * Whether the running score and combo appear while playing.
+     *
+     * Points are the part of this game a child can chase instead of the maths,
+     * and the evidence that they build felt competence is weak. Some children are
+     * carried by them and some are derailed, so the adult decides. The summary
+     * still shows the score either way — a result at the end is not a tally
+     * ticking over beside the question.
+     */
+    showScore: boolean
 }
 
 export const THINKING_TIMES: readonly GameSettings['thinkingTime'][] = [1, 1.5, 2]
@@ -58,6 +68,7 @@ export const defaultSettings: GameSettings = {
     sound: true,
     hints: true,
     stories: false,
+    showScore: true,
 }
 
 /**
@@ -116,6 +127,7 @@ function fromLegacy(legacy: LegacySettings): GameSettings {
         stories: defaultSettings.stories,
         sound: true,
         hints: legacy.tips !== false || legacy.workedExamples !== false,
+        showScore: defaultSettings.showScore,
     }
 }
 
@@ -129,6 +141,7 @@ function sanitize(value: Partial<GameSettings> & { timed?: unknown }): GameSetti
         sound: value.sound !== false,
         hints: value.hints !== false,
         stories: value.stories === true,
+        showScore: value.showScore !== false,
     }
 }
 

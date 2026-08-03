@@ -342,7 +342,7 @@ export default function GamePage() {
                         <span className="game-bar__hide-sm">{player.playerName}</span>
                     </span>
                     <button type="button" className="btn btn--icon" onClick={() => setHowToOpen(true)}>
-                        ❓<span className="game-bar__hide-sm"> {t.home.howToPlay}</span>
+                        📖<span className="game-bar__hide-sm"> {t.home.howToPlay}</span>
                     </button>
                     {settings.hints && (
                         <button
@@ -360,7 +360,7 @@ export default function GamePage() {
                         onClick={() => setMission(abortMission(mission))}
                         disabled={mission.phase === 'summary'}
                     >
-                        {t.game.quit}
+                        🚪<span className="game-bar__hide-sm"> {t.game.quit}</span>
                     </button>
                 </>}
             />
@@ -368,12 +368,16 @@ export default function GamePage() {
             <main className="stage">
                 <PlayHud
                     stats={[
-                        { label: t.game.score, value: mission.score, modifier: 'score' },
-                        {
-                            label: t.game.combo,
-                            value: <>×{getComboMultiplier(mission.streak)}{mission.streak >= 3 && <span className="hud__flame" aria-hidden="true">🔥</span>}</>,
-                            modifier: `combo hud__stat--x${getComboMultiplier(mission.streak)}`,
-                        },
+                        ...(settings.showScore
+                            ? [
+                                { label: t.game.score, value: mission.score, modifier: 'score' },
+                                {
+                                    label: t.game.combo,
+                                    value: <>×{getComboMultiplier(mission.streak)}{mission.streak >= 3 && <span className="hud__flame" aria-hidden="true">🔥</span>}</>,
+                                    modifier: `combo hud__stat--x${getComboMultiplier(mission.streak)}`,
+                                },
+                            ]
+                            : []),
                         { label: t.play.question, value: `${answered}/${QUESTIONS_PER_MISSION}` },
                     ]}
                     results={mission.results}

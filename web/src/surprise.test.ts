@@ -2,18 +2,20 @@ import { describe, expect, it } from 'vitest'
 import { createRng } from './game/rng'
 import { pickSurprise, surpriseRoute, SURPRISE_PARAM, type SurpriseTarget } from './surprise'
 import { BEAM_STATIONS, isStationUnlocked } from './beam'
+import { SENSE_STATIONS, isSenseStationUnlocked } from './sense'
 import { GALAXIES, isPlanetUnlocked } from './timesTable/tables'
 import type { PlanetId, StarLevel } from './timesTable/types'
 
 const SEEDS = 300
 
-const beginner = { ttStars: {}, beamStars: {}, dueFactCount: 0 }
+const beginner = { ttStars: {}, beamStars: {}, senseStars: {}, dueFactCount: 0 }
 
 const veteran = {
     ttStars: Object.fromEntries(
         GALAXIES.flatMap(galaxy => galaxy.planets).map(planet => [planet.id, 3 as StarLevel]),
     ) as Partial<Record<PlanetId, StarLevel>>,
     beamStars: Object.fromEntries(BEAM_STATIONS.map(station => [station.id, 3 as const])),
+    senseStars: Object.fromEntries(SENSE_STATIONS.map(station => [station.id, 3 as const])),
     dueFactCount: 0,
 }
 
@@ -29,6 +31,9 @@ describe('surprise picker', () => {
             if (target.game === 'beam') {
                 expect(isStationUnlocked(target.skill, beginner.beamStars)).toBe(true)
             }
+            if (target.game === 'sense') {
+                expect(isSenseStationUnlocked(target.skill, beginner.senseStars)).toBe(true)
+            }
         }
     })
 
@@ -40,12 +45,20 @@ describe('surprise picker', () => {
             if (target.game === 'beam') {
                 expect(isStationUnlocked(target.skill, veteran.beamStars)).toBe(true)
             }
+            if (target.game === 'sense') {
+                expect(isSenseStationUnlocked(target.skill, veteran.senseStars)).toBe(true)
+            }
         }
     })
 
-    it('reaches all three games for a player who has unlocked them', () => {
+    it('reaches all four games for a player who has unlocked them', () => {
         const games = new Set(draw(veteran).map(target => target.game))
-        expect(games).toEqual(new Set(['invaders', 'tables', 'beam']))
+        expect(games).toEqual(new Set(['invaders', 'tables', 'beam', 'sense']))
+    })
+
+    it('offers Number Sense from the very first zone, which is never locked', () => {
+        const games = new Set(draw(beginner).map(target => target.game))
+        expect(games).toContain('sense')
     })
 
     it('sends review to the daily mission whenever facts are due', () => {
@@ -91,6 +104,10 @@ describe('surprise routes', () => {
         expect(surpriseRoute({ game: 'invaders' })).toBe('/game?surprise=1')
         expect(surpriseRoute({ game: 'tables', planetId: 'mission' }))
             .toBe('/times-tables/train/mission/daily?surprise=1')
+        expect(surpriseRoute({ game: 'beam', skill: 'double' }))
+            .toBe('/number-beam/drill/double?surprise=1')
+        expect(surpriseRoute({ game: 'sense', skill: 'subitize' }))
+            .toBe('/number-sense/drill/subitize?surprise=1')
         expect(surpriseRoute({ game: 'tables', planetId: 't3' }))
             .toBe('/times-tables/train/t3/practice?surprise=1')
         expect(surpriseRoute({ game: 'beam', skill: 'halve' }))

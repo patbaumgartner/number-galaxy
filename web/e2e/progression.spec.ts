@@ -3,7 +3,7 @@ import { answerCurrentFact, gotoApp, profileStorageKey } from './fixtures'
 
 test.setTimeout(180_000)
 
-const mapTitle = /Times Tables Galaxy|Einmaleins-Galaxie/
+const mapTitle = /Times Tables|Einmaleins/
 const practice = /Practice|Üben/
 const speed = /Speed Run|Sprint/
 const backToMap = /Back to map|Zurück zur Karte/
@@ -44,7 +44,7 @@ async function earnTwoStars(page: Page, planet: ReturnType<typeof planetButton>)
     await returnToMap(page)
 }
 
-test('earns the Times Tables Galaxy unlock ladder through play', async ({ page }, testInfo) => {
+test('earns the Times Tables unlock ladder through play', async ({ page }, testInfo) => {
     // Progression is form-factor independent and this spec plays dozens of
     // sessions, so it runs once on desktop rather than in both projects.
     test.skip(testInfo.project.name !== 'chromium-desktop', 'covered by the desktop run')

@@ -2,6 +2,7 @@ import { useMemo, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import FactHeatmap from '../components/trainer/FactHeatmap'
 import TopBar from '../components/TopBar'
+import HowToPlayDialog from '../components/HowToPlayDialog'
 import { useDocumentLanguage, useModalDialog } from '../hooks'
 import { translations } from '../i18n'
 import { localEpochDay } from '../review/leitner'
@@ -26,10 +27,12 @@ export default function TimesTablesPage() {
     const navigate = useNavigate()
     const settings = store.getSettings()
     const t = translations[settings.language].tt
+    const home = translations[settings.language].home
     useDocumentLanguage(settings.language)
     const [activePlanet, setActivePlanet] = useState<PlanetId | null>(null)
     const [heatmapView, setHeatmapView] = useState<'core' | 'extended' | 'squares'>('core')
     const [progress] = useState(() => ttStore.getProgress())
+    const [howToOpen, setHowToOpen] = useState(false)
     const [stars] = useState(() => ttStore.getStars())
     const [today] = useState(() => localEpochDay(Date.now(), new Date().getTimezoneOffset()))
     const dueCount = useMemo(() => countDueFacts(progress, today), [progress, today])
@@ -53,9 +56,14 @@ export default function TimesTablesPage() {
             <TopBar
                 back={{ label: translations[settings.language].nav.home, to: '/' }}
                 title={t.title}
-                actions={<button type="button" className="btn btn--icon" onClick={() => navigate('/settings')}>
-                    ⚙️<span className="game-bar__hide-sm"> {translations[settings.language].nav.settings}</span>
-                </button>}
+                actions={<>
+                    <button type="button" className="btn btn--icon" onClick={() => setHowToOpen(true)}>
+                        ❓<span className="game-bar__hide-sm"> {home.howToPlay}</span>
+                    </button>
+                    <button type="button" className="btn btn--icon" onClick={() => navigate('/settings')}>
+                        ⚙️<span className="game-bar__hide-sm"> {translations[settings.language].nav.settings}</span>
+                    </button>
+                </>}
             />
             <main className="shell trainer-shell">
 
@@ -137,6 +145,15 @@ export default function TimesTablesPage() {
                         onClick={() => train('speed')}
                     >{t.phaseSpeed}</button>
                 </PhaseChooser>
+            )}
+
+            {howToOpen && (
+                <HowToPlayDialog
+                    title={home.howToTablesTitle}
+                    steps={home.howToTablesSteps}
+                    close={translations[settings.language].beam.helpClose}
+                    onClose={() => setHowToOpen(false)}
+                />
             )}
         </div>
     )

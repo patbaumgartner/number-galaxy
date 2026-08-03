@@ -13,6 +13,7 @@ import {
     seedPlayer,
     userEvent,
 } from '../test/utils'
+import { senseStore } from '../sense'
 import SettingsPage from './SettingsPage'
 
 describe('SettingsPage', () => {
@@ -155,5 +156,60 @@ describe('SettingsPage', () => {
         expect(screen.getByRole('button', { name: /home/i })).toBeInTheDocument()
         expect(screen.queryByRole('button', { name: /best scores/i })).not.toBeInTheDocument()
         expect(screen.queryByRole('button', { name: /done/i })).not.toBeInTheDocument()
+    })
+
+    it('reaches the progress page, home, and the number-sense reset', async () => {
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<SettingsPage />)
+
+        await user.click(screen.getByRole('button', { name: /^📋 Progress$/ }))
+        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/progress')
+    })
+
+    it('goes home from the foot of the page', async () => {
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<SettingsPage />)
+
+        await user.click(screen.getByRole('button', { name: /🏠/ }))
+        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/')
+    })
+
+    it('switches the glance off and back on', async () => {
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<SettingsPage />)
+
+        const glance = screen.getByRole('switch', {
+            name: (_name, element) => /Show only briefly/.test(element.closest('.switch-row')?.textContent ?? ''),
+        })
+        expect(glance).toHaveAttribute('aria-checked', 'true')
+        await user.click(glance)
+        expect(senseStore.getSenseSettings().briefGlance).toBe(false)
+    })
+
+    it('resets only number-sense data after confirmation, and nothing when cancelled', async () => {
+        senseStore.raiseStars('subitize', 3)
+        beamStore.raiseStars('double', 2)
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<SettingsPage />)
+
+        vi.spyOn(window, 'confirm').mockReturnValue(false)
+        await user.click(screen.getByRole('button', { name: /Reset Number Sense/ }))
+        expect(senseStore.getStars().subitize).toBe(3)
+
+        vi.spyOn(window, 'confirm').mockReturnValue(true)
+        await user.click(screen.getByRole('button', { name: /Reset Number Sense/ }))
+        expect(senseStore.getStars()).toEqual({})
+        expect(beamStore.getStars().double).toBe(2)
+    })
+
+    it('turns word problems on', async () => {
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<SettingsPage />)
+
+        const stories = screen.getByRole('switch', {
+            name: (_name, element) => /Word problems/.test(element.closest('.switch-row')?.textContent ?? ''),
+        })
+        await user.click(stories)
+        expect(store.getSettings().stories).toBe(true)
     })
 })

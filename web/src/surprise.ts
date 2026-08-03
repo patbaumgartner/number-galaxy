@@ -2,6 +2,8 @@ import type { Rng } from './game'
 import { defaultRng, pick } from './game/rng'
 import type { BeamSkill } from './beam'
 import { BEAM_STATIONS, beamStore, isStationUnlocked, type BeamStars } from './beam'
+import type { SenseSkill } from './sense'
+import { SENSE_STATIONS, isSenseStationUnlocked, senseStore, type SenseStars } from './sense'
 import { localEpochDay } from './review/leitner'
 import { countDueFacts } from './timesTable/session'
 import { GALAXIES, isPlanetUnlocked } from './timesTable/tables'
@@ -16,11 +18,13 @@ export type SurpriseTarget =
     | { readonly game: 'tables'; readonly planetId: PlanetId }
     | { readonly game: 'tables'; readonly planetId: 'mission' }
     | { readonly game: 'beam'; readonly skill: BeamSkill }
+    | { readonly game: 'sense'; readonly skill: SenseSkill }
 
 export type SurpriseInput = {
     readonly rng: Rng
     readonly ttStars: Partial<Record<PlanetId, StarLevel>>
     readonly beamStars: BeamStars
+    readonly senseStars: SenseStars
     /** Times-tables facts due for review today. */
     readonly dueFactCount: number
 }
@@ -36,16 +40,20 @@ const ALL_PLANETS: readonly PlanetId[] = GALAXIES.flatMap(galaxy => galaxy.plane
  * at the difficulty the player has already earned. Review comes first: if the
  * trainer has facts due today, that is what practice is for.
  */
-export function pickSurprise({ rng, ttStars, beamStars, dueFactCount }: SurpriseInput): SurpriseTarget {
+export function pickSurprise({ rng, ttStars, beamStars, senseStars, dueFactCount }: SurpriseInput): SurpriseTarget {
     const planets = ALL_PLANETS.filter(planetId => isPlanetUnlocked(planetId, ttStars))
     const stations = BEAM_STATIONS
         .filter(station => isStationUnlocked(station.id, beamStars))
+        .map(station => station.id)
+    const senseStations = SENSE_STATIONS
+        .filter(station => isSenseStationUnlocked(station.id, senseStars))
         .map(station => station.id)
 
     const games: SurpriseTarget[] = [{ game: 'invaders' }]
     if (dueFactCount > 0) games.push({ game: 'tables', planetId: 'mission' })
     else if (planets.length > 0) games.push({ game: 'tables', planetId: pick(rng, planets) })
     if (stations.length > 0) games.push({ game: 'beam', skill: pick(rng, stations) })
+    if (senseStations.length > 0) games.push({ game: 'sense', skill: pick(rng, senseStations) })
 
     return pick(rng, games)
 }
@@ -67,6 +75,8 @@ export function surpriseRoute(target: SurpriseTarget): string {
                 : `/times-tables/train/${target.planetId}/practice${mark}`
         case 'beam':
             return `/number-beam/drill/${target.skill}${mark}`
+        case 'sense':
+            return `/number-sense/drill/${target.skill}${mark}`
     }
 }
 
@@ -82,6 +92,7 @@ export function nextSurprise(rng: Rng = defaultRng): SurpriseTarget {
         rng,
         ttStars: ttStore.getStars(),
         beamStars: beamStore.getStars(),
+        senseStars: senseStore.getStars(),
         dueFactCount: countDueFacts(ttStore.getProgress(), today),
     })
 }

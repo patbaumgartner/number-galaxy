@@ -118,11 +118,13 @@
   border: 1px solid var(--border-hairline);
   border-radius: var(--radius-md);
   --beam-thumb: 40px;
+  /* Room above the track for the alien to ride. */
+  --beam-rail-top: 34px;
 }
 
 .beam__rail {
   position: relative;
-  padding-top: 34px;
+  padding-top: var(--beam-rail-top);
 }
 
 /* The alien rides the native thumb: the thumb is inset by half its own width
@@ -133,6 +135,21 @@
   left: calc(var(--beam-thumb) / 2 + var(--beam-pos) * (100% - var(--beam-thumb)));
   transform: translateX(-50%);
   font-size: 1.75rem;
+  pointer-events: none;
+  transition: left .12s ease-out;
+}
+
+/* Centred on the thumb, sharing its offset, so the number and the thing being
+   moved are read in one place instead of two. */
+.beam__value {
+  position: absolute;
+  top: calc(var(--beam-rail-top) + var(--beam-thumb) / 2);
+  left: calc(var(--beam-thumb) / 2 + var(--beam-pos) * (100% - var(--beam-thumb)));
+  transform: translate(-50%, -50%);
+  font-size: var(--text-base);
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-gold);
   pointer-events: none;
   transition: left .12s ease-out;
 }
@@ -218,7 +235,7 @@
 .overlay__note { margin: var(--space-1) 0; color: var(--color-success); font-weight: 700; }
 
 @media (prefers-reduced-motion: reduce) {
-  .beam__alien, .beam-station { transition: none; }
+  .beam__alien, .beam__value, .beam-station { transition: none; }
 }
 
 @media (min-width: 720px) {

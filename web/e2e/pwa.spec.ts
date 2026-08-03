@@ -3,14 +3,14 @@ import { gotoApp, seedStorage } from './fixtures'
 
 const settings = { language: 'en', operations: ['addition'], rank: 'rookie', timed: false, sound: false, hints: true }
 
-test('serves a valid manifest with the Math Invaders scope', async ({ page, request }) => {
+test('serves a valid manifest scoped to the unchanged /math-invaders/ address', async ({ page, request }) => {
     const response = await request.get('/math-invaders/manifest.json')
     expect(response.ok()).toBeTruthy()
     const manifest: unknown = await response.json()
     expect(manifest).toMatchObject({ start_url: '/math-invaders/', scope: '/math-invaders/' })
     await seedStorage(page, { settings })
     await gotoApp(page)
-    await expect(page.getByRole('heading', { level: 1, name: 'MATH INVADERS' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: 'Number Galaxy' })).toBeVisible()
 })
 
 test('registers the production service worker and renders after reload', async ({ page }) => {
@@ -21,7 +21,7 @@ test('registers the production service worker and renders after reload', async (
         || (await navigator.serviceWorker.getRegistration()) !== undefined)
     expect(controlled).toBeTruthy()
     await page.reload()
-    await expect(page.getByRole('heading', { level: 1, name: 'MATH INVADERS' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: 'Number Galaxy' })).toBeVisible()
 })
 
 test('uses the GitHub Pages 404 redirect for an SPA deep link', async ({ page }) => {

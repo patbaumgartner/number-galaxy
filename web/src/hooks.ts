@@ -1,14 +1,22 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import type { Language } from './game'
+import { translations } from './i18n'
 import { setSoundEnabled } from './sound'
 import { store } from './store'
 import { nextSurprise, surpriseRoute, SURPRISE_PARAM } from './surprise'
 
-/** Mirrors the chosen UI language onto `<html lang>` for screen readers. */
+/**
+ * Mirrors the chosen UI language onto `<html lang>` and the tab title.
+ *
+ * The title cannot stay in `index.html`: the app name is translated, so a static
+ * one leaves an English or French child looking at a German tab. The markup
+ * keeps the German name for first paint, which is the default language.
+ */
 export function useDocumentLanguage(language: Language): void {
     useEffect(() => {
         document.documentElement.lang = language
+        document.title = translations[language].home.appName
     }, [language])
 }
 

@@ -1,7 +1,7 @@
 /**
  * Number Sense — the floor the other three games stand on.
  *
- * Math Invaders, the trainer and the beam all begin by assuming a child can
+ * The arcade, the trainer and the beam all begin by assuming a child can
  * already see a quantity, count on from a number, and say roughly where a number
  * sits. Those are not assumptions; they are the four strongest predictors of
  * later arithmetic, and every one of them is trainable. This section is where a

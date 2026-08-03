@@ -5,6 +5,7 @@ import type { MissReason, Operation, Rank } from '../game'
 export type Translations = {
     nav: { home: string; hallOfFame: string; settings: string }
     home: {
+        appName: string
         defaultName: string
         tagline: string
         subtitle: string
@@ -27,6 +28,15 @@ export type Translations = {
         missionTitle: string
         change: string
         chooseGame: string
+        gameSense: string
+        gameSenseBlurb: string
+        agesSense: string
+        agesBeam: string
+        agesInvaders: string
+        agesTables: string
+        howToSenseTitle: string
+        howToPlay: string
+        howToSenseSteps: string[]
         gameInvaders: string
         gameTables: string
         gameBeam: string

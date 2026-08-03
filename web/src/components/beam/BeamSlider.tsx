@@ -52,6 +52,9 @@ export default function BeamSlider({
         <div className="beam">
             <div className="beam__rail" style={{ '--beam-pos': position } as CSSProperties}>
                 <span className="beam__alien" aria-hidden="true">{alien}</span>
+                {/* The number sits inside the thumb: reading it off the ticks
+                    means looking away from the thing being moved. */}
+                <span className="beam__value" aria-hidden="true">{value}</span>
                 <input
                     className="beam__range"
                     type="range"

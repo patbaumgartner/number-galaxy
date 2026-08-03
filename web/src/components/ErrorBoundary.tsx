@@ -14,7 +14,7 @@ export default class ErrorBoundary extends Component<Props, State> {
     }
 
     override componentDidCatch(error: Error, info: ErrorInfo): void {
-        console.error('Math Invaders crashed:', error, info.componentStack)
+        console.error('Number Galaxy crashed:', error, info.componentStack)
     }
 
     override render(): ReactNode {

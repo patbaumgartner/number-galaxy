@@ -1,7 +1,7 @@
 {
-  "name": "Math Invaders",
-  "short_name": "MathInvaders",
-  "description": "Tap the right answer and get better at maths every day!",
+  "name": "Zahlen-Galaxie",
+  "short_name": "Zahlen-Galaxie",
+  "description": "Vier Mathe-Spiele für Kinder: Mengen sehen, verdoppeln, rechnen und das Einmaleins. Ohne Konto, ohne Werbung, offline.",
   "start_url": "/math-invaders/",
   "scope": "/math-invaders/",
   "display": "standalone",

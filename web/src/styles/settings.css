@@ -236,16 +236,35 @@
 }
 
 
+/* A segmented control: a short, ordered set of choices where seeing them side
+   by side *is* the information — Off, Gentle, On is a scale, and stacking it
+   into three full-width rows reads as three unrelated switches. */
 .options--row {
   display: flex;
-  flex-wrap: wrap;
+  /* `.options` stacks; this modifier is on the same element, so it has to say so. */
+  flex-direction: row;
   gap: var(--space-2);
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-5);
 }
 
 .options--row .option {
-  flex: 1 1 auto;
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
   justify-content: center;
+  text-align: center;
+  padding: var(--space-3) var(--space-2);
+}
+
+/* The hint under a row of options belongs to the row above it, not to whatever
+   heading follows, so it keeps the gap rather than closing it. */
+.options--row + .panel__hint {
+  margin-top: calc(var(--space-4) * -1);
+  margin-bottom: var(--space-6);
+}
+
+.switch-row__title + .panel__hint {
+  margin-bottom: var(--space-3);
 }
 
 /* Parent and teacher report */

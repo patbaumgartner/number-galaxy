@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import TopBar from '../components/TopBar'
+import HowToPlayDialog from '../components/HowToPlayDialog'
 import { SENSE_ZONES, isSenseZoneUnlocked, nextRecommendedSenseStation, senseStore } from '../sense'
 import { store } from '../store'
 import { fill, translations } from '../i18n'
@@ -12,6 +13,7 @@ export default function NumberSensePage() {
     const t = translations[settings.language]
     useDocumentLanguage(settings.language)
 
+    const [howToOpen, setHowToOpen] = useState(false)
     const [stars] = useState(() => senseStore.getStars())
     const [bests] = useState(() => senseStore.getBests())
     const recommended = nextRecommendedSenseStation(stars)
@@ -21,11 +23,14 @@ export default function NumberSensePage() {
             <TopBar
                 back={{ label: t.nav.home, to: '/' }}
                 title={t.sense.title}
-                actions={
+                actions={<>
+                    <button type="button" className="btn btn--icon" onClick={() => setHowToOpen(true)}>
+                        ❓<span className="game-bar__hide-sm"> {t.home.howToPlay}</span>
+                    </button>
                     <button type="button" className="btn btn--icon" onClick={() => navigate('/settings')}>
                         ⚙️<span className="game-bar__hide-sm"> {t.nav.settings}</span>
                     </button>
-                }
+                </>}
             />
 
             <main className="shell beam-shell">
@@ -70,6 +75,15 @@ export default function NumberSensePage() {
                     )
                 })}
             </main>
+
+            {howToOpen && (
+                <HowToPlayDialog
+                    title={t.home.howToSenseTitle}
+                    steps={t.home.howToSenseSteps}
+                    close={t.beam.helpClose}
+                    onClose={() => setHowToOpen(false)}
+                />
+            )}
         </div>
     )
 }

@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **The app is now Number Galaxy — Zahlen-Galaxie.** It was named after one of
+  its four games, which made the arcade sound like the whole product and left
+  the other three reading as extras. The arcade keeps the name *Math Invaders*,
+  because that is what it is; the galaxy is now the thing that holds all four.
+  *Times Tables Galaxy* loses its galaxy for the same reason — two galaxies in
+  one app named nothing.
+  - The saved-data prefix, the site address and the repository are all
+    deliberately unchanged. Renaming any of them would wipe every child's
+    progress or break every existing link, which is a high price for tidiness.
+- **❓ How to play, inside each game.** The rules for all four games used to sit
+  on the home page, where they were read once and then scrolled past forever —
+  furthest from the moment anyone needs them. Each game now carries its own
+  button, and the home page is a picker again.
 - **"How did you do that?"** Whether an answer was recalled, counted or worked
   out with a trick is the most diagnostic thing about it, and it is invisible
   from the outside — a right answer looks identical either way. Now and then
@@ -166,6 +179,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   reset.
 
 ### Changed
+- **Everything runs simplest first.** The home picker, the settings groups and
+  the README now all run 👀 Number Sense → 📏 Number Beam → 🛸 Math Invaders →
+  ✖️ Times Tables, which is the order a child actually grows through them.
+  Previously each of the three disagreed with the other two, and the newest and
+  gentlest game was listed last.
+- **🎲 Surprise draws from all four games.** Number Sense was missing from the
+  picker entirely, so the one game aimed at the youngest children could never be
+  chosen for them — and interleaving, which is the whole point of the card, was
+  running across three games instead of four. Its first zone is open from the
+  start, so it is offered from the very first run.
+- **The beam slider shows its number in the thumb.** The value sat off to one
+  side of the control it belonged to, which is not where anyone was looking.
+- **The pedagogy backlog is gone, and the README says what it said.** A list of
+  thirty finished items is a work log, not documentation. What was worth keeping
+  — why the countdown is off by default, why stars start at 65 %, why a near
+  miss counts when placing a number, the Lehrplan 21 mapping and the sources —
+  now lives in the README under *Why it is built this way*.
 - **Big ranks add and subtract in round numbers.** Legend and Supernova were
   generating things like `195 + 87` and asking a child to tap one of four tiles,
   which is not mental arithmetic — it is elimination, or column arithmetic
@@ -245,6 +275,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   restoration to the control that opened it.
 
 ### Fixed
+- **"Place it" asked the question and answered it in the same breath.** The
+  heading showed the instruction rather than the numeral, and the question
+  carried a number-line picture with the answer already marked on it — so the
+  child was shown where the number went and then asked where it went. The
+  numeral is now the prompt, the instruction is a hint, and the beam is the only
+  line on screen.
+- **The countdown and thinking-time controls stacked vertically.** Both are
+  segmented controls of three short options and both were rendering as a column,
+  because the row modifier never overrode the base rule that stacks them.
 - **Top-bar buttons had no room around their labels.** `.btn--icon` zeroed the
   horizontal padding, so above 560px the background ended exactly where the text
   did and the button read as too small for its own contents. Covered now by a

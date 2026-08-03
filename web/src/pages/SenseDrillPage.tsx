@@ -136,9 +136,15 @@ function SenseDrill({ skill, onReplay }: { readonly skill: SenseSkill; readonly 
         setResult({ correct, total, accuracy, bestStreak: drill.bestStreak, stars, gained: stars > startStars, newBest })
     }, [drill, skill, startStars, total])
 
-    const heading = skill === 'placeNumber' ? t.sense.placeIt : question.prompt === '?' ? t.sense.howMany : question.prompt
+    // The heading is always the thing being asked about — for `placeNumber` that
+    // is the number itself, which an earlier version replaced with the
+    // instruction, leaving a child with nothing on screen to place.
+    const heading = question.prompt === '?' ? t.sense.howMany : question.prompt
+    const instruction = skill === 'placeNumber'
+        ? t.sense.placeIt
+        : isGlance ? t.sense.glanceHint : t.beam.slideHint
     const resultText = feedback === null
-        ? (isGlance ? t.sense.glanceHint : t.beam.slideHint)
+        ? instruction
         : feedback.correct
             ? (feedback.exact ? t.beam.correct : t.sense.closeEnough)
             : `${t.beam.wrong} ${t.beam.theAnswerIs} ${feedback.answer}`

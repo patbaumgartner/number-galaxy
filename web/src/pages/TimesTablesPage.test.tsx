@@ -65,4 +65,23 @@ describe('TimesTablesPage', () => {
         due.unmount()
         expect(ttStore.getStars().t1).toBe(1)
     })
+
+    it('keeps the rules one tap away in the game rather than on the home screen', async () => {
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<TimesTablesPage />)
+
+        await user.click(screen.getByRole('button', { name: /How to play/ }))
+        expect(screen.getByRole('dialog', { name: /How to play: Times Tables/ })).toBeInTheDocument()
+
+        await user.click(screen.getByRole('button', { name: /Continue/ }))
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    })
+
+    it('reaches settings from the star map', async () => {
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<TimesTablesPage />)
+
+        await user.click(screen.getByRole('button', { name: /settings/i }))
+        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/settings')
+    })
 })

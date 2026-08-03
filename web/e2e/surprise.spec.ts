@@ -4,8 +4,11 @@ import { answerBeamQuestion, gotoApp, seedStorage } from './fixtures'
 const settings = { language: 'en', operations: ['addition'], rank: 'rookie', timed: false, sound: false, hints: true }
 const player = { id: 'surprise-pilot', playerName: 'Nova', avatarId: '🚀', createdAt: '2026-01-01T00:00:00.000Z' }
 
-/** Everything a fresh player can legally be sent to: the arcade, the home galaxy, the Doubling Deck. */
-const LEGAL_TARGET = /\/math-invaders\/(game|times-tables\/train\/t\d+\/practice|number-beam\/drill\/(double|halve|nearDouble))\?surprise=1$/
+/**
+ * Everything a fresh player can legally be sent to: the arcade, the home galaxy,
+ * the Doubling Deck and the first Number Sense zone, which is open from the start.
+ */
+const LEGAL_TARGET = /\/math-invaders\/(game|times-tables\/train\/t\d+\/practice|number-beam\/drill\/(double|halve|nearDouble)|number-sense\/drill\/(subitize|tenFrame|rekenrek))\?surprise=1$/
 
 test.describe.configure({ mode: 'parallel' })
 
@@ -63,7 +66,7 @@ test('goes home from a surprise run', async ({ page }) => {
     // `navigate('/')` under the router basename lands on /math-invaders, with or
     // without the trailing slash depending on how the app was entered.
     await expect(page).toHaveURL(/\/math-invaders\/?$/)
-    await expect(page.getByRole('heading', { level: 1, name: 'MATH INVADERS' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: 'Number Galaxy' })).toBeVisible()
 })
 
 test('survives a reload mid-run, because the marker is in the URL', async ({ page }) => {

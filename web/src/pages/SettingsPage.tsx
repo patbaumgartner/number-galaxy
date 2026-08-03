@@ -99,6 +99,54 @@ export default function SettingsPage() {
 
                 <section className="group">
                     <div className="group__head">
+                        <h2 className="group__title">{t.settings.groupSense}</h2>
+                        <p className="group__hint">{t.settings.groupSenseHint}</p>
+                    </div>
+
+                    <div className="panel">
+                        <div className="switch-row">
+                            <div>
+                                <h3 className="switch-row__title">👁 {t.sense.settingsGlance}</h3>
+                                <p className="panel__hint">{t.sense.settingsGlanceHint}</p>
+                            </div>
+                            <Switch
+                                labels={t.settings}
+                                on={senseSettings.briefGlance}
+                                onToggle={() => updateSense(!senseSettings.briefGlance)}
+                            />
+                        </div>
+                        <div className="panel__action">
+                            <button type="button" className="btn btn--danger" onClick={resetSense}>{t.sense.settingsReset}</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="group">
+                    <div className="group__head">
+                        <h2 className="group__title">{t.settings.groupBeam}</h2>
+                        <p className="group__hint">{t.settings.groupBeamHint}</p>
+                    </div>
+
+                    <div className="panel">
+                        <div className="switch-row">
+                            <div>
+                                <h3 className="switch-row__title">📏 {t.beam.settingsBar}</h3>
+                                <p className="panel__hint">{t.beam.settingsBarHint}</p>
+                            </div>
+                            <Switch
+                                labels={t.settings}
+                                on={beamSettings.alwaysShowBar}
+                                onToggle={() => updateBeam(!beamSettings.alwaysShowBar)}
+                            />
+                        </div>
+                        <div className="panel__action">
+                            <button type="button" className="btn btn--danger" onClick={resetBeam}>{t.beam.settingsReset}</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="group">
+                    <div className="group__head">
                         <h2 className="group__title">{t.settings.groupInvaders}</h2>
                         <p className="group__hint">{t.settings.groupInvadersHint}</p>
                     </div>
@@ -253,54 +301,6 @@ export default function SettingsPage() {
                             <button type="button" className="btn btn--ghost" onClick={() => navigate('/progress')}>
                                 {t.progress.title}
                             </button>
-                        </div>
-                    </div>
-                </section>
-
-                <section className="group">
-                    <div className="group__head">
-                        <h2 className="group__title">{t.settings.groupSense}</h2>
-                        <p className="group__hint">{t.settings.groupSenseHint}</p>
-                    </div>
-
-                    <div className="panel">
-                        <div className="switch-row">
-                            <div>
-                                <h3 className="switch-row__title">👁 {t.sense.settingsGlance}</h3>
-                                <p className="panel__hint">{t.sense.settingsGlanceHint}</p>
-                            </div>
-                            <Switch
-                                labels={t.settings}
-                                on={senseSettings.briefGlance}
-                                onToggle={() => updateSense(!senseSettings.briefGlance)}
-                            />
-                        </div>
-                        <div className="panel__action">
-                            <button type="button" className="btn btn--danger" onClick={resetSense}>{t.sense.settingsReset}</button>
-                        </div>
-                    </div>
-                </section>
-
-                <section className="group">
-                    <div className="group__head">
-                        <h2 className="group__title">{t.settings.groupBeam}</h2>
-                        <p className="group__hint">{t.settings.groupBeamHint}</p>
-                    </div>
-
-                    <div className="panel">
-                        <div className="switch-row">
-                            <div>
-                                <h3 className="switch-row__title">📏 {t.beam.settingsBar}</h3>
-                                <p className="panel__hint">{t.beam.settingsBarHint}</p>
-                            </div>
-                            <Switch
-                                labels={t.settings}
-                                on={beamSettings.alwaysShowBar}
-                                onToggle={() => updateBeam(!beamSettings.alwaysShowBar)}
-                            />
-                        </div>
-                        <div className="panel__action">
-                            <button type="button" className="btn btn--danger" onClick={resetBeam}>{t.beam.settingsReset}</button>
                         </div>
                     </div>
                 </section>

@@ -28,7 +28,7 @@ export default function ProgressPage() {
         const url = URL.createObjectURL(blob)
         const link = document.createElement('a')
         link.href = url
-        link.download = `math-invaders-${report.player || 'progress'}.json`
+        link.download = `number-galaxy-${report.player || 'progress'}.json`
         link.click()
         URL.revokeObjectURL(url)
     }

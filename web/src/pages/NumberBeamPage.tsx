@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import TopBar from '../components/TopBar'
+import HowToPlayDialog from '../components/HowToPlayDialog'
 import { BEAM_ZONES, beamStore, isZoneUnlocked, nextRecommendedStation } from '../beam'
 import { store } from '../store'
 import { fill, translations } from '../i18n'
@@ -12,6 +13,7 @@ export default function NumberBeamPage() {
     const t = translations[settings.language]
     useDocumentLanguage(settings.language)
 
+    const [howToOpen, setHowToOpen] = useState(false)
     const [stars] = useState(() => beamStore.getStars())
     const [bests] = useState(() => beamStore.getBests())
     const recommended = nextRecommendedStation(stars)
@@ -21,11 +23,14 @@ export default function NumberBeamPage() {
             <TopBar
                 back={{ label: t.nav.home, to: '/' }}
                 title={t.beam.title}
-                actions={
+                actions={<>
+                    <button type="button" className="btn btn--icon" onClick={() => setHowToOpen(true)}>
+                        ❓<span className="game-bar__hide-sm"> {t.home.howToPlay}</span>
+                    </button>
                     <button type="button" className="btn btn--icon" onClick={() => navigate('/settings')}>
                         ⚙️<span className="game-bar__hide-sm"> {t.nav.settings}</span>
                     </button>
-                }
+                </>}
             />
 
             <main className="shell beam-shell">
@@ -73,6 +78,15 @@ export default function NumberBeamPage() {
                     )
                 })}
             </main>
+
+            {howToOpen && (
+                <HowToPlayDialog
+                    title={t.home.howToBeamTitle}
+                    steps={t.home.howToBeamSteps}
+                    close={t.beam.helpClose}
+                    onClose={() => setHowToOpen(false)}
+                />
+            )}
         </div>
     )
 }

@@ -23,6 +23,7 @@ import AnswerGrid from '../components/arcade/AnswerGrid'
 import { NumberPad } from '../components/trainer/NumberPad'
 import TopBar from '../components/TopBar'
 import WorkedExampleDialog from '../components/WorkedExampleDialog'
+import HowToPlayDialog from '../components/HowToPlayDialog'
 import PlayHud from '../components/PlayHud'
 import MissionSummary from '../components/arcade/MissionSummary'
 import {
@@ -124,6 +125,7 @@ export default function GamePage() {
     const [mission, setMission] = useState<MissionState>(freshMission)
     const [feedback, setFeedback] = useState<Feedback | null>(null)
     const [helpOpen, setHelpOpen] = useState(false)
+    const [howToOpen, setHowToOpen] = useState(false)
     const [result, setResult] = useState<MissionResult | null>(null)
     const [runs, setRuns] = useState(1)
     const [entry, setEntry] = useState('')
@@ -339,6 +341,9 @@ export default function GamePage() {
                         <span aria-hidden="true">{player.avatarId}</span>
                         <span className="game-bar__hide-sm">{player.playerName}</span>
                     </span>
+                    <button type="button" className="btn btn--icon" onClick={() => setHowToOpen(true)}>
+                        ❓<span className="game-bar__hide-sm"> {t.home.howToPlay}</span>
+                    </button>
                     {settings.hints && (
                         <button
                             type="button"
@@ -448,6 +453,15 @@ export default function GamePage() {
 
                 <p className="stage__rocket" aria-hidden="true">🚀</p>
             </main>
+
+            {howToOpen && (
+                <HowToPlayDialog
+                    title={t.home.howToTitle}
+                    steps={t.home.howToSteps}
+                    close={t.game.helpClose}
+                    onClose={() => setHowToOpen(false)}
+                />
+            )}
 
             {helpOpen && (
                 <WorkedExampleDialog

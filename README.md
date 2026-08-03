@@ -1,21 +1,23 @@
-# 🛸 Math Invaders
+# 🌌 Number Galaxy
 
 [![Deploy to GitHub Pages](https://github.com/patbaumgartner/math-invaders/actions/workflows/deploy.yml/badge.svg)](https://github.com/patbaumgartner/math-invaders/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
-> Three free maths games for children, in one page. No account, no ads, no tracking, and
-> it keeps working when the wifi does not.
+> Four free maths games for children, in one page — from seeing how many dots are on a die
+> to knowing 7 × 8 by heart. No account, no ads, no tracking, and it keeps working when the
+> wifi does not.
 
 **[🎮 Play now](https://patbaumgartner.github.io/math-invaders)** ·
 **[👩‍🏫 For teachers](#-for-teachers-and-parents)** ·
-**[🛸 The arcade](#-math-invaders--the-arcade-game)** ·
-**[✖️ Times tables](#️-times-tables-galaxy--the-multiplication-trainer)** ·
-**[📏 Number Beam](#-number-beam--doubling-halving-and-bar-models)** ·
+**[🧭 Why it is built this way](#-why-it-is-built-this-way)** ·
 **[👀 Number Sense](#-number-sense--seeing-how-many)** ·
+**[📏 Number Beam](#-number-beam--doubling-halving-and-bar-models)** ·
+**[🛸 The arcade](#-math-invaders--the-arcade-game)** ·
+**[✖️ Times tables](#️-times-tables--the-multiplication-trainer)** ·
 **[🛠 Development](docs/DEVELOPMENT.md)**
 
-![The home page, with the three games and the Surprise card](./docs/math-invaders-home.png)
+![The home page, with the four games and the Surprise card](./docs/math-invaders-home.png)
 
 ---
 
@@ -26,9 +28,9 @@
 | Game | Maths it covers | Roughly |
 |------|-----------------|---------|
 | 👀 **Number Sense** | Seeing quantities without counting them: dot patterns, ten-frames, a bead rack, placing numbers on a line, counting on, and dot arrays | ages 4–7 |
-| 🛸 **Math Invaders** | Addition, subtraction, multiplication, division and remainders — in five different question shapes, with numbers from ≤ 10 up to ≤ 1000 | ages 6–11 |
-| ✖️ **Times Tables Galaxy** | Recall of the tables: 1–12, squares to 25², the 15/20/25 shortcuts, and 13–19 | ages 7–11 |
 | 📏 **Number Beam** | Doubling, halving, quarters, fractions of an amount, ×10 ÷10, number bonds and partitioning — all drawn as bar models | ages 5–9 |
+| 🛸 **Math Invaders** | Addition, subtraction, multiplication, division and remainders — in five different question shapes, with numbers from ≤ 10 up to ≤ 1000 | ages 6–11 |
+| ✖️ **Times Tables** | Recall of the tables: 1–12, squares to 25², the 15/20/25 shortcuts, and 13–19 | ages 7–11 |
 
 The ages are an indication, not a gate, and no curriculum is assumed. Each game sets its
 own difficulty from what the child has already done, so two children of different ages
@@ -47,7 +49,7 @@ If you would rather not choose, **🎲 Surprise me** picks for them — see
 ### How you can see progress
 
 - **⭐ Stars** on every planet and station, and at the end of every arcade mission.
-- **A mastery map** in Times Tables Galaxy that colours each of the 144 facts as unseen,
+- **A mastery map** in Times Tables that colours each of the 144 facts as unseen,
   learning, due for review, or mastered — the fastest way to see what is actually stuck.
 - **Skill badges** in Settings, one per arcade operation, from a rolling 30-answer
   accuracy history.
@@ -66,6 +68,94 @@ model.
 No account. No advertising. No analytics, telemetry or third-party scripts. Nothing
 leaves the device — there is no server to send it to. After the first visit it works
 offline. See [Your data](#your-data).
+
+---
+
+## 👀 Number Sense — seeing how many
+
+The other three games all begin by assuming a child can already see a quantity, count on
+from a number, and say roughly where a number sits. Those are not safe assumptions — they
+are the strongest predictors of later arithmetic, and every one of them is trainable. This
+is where a child who is not yet ready for `2 × 7` has somewhere to be.
+
+### Six stations in two zones
+
+| Zone | Stations | What it asks |
+|------|----------|--------------|
+| 👀 **Sight Bay** | At a glance · Ten-frame · Bead rack | How many — without counting them |
+| 📍 **Number Line** | Place it · Count on · Dot array | Where the number goes, and where a jump lands |
+
+**Patterns are shown for a glance, not for a count.** A dot pattern appears for about a
+second and then goes. Scattered dots can only be counted one at a time, which trains
+counting and little else; a die face or two rows of five can be *seen*, and it is that
+seeing which later becomes "7 is 5 and 2". 👁 **Look again** brings it back as often as a
+child wants, and the glance can be switched off entirely in Settings.
+
+**Every arrangement is one a child meets elsewhere** — a die face, a ten-frame in two rows
+of five, a bead rack grouped in fives, an empty number line with the jump drawn on it, a dot
+array read as rows and columns.
+
+**Placing a number allows a near miss.** Landing on 38 when the answer was 37 counts. The
+skill being built is a sense of how big a number is, and marking that wrong would be
+measuring something else. Everywhere a quantity is exact, it has to be exact.
+
+Answers are given on the same beam Number Beam uses — nothing to eliminate, and a number to
+commit to.
+
+---
+
+## 📏 Number Beam — doubling, halving and bar models
+
+The arcade and the trainer ask a child to *produce a number*. This one shows them what a
+number is made of.
+
+| The station map | A question on the bar |
+|-----------------|-----------------------|
+| ![Number Beam stations](./docs/math-invaders-number-beam.png) | ![Number Beam drill](./docs/math-invaders-beam-drill.png) |
+
+### Every question is a bar
+
+The whole sits on top, the parts that make it underneath, and **both rows are measured
+against one shared scale** — so a doubled bar really is drawn twice as long. Unknown
+parts stay behind a `?` until the answer is given, then fill in with their numbers.
+
+That picture is the Singapore-style bar model, and it is the same one whether the
+question is doubling, a quarter, a fraction of an amount or a number bond.
+
+### Every answer is given by moving an alien along the beam
+
+There are no answer tiles in this game at all. The child drags the alien, nudges it with
+−/+, or walks it with the arrow keys, and lands it on the answer. Underneath is a native
+range slider, so it works with a finger, a mouse, a keyboard and a screen reader alike.
+
+This is deliberately harder than multiple choice: there is nothing to eliminate, and the
+child has to place the number on a line. Every beam has between 10 and 70 stops, the
+answer always sits exactly on one, and it never sits at a predictable fraction of the
+bar.
+
+### What it practises
+
+Nine stations in three zones. A zone opens once two stations in the one before it have a
+star:
+
+| Zone | Stations | Examples |
+|------|----------|----------|
+| 🔁 Doubling Deck | Double · Halve · Near doubles | `2 × 7 = ?` · `14 ÷ 2 = ?` · `7 + 8 = ?` |
+| 🧩 Parts Bay | Double twice · Quarters · Fraction of | `4 × 6 = ?` · `20 ÷ 4 = ?` · `¾ × 20 = ?` |
+| 🔟 Tens Belt | Ten times · Number bonds · Split | `10 × 7 = ?` · `? + 7 = 10` · `24 = 20 + ?` |
+
+Prompts are written in pure maths notation, so they read identically in all four
+languages — the station name carries the concept and the bar carries the meaning.
+
+### Difficulty and progress
+
+Each station has **three tiers, and the tier is simply how many stars the child already
+holds** — numbers widen as they improve, so a mastered station never goes stale. Number
+ranges are bounded by what a bar can actually show; a bar of 900 units is not a picture
+anyone can read.
+
+A drill is ten questions: ⭐ at 70 % accuracy, ⭐⭐ at 90 % once one star is held, and ⭐⭐⭐ for
+a clean sweep once two are. Stars never fall.
 
 ---
 
@@ -215,7 +305,7 @@ game, so the other two do not link to it.
 
 ---
 
-## ✖️ Times Tables Galaxy — the multiplication trainer
+## ✖️ Times Tables — the multiplication trainer
 
 A focused trainer for *recall*, not calculation: the goal is knowing `7 × 8` rather than
 working it out. Answers are typed on a number pad, because recognising an answer among
@@ -223,7 +313,7 @@ four is not the same skill as producing it.
 
 | The galaxy map | Practising a table |
 |----------------|--------------------|
-| ![Times Tables Galaxy](./docs/math-invaders-times-tables.png) | ![Trainer practice](./docs/math-invaders-trainer-practice.png) |
+| ![Times Tables](./docs/math-invaders-times-tables.png) | ![Trainer practice](./docs/math-invaders-trainer-practice.png) |
 
 ### What it practises
 
@@ -279,97 +369,9 @@ a gap is visible at a glance rather than inferred from a score.
 
 ---
 
-## 📏 Number Beam — doubling, halving and bar models
-
-The other two games ask a child to *produce a number*. This one shows them what a number
-is made of.
-
-| The station map | A question on the bar |
-|-----------------|-----------------------|
-| ![Number Beam stations](./docs/math-invaders-number-beam.png) | ![Number Beam drill](./docs/math-invaders-beam-drill.png) |
-
-### Every question is a bar
-
-The whole sits on top, the parts that make it underneath, and **both rows are measured
-against one shared scale** — so a doubled bar really is drawn twice as long. Unknown
-parts stay behind a `?` until the answer is given, then fill in with their numbers.
-
-That picture is the Singapore-style bar model, and it is the same one whether the
-question is doubling, a quarter, a fraction of an amount or a number bond.
-
-### Every answer is given by moving an alien along the beam
-
-There are no answer tiles in this game at all. The child drags the alien, nudges it with
-−/+, or walks it with the arrow keys, and lands it on the answer. Underneath is a native
-range slider, so it works with a finger, a mouse, a keyboard and a screen reader alike.
-
-This is deliberately harder than multiple choice: there is nothing to eliminate, and the
-child has to place the number on a line. Every beam has between 10 and 70 stops, the
-answer always sits exactly on one, and it never sits at a predictable fraction of the
-bar.
-
-### What it practises
-
-Nine stations in three zones. A zone opens once two stations in the one before it have a
-star:
-
-| Zone | Stations | Examples |
-|------|----------|----------|
-| 🔁 Doubling Deck | Double · Halve · Near doubles | `2 × 7 = ?` · `14 ÷ 2 = ?` · `7 + 8 = ?` |
-| 🧩 Parts Bay | Double twice · Quarters · Fraction of | `4 × 6 = ?` · `20 ÷ 4 = ?` · `¾ × 20 = ?` |
-| 🔟 Tens Belt | Ten times · Number bonds · Split | `10 × 7 = ?` · `? + 7 = 10` · `24 = 20 + ?` |
-
-Prompts are written in pure maths notation, so they read identically in all four
-languages — the station name carries the concept and the bar carries the meaning.
-
-### Difficulty and progress
-
-Each station has **three tiers, and the tier is simply how many stars the child already
-holds** — numbers widen as they improve, so a mastered station never goes stale. Number
-ranges are bounded by what a bar can actually show; a bar of 900 units is not a picture
-anyone can read.
-
-A drill is ten questions: ⭐ at 70 % accuracy, ⭐⭐ at 90 % once one star is held, and ⭐⭐⭐ for
-a clean sweep once two are. Stars never fall.
-
----
-
-## 👀 Number Sense — seeing how many
-
-The other three games all begin by assuming a child can already see a quantity, count on
-from a number, and say roughly where a number sits. Those are not safe assumptions — they
-are the strongest predictors of later arithmetic, and every one of them is trainable. This
-is where a child who is not yet ready for `2 × 7` has somewhere to be.
-
-### Six stations in two zones
-
-| Zone | Stations | What it asks |
-|------|----------|--------------|
-| 👀 **Sight Bay** | At a glance · Ten-frame · Bead rack | How many — without counting them |
-| 📍 **Number Line** | Place it · Count on · Dot array | Where the number goes, and where a jump lands |
-
-**Patterns are shown for a glance, not for a count.** A dot pattern appears for about a
-second and then goes. Scattered dots can only be counted one at a time, which trains
-counting and little else; a die face or two rows of five can be *seen*, and it is that
-seeing which later becomes "7 is 5 and 2". 👁 **Look again** brings it back as often as a
-child wants, and the glance can be switched off entirely in Settings.
-
-**Every arrangement is one a child meets elsewhere** — a die face, a ten-frame in two rows
-of five, a bead rack grouped in fives, an empty number line with the jump drawn on it, a dot
-array read as rows and columns.
-
-**Placing a number allows a near miss.** Landing on 38 when the answer was 37 counts. The
-skill being built is a sense of how big a number is, and marking that wrong would be
-measuring something else. Everywhere a quantity is exact, it has to be exact.
-
-Answers are given on the same beam Number Beam uses — nothing to eliminate, and a number to
-commit to.
-
----
-
 ## 🎲 Surprise me
 
-A fourth card in the picker that chooses a game — the game whose subject is "whatever you
+A fifth card in the picker that chooses a game — the game whose subject is "whatever you
 need next".
 
 It is deliberately **not** a random roll:
@@ -384,12 +386,14 @@ It is deliberately **not** a random roll:
 - **Never Learn.** That phase is a lesson, not a run.
 
 The point is *interleaving*: mixing topics beats practising one in a block, and switching
-between the arcade, the tables and the bar is exactly that mix. A surprise run ends with
-**Another surprise** and **Home** rather than "play again", because variety was the point.
+between the dots, the bar, the arcade and the tables is exactly that mix — all four games
+are drawn from, including Number Sense, whose first zone is open from the start. A surprise
+run ends with **Another surprise** and **Home** rather than "play again", because variety
+was the point.
 
 ---
 
-## Across all three games
+## Across all four games
 
 ### Languages
 
@@ -402,10 +406,15 @@ language.
 
 ![Settings page](./docs/math-invaders-settings.png)
 
-Settings are grouped by the game each control affects, because all three share one page.
+Settings are grouped by the game each control affects, because all four share one page, and
+they run simplest first — the same order as the home screen.
 
 | Setting | Applies to | Options | Default |
 |---------|-----------|---------|---------|
+| 👁 Brief glance | 👀 Sense | On / Off | On |
+| Sense progress | 👀 Sense | Reset | — |
+| 📏 Always show the bar | 📏 Beam | On / Off | On |
+| Beam progress | 📏 Beam | Reset | — |
 | Practise | 🛸 Arcade | ➕ ➖ ✖️ ➗ 🔢, several at once | ➕ Addition |
 | Rank | 🛸 Arcade | Rookie → Supernova | 🌱 Rookie |
 | ⏱ Countdown | 🛸 Arcade | Off · Gentle · On | Off |
@@ -414,8 +423,6 @@ Settings are grouped by the game each control affects, because all three share o
 | 📖 Word problems | 🛸 Arcade | On / Off | Off |
 | Strategy cards | ✖️ Trainer | On / Off | On |
 | Trainer progress | ✖️ Trainer | Reset | — |
-| 📏 Always show the bar | 📏 Beam | On / Off | On |
-| Beam progress | 📏 Beam | Reset | — |
 | Language | ⚙️ All games | German · Italian · English · French | German |
 | 🔊 Sound | ⚙️ All games | On / Off | On |
 | Delete all data | ⚙️ All games | — | — |
@@ -444,6 +451,58 @@ with nothing lost.
 
 Because progress is per-device and per-browser, a child who plays on both a tablet and a
 laptop will have separate progress on each.
+
+---
+
+## 🧭 Why it is built this way
+
+Every game here was checked against current research on how children learn number, counting
+and mental arithmetic. Where a design choice looks unusual, it is usually deliberate.
+
+### Choices that are easy to mistake for oversights
+
+| Design choice | Why it is right |
+|---|---|
+| No accounts, no ads, no analytics, no network calls, offline-first | The architecture *is* the privacy policy — satisfied structurally rather than by policy text. |
+| The countdown is **off by default** | Framing, not the clock, is the documented anxiety vector (Maki et al. 2024). |
+| A wrong answer never ends a run | A hard day yields *more* practice, not less. |
+| A local Hall of Fame, one entry per rank × clock | This is a **personal-best board**, not a leaderboard. The social-comparison harms need visible peers; there are none. |
+| No daily-login streak | The combo streak is within-mission and resets each run, so there is no cross-day loss aversion to exploit. |
+| Stars start at 65 %, not 50 % | With four tiles, guessing alone scores 25 %. Below 65 % the game offers smaller numbers instead of a verdict. |
+| Speed shown only at ≥ 80 % accuracy | Fluency is flexibility, accuracy and strategy before it is pace (NCTM 2020). |
+| A miss waits for *Got it* rather than a timer | Elaborated feedback only works if it is read; two seconds is under the time it takes to read a two-step working. |
+| Distractors are built from real near-misses | Documented arithmetic bugs, not absurd fillers — which is what lets a wrong answer be named. |
+| Leitner scheduling, commutativity-canonical (`7×8 ≡ 8×7`) | Real spaced repetition, and half as many facts to carry. |
+| Number Sense allows a near miss when placing a number | The skill is a sense of magnitude; marking 38-for-37 wrong would measure something else. Everywhere a quantity is exact, it has to be exact. |
+| WCAG 2.1 AA axe-audited on two viewports | The test suite fails on a single violation. |
+
+### Curriculum
+
+The games are mapped to **Lehrplan 21**, the Swiss curriculum, so a teacher can see which
+competency each station serves — from `MA.1.A.2.b` (*"Anzahlen bis 5 ohne Zählen erfassen"*,
+which is Number Sense's Sight Bay) through `MA.1.C.1` (worked routes and word problems) to
+`MA.1.A.3.d` (typed recall in the trainer). Codes and descriptor text are quoted verbatim
+from [zh.lehrplan.ch](https://zh.lehrplan.ch).
+
+Lehrplan 21 is also the source of the caution the whole design follows: *"Ein zu frühes,
+nicht vorstellungs- und verständnisorientiertes Automatisieren… behindert weiterführende
+Lernprozesse."* Automaticity stays a goal; it is never the starting point. That is why the
+floor — seeing, placing and counting on — is a game in its own right rather than a warm-up.
+
+### Sources
+
+Barbieri et al. 2023, *Educational Psychology Review* · Baroody et al. 2025,
+*Mathematical Thinking and Learning* · Bjork & Bjork 2011 · Booth & Siegler 2006 ·
+Brunmair & Richter 2019 · Carmosino 2024, *IJSG* · Cezarotto & Battaiola 2021 ·
+Chen et al. 2024, *Labour Economics* · Ebner et al. 2025, *Remedial and Special Education* ·
+Frykholm 2010 · Hopkins et al. 2020 · ICO, [*Age Appropriate Design Code*](https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/childrens-information/childrens-code-guidance-and-resources/)
+and *EdTech Examined* 2024 · Kuo et al. 2026, IDC · Lau et al. 2018, *Nature Neuroscience* ·
+Leuenberger et al. 2024 · Maki et al. 2024, *Journal of School Psychology* ·
+Murray et al. 2025, *Educational Psychology Review* ·
+NCTM 2020, [*Procedural Fluency in Mathematics*](https://www.nctm.org/standards-and-positions/Position-Statements/Procedural-Fluency-in-Mathematics/) ·
+Reed et al. 2014 · Rohrer & Taylor 2007 · Ryan & Deci 2020 · Shute 2008 ·
+Siegler & Opfer 2003, *Psychological Science* · Töllner et al. 2026, *Learning and Instruction* ·
+Yorulmaz & Önal 2017 · D-EDK, [*Lehrplan 21 Mathematik*](https://zh.lehrplan.ch)
 
 ---
 

@@ -9,6 +9,20 @@ import { nextSurprise, surpriseRoute } from '../surprise'
 
 type ProfileView = 'none' | 'switch' | 'edit'
 
+/**
+ * The four games, easiest first.
+ *
+ * This order is the only guidance a child gets about where to start, so it runs
+ * from seeing a quantity, through halving one, to the four operations, and ends
+ * at recall. Ages are a hint, never a gate.
+ */
+const GAMES = [
+    { route: '/number-sense', emoji: '👀', name: 'gameSense', blurb: 'gameSenseBlurb', ages: 'agesSense' },
+    { route: '/number-beam', emoji: '📏', name: 'gameBeam', blurb: 'gameBeamBlurb', ages: 'agesBeam' },
+    { route: '/game', emoji: '🛸', name: 'gameInvaders', blurb: 'gameInvadersBlurb', ages: 'agesInvaders' },
+    { route: '/times-tables', emoji: '✖️', name: 'gameTables', blurb: 'gameTablesBlurb', ages: 'agesTables' },
+] as const
+
 export default function HomePage() {
     const navigate = useNavigate()
     const settings = store.getSettings()
@@ -85,7 +99,7 @@ export default function HomePage() {
             <main className="shell shell--home">
                 <section className="hero">
                     <h1 className="hero__title">
-                        <span aria-hidden="true">👾</span> MATH INVADERS
+                        <span aria-hidden="true">🌌</span> {t.home.appName}
                     </h1>
                     <p className="hero__tagline">{t.home.tagline}</p>
                 </section>
@@ -105,32 +119,25 @@ export default function HomePage() {
                     <section className="panel game-picker">
                         <h2 className="panel__title">{t.home.chooseGame}</h2>
                         <div className="game-picker__cards">
-                            <button type="button" className="game-picker__card" onClick={() => navigate('/number-sense')}>
-                                <span aria-hidden="true">👀</span>
-                                <strong>{t.sense.title.replace('👀 ', '')}</strong>
-                                <small>{t.sense.tagline}</small>
-                            </button>
-                            <button type="button" className="game-picker__card" onClick={() => navigate('/game')}>
-                                <span aria-hidden="true">🛸</span>
-                                <strong>{t.home.gameInvaders}</strong>
-                                <small>{t.home.gameInvadersBlurb}</small>
-                            </button>
-                            <button type="button" className="game-picker__card" onClick={() => navigate('/times-tables')}>
-                                <span aria-hidden="true">✖️</span>
-                                <strong>{t.home.gameTables}</strong>
-                                <small>{t.home.gameTablesBlurb}</small>
-                            </button>
-                            <button type="button" className="game-picker__card" onClick={() => navigate('/number-beam')}>
-                                <span aria-hidden="true">📏</span>
-                                <strong>{t.home.gameBeam}</strong>
-                                <small>{t.home.gameBeamBlurb}</small>
-                            </button>
+                            {GAMES.map(game => (
+                                <button
+                                    key={game.route}
+                                    type="button"
+                                    className="game-picker__card"
+                                    onClick={() => navigate(game.route)}
+                                >
+                                    <span className="game-picker__emoji" aria-hidden="true">{game.emoji}</span>
+                                    <strong>{t.home[game.name]}</strong>
+                                    <small>{t.home[game.blurb]}</small>
+                                    <span className="chip chip--sm">{t.home[game.ages]}</span>
+                                </button>
+                            ))}
                             <button
                                 type="button"
                                 className="game-picker__card game-picker__card--surprise"
                                 onClick={() => navigate(surpriseRoute(nextSurprise()))}
                             >
-                                <span aria-hidden="true">🎲</span>
+                                <span className="game-picker__emoji" aria-hidden="true">🎲</span>
                                 <strong>{t.surprise.title}</strong>
                                 <small>{t.surprise.blurb}</small>
                             </button>
@@ -138,70 +145,29 @@ export default function HomePage() {
                     </section>
                 )}
 
-                <section className="group">
-                    <div className="group__head">
-                        <h2 className="group__title">🛸 {t.home.gameInvaders}</h2>
+                <section className="panel">
+                    <div className="panel__head">
+                        <h2 className="panel__title">🛸 {t.home.missionTitle}</h2>
+                        <button type="button" className="btn btn--ghost btn--sm" onClick={() => navigate('/settings')}>
+                            {t.home.change}
+                        </button>
                     </div>
-
-                    <div className="panel">
-                        <div className="panel__head">
-                            <h3 className="panel__title">{t.home.missionTitle}</h3>
-                            <button type="button" className="btn btn--ghost btn--sm" onClick={() => navigate('/settings')}>
-                                {t.home.change}
-                            </button>
-                        </div>
-                        <ul className="chips">
-                            {settings.operations.map(operation => (
-                                <li key={operation} className="chip">{t.operations[operation]}</li>
-                            ))}
-                            <li className="chip chip--rank">{t.ranks[settings.rank]}</li>
-                            <li className="chip">
-                                {fill(t.settings.rankRange, { max: rankConfig[settings.rank].maxValue })}
-                            </li>
-                            <li className="chip">{settings.timer === 'off' ? '∞' : '⏱'} {QUESTIONS_PER_MISSION}</li>
-                        </ul>
-                    </div>
-
-                    <div className="panel">
-                        <h3 className="panel__title">{t.home.howToTitle}</h3>
-                        <ol className="steps">
-                            {t.home.howToSteps.map((step, index) => <li key={index}>{step}</li>)}
-                        </ol>
-                        <div className="panel__action">
-                            <button type="button" className="btn btn--ghost" onClick={() => navigate('/hall-of-fame')}>
-                                🏆 {t.nav.hallOfFame}
-                            </button>
-                        </div>
-                    </div>
-                </section>
-
-                <section className="group">
-                    <div className="group__head">
-                        <h2 className="group__title">{t.tt.title}</h2>
-                    </div>
-
-                    <div className="panel">
-                        <h3 className="panel__title">{t.home.howToTablesTitle}</h3>
-                        <ol className="steps">
-                            {t.home.howToTablesSteps.map((step, index) => <li key={index}>{step}</li>)}
-                        </ol>
-                    </div>
-                </section>
-
-                <section className="group">
-                    <div className="group__head">
-                        <h2 className="group__title">{t.beam.title}</h2>
-                    </div>
-
-                    <div className="panel">
-                        <h3 className="panel__title">{t.home.howToBeamTitle}</h3>
-                        <ol className="steps">
-                            {t.home.howToBeamSteps.map((step, index) => <li key={index}>{step}</li>)}
-                        </ol>
-                    </div>
+                    <ul className="chips">
+                        {settings.operations.map(operation => (
+                            <li key={operation} className="chip">{t.operations[operation]}</li>
+                        ))}
+                        <li className="chip chip--rank">{t.ranks[settings.rank]}</li>
+                        <li className="chip">
+                            {fill(t.settings.rankRange, { max: rankConfig[settings.rank].maxValue })}
+                        </li>
+                        <li className="chip">{settings.timer === 'off' ? '∞' : '⏱'} {QUESTIONS_PER_MISSION}</li>
+                    </ul>
                 </section>
 
                 <nav className="home-nav">
+                    <button type="button" className="btn btn--ghost" onClick={() => navigate('/hall-of-fame')}>
+                        🏆 {t.nav.hallOfFame}
+                    </button>
                     <button type="button" className="btn btn--ghost" onClick={() => navigate('/settings')}>
                         ⚙️ {t.nav.settings}
                     </button>

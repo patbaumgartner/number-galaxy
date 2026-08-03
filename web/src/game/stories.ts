@@ -133,9 +133,8 @@ export function storyFor(
     if (operation === 'division' && right > left) return null
     if (operation === 'multiplication' && left > 12) return null
 
-    const people = words.people
-    const person = pick(rng, people)
-    const other = pick(rng, people.filter(name => name !== person))
+    const person = pick(rng, words.people)
+    const other = pick(rng, words.people.filter(name => name !== person))
 
     return words.line[type]({
         a: left,

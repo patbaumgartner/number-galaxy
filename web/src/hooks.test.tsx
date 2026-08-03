@@ -39,12 +39,14 @@ describe('hooks', () => {
     beforeEach(() => vi.useFakeTimers())
     afterEach(() => vi.useRealTimers())
 
-    it('mirrors the selected language onto the document element', () => {
+    it('mirrors the selected language onto the document element and the tab title', () => {
         const view = render(<LanguageProbe language="de" />)
         expect(document.documentElement.lang).toBe('de')
+        expect(document.title).toBe('Zahlen-Galaxie')
 
         view.rerender(<LanguageProbe language="en" />)
         expect(document.documentElement.lang).toBe('en')
+        expect(document.title).toBe('Number Galaxy')
     })
 
     it('tracks document visibility and removes its listener on unmount', () => {

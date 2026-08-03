@@ -11,6 +11,35 @@ const answerForPrompt = (): string => {
     return String(Number(match[1]) + Number(match[2]))
 }
 
+const QUESTIONS = 25
+
+/**
+ * The answer to whichever addition form is on screen. Ranks above rookie also
+ * ask for a missing addend, which the rookie-only helper above cannot read.
+ */
+const anyAdditionAnswer = (): string => {
+    const text = document.querySelector('.equation__prompt')?.textContent ?? ''
+    const plain = text.match(/^(\d+) \+ (\d+) = \?$/)
+    if (plain) return String(Number(plain[1]) + Number(plain[2]))
+    const missing = text.match(/^(\d+) \+ \? = (\d+)$/)
+    if (missing) return String(Number(missing[2]) - Number(missing[1]))
+    const leading = text.match(/^\? \+ (\d+) = (\d+)$/)
+    if (leading) return String(Number(leading[2]) - Number(leading[1]))
+    throw new Error(`Unexpected addition prompt: ${text}`)
+}
+
+/** Taps a distractor, then clears the miss, which waits on a tap rather than a clock. */
+const answerWrongly = (): void => {
+    const answer = anyAdditionAnswer()
+    const wrong = screen.getAllByRole('button', { name: /^\d+$/ })
+        .find(tile => tile.getAttribute('aria-label') !== answer)
+    if (!wrong) throw new Error('Expected a distractor')
+    fireEvent.click(wrong)
+    const gotIt = screen.queryByRole('button', { name: 'Got it' })
+    // The final miss goes straight to the summary with nothing left to read.
+    if (gotIt !== null) fireEvent.click(gotIt)
+}
+
 const answerCorrectly = () => {
     const answer = answerForPrompt()
     // An owned fact is typed on the pad rather than picked from four tiles.
@@ -159,5 +188,25 @@ describe('GamePage', () => {
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/hall-of-fame')
         fireEvent.click(screen.getByRole('button', { name: /home/i }))
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/')
+    })
+
+    it('offers smaller numbers after a poor run, and actually drops the rank', () => {
+        // Stories off keeps the numbers on screen instead of behind a "?".
+        seedSettings({ rank: 'cadet', stories: false })
+        renderWithRouter(<GamePage />)
+
+        // Missing every question lands under one star, which is what offers the
+        // step down instead of a bruising zero-star verdict.
+        for (let index = 0; index < QUESTIONS; index += 1) answerWrongly()
+
+        fireEvent.click(screen.getByRole('button', { name: 'Smaller numbers' }))
+        expect(store.getSettings().rank).toBe('rookie')
+    })
+
+    it('keeps the rules a tap away inside the mission', () => {
+        renderWithRouter(<GamePage />)
+
+        fireEvent.click(screen.getByRole('button', { name: /How to play/ }))
+        expect(screen.getByRole('dialog', { name: /How to play: Math Invaders/ })).toBeInTheDocument()
     })
 })

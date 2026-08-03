@@ -15,7 +15,7 @@ describe('App routing', () => {
     it('renders the home page at the root', () => {
         renderAt('/')
 
-        expect(screen.getByRole('heading', { level: 1, name: /MATH INVADERS/i })).toBeInTheDocument()
+        expect(screen.getByRole('heading', { level: 1, name: new RegExp(translations.de.home.appName, 'i') })).toBeInTheDocument()
     })
 
     it('renders the game page', () => {
@@ -53,7 +53,7 @@ describe('App routing', () => {
     it('redirects an unknown route home instead of showing a blank page', () => {
         renderAt('/this-route-does-not-exist')
 
-        expect(screen.getByRole('heading', { level: 1, name: /MATH INVADERS/i })).toBeInTheDocument()
+        expect(screen.getByRole('heading', { level: 1, name: new RegExp(translations.de.home.appName, 'i') })).toBeInTheDocument()
         expect(window.location.pathname.replace(/\/$/, '')).toBe(BASENAME)
     })
 

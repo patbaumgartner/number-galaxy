@@ -4,6 +4,7 @@ import type { ReactElement } from 'react'
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router'
 import type { Language, Operation, Rank } from '../game'
 import { beamStore, type BeamSkill, type BeamStarLevel } from '../beam'
+import { senseStore, type SenseSkill, type SenseStarLevel } from '../sense'
 import { profileKeys, store, type GameSettings } from '../store'
 import type { FactKey, FactProgress, PlanetId, StarLevel } from '../timesTable/types'
 import { ttStore } from '../timesTable/ttStore'
@@ -60,6 +61,15 @@ export function seedSettings(patch: Partial<GameSettings> = {}): GameSettings {
 export const seedLanguage = (language: Language): void => void seedSettings({ language })
 export const seedOperations = (operations: Operation[]): void => void seedSettings({ operations })
 export const seedRank = (rank: Rank): void => void seedSettings({ rank })
+
+export const seedSenseStars = (skill: SenseSkill, level: SenseStarLevel): void =>
+    senseStore.raiseStars(skill, level)
+
+/** Opens the second Number Sense zone, which needs two starred stations. */
+export function seedSenseZoneTwo(): void {
+    senseStore.raiseStars('subitize', 1)
+    senseStore.raiseStars('tenFrame', 1)
+}
 
 export function seedPlayer(playerName = 'Testpilot', avatarId = '🚀') {
     return store.savePlayer({

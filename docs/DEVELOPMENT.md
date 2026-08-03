@@ -15,17 +15,20 @@ free, private and offline-capable at the same time.
 
 ```
 ┌─ React 19 + TypeScript
-├─ Three games, one shell
-│  ├─ 🛸 Math Invaders       — the one-tap arcade game
-│  ├─ ✖️ Times Tables Galaxy — the multiplication trainer
-│  └─ 📏 Number Beam         — doubling and halving on a bar model
+├─ Four games, one shell — simplest first
+│  ├─ 👀 Number Sense  — seeing, placing and counting on
+│  ├─ 📏 Number Beam   — doubling and halving on a bar model
+│  ├─ 🛸 Math Invaders — the one-tap arcade game
+│  └─ ✖️ Times Tables  — the multiplication trainer
 ├─ Pages
 │  ├─ Home: profile, the game picker and 🎲 Surprise
-│  ├─ Game: the arcade mission loop
-│  ├─ Hall of Fame: Math Invaders leaderboards
-│  ├─ Times Tables: galaxy map and the four trainer phases
+│  ├─ Number Sense: zone map and the drill
 │  ├─ Number Beam: station map and the ten-question drill
-│  └─ Settings: grouped by which game each control affects
+│  ├─ Game: the arcade mission loop
+│  ├─ Times Tables: galaxy map and the four trainer phases
+│  ├─ Hall of Fame: arcade leaderboards
+│  ├─ Progress: the parent and teacher view
+│  └─ Settings: grouped by which game each control affects, in the same order
 ├─ Storage
 │  └─ localStorage: profile, settings, progress, scores
 └─ Deploy
@@ -34,7 +37,7 @@ free, private and offline-capable at the same time.
 
 ### The one rule worth knowing
 
-**`game/`, `beam/`, `timesTable/` and `store/` contain no React.** They are pure
+**`game/`, `beam/`, `sense/`, `timesTable/` and `store/` contain no React.** They are pure
 TypeScript: given a seeded random number generator they produce the same questions
 every time. That is what makes it cheap to assert the maths across hundreds of seeds
 instead of hoping a lucky example passes. Anything that renders lives in `components/`
@@ -83,7 +86,9 @@ web/
 │   │   ├── ErrorBoundary.tsx       # Crash fallback
 │   │   ├── arcade/                 # AnswerGrid, MissionSummary
 │   │   ├── trainer/                # NumberPad, FactHeatmap, SessionSummary, TrainerFrame
-│   │   └── beam/                   # BarModel, BeamSlider
+│   │   ├── beam/                   # BarModel, BeamSlider
+│   │   ├── sense/                  # SenseVisual — dice, ten-frames, rekenrek, arrays
+│   │   └── HowToPlayDialog.tsx     # The ❓ rules dialog, one per game
 │   ├── game/                       # Arcade domain — no React, fully tested
 │   │   ├── types.ts                # Ranks, forms, scoring
 │   │   ├── rng.ts                  # Seedable PRNG (deterministic tests)
@@ -99,6 +104,13 @@ web/
 │   │   ├── bars.ts                 # Bar geometry and beam sizing
 │   │   ├── session.ts              # Drill reducer
 │   │   └── beamStore.ts            # Stars, bests and beam settings
+│   ├── sense/                      # Number Sense domain — no React, fully tested
+│   │   ├── types.ts                # Skills, visuals, tiers and stars
+│   │   ├── stations.ts             # Zones, stations and unlocking
+│   │   ├── patterns.ts             # Die faces, ten-frames, bead rows, dot arrays
+│   │   ├── questions.ts            # One generator per skill
+│   │   ├── session.ts              # Drill reducer
+│   │   └── senseStore.ts           # Stars and sense settings
 │   ├── timesTable/                 # Trainer domain — facts, Leitner, sessions, stars
 │   ├── store/                      # localStorage — no React
 │   │   ├── storage.ts              # Safe JSON read/write, shared by every store
@@ -112,7 +124,7 @@ web/
 │   ├── styles/                     # Design tokens and one sheet per area
 │   │   ├── tokens.css              # Colours, spacing, type, radii, shadows
 │   │   ├── layout.css home.css arcade.css settings.css hall-of-fame.css
-│   │   ├── trainer.css beam.css motion.css chrome.css backdrop.css
+│   │   ├── trainer.css beam.css sense.css motion.css chrome.css backdrop.css
 │   │   └── index.css               # The cascade order, imported once by App.tsx
 │   ├── test/                       # Shared jsdom setup and render helpers
 │   ├── App.tsx                     # Router

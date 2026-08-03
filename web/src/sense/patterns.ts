@@ -13,6 +13,9 @@ import type { Dot } from './types'
 
 const at = (row: number, column: number, group: 0 | 1 = 0): Dot => ({ row, column, group })
 
+/** The largest quantity a die face can show, and so the largest `DIE` holds. */
+const MAX_DIE = 6
+
 /** Die faces, the arrangement every child already owns. */
 const DIE: Record<number, readonly Dot[]> = {
     1: [at(1, 1)],
@@ -34,11 +37,16 @@ function fiveWise(count: number): readonly Dot[] {
     })
 }
 
-/** A domino: two die faces side by side, which is what makes 5 + 3 visible. */
+/**
+ * A domino: two die faces side by side, which is what makes 5 + 3 visible.
+ *
+ * Both halves are die faces, so both are at most six — {@link patternFor} is the
+ * only caller and splits its count to keep them so.
+ */
 function domino(left: number, right: number): readonly Dot[] {
     return [
-        ...(DIE[left] ?? fiveWise(left)),
-        ...(DIE[right] ?? fiveWise(right)).map(dot => at(dot.row, dot.column + 4, 1)),
+        ...DIE[left],
+        ...DIE[right].map(dot => at(dot.row, dot.column + 4, 1)),
     ]
 }
 
@@ -52,10 +60,10 @@ export type Pattern = { readonly dots: readonly Dot[]; readonly columns: number 
  * about five without one.
  */
 export function patternFor(count: number, preferDomino: boolean): Pattern {
-    if (preferDomino && count > 6 && count <= 12) {
-        const left = Math.min(6, count - 1)
+    if (preferDomino && count > MAX_DIE && count <= MAX_DIE * 2) {
+        const left = MAX_DIE
         return { dots: domino(left, count - left), columns: 7 }
     }
-    if (count <= 6) return { dots: DIE[count] ?? fiveWise(count), columns: 3 }
+    if (count <= MAX_DIE) return { dots: DIE[count], columns: 3 }
     return { dots: fiveWise(count), columns: 5 }
 }

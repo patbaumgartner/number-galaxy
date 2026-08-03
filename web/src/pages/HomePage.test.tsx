@@ -34,12 +34,33 @@ describe('HomePage', () => {
 
         await user.click(screen.getByRole('button', { name: /^Math Invaders/ }))
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/game')
-        await user.click(screen.getByRole('button', { name: /^Times Tables Galaxy/ }))
+        await user.click(screen.getByRole('button', { name: /^Times Tables/ }))
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/times-tables')
         await user.click(screen.getByRole('button', { name: /best scores/i }))
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/hall-of-fame')
         await user.click(screen.getByRole('button', { name: /settings/i }))
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/settings')
+    })
+
+    it('offers all four games, easiest first, so the order is the guidance', async () => {
+        seedPlayer()
+        renderWithRouter(<HomePage />)
+
+        const cards = screen.getAllByRole('button')
+            .map(button => button.textContent ?? '')
+            .filter(text => /from 4|from 5|from 6|from 7/.test(text))
+
+        expect(cards).toHaveLength(4)
+        expect(cards[0]).toContain('Number Sense')
+        expect(cards[1]).toContain('Number Beam')
+        expect(cards[2]).toContain('Math Invaders')
+        expect(cards[3]).toContain('Times Tables')
+    })
+
+    it('keeps the rules in the games rather than stacked on the way to them', () => {
+        seedPlayer()
+        renderWithRouter(<HomePage />)
+        expect(screen.queryByText(/How to play/i)).not.toBeInTheDocument()
     })
 
     it('edits, validates, persists, and cancels profile changes', async () => {
@@ -137,9 +158,12 @@ describe('HomePage', () => {
 
         await user.click(screen.getByRole('button', { name: /Surprise me/ }))
 
-        // A fresh player has nothing unlocked beyond the arcade, the home galaxy
-        // and the Doubling Deck, so those are the only legal destinations.
+        // A fresh player has nothing unlocked beyond the arcade, the home galaxy,
+        // the first Number Sense zone and the Doubling Deck, so those are the
+        // only legal destinations.
         const path = screen.getByTestId(LOCATION_TEST_ID).textContent ?? ''
-        expect(path).toMatch(/^\/(game|times-tables\/train\/t\d+\/practice|number-beam\/drill\/(double|halve|nearDouble))$/)
+        expect(path).toMatch(
+            /^\/(game|times-tables\/train\/t\d+\/practice|number-beam\/drill\/(double|halve|nearDouble)|number-sense\/drill\/(subitize|tenFrame|rekenrek))$/,
+        )
     })
 })

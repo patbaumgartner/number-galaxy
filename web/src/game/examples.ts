@@ -31,8 +31,8 @@ const byRoute: Record<Route, WorkedExample> = {
     plain: { prompt: '7 + 5 = ?', answer: '12', steps: '7 + 3 = 10 → 10 + 2 = 12' },
 }
 
-/** The fallback when a question has no route of its own, such as a remainder. */
-const byOperation: Partial<Record<Operation, Route>> = {
+/** The route to show when a question did not name one of its own. */
+const byOperation: Record<Exclude<Operation, 'remainders'>, Route> = {
     addition: 'bridgeTen',
     subtraction: 'countUp',
     multiplication: 'timesTable',
@@ -48,5 +48,5 @@ export function getWorkedExample(operation: Operation, language: Language, route
         }
     }
 
-    return byRoute[route ?? byOperation[operation] ?? 'plain']
+    return byRoute[route ?? byOperation[operation]]
 }

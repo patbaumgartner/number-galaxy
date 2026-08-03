@@ -1,14 +1,14 @@
 # Testing
 
-Math Invaders is tested in three layers, each answering a different question.
+Number Galaxy is tested in three layers, each answering a different question.
 
 | Layer | Question it answers | Runner | Count |
 |-------|--------------------|--------|-------|
-| **Domain** | Is the maths correct? | Vitest (`node`) | 207 tests · 23 files |
-| **UI** | Does the interface behave? | Vitest (`jsdom`) + Testing Library | 170 tests · 28 files |
-| **End-to-end** | Does the shipped bundle work? | Playwright (Chromium desktop + mobile) | 168 tests · 11 files |
+| **Domain** | Is the maths correct? | Vitest (`node`) | 385 tests · 34 files |
+| **UI** | Does the interface behave? | Vitest (`jsdom`) + Testing Library | 238 tests · 33 files |
+| **End-to-end** | Does the shipped bundle work? | Playwright (Chromium desktop + mobile) | 12 files, both viewports |
 
-**545 tests total.** Everything below runs from `web/`.
+**623 unit tests total.** Everything below runs from `web/`.
 
 ```bash
 npm test              # both Vitest projects
@@ -27,7 +27,7 @@ npm run test:all      # unit + end-to-end
 
 | Pattern | Environment | Use it for |
 |---------|-------------|------------|
-| `src/**/*.test.ts` | `node` | Pure logic — `game/`, `beam/`, `store/`, `timesTable/`, `translations`, `sound` |
+| `src/**/*.test.ts` | `node` | Pure logic — `game/`, `beam/`, `sense/`, `store/`, `timesTable/`, `translations`, `sound` |
 | `src/**/*.test.tsx` | `jsdom` | Anything that renders React |
 
 This is configured as two Vitest projects in [`vitest.config.ts`](../web/vitest.config.ts). Keeping
@@ -61,9 +61,10 @@ What each area locks down:
 - **`game/options`** — always exactly four distinct options, one of which is the answer; every remainder distractor is itself legal.
 - **`game/questions`** — structural validity for every rank × operation × form, and that missing-operator prompts are only kept when exactly one operator fits.
 - **`game/mission`** — the mission reducer: streaks, combo scoring, phase transitions, and the guarantee that a run always reaches 25 questions.
-- **`surprise`** — the cross-game picker: a locked planet or station is never chosen for any star state, all three games are reachable once unlocked, review wins while facts are due, and every route it produces carries the marker and never points at Learn.
+- **`surprise`** — the cross-game picker: a locked planet, station or zone is never chosen for any star state, all four games are reachable once unlocked, Number Sense is offered from the very first run, review wins while facts are due, and every route it produces carries the marker and never points at Learn.
 - **`beam/`** — every station × tier across 200 seeds: a beam stop always exactly on the answer and never at either end, a beam long enough to be a number line and short enough to aim at, an answer that does not sit at a fixed fraction of the beam, both bar rows measured against one scale, a fraction's wanted parts summing to the answer, numbers that grow tier to tier, zone unlocking and the star ladder.
 - **`store/`** — the v1→v2 settings migration, score keying per rank and clock, badge tiers, and that tampered or corrupt localStorage degrades to defaults instead of throwing.
+- **`sense/`** — every station × tier across many seeds: the quantity asked for is the quantity drawn, a placing question marks a near miss correct while an exact one does not, arrangements stay ones a child meets elsewhere, and zone unlocking and the star ladder hold.
 - **`timesTable/`** — Leitner scheduling, session building, planet unlocking, star awards and strategy cards.
 - **`translations`** — full key parity across `de`/`it`/`en`/`fr`, equal array lengths, and matching `{placeholder}` sets.
 

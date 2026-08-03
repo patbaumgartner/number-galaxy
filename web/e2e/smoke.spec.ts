@@ -6,10 +6,10 @@ const english = { language: 'en', operations: ['addition'], rank: 'rookie', time
 test.describe.configure({ mode: 'parallel' })
 
 for (const route of [
-    ['/', 'MATH INVADERS'],
+    ['/', 'Number Galaxy'],
     ['/hall-of-fame', 'Best scores'],
     ['/settings', 'Settings'],
-    ['/times-tables', 'Times Tables Galaxy'],
+    ['/times-tables', 'Times Tables'],
     ['/number-beam', '📏 Number Beam'],
     ['/number-sense', '👀 Number Sense'],
     ['/progress', '📋 Progress'],
@@ -20,7 +20,7 @@ for (const route of [
         await gotoApp(page, route[0])
         await expect(page.getByRole('heading', { level: 1, name: route[1] })).toBeVisible()
         await expect(page.locator('html')).toHaveAttribute('lang', 'en')
-        await expect(page).toHaveTitle('Math Invaders')
+        await expect(page).toHaveTitle('Number Galaxy')
         expect(errors).toEqual([])
     })
 }

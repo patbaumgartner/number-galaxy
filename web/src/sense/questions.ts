@@ -92,7 +92,9 @@ function placeNumberDraft(rng: Rng, cap: number): Draft {
         beamStep: 1,
         tolerance: placeTolerance(cap),
         workingOut: `${value}`,
-        visual: { kind: 'numberLine', max: cap, from: value, jump: 0 },
+        // No picture: the beam *is* the line here, and drawing a second one
+        // would both repeat it and mark the answer on it.
+        visual: { kind: 'none' },
     }
 }
 

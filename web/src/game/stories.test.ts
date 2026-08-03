@@ -54,6 +54,11 @@ describe('dressing a sum in the situation it came from', () => {
         }
     })
 
+    it('refuses to picture more groups than anyone would draw', () => {
+        // 40 boxes of 3 is arithmetic that works and a picture nobody sets out.
+        expect(storyFor(createRng(1), 'en', 'multiplication', { left: 40, right: 3, result: 120, symbol: '×' })).toBeNull()
+    })
+
     it('refuses a situation the numbers would make nonsense of', () => {
         // Sharing 3 apples between 12 children is arithmetic that works and a
         // situation that does not.

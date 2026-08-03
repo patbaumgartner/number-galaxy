@@ -46,7 +46,20 @@ describe('every sense question', () => {
     it('carries a picture wherever one is the point', () => {
         everyStationAndTier((skill, tier, seed) => {
             const q = createSenseQuestion({ skill, tier, rng: createRng(seed) })
-            expect(q.visual.kind).not.toBe('none')
+            // `placeNumber` is the exception: the beam it is answered on *is* the
+            // line, so a drawn one would repeat it and mark the answer on it.
+            if (skill === 'placeNumber') expect(q.visual.kind).toBe('none')
+            else expect(q.visual.kind).not.toBe('none')
+        })
+    })
+
+    it('always puts the thing being asked about on screen', () => {
+        everyStationAndTier((skill, tier, seed) => {
+            const q = createSenseQuestion({ skill, tier, rng: createRng(seed) })
+            // Either a prompt to read, or a picture to look at. Never neither —
+            // `placeNumber` once showed only its instruction, so nothing to place.
+            const hasSomething = q.prompt !== '?' || q.visual.kind !== 'none'
+            expect(hasSomething).toBe(true)
         })
     })
 })

@@ -23,28 +23,28 @@ const APP_PATH = '/math-invaders'
  * exercises the migration. Anything written *after* the app has started must use
  * this instead, or the migration will decline to move it over what is already there.
  */
-export const profileStorageKey = (name: string): string => `math-invaders-ume-${name}`
+export const profileStorageKey = (name: string): string => `number-galaxy-ume-${name}`
 
 const storageEntries = (seed: StorageSeed): readonly [string, unknown][] => [
-    ['math-invaders-settings-v2', seed.settings],
-    ['math-invaders-player', seed.player],
-    ['math-invaders-scores-v2', seed.scores],
-    ['math-invaders-tt-progress', seed.ttProgress],
-    ['math-invaders-tt-stars', seed.ttStars],
-    ['math-invaders-tt-bests', seed.ttBests],
-    ['math-invaders-tt-settings', seed.ttSettings],
-    ['math-invaders-beam-stars', seed.beamStars],
-    ['math-invaders-beam-bests', seed.beamBests],
-    ['math-invaders-beam-settings', seed.beamSettings],
+    ['number-galaxy-settings-v2', seed.settings],
+    ['number-galaxy-player', seed.player],
+    ['number-galaxy-scores-v2', seed.scores],
+    ['number-galaxy-tt-progress', seed.ttProgress],
+    ['number-galaxy-tt-stars', seed.ttStars],
+    ['number-galaxy-tt-bests', seed.ttBests],
+    ['number-galaxy-tt-settings', seed.ttSettings],
+    ['number-galaxy-beam-stars', seed.beamStars],
+    ['number-galaxy-beam-bests', seed.beamBests],
+    ['number-galaxy-beam-settings', seed.beamSettings],
 ].filter((entry): entry is [string, unknown] => entry[1] !== undefined)
 
 export async function seedStorage(page: Page, seed: StorageSeed): Promise<void> {
     await page.addInitScript((entries: readonly [string, unknown][]) => {
-        if (window.sessionStorage.getItem('math-invaders-e2e-seeded') === 'true') return
+        if (window.sessionStorage.getItem('number-galaxy-e2e-seeded') === 'true') return
         for (const [key, value] of entries) {
             window.localStorage.setItem(key, JSON.stringify(value))
         }
-        window.sessionStorage.setItem('math-invaders-e2e-seeded', 'true')
+        window.sessionStorage.setItem('number-galaxy-e2e-seeded', 'true')
     }, storageEntries(seed))
 }
 

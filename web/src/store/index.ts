@@ -63,7 +63,7 @@ export { BADGE_EMOJI, STRATEGIES, computeBadge, progressKeys } from './progress'
 export type { ProgressReport, SectionLine, SkillLine } from './report'
 export { buildReport, readableFact } from './report'
 
-export { storageKey } from './storage'
+export { purgeRetiredStorage, storageKey } from './storage'
 
 export const store = {
     adoptLegacyProfile,

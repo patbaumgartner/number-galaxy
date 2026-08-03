@@ -1,4 +1,14 @@
-const PREFIX = 'math-invaders-'
+const PREFIX = 'number-galaxy-'
+
+/**
+ * The namespace used before the app was renamed. Not dead code: renaming the
+ * prefix orphans the old keys rather than deleting them, and "Delete all data"
+ * only ever clears the current namespace — so a child's name and progress would
+ * sit on the device forever with nothing in the UI able to reach them. Progress
+ * from before the rename is deliberately not carried over, so the old namespace
+ * is dropped outright, once, on startup.
+ */
+const RETIRED_PREFIX = 'math-invaders-'
 
 export const storageKey = (name: string): string => `${PREFIX}${name}`
 
@@ -129,3 +139,5 @@ export function moveKey(from: string, to: string): void {
 }
 
 export const clearAll = (): void => removeByPrefix(PREFIX)
+
+export const purgeRetiredStorage = (): void => removeByPrefix(RETIRED_PREFIX)

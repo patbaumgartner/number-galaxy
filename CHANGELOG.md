@@ -14,9 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   because that is what it is; the galaxy is now the thing that holds all four.
   *Times Tables Galaxy* loses its galaxy for the same reason — two galaxies in
   one app named nothing.
-  - The saved-data prefix, the site address and the repository are all
-    deliberately unchanged. Renaming any of them would wipe every child's
-    progress or break every existing link, which is a high price for tidiness.
+  - The site address and the repository keep the old name, so every existing
+    link and bookmark still works.
 - **❓ How to play, inside each game.** The rules for all four games used to sit
   on the home page, where they were read once and then scrolled past forever —
   furthest from the moment anyone needs them. Each game now carries its own
@@ -179,6 +178,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   reset.
 
 ### Changed
+- **⚠️ Saved progress is reset by this release.** The stored data was namespaced
+  `math-invaders-`, and the app is not called that any more. The namespace is now
+  `number-galaxy-`, and nothing is carried across: every child starts again from
+  stars, ranks, review schedules and best scores of zero. Profiles and names go
+  with them.
+  - The old keys are **deleted** on first launch rather than left behind.
+    Orphaning them would be worse than the reset it avoids: *Delete all data*
+    only ever clears the current namespace, so a child's name would have sat on
+    the device permanently with nothing in the interface able to reach it.
+  - The address and the repository are unchanged, so no link breaks.
 - **Everything runs simplest first.** The home picker, the settings groups and
   the README now all run 👀 Number Sense → 📏 Number Beam → 🛸 Math Invaders →
   ✖️ Times Tables, which is the order a child actually grows through them.

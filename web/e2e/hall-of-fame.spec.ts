@@ -36,7 +36,7 @@ test('groups seeded scores by rank and clock setting with medals', async ({ page
 
 test('only exposes the legacy section when legacy scores exist', async ({ page }) => {
     await seedStorage(page, { settings })
-    await page.addInitScript(() => window.localStorage.setItem('math-invaders-hall-of-fame', JSON.stringify([{ player: 'Old', avatarId: '👾', score: 99, answeredCount: 10 }])))
+    await page.addInitScript(() => window.localStorage.setItem('number-galaxy-hall-of-fame', JSON.stringify([{ player: 'Old', avatarId: '👾', score: 99, answeredCount: 10 }])))
     await gotoApp(page, '/hall-of-fame')
     await expect(page.getByText('Earlier')).toBeVisible()
     await page.getByText('Earlier').click()

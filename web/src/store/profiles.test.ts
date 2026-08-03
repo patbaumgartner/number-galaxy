@@ -72,8 +72,8 @@ describe('adopting a pre-profile install', () => {
         storage.setItem(profileKeys.legacyPlayer, JSON.stringify({
             id: 'old-uuid', playerName: 'Mia', avatarId: '🛸', createdAt: '2024-01-01T00:00:00.000Z',
         }))
-        storage.setItem('math-invaders-settings-v2', '{"rank":"ace"}')
-        storage.setItem('math-invaders-tt-stars', '{"t2":3}')
+        storage.setItem('number-galaxy-settings-v2', '{"rank":"ace"}')
+        storage.setItem('number-galaxy-tt-stars', '{"t2":3}')
     }
 
     it('moves everything the child owned under them, keeping name and figure', () => {
@@ -83,7 +83,7 @@ describe('adopting a pre-profile install', () => {
         const prefix = profilePrefix(profileKeys.defaultId)
         expect(storage.getItem(`${prefix}settings-v2`)).toBe('{"rank":"ace"}')
         expect(storage.getItem(`${prefix}tt-stars`)).toBe('{"t2":3}')
-        expect(storage.getItem('math-invaders-settings-v2')).toBeNull()
+        expect(storage.getItem('number-galaxy-settings-v2')).toBeNull()
         expect(getPlayer()?.playerName).toBe('Mia')
         expect(getPlayer()?.avatarId).toBe('🛸')
     })
@@ -91,10 +91,10 @@ describe('adopting a pre-profile install', () => {
     it('runs once and then leaves later writes alone', () => {
         seedLegacy()
         adoptLegacyProfile()
-        storage.setItem('math-invaders-settings-v2', 'written afterwards')
+        storage.setItem('number-galaxy-settings-v2', 'written afterwards')
         adoptLegacyProfile()
 
-        expect(storage.getItem('math-invaders-settings-v2')).toBe('written afterwards')
+        expect(storage.getItem('number-galaxy-settings-v2')).toBe('written afterwards')
     })
 
     it('does nothing at all on a fresh install', () => {
@@ -105,11 +105,11 @@ describe('adopting a pre-profile install', () => {
     it('adopts a child who played but never gave a name', () => {
         // Settings are written from the first tap; a name only when someone opens
         // the editor, so keying the move off the name would strand this install.
-        storage.setItem('math-invaders-settings-v2', '{"rank":"ace"}')
+        storage.setItem('number-galaxy-settings-v2', '{"rank":"ace"}')
         adoptLegacyProfile()
 
         expect(storage.getItem(`${profilePrefix(profileKeys.defaultId)}settings-v2`)).toBe('{"rank":"ace"}')
-        expect(storage.getItem('math-invaders-settings-v2')).toBeNull()
+        expect(storage.getItem('number-galaxy-settings-v2')).toBeNull()
         expect(getPlayer()).toBeNull()
     })
 })

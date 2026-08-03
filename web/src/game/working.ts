@@ -41,6 +41,14 @@ export type Route =
 /** The smallest neighbouring double still worth naming as one. */
 const MIN_DOUBLE = 3
 
+/**
+ * The widest gap worth closing by evening the two addends out.
+ *
+ * Moving one or two across turns `6 + 4` into `5 + 5`; moving four across turns
+ * `9 + 1` into `5 + 5`, which is more work than the fact it explains.
+ */
+const MAX_EVEN_UP_GAP = 4
+
 /** Counting up beats taking away once the difference is this small. */
 const MAX_COUNT_UP = 3
 
@@ -72,6 +80,14 @@ function additionCandidates({ left, right, result }: Equation): Candidate[] {
     const ones = right % 10
     if (tens > 0 && ones > 0) {
         found.push(candidate('placeValue', `${left} + ${tens} = ${left + tens} → ${left + tens} + ${ones} = ${result}`))
+    }
+
+    // Gegensinniges Verändern — even the two out into a double. This is the only
+    // route left for sums that neither cross a ten nor sit beside one, which is
+    // most of the Rookie table: `7 + 3` was otherwise explained as `7 + 3 = 10`.
+    const half = result / 2
+    if (gap >= 2 && gap <= MAX_EVEN_UP_GAP && gap % 2 === 0 && half >= MIN_DOUBLE) {
+        found.push(candidate('nearDouble', `${half} + ${half} = ${result}`))
     }
 
     return found

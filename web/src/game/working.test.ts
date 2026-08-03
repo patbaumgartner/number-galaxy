@@ -138,4 +138,20 @@ describe('naming the route a question wants', () => {
     it('says plain when the rank leaves nothing to decompose', () => {
         expect(routeFor(equation(2, 8, 10, '+'), 10)).toBe('plain')
     })
+
+    it('evens a small sum out into a double rather than restating it', () => {
+        // 7 + 3 crosses no ten and sits beside no double, so it used to come back
+        // as "7 + 3 = 10" — the answer, not a route — on the rank beginners use.
+        expect(strategyWorking(equation(7, 3, 10, '+'), 10)).toBe('5 + 5 = 10')
+        expect(strategyWorking(equation(4, 6, 10, '+'), 10)).toBe('5 + 5 = 10')
+    })
+
+    it('leaves a gap too wide to even up alone', () => {
+        expect(strategyWorking(equation(9, 1, 10, '+'), 10)).toBe('9 + 1 = 10')
+    })
+
+    it('still prefers filling up to the ten when the sum crosses one', () => {
+        expect(strategyWorking(equation(6, 8, 14, '+'), 20)).toContain('→')
+        expect(routeFor(equation(6, 8, 14, '+'), 20)).toBe('bridgeTen')
+    })
 })

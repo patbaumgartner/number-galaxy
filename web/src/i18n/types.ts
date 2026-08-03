@@ -57,6 +57,10 @@ export type Translations = {
         theAnswerIs: string
         untimed: string
         gotIt: string
+        strategyAsk: string
+        strategyKnew: string
+        strategyCounted: string
+        strategyTrick: string
     }
     misses: Record<Exclude<MissReason, 'none'>, string>
 
@@ -143,6 +147,10 @@ export type Translations = {
         exportButton: string
         printButton: string
         privacy: string
+        strategyStillCounting: string
+        strategyKnows: string
+        strategyTricks: string
+        strategyTitle: string
     }
     hof: {
         title: string

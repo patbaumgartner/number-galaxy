@@ -67,6 +67,10 @@ export const it: Translations = {
         theAnswerIs: 'La risposta era',
         untimed: 'Senza fretta',
         gotIt: 'Ho capito',
+        strategyAsk: 'Come hai fatto?',
+        strategyKnew: 'Lo sapevo',
+        strategyCounted: 'Ho contato',
+        strategyTrick: 'Ho usato un trucco',
     },
     misses: {
         offByOne: 'Quasi — manca uno. Riconta l’ultimo passo.',
@@ -163,6 +167,10 @@ export const it: Translations = {
         exportButton: '⬇ Salva come file',
         printButton: '🖨 Stampa',
         privacy: 'Questa pagina legge solo ciò che è già sul dispositivo. Non viene inviato nulla e non si registra nulla in più.',
+        strategyStillCounting: 'Conta ancora',
+        strategyKnows: 'Lo sa a memoria',
+        strategyTricks: 'Usa i trucchi',
+        strategyTitle: 'Come calcola {name}',
     },
     hof: {
         title: 'Classifica',

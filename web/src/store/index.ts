@@ -19,6 +19,8 @@ import {
     getFactBox,
     getFormAccuracy,
     getFormStats,
+    getStrategyMix,
+    leadingStrategy,
     getWorkingMax,
     getMisses,
     getPersonalBests,
@@ -29,6 +31,7 @@ import {
     recordFact,
     recordForm,
     recordRankAnswer,
+    recordStrategy,
     recordMiss,
     updatePersonalBest,
 } from './progress'
@@ -48,12 +51,14 @@ export type {
     FormStats,
     NamedMissReason,
     RankTunings,
+    Strategy,
+    StrategyMix,
     MissRecord,
     SkillStats,
     SpacedRepetitionData,
     SpacedRepetitionEntry,
 } from './progress'
-export { BADGE_EMOJI, computeBadge, progressKeys } from './progress'
+export { BADGE_EMOJI, STRATEGIES, computeBadge, progressKeys } from './progress'
 
 export type { ProgressReport, SectionLine, SkillLine } from './report'
 export { buildReport, readableFact } from './report'
@@ -98,6 +103,10 @@ export const store = {
 
     getWorkingMax,
     recordRankAnswer,
+
+    getStrategyMix,
+    leadingStrategy,
+    recordStrategy,
 
     getPersonalBests,
     updatePersonalBest,

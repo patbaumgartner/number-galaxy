@@ -56,6 +56,19 @@ const CORRECT_MS = 650
  */
 const TYPED_FROM_BOX = 4
 
+/**
+ * How often a correct answer is asked about.
+ *
+ * Rarely. Whether an answer was recalled or counted is the most diagnostic thing
+ * about it and invisible from the outside, but the fast correct-answer loop is a
+ * real strength of this game and interrupting every one of them would cost more
+ * than it returns. The value is in the trend, not in any single answer.
+ */
+const ASK_STRATEGY_SHARE = 0.12
+
+/** Long enough to answer if you want to, short enough to ignore. */
+const STRATEGY_MS = 3600
+
 type Feedback = {
     outcome: AnswerOutcome
     answer: string
@@ -114,6 +127,7 @@ export default function GamePage() {
     const [result, setResult] = useState<MissionResult | null>(null)
     const [runs, setRuns] = useState(1)
     const [entry, setEntry] = useState('')
+    const [askStrategy, setAskStrategy] = useState(false)
 
     const resolvedRef = useRef(false)
     const questionStartRef = useRef(0)
@@ -161,6 +175,7 @@ export default function GamePage() {
         store.recordRankAnswer(mission.rank, wasCorrect)
 
         if (wasCorrect) {
+            setAskStrategy(Math.random() < ASK_STRATEGY_SHARE)
             if (store.updatePersonalBest(question.operation, elapsed)) newBestRef.current = true
             if (fastestRef.current === null || elapsed < fastestRef.current) fastestRef.current = elapsed
 
@@ -222,6 +237,7 @@ export default function GamePage() {
     const proceed = useCallback(() => {
         setFeedback(null)
         setEntry('')
+        setAskStrategy(false)
         setMission(current => advanceMission(current, {
             weakness: store.getWeakness(),
             srData: store.getSpacedRepetition(),
@@ -237,9 +253,10 @@ export default function GamePage() {
         // child says so: two seconds is under the time it takes to read a
         // two-step working, and unread feedback teaches nothing.
         if (feedback?.outcome !== 'correct') return
-        const timer = setTimeout(proceed, CORRECT_MS)
+        // Asking never blocks: unanswered, it simply times out and moves on.
+        const timer = setTimeout(proceed, askStrategy ? STRATEGY_MS : CORRECT_MS)
         return () => clearTimeout(timer)
-    }, [mission.phase, feedback?.outcome, proceed])
+    }, [mission.phase, feedback?.outcome, askStrategy, proceed])
 
     useEffect(() => {
         if (mission.phase !== 'summary' || submittedRef.current) return
@@ -286,6 +303,7 @@ export default function GamePage() {
         setResult(null)
         setFeedback(null)
         setEntry('')
+        setAskStrategy(false)
         setHelpOpen(false)
         setRuns(count => count + 1)
         setMission(freshMission())
@@ -381,6 +399,30 @@ export default function GamePage() {
                     )}
                     {feedback?.outcome === 'correct' && (
                         <span className="equation__pop" aria-hidden="true">+{feedback.points}</span>
+                    )}
+                    {askStrategy && feedback?.outcome === 'correct' && mission.phase === 'feedback' && (
+                        <div className="strategy">
+                            <p className="strategy__ask">{t.game.strategyAsk}</p>
+                            <div className="strategy__options">
+                                {([
+                                    ['knew', t.game.strategyKnew, '🧠'],
+                                    ['counted', t.game.strategyCounted, '➕'],
+                                    ['trick', t.game.strategyTrick, '💡'],
+                                ] as const).map(([value, label, icon]) => (
+                                    <button
+                                        key={value}
+                                        type="button"
+                                        className="btn btn--ghost strategy__option"
+                                        onClick={() => {
+                                            store.recordStrategy(mission.question.operation, value)
+                                            proceed()
+                                        }}
+                                    >
+                                        <span aria-hidden="true">{icon}</span> {label}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
                     )}
                 </section>
 

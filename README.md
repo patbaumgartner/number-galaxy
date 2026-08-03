@@ -54,7 +54,8 @@ If you would rather not choose, **🎲 Surprise me** picks for them — see
 - **Worked solutions** after every miss, so a wrong answer teaches something.
 - **📋 A progress page** — Settings → Progress — written for you rather than for the child.
   It names the mistake that keeps coming up in plain language, lists the sums to look at
-  next, and shows accuracy and stars per game. It can be **printed** or **saved as a file**.
+  next, and shows accuracy and stars per game — including whether a child is still counting
+  an operation out or knows it by heart. It can be **printed** or **saved as a file**.
 
 There is no account and nothing to log into: the progress page reads what is already on the
 device, records nothing of its own, and sends nothing anywhere. That is the whole privacy

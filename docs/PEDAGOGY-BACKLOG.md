@@ -114,7 +114,7 @@ withdrew the route entirely at the top, which never once fired: a miss resets th
 faded level was unreachable. Two levels, and never nothing.
 · Expertise reversal (Barbieri et al. 2023) · `MA.1.C.1`
 
-## Tier 2 — Teach strategy, not just answers
+## Tier 2 — Teach strategy, not just answers ✅ done
 
 **15. Misconception-shaped distractors.** ✅ **done** — `game/misconceptions.ts` derives the
 documented bugs and tags each with its reason. Tiles are filtered to the rank: `74 + 26 → 910`
@@ -205,10 +205,19 @@ namespace on every call.
 
 ---
 
-## Suggested order
+## Where this ended up
 
-Item 18 remains — see the note against it. `4` and `30` (both shipped)
-unblock Tier 2 and Tier 1 respectively.
+All 30 items are done, shipped across twelve commits.
+
+Two were reordered against the tier numbering, both for the same reason — they
+reshaped something everything after them would have written to. **30** (one profile
+per child) landed before Tier 1, because every adaptive feature that followed
+stores per-child data. **4** (recording which wrong answer was chosen) landed in
+Tier 0, because Tier 2's whole diagnosis rests on it.
+
+One was reconsidered on the way. **18** was going to feed hint frequency; the
+answer surfaces on the progress page instead, because "still counting" is a thing
+a teacher can act on and a slightly different hint rate is not.
 
 ## Sources
 

@@ -17,6 +17,7 @@ const missesKey = () => profileKey('misses')
 const arcadeFactsKey = () => profileKey('arcade-facts')
 const formStatsKey = () => profileKey('form-stats')
 const tuningKey = () => profileKey('rank-tuning')
+const strategyKey = () => profileKey('strategies')
 
 /**
  * How many arcade facts are scheduled.
@@ -119,6 +120,62 @@ function updateSpacedRepetition(operation: Operation, correct: boolean, question
 
 export function getSkillStats(): SkillStats {
     return readJson<SkillStats>(skillKey(), {})
+}
+
+/**
+ * How a child says they got there.
+ *
+ * Whether an answer was recalled, counted, or worked out with a trick is the
+ * single most diagnostic thing about it, and it is invisible from the outside:
+ * a right answer looks identical either way. Asking is the only way to know, and
+ * it is the question a teacher using Cognitively Guided Instruction asks
+ * constantly.
+ *
+ * Never scored, never required, and only asked now and then — the value is in
+ * the trend, not in any one answer, and interrupting every correct answer would
+ * cost more than it returns.
+ */
+export type Strategy = 'knew' | 'counted' | 'trick'
+
+export const STRATEGIES: readonly Strategy[] = ['knew', 'counted', 'trick']
+
+export type StrategyMix = Partial<Record<Operation, Partial<Record<Strategy, number>>>>
+
+/** Recent reports per operation, so a change of habit shows rather than a lifetime total. */
+const STRATEGY_WINDOW = 12
+
+export function getStrategyMix(): StrategyMix {
+    const stored = readJson<StrategyMix>(strategyKey(), {})
+    return stored !== null && typeof stored === 'object' && !Array.isArray(stored) ? stored : {}
+}
+
+export function recordStrategy(operation: Operation, strategy: Strategy): void {
+    const mix = getStrategyMix()
+    const counts = { ...mix[operation] }
+
+    // Halve what is already there once the window fills, so an old habit fades
+    // rather than outweighing today's. Before the increment, not after: halving
+    // afterwards would discard the very report just made, and could leave a
+    // child who has plainly changed their method sitting on a tie.
+    const total = STRATEGIES.reduce((sum, key) => sum + (counts[key] ?? 0), 0)
+    if (total >= STRATEGY_WINDOW) {
+        for (const key of STRATEGIES) counts[key] = Math.floor((counts[key] ?? 0) / 2)
+    }
+
+    counts[strategy] = (counts[strategy] ?? 0) + 1
+    writeJson(strategyKey(), { ...mix, [operation]: counts })
+}
+
+/** The way a child mostly says they work an operation out, once they have said so enough. */
+export function leadingStrategy(operation: Operation): Strategy | null {
+    const counts = getStrategyMix()[operation] ?? {}
+    const ranked = STRATEGIES
+        .map(strategy => [strategy, counts[strategy] ?? 0] as const)
+        .sort((a, b) => b[1] - a[1])
+
+    const [top, next] = ranked
+    if (top === undefined || top[1] < 3) return null
+    return next === undefined || top[1] > next[1] ? top[0] : null
 }
 
 export type RankTunings = Partial<Record<Rank, RankTuning>>
@@ -240,6 +297,7 @@ export function updatePersonalBest(operation: Operation, elapsedMs: number): boo
 
 export const progressKeys = {
     get arcadeFacts() { return arcadeFactsKey() },
+    get strategies() { return strategyKey() },
     get formStats() { return formStatsKey() },
     get tuning() { return tuningKey() },
     get weakness() { return weaknessKey() },

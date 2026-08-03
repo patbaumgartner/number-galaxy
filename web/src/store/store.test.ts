@@ -423,3 +423,33 @@ describe('the clock and the time to think', () => {
         expect(store.getSettings().thinkingTime).toBe(1)
     })
 })
+
+describe('how a child says they got there', () => {
+    it('says nothing until it has been asked enough to mean something', () => {
+        store.recordStrategy('addition', 'counted')
+        store.recordStrategy('addition', 'counted')
+        expect(store.leadingStrategy('addition')).toBeNull()
+
+        store.recordStrategy('addition', 'counted')
+        expect(store.leadingStrategy('addition')).toBe('counted')
+    })
+
+    it('says nothing when two answers are equally common', () => {
+        for (let index = 0; index < 3; index += 1) {
+            store.recordStrategy('addition', 'counted')
+            store.recordStrategy('addition', 'knew')
+        }
+        expect(store.leadingStrategy('addition')).toBeNull()
+    })
+
+    it('lets a habit change rather than being outweighed by an old one', () => {
+        for (let index = 0; index < 12; index += 1) store.recordStrategy('addition', 'counted')
+        for (let index = 0; index < 8; index += 1) store.recordStrategy('addition', 'knew')
+        expect(store.leadingStrategy('addition')).toBe('knew')
+    })
+
+    it('keeps each operation separate', () => {
+        for (let index = 0; index < 3; index += 1) store.recordStrategy('addition', 'counted')
+        expect(store.leadingStrategy('multiplication')).toBeNull()
+    })
+})

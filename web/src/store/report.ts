@@ -8,7 +8,7 @@ import { BEAM_STATIONS } from '../beam/stations'
 import { senseStore } from '../sense'
 import { SENSE_STATIONS } from '../sense/stations'
 import { loadSettings } from './settings'
-import { getArcadeFacts, getCommonMistake, getSkillStats, type NamedMissReason } from './progress'
+import { getArcadeFacts, getCommonMistake, getSkillStats, leadingStrategy, type NamedMissReason, type Strategy } from './progress'
 import { getPlayer } from './profiles'
 
 /**
@@ -27,6 +27,8 @@ export type SkillLine = {
     readonly operation: Operation
     readonly answered: number
     readonly accuracy: number | null
+    /** How the child says they mostly get there, once they have said so enough. */
+    readonly strategy: Strategy | null
 }
 
 export type SectionLine = {
@@ -86,6 +88,7 @@ function arcadeSkills(): SkillLine[] {
             operation,
             answered: history.length,
             accuracy: history.length === 0 ? null : history.filter(Boolean).length / history.length,
+            strategy: leadingStrategy(operation),
         }
     })
 }

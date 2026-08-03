@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **"How did you do that?"** Whether an answer was recalled, counted or worked
+  out with a trick is the most diagnostic thing about it, and it is invisible
+  from the outside — a right answer looks identical either way. Now and then
+  (about one correct answer in eight) the game simply asks, with three taps.
+  Never scored, never required, and it never blocks: left alone it times out and
+  carries on, so the fast correct-answer loop is untouched. The answer shows up
+  on the progress page as "still counting" or "knows it by heart", which is
+  something a teacher can act on.
 - **📋 A progress page for parents and teachers.** The mastery data was all there
   and none of it was reachable: the README said outright that there was no
   report. There is one now, reached from Settings, and it answers the only

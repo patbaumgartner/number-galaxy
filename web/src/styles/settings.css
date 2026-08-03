@@ -294,3 +294,9 @@
   .panel__title, .report__value, .report__privacy, .chip { color: #000; }
   .chip { border: 1px solid #666; }
 }
+
+.report__strategy {
+  display: block;
+  color: var(--color-cyan);
+  font-size: var(--text-sm);
+}

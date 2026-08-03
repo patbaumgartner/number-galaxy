@@ -4,6 +4,7 @@ import TopBar from '../components/TopBar'
 import { buildReport, store, type ProgressReport } from '../store'
 import { OPERATIONS } from '../game'
 import { fill, translations, type Translations } from '../i18n'
+import type { Strategy } from '../store'
 import { useDocumentLanguage } from '../hooks'
 
 /**
@@ -91,6 +92,11 @@ export default function ProgressPage() {
     )
 }
 
+const strategyLabel = (t: Translations, strategy: Strategy): string =>
+    strategy === 'counted'
+        ? t.progress.strategyStillCounting
+        : strategy === 'knew' ? t.progress.strategyKnows : t.progress.strategyTricks
+
 function ArcadeSection({ report, t }: { readonly report: ProgressReport; readonly t: Translations }) {
     const { arcade } = report
 
@@ -108,6 +114,9 @@ function ArcadeSection({ report, t }: { readonly report: ProgressReport; readonl
                                 {line === undefined || line.accuracy === null
                                     ? t.progress.notYet
                                     : `${Math.round(line.accuracy * 100)}% · ${fill(t.progress.answered, { n: line.answered })}`}
+                                {line?.strategy != null && (
+                                    <small className="report__strategy">{strategyLabel(t, line.strategy)}</small>
+                                )}
                             </span>
                         </li>
                     )

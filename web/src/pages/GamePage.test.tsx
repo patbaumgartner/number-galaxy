@@ -26,12 +26,14 @@ const answerCorrectly = () => {
 describe('GamePage', () => {
     beforeEach(() => {
         vi.useFakeTimers()
+        // The self-report is a coin flip; pin it away unless a test wants it.
+        vi.spyOn(Math, 'random').mockReturnValue(1)
         seedLanguage('en')
         seedOperations(['addition'])
         seedRank('rookie')
         seedPlayer()
     })
-    afterEach(() => vi.useRealTimers())
+    afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks() })
 
     it('renders the HUD, simple prompt, and four answer tiles', () => {
         renderWithRouter(<GamePage />)
@@ -121,6 +123,31 @@ describe('GamePage', () => {
         renderWithRouter(<GamePage />)
         expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument()
         expect(screen.queryByRole('group', { name: /pick an answer/i })).not.toBeInTheDocument()
+    })
+
+    it('asks how an answer was worked out, now and then, without ever blocking', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(0)
+        renderWithRouter(<GamePage />)
+        answerCorrectly()
+
+        expect(screen.getByText('How did you do that?')).toBeInTheDocument()
+        // The fast loop is untouched: unanswered, it times out and moves on.
+        act(() => vi.advanceTimersByTime(650))
+        expect(screen.getByText('How did you do that?')).toBeInTheDocument()
+        act(() => vi.advanceTimersByTime(3000))
+        expect(screen.queryByText('How did you do that?')).not.toBeInTheDocument()
+        expect(screen.getByText('1/25')).toBeInTheDocument()
+    })
+
+    it('records how it was worked out and carries straight on', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(0)
+        renderWithRouter(<GamePage />)
+        answerCorrectly()
+
+        fireEvent.click(screen.getByRole('button', { name: /I counted/ }))
+        expect(store.getStrategyMix().addition?.counted).toBe(1)
+        expect(screen.queryByText('How did you do that?')).not.toBeInTheDocument()
+        expect(screen.getByText('1/25')).toBeInTheDocument()
     })
 
     it('navigates from summary actions and the back button', async () => {

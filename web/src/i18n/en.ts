@@ -67,6 +67,10 @@ export const en: Translations = {
         theAnswerIs: 'The answer was',
         untimed: 'No time pressure',
         gotIt: 'Got it',
+        strategyAsk: 'How did you do that?',
+        strategyKnew: 'I just knew it',
+        strategyCounted: 'I counted',
+        strategyTrick: 'I used a trick',
     },
     misses: {
         offByOne: 'So close — just one out. Count that last step again.',
@@ -163,6 +167,10 @@ export const en: Translations = {
         exportButton: '⬇ Save as a file',
         printButton: '🖨 Print',
         privacy: 'This page only reads what is already on the device. Nothing is sent anywhere and nothing extra is recorded.',
+        strategyStillCounting: 'Still counting',
+        strategyKnows: 'Knows it by heart',
+        strategyTricks: 'Uses tricks',
+        strategyTitle: 'How {name} works it out',
     },
     hof: {
         title: 'Best scores',

@@ -1,13 +1,15 @@
 # Pedagogy backlog
 
-A review of all three games against current research on how children learn number, counting
-and mental arithmetic, turned into 30 changes to pick from.
+A review of the games against current research on how children learn number, counting and
+mental arithmetic, turned into 30 changes. It began as a review of three games; the fourth,
+Number Sense, is item 21–25 of this list.
 
 Every item carries the evidence it rests on and a **Lehrplan 21** competency tag, so a Swiss
 teacher can see which part of the curriculum it serves. LP21 codes and the German descriptor
 text are quoted from [zh.lehrplan.ch](https://zh.lehrplan.ch) — verbatim, not paraphrased.
 
-**Tier 0 is done and shipped.** Tiers 1–5 are open.
+**All 30 are done and shipped.** Each item below says what was actually built, which is
+not always what was proposed — where the two differ, the reason is given.
 
 ---
 
@@ -65,8 +67,8 @@ the run had gone.
 | 6 | **Speed shown only at ≥ 80 % accuracy**, and "New record" withheld from a run that struggled. | Fluency is flexibility + efficiency + accuracy + strategy (NCTM 2020). Automaticity stays a goal; the *framing* changes. | — |
 | 7 | **A stopping point.** "Play again" no longer pre-armed; after two runs back to back the summary says stopping here is good. | AAP dropped hour limits for balance and non-engagement-based design. | — |
 
-Verified by 395 unit tests, 169 e2e tests including axe on phone and desktop, and by playing
-the built game in a browser.
+Verified by 554 unit tests and 213 e2e tests — including axe on every route, on phone and on
+desktop — and by playing the built game in a browser after every change.
 
 ---
 
@@ -86,11 +88,10 @@ previous rank's ceiling so "Ace" never quietly serves Rookie sums. Fixed at miss
 the numbers never shift under a child mid-run, and never announced.
 · Lau et al. 2018; Bjork & Bjork 2011 · `MA.1.A.2`
 
-**10. Split mental from written ranges.** Legend/Supernova generate 3-digit addition answered
-by tapping one of four tiles — that is elimination, not mental arithmetic. Observed live:
-`195 + 87 = ?`. Cap the arcade at 100–200, or restrict large numbers to round-number work
-(`340 + 200`), which *is* a mental strategy. `maxFactorFor` already does this for
-multiplication.
+**10. Split mental from written ranges.** ✅ **done** — past 100, addition and subtraction
+operands snap to multiples of ten (`equations.ts`, `mentalStep`), so Legend serves
+`? + 330 = 490` rather than the `195 + 87` observed live. Multiplication and division needed
+nothing: `maxFactorFor` already held them inside the ×12 tables.
 · LP21 Zyklus 2 expects `Rechenwege notieren` for large numbers · `MA.1.A.3.d`
 
 **11. Typed answers, auto-switching on mastery.** ✅ **done** — a fact at box 4 is asked on the
@@ -126,22 +127,30 @@ The full catalogue is kept keyed by value, so a typed answer is diagnosed as rea
 the route, in all four languages.
 · Töllner et al. 2026 · `MA.1.C.1`
 
-**17. Strategy hints in the arcade.** 💡 Help currently shows one static example per operation
-(always `7 + 5` for addition). Make it a hint for *this* question, in the voice of the
-existing `STRATEGY_CARDS`.
+**17. Strategy hints in the arcade.** ✅ **done** — every question carries the `Route` its
+working took, and 💡 Help demonstrates that route on *other* numbers, since help is asked for
+before answering and an example built from the live question would hand the answer over. The
+route is read off the chosen working rather than derived again, so help can never show an
+idea the game would not have used.
 · Hopkins et al. 2020; Leuenberger et al. 2024 · `MA.1.B.1.b`
 
-**18. "How did you work it out?"** After ~1 in 8 correct answers: 🧠 *I just knew it* / ➕ *I
-counted* / 💡 *I used a trick*. Never required, never scored. Feed "I counted" into hint
-frequency.
+**18. "How did you work it out?"** ✅ **done** — asked after about one correct answer in eight:
+🧠 *I just knew it* / ➕ *I counted* / 💡 *I used a trick*. Never scored, never required, and it
+never blocks — unanswered it times out, leaving the fast correct-answer loop intact.
+**Changed on the way:** it was to feed hint frequency, which spends a rare signal on something
+nobody would notice. It surfaces on the progress page instead, as "still counting" or "knows
+it by heart" — a sentence a teacher can act on.
 · Cognitively Guided Instruction · `MA.1.C.1`
 
-**19. Show the child their own pattern, kindly.** From item 4's buffer: *"Subtraction across
-ten is the one to practise next."* No percentages, no red.
+**19. Show the child their own pattern, kindly.** ✅ **done** — Settings names the one mistake
+clearly ahead over the last forty misses, in plain language, and says nothing at all when no
+single pattern stands out. Naming a pattern that is not there is worse than saying nothing.
 · `MA.1.B.1`
 
-**20. Make commutativity and inverse explicit.** After a correct `6 × 7`, sometimes follow with
-`42 ÷ 6` and name the link.
+**20. Make commutativity and inverse explicit.** ✅ **done** — a correct `×` or `÷` answer is
+sometimes followed straight away by the same numbers the other way round, jumping the review
+cooldown because the moment is the point. Only when both operations were chosen, never chained
+off another link, and never in front of a question waiting to be re-asked.
 · `MA.1.B.1.b`
 
 ## Tier 3 — Build the missing floor ✅ done
@@ -207,7 +216,7 @@ namespace on every call.
 
 ## Where this ended up
 
-All 30 items are done, shipped across twelve commits.
+All 30 items are done, shipped across fourteen commits.
 
 Two were reordered against the tier numbering, both for the same reason — they
 reshaped something everything after them would have written to. **30** (one profile

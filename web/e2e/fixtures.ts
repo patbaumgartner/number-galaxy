@@ -107,7 +107,7 @@ export async function answerCurrentFact(page: Page): Promise<void> {
     // Trainer phases expose their current fact as this shared display component.
     const display = page.locator('.question-display')
     await expect(display).toBeVisible()
-    const match = ((await display.textContent()) ?? '').match(/(\d+)\s*×\s*(\d+)\s*=\s*\?/) 
+    const match = ((await display.textContent()) ?? '').match(/(\d+)\s*×\s*(\d+)\s*=\s*\?/)
     if (match === null) throw new Error('The trainer did not render a multiplication fact')
     const answer = String(Number(match[1]) * Number(match[2]))
     // Typed rather than clicked: resolving a locator per digit costs enough under
@@ -136,24 +136,19 @@ export const calculateBeamAnswer = (prompt: string): number => {
     throw new Error(`Unsupported beam prompt: ${prompt}`)
 }
 
-/** Answers whichever input the current beam question happens to be using. */
+/** Slides the alien to the answer and lands it. Every beam question works this way. */
 export async function answerBeamQuestion(page: Page): Promise<void> {
     // Feedback disables the controls between questions, so the next question is
-    // only really on screen once one of its two inputs accepts a click. These
-    // component classes are the only handle both inputs share.
-    await expect(page.locator('.answer-tile:not([disabled]), .beam__fire:not([disabled])').first()).toBeVisible()
+    // only really on screen once the beam accepts a click again. This component
+    // class is the control's only stable handle.
+    await expect(page.locator('.beam__fire:not([disabled])')).toBeVisible()
 
     const prompt = page.locator('.equation__prompt')
     await expect(prompt).toBeVisible()
     const answer = String(Math.round(calculateBeamAnswer((await prompt.textContent()) ?? '')))
 
-    const slider = page.getByRole('slider')
-    if ((await slider.count()) > 0) {
-        await slider.fill(answer)
-        await page.getByRole('button', { name: /Land on/ }).click()
-        return
-    }
-    await page.getByRole('button', { name: answer, exact: true }).click()
+    await page.getByRole('slider').fill(answer)
+    await page.getByRole('button', { name: /Land on/ }).click()
 }
 
 export function collectConsoleErrors(page: Page): string[] {

@@ -1,0 +1,146 @@
+/* Shell / Page */
+.page {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.page--game {
+  height: 100dvh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.shell {
+  max-width: 600px;
+  margin: 0 auto;
+  width: 100%;
+  padding: var(--space-4);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.shell--home {
+  padding-bottom: var(--space-8);
+}
+
+/* Play, the profile chip and the game picker are three separate decisions and
+   need to read as three, not one block. */
+.btn--play {
+  margin-bottom: var(--space-4);
+}
+
+.shell--home .chip--player {
+  align-self: center;
+  margin-bottom: var(--space-6);
+}
+
+.shell__head {
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.shell__title {
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  margin: 0 0 var(--space-2);
+  color: var(--color-cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  max-width: 100%;
+}
+
+.shell__tagline {
+  font-size: var(--text-base);
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 48px;
+  min-width: 48px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, filter 0.2s ease;
+  user-select: none;
+}
+
+.btn--primary {
+  background: var(--color-pink);
+  color: var(--bg-base);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn--primary:hover, .btn--primary:active {
+  filter: brightness(1.1);
+  transform: scale(0.98);
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border-highlight);
+}
+
+.btn--ghost:hover, .btn--ghost:active {
+  background: var(--bg-surface-highlight);
+}
+
+.btn--danger {
+  background: rgba(255, 51, 102, 0.1);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+.btn--danger:hover, .btn--danger:active {
+  background: rgba(255, 51, 102, 0.2);
+}
+
+.btn--icon {
+  padding: 0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-hairline);
+  background: var(--bg-surface);
+}
+
+.btn--sm {
+  min-height: 48px;
+  padding: 0 var(--space-3);
+  font-size: var(--text-sm);
+}
+
+.btn--lg {
+  min-height: 56px;
+  font-size: var(--text-lg);
+  padding: 0 var(--space-6);
+}
+
+.btn--play {
+  background: var(--color-cyan);
+  color: var(--bg-base);
+  width: 100%;
+  font-size: var(--text-xl);
+  min-height: 64px;
+}
+
+.btn--play:hover, .btn--play:active {
+  filter: brightness(1.1);
+  transform: scale(0.98);
+}
+
+.btn__icon {
+  display: inline-flex;
+  font-size: 1.2em;
+}
+

@@ -9,7 +9,7 @@ import { buildLearnSession } from '../../timesTable/session'
 import { getStrategyCard } from '../../timesTable/strategies'
 import { getPlanet } from '../../timesTable/tables'
 import type { PlanetId } from '../../timesTable/types'
-import { translations } from '../../translations'
+import { translations } from '../../i18n'
 
 export function LearnPhase({ planetId }: { planetId: PlanetId }) {
     const lang = store.getSettings().language
@@ -36,10 +36,9 @@ export function LearnPhase({ planetId }: { planetId: PlanetId }) {
     const [showAnswer, setShowAnswer] = useState(false)
 
     useEffect(() => {
-        if (shake) {
-            const timer = setTimeout(() => setShake(false), 500)
-            return () => clearTimeout(timer)
-        }
+        if (!shake) return
+        const timer = setTimeout(() => setShake(false), 500)
+        return () => clearTimeout(timer)
     }, [shake])
 
     const handlePadSubmit = () => {

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 import { store } from '../store'
 import { QUESTIONS_PER_MISSION, rankConfig } from '../game'
 import { avatars } from '../constants'
-import { fill, translations, type Translations } from '../translations'
+import { fill, translations, type Translations } from '../i18n'
 import { useDocumentLanguage, useModalDialog } from '../hooks'
 
 export default function HomePage() {

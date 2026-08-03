@@ -12,7 +12,7 @@ import { computeStars, ttStore } from '../../timesTable/ttStore'
 import type { Fact, FactKey, PlanetId, StarLevel } from '../../timesTable/types'
 import type { Language } from '../../game'
 import { useModalDialog, useSoundSetting } from '../../hooks'
-import { translations } from '../../translations'
+import { translations } from '../../i18n'
 
 export function PracticePhase({ planetId }: { planetId: PlanetId }) {
     const lang = store.getSettings().language
@@ -21,8 +21,11 @@ export function PracticePhase({ planetId }: { planetId: PlanetId }) {
     const t = translations[lang]
     const planet = getPlanet(planetId)!
     const [todayEpochDay] = useState(() => localEpochDay(Date.now(), new Date().getTimezoneOffset()))
-    const [initialSessionSize] = useState(() => [...buildPracticeSession(planetId, ttStore.getProgress(), localEpochDay(Date.now(), new Date().getTimezoneOffset()))].length)
-    const [session, setSession] = useState<Fact[]>(() => [...buildPracticeSession(planetId, ttStore.getProgress(), localEpochDay(Date.now(), new Date().getTimezoneOffset()) )])
+    const [initialSession] = useState<Fact[]>(
+        () => [...buildPracticeSession(planetId, ttStore.getProgress(), todayEpochDay)],
+    )
+    const [session, setSession] = useState<Fact[]>(initialSession)
+    const initialSessionSize = initialSession.length
     const [currentIdx, setCurrentIdx] = useState(0)
     const [firstAttempt, setFirstAttempt] = useState<Record<FactKey, boolean>>({})
     const [padValue, setPadValue] = useState('')
@@ -40,10 +43,9 @@ export function PracticePhase({ planetId }: { planetId: PlanetId }) {
 
     useEffect(() => { startTimeRef.current = window.performance.now() }, [])
     useEffect(() => {
-        if (shake) {
-            const timer = setTimeout(() => setShake(false), 500)
-            return () => clearTimeout(timer)
-        }
+        if (!shake) return
+        const timer = setTimeout(() => setShake(false), 500)
+        return () => clearTimeout(timer)
     }, [shake])
 
     if (finished) {
@@ -119,7 +121,13 @@ function StrategyOverlay({ planetId, lang, dismiss, onClose }: StrategyOverlayPr
     )
 }
 
-function ExplanationDialog({ explanation, dismiss, onClose }: { readonly explanation: string; readonly dismiss: string; readonly onClose: () => void }) {
+type ExplanationDialogProps = {
+    readonly explanation: string
+    readonly dismiss: string
+    readonly onClose: () => void
+}
+
+function ExplanationDialog({ explanation, dismiss, onClose }: ExplanationDialogProps) {
     const dialog = useModalDialog<HTMLDivElement>(onClose)
 
     return (

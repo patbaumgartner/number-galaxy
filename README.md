@@ -54,10 +54,16 @@ whole on top, the parts that make it underneath. Both rows are measured against 
 shared scale, so a doubled bar really is twice as long — and unknown parts stay behind
 a `?` until you answer, then fill in with their numbers.
 
-**Every other question is answered by moving an alien along the beam.** Instead of
-picking a tile, you drag the alien, nudge it with −/+ or walk it with the arrow keys,
-then land it on the answer. Underneath it is a native range slider, so it works with a
-finger, a mouse, a keyboard and a screen reader alike.
+**Every question is answered by moving an alien along the beam** — there are no answer
+tiles in this section at all. You drag the alien, nudge it with −/+ or walk it with the
+arrow keys, then land it on the answer. Underneath it is a native range slider, so it
+works with a finger, a mouse, a keyboard and a screen reader alike.
+
+Because the beam is the only input, every answer is guaranteed to sit on a stop. Each
+station declares the granularity its answers actually have — doubling only ever yields
+even numbers, ×10 only multiples of ten — so the beam can use a coarser, thumb-friendly
+step without ever putting the answer between two stops. Every beam has between 10 and
+70 stops, and the answer never sits at a fixed fraction of it.
 
 ### Stations
 
@@ -75,7 +81,8 @@ languages — the station name carries the concept and the bar carries the meani
 
 Each station has **three tiers**, and the tier is simply how many stars you already
 hold: numbers widen as you improve, so a station you have mastered never goes stale.
-A drill is ten questions. ⭐ at 70 % accuracy, ⭐⭐ at 90 % once you hold one, and ⭐⭐⭐
+Ranges are bounded by what a beam can show — a bar of 900 units is not a picture a
+child can read. A drill is ten questions. ⭐ at 70 % accuracy, ⭐⭐ at 90 % once you hold one, and ⭐⭐⭐
 for a clean sweep once you hold two. Stars never fall.
 
 **Controls:**
@@ -313,20 +320,25 @@ web/
 │   │   ├── session.ts          # Drill reducer
 │   │   └── beamStore.ts        # Stars, bests and beam settings
 │   ├── store/                  # localStorage — no React
-│   │   ├── storage.ts          # Safe JSON read/write
+│   │   ├── storage.ts          # Safe JSON read/write, shared by every store
 │   │   ├── settings.ts         # Settings + v1 migration
 │   │   ├── scores.ts           # Scores v2 + legacy records
 │   │   └── progress.ts         # Player, weakness, SR, badges
 │   ├── timesTable/             # Trainer domain, storage and routing
+│   ├── i18n/                   # One file per language + the shared key type
+│   │   ├── types.ts            # The `Translations` contract every language owes
+│   │   ├── de.ts it.ts en.ts fr.ts
+│   │   └── index.ts            # Lookup by language + `fill` for placeholders
+│   ├── styles/                 # Design tokens and one sheet per area
+│   │   ├── tokens.css          # Colours, spacing, type, radii, shadows
+│   │   ├── layout.css home.css arcade.css settings.css hall-of-fame.css
+│   │   ├── trainer.css beam.css motion.css chrome.css backdrop.css
+│   │   └── index.css           # The cascade order, imported once by App.tsx
 │   ├── test/                   # Shared jsdom setup and render helpers
 │   ├── App.tsx         # Router
-│   ├── App.css         # Token-driven design system
-│   ├── timesTable.css  # Trainer-specific styles
-│   ├── beam.css        # Bar model and beam styles
 │   ├── hooks.ts        # Countdown, page visibility, modal dialogs
 │   ├── sound.ts        # Web Audio effects
-│   ├── translations.ts # i18n (de/it/en/fr)
-│   └── constants.ts    # Avatars, language labels
+│   └── constants.ts    # Avatars, language names
 ├── index.html
 ├── vite.config.ts
 ├── vitest.config.ts      # Two projects: domain (node) and ui (jsdom)

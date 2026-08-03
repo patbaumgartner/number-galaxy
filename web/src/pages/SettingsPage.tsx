@@ -4,7 +4,7 @@ import { BADGE_EMOJI, store, type GameSettings } from '../store'
 import { OPERATIONS, RANKS, rankConfig, type Operation, type Rank } from '../game'
 import { languageNames } from '../constants'
 import Flag from '../components/Flag'
-import { fill, translations, type Translations } from '../translations'
+import { fill, translations, type Translations } from '../i18n'
 import { useDocumentLanguage } from '../hooks'
 import type { Language } from '../game'
 import { ttStore } from '../timesTable/ttStore'
@@ -169,7 +169,11 @@ export default function SettingsPage() {
                                 <h3 className="switch-row__title">{t.tt.settingsStrategyCards}</h3>
                                 <p className="panel__hint">{t.tt.settingsStrategyHint}</p>
                             </div>
-                            <Switch labels={t.settings} on={trainerSettings.strategyCards} onToggle={() => updateTrainer(!trainerSettings.strategyCards)} />
+                            <Switch
+                                labels={t.settings}
+                                on={trainerSettings.strategyCards}
+                                onToggle={() => updateTrainer(!trainerSettings.strategyCards)}
+                            />
                         </div>
                         <div className="panel__action">
                             <button type="button" className="btn btn--danger" onClick={resetTrainer}>{t.tt.settingsReset}</button>

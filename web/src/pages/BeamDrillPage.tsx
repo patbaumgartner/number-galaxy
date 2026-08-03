@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router'
-import AnswerGrid from '../components/AnswerGrid'
 import BarModelView from '../components/BarModel'
 import BeamSlider from '../components/BeamSlider'
 import TopBar from '../components/TopBar'
@@ -8,7 +7,6 @@ import {
     BEAM_ALIENS,
     advanceDrill,
     answerDrill,
-    beamStepFor,
     beamStore,
     computeBeamStars,
     createDrill,
@@ -24,7 +22,7 @@ import {
 import { useDocumentLanguage, useModalDialog, useSoundSetting } from '../hooks'
 import { playCorrect, playShoot, playVictory, playWrong } from '../sound'
 import { store } from '../store'
-import { fill, translations, type Translations } from '../translations'
+import { fill, translations, type Translations } from '../i18n'
 
 const CORRECT_MS = 700
 const WRONG_MS = 2400
@@ -33,7 +31,6 @@ type Feedback = {
     readonly correct: boolean
     readonly answer: string
     readonly workingOut: string
-    readonly firedIndex: number | null
 }
 
 type DrillResult = {
@@ -84,12 +81,12 @@ function BeamDrill({ skill, onReplay }: { readonly skill: BeamSkill; readonly on
     const answering = drill.phase === 'answering' && !helpOpen
     const total = drill.questions.length
 
-    const resolve = useCallback((correct: boolean, firedIndex: number | null) => {
+    const resolve = useCallback((correct: boolean) => {
         if (drill.phase !== 'answering') return
         playShoot()
         if (correct) playCorrect()
         else playWrong()
-        setFeedback({ correct, answer: question.answer, workingOut: question.workingOut, firedIndex })
+        setFeedback({ correct, answer: question.answer, workingOut: question.workingOut })
         setDrill(answerDrill(drill, correct))
     }, [drill, question])
 
@@ -126,7 +123,7 @@ function BeamDrill({ skill, onReplay }: { readonly skill: BeamSkill; readonly on
     }, [drill, skill, startStars, total])
 
     const resultText = feedback === null
-        ? t.beam.pickAnswer
+        ? t.beam.slideHint
         : feedback.correct
             ? t.beam.correct
             : `${t.beam.wrong} ${t.beam.theAnswerIs} ${feedback.answer}`
@@ -174,33 +171,21 @@ function BeamDrill({ skill, onReplay }: { readonly skill: BeamSkill; readonly on
                     <BarModelView model={question.bar} revealed={feedback !== null} label={t.beam.barLabel} />
                 )}
 
-                {question.input === 'tiles' ? (
-                    <AnswerGrid
-                        options={[...question.options]}
-                        disabled={!answering}
-                        firedIndex={feedback?.firedIndex ?? null}
-                        revealIndex={feedback === null ? null : question.correctIndex}
-                        groupLabel={t.beam.pickAnswer}
-                        optionLabel={option => option}
-                        onFire={index => resolve(index === question.correctIndex, index)}
-                    />
-                ) : (
-                    <BeamSlider
-                        max={question.beamMax}
-                        step={beamStepFor(question.beamMax)}
-                        value={beamValue}
-                        alien={BEAM_ALIENS[0]}
-                        disabled={!answering}
-                        labels={{
-                            move: t.beam.beamMove,
-                            fire: t.beam.beamFire,
-                            less: t.beam.beamLess,
-                            more: t.beam.beamMore,
-                        }}
-                        onChange={setBeamValue}
-                        onFire={() => resolve(beamValue === question.value, null)}
-                    />
-                )}
+                <BeamSlider
+                    max={question.beamMax}
+                    step={question.beamStep}
+                    value={beamValue}
+                    alien={BEAM_ALIENS[0]}
+                    disabled={!answering}
+                    labels={{
+                        move: t.beam.beamMove,
+                        fire: t.beam.beamFire,
+                        less: t.beam.beamLess,
+                        more: t.beam.beamMore,
+                    }}
+                    onChange={setBeamValue}
+                    onFire={() => resolve(beamValue === question.value)}
+                />
             </main>
 
             {helpOpen && (

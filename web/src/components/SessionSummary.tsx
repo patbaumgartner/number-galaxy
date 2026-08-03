@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router'
 import { store } from '../store'
-import { translations } from '../translations'
+import { translations } from '../i18n'
 import type { Phase, PlanetId } from '../timesTable/types'
 
 type SessionSummaryProps = {
@@ -16,7 +16,7 @@ type SessionSummaryProps = {
 }
 
 export function SessionSummary({
-    phase, accuracy, streak, leveledUpCount, earnedStars, starsChanged, isNewBest, timeMs
+    phase, accuracy, streak, leveledUpCount, earnedStars, starsChanged, isNewBest, timeMs,
 }: SessionSummaryProps) {
     const lang = store.getSettings().language
     const t = translations[lang]
@@ -33,16 +33,16 @@ export function SessionSummary({
     return (
         <div className="card summary-card">
             <h3 className="neon-text">{t.tt.learnFinish}</h3>
-            
+
             <div className="summary-stats">
                 <p>{t.tt.summaryAccuracy}: {Math.round(accuracy * 100)}%</p>
                 {phase !== 'speed' && <p>{t.tt.summaryStreak}: {streak}</p>}
                 {phase !== 'speed' && <p>{t.tt.summaryLeveledUp}: {leveledUpCount}</p>}
-                
+
                 {phase === 'speed' && timeMs !== undefined && (
                     <p>{t.tt.summaryTime}: {formatTime(timeMs)}</p>
                 )}
-                
+
                 {phase === 'speed' && isNewBest && (
                     <p className="neon-text">{t.tt.summaryNewBest}</p>
                 )}

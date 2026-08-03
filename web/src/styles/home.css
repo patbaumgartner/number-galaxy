@@ -1,0 +1,134 @@
+/* Home */
+.hero {
+  text-align: center;
+  padding: var(--space-6) 0;
+}
+
+.hero__title {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--color-cyan);
+  margin: 0 0 var(--space-2);
+  line-height: 1.1;
+  text-shadow: var(--glow-score);
+}
+
+.hero__tagline {
+  font-size: var(--text-lg);
+  color: var(--text-muted);
+  margin: 0 0 var(--space-6);
+}
+
+.home-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: 1.35em;
+}
+
+.steps li {
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: var(--text-sm);
+}
+
+.chip--sm {
+  padding: var(--space-1) var(--space-2);
+}
+
+.chip--rank {
+  color: var(--color-gold);
+}
+
+.chip--player {
+  color: var(--text-main);
+}
+
+.chip__edit {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  min-height: 32px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface-highlight);
+  color: var(--text-muted);
+}
+
+.panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.panel--details {
+  border-color: var(--border-highlight);
+}
+
+.panel--empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  padding: var(--space-6) var(--space-4);
+}
+
+.panel__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+.panel__title {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  margin: 0 0 var(--space-3);
+}
+
+/* These two already own the spacing to whatever follows them. */
+.panel__head .panel__title,
+summary.panel__title {
+  margin-bottom: 0;
+}
+
+.panel__hint {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: calc(-1 * var(--space-1)) 0 var(--space-4);
+}
+
+.panel__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+

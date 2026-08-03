@@ -29,19 +29,19 @@ export type Phase = 'learn' | 'practice' | 'speed' | 'daily'
 export type FactKey = `${number}x${number}`
 
 export type Fact = {
-  readonly key: FactKey
-  readonly a: number
-  readonly b: number
-  readonly answer: number
+    readonly key: FactKey
+    readonly a: number
+    readonly b: number
+    readonly answer: number
 }
 
 export type StarLevel = 0 | 1 | 2 | 3
 
 export type FactProgress = {
-  readonly box: 1 | 2 | 3 | 4 | 5
-  readonly lastDay: number
-  readonly last3: readonly {
-    readonly correct: boolean
-    readonly ms: number
-  }[]
+    readonly box: 1 | 2 | 3 | 4 | 5
+    readonly lastDay: number
+    readonly last3: readonly {
+        readonly correct: boolean
+        readonly ms: number
+    }[]
 }

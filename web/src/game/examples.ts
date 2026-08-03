@@ -17,7 +17,7 @@ export type WorkedExample = {
 export function getWorkedExample(operation: Operation, language: Language): WorkedExample {
     switch (operation) {
         case 'addition':
-            return { prompt: '7 + 5 = ?', answer: '12', steps: `7 + 3 = 10 → 10 + 2 = 12` }
+            return { prompt: '7 + 5 = ?', answer: '12', steps: '7 + 3 = 10 → 10 + 2 = 12' }
         case 'subtraction':
             return { prompt: `13 ${MINUS} 4 = ?`, answer: '9', steps: `13 ${MINUS} 3 = 10 → 10 ${MINUS} 1 = 9` }
         case 'multiplication':

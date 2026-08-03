@@ -17,7 +17,7 @@ import {
     type WorkedExample,
 } from '../game'
 import { RULESET_VERSION, store } from '../store'
-import { translations } from '../translations'
+import { translations } from '../i18n'
 import AnswerGrid from '../components/AnswerGrid'
 import TopBar from '../components/TopBar'
 import GameHud from '../components/GameHud'

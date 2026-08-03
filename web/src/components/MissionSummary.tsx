@@ -1,4 +1,4 @@
-import type { Translations } from '../translations'
+import type { Translations } from '../i18n'
 import { useModalDialog } from '../hooks'
 
 const CONFETTI_PIECES = 16

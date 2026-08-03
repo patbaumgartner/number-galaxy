@@ -1,0 +1,13 @@
+# Tooling and agent scratch space — machine-local, never shared.
+.omo/
+.codegraph
+.playwright-mcp/
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.swp
+*.swo

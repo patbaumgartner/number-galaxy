@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import App from './App'
 import { store } from './store'
-import { translations } from './translations'
+import { translations } from './i18n'
 
 const BASENAME = '/math-invaders'
 

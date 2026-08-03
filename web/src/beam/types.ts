@@ -36,17 +36,6 @@ export type BeamZoneId = 'doubles' | 'parts' | 'place'
 
 export const BEAM_ZONE_IDS: readonly BeamZoneId[] = ['doubles', 'parts', 'place']
 
-/**
- * How an answer is given.
- *
- * `tiles` is the arcade's one-tap grid. `beam` is the reason this section
- * exists: the child slides an alien along the bar until it stands on the
- * answer, which turns an abstract number into a position they can see.
- */
-export type BeamInput = 'tiles' | 'beam'
-
-export const BEAM_INPUTS: readonly BeamInput[] = ['tiles', 'beam']
-
 /** Numbers grow with the stars already earned, so a station never goes stale. */
 export type BeamTier = 0 | 1 | 2
 
@@ -93,14 +82,12 @@ export type BeamQuestion = {
     readonly value: number
     /** The answer as shown, always `String(value)`. */
     readonly answer: string
-    /** Exactly four distinct strings; exactly one equals `answer`. Tiles only. */
-    readonly options: readonly string[]
-    readonly correctIndex: number
-    /** Upper bound of the beam slider. Always `>= value`. */
+    /** Upper bound of the beam. Always a multiple of `beamStep`, always `> value`. */
     readonly beamMax: number
+    /** Distance between stops; always divides `value`, so the answer is reachable. */
+    readonly beamStep: number
     /** Language-neutral working, e.g. `"7 + 7 = 14"`. */
     readonly workingOut: string
-    readonly input: BeamInput
     readonly bar: BarModel
 }
 

@@ -17,11 +17,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   parts that make it sit underneath, and both rows are measured against one shared
   scale, so a doubled bar really is twice as long. Unknown parts stay behind a `?`
   and fill in once the answer is given. Aliens ride the segments.
-- **Answering by moving an alien along the beam.** Every other question replaces the
-  answer tiles with a slider: drag the alien, nudge it with −/+, or use the arrow
+- **Every question is answered by moving an alien along the beam.** There are no
+  answer tiles in this section: drag the alien, nudge it with −/+, or use the arrow
   keys, then land it on the answer. It is a native range input underneath, so it is
   keyboard-operable and screen-reader-announced, and the bar carries a maths-notation
-  description as its accessible name.
+  description as its accessible name. Each station declares the granularity its
+  answers have, so the beam can use a thumb-friendly step and still always have a
+  stop exactly on the answer.
 - Number Beam settings: the bar can be hidden until a miss, for children ready to work
   in their head, and beam progress can be reset on its own.
 - **Times Tables Galaxy trainer:** planet map, Learn, Practice, Speed Run and Daily

@@ -37,10 +37,15 @@ describe('beam drill', () => {
         expect(currentQuestion(drill)).toBe(drill.questions[0])
     })
 
-    it('opens with tiles and asks for the beam on every other question', () => {
-        const questions = buildDrillQuestions('halve', 0, createRng(9))
-        expect(questions[0].input).toBe('tiles')
-        expect(questions.filter((_unused, index) => index % 2 === 1).some(q => q.input === 'beam')).toBe(true)
+    it('answers every question on the beam, never on tiles', () => {
+        for (const skill of ['halve', 'split', 'tenTimes'] as const) {
+            for (const tier of [0, 1, 2] as const) {
+                for (const question of buildDrillQuestions(skill, tier, createRng(9))) {
+                    expect(question.beamMax).toBeGreaterThan(question.value)
+                    expect(question.value % question.beamStep).toBe(0)
+                }
+            }
+        }
     })
 
     it('counts a correct answer and keeps the streak growing', () => {

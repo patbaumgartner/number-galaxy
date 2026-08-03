@@ -1,8 +1,35 @@
 {
   "name": "math-invaders",
-  "private": true,
   "version": "0.0.0",
+  "private": true,
+  "description": "A free, privacy-friendly maths arcade for children: a one-tap alien shooter, a times-tables trainer and a bar-model doubling and halving lab. No account, no ads, no tracking, works offline.",
+  "keywords": [
+    "education",
+    "mathematics",
+    "children",
+    "arcade",
+    "times-tables",
+    "bar-model",
+    "react",
+    "typescript",
+    "pwa",
+    "offline-first"
+  ],
+  "homepage": "https://patbaumgartner.github.io/math-invaders",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/patbaumgartner/math-invaders.git",
+    "directory": "web"
+  },
+  "bugs": {
+    "url": "https://github.com/patbaumgartner/math-invaders/issues"
+  },
+  "license": "MIT",
+  "author": "Patrick Baumgartner",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -14,7 +41,9 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:report": "playwright show-report",
     "test:all": "npm run test && npm run test:e2e",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "react": "^19.2.8",
@@ -28,6 +57,7 @@
     "@babel/preset-typescript": "^8.0.1",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.62.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "^16.3.2",

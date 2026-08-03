@@ -20,11 +20,7 @@ export type DrillState = {
 const MAX_REDRAWS = 12
 
 /**
- * Ten questions, alternating input.
- *
- * The first is always tiles — the interaction a child already knows from the
- * arcade — and every other one after that asks for the beam, so the slider is
- * met as a variation rather than as a new game to learn.
+ * Ten questions, every one of them answered on the beam.
  *
  * A tier-0 station draws from as few as nine facts, so a straight sample shows
  * the same prompt three or four times in a run. Redrawing against the one
@@ -38,11 +34,10 @@ export function buildDrillQuestions(
     const questions: BeamQuestion[] = []
 
     for (let index = 0; index < QUESTIONS_PER_DRILL; index += 1) {
-        const preferBeam = index % 2 === 1
-        let question = createBeamQuestion({ skill, tier, preferBeam, rng })
+        let question = createBeamQuestion({ skill, tier, rng })
         for (let redraw = 0; redraw < MAX_REDRAWS; redraw += 1) {
             if (question.prompt !== questions[index - 1]?.prompt) break
-            question = createBeamQuestion({ skill, tier, preferBeam, rng })
+            question = createBeamQuestion({ skill, tier, rng })
         }
         questions.push(question)
     }

@@ -1,0 +1,116 @@
+/* Hall of Fame */
+.board {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-hairline);
+  overflow: hidden;
+}
+
+.board--legacy {
+  opacity: 0.8;
+  filter: grayscale(0.5);
+}
+
+.board__row {
+  display: flex;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.board__row:last-child {
+  border-bottom: none;
+}
+
+.board__row--first {
+  background: rgba(255, 207, 0, 0.05);
+}
+
+.board__row--first .board__rank {
+  color: var(--color-gold);
+  font-size: var(--text-xl);
+}
+
+.board__rank {
+  width: 32px;
+  font-weight: 800;
+  color: var(--text-muted);
+}
+
+.board__avatar {
+  font-size: 1.5rem;
+  margin-right: var(--space-3);
+}
+
+.board__name {
+  flex: 1 1 auto;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: var(--space-3);
+  /* The name outranks the stats beside it, so it keeps a readable floor and the
+     accuracy column wraps instead. Without this a 16-character name ellipsed
+     while the secondary stats held twice its width. */
+  min-width: min(10rem, 40%);
+}
+
+.board__stars {
+  color: var(--color-gold);
+  margin-right: var(--space-3);
+  font-size: var(--text-sm);
+  flex-shrink: 0;
+}
+
+.board__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.board__score {
+  font-weight: 800;
+  color: var(--color-cyan);
+  font-variant-numeric: tabular-nums;
+  margin-left: var(--space-4);
+  flex-shrink: 0;
+}
+
+/* Narrow phones cannot fit rank, avatar, name, stars, accuracy and score on one
+   line, and only the name can ellipsis. Give the run detail its own row. */
+@media (max-width: 460px) {
+  .board__row {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      "rank avatar name score stars"
+      "rank avatar meta meta  meta";
+    column-gap: var(--space-2);
+    row-gap: 2px;
+    align-items: center;
+  }
+
+  .board__rank { grid-area: rank; }
+  .board__avatar { grid-area: avatar; margin-right: 0; }
+  .board__name { grid-area: name; margin-right: 0; min-width: 0; }
+  .board__score { grid-area: score; margin-left: 0; }
+
+  .board__stars {
+    grid-area: stars;
+    margin-right: 0;
+    justify-self: end;
+  }
+
+  .board__meta {
+    grid-area: meta;
+    flex-direction: row;
+    align-items: center;
+    justify-self: start;
+    min-width: 0;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+  }
+}
+

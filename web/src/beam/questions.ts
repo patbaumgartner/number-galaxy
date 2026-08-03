@@ -1,16 +1,20 @@
 import { MINUS } from '../game/types'
-import { buildNumericOptions } from '../game/options'
 import { defaultRng, pick, randomInt, type Rng } from '../game/rng'
-import { beamMaxFor, buildBar, isBeamEligible, type BarSpec } from './bars'
+import { beamMaxFor, buildBar, type BarSpec } from './bars'
 import { capFor } from './stations'
-import type { BeamInput, BeamQuestion, BeamSkill, BeamTier } from './types'
+import type { BeamQuestion, BeamSkill, BeamTier } from './types'
 
 /** What a skill produces before options, the beam and the drawing are added. */
 type Draft = {
     readonly prompt: string
     readonly value: number
-    /** The mistakes a child actually makes, offered as tempting wrong tiles. */
-    readonly nearMisses: readonly number[]
+    /**
+     * The granularity this skill's answers always have. Doubling only ever
+     * yields even numbers, ten-times only multiples of ten; saying so lets the
+     * beam use a coarser, more thumb-friendly step without ever putting the
+     * answer between two stops.
+     */
+    readonly beamStep: number
     readonly workingOut: string
     readonly bar: BarSpec
 }
@@ -30,7 +34,7 @@ function doubleDraft(rng: Rng, cap: number): Draft {
     return {
         prompt: `2 × ${n} = ?`,
         value,
-        nearMisses: [value + 1, value - 1, value + 2, value - 2, n + 2, value + TEN],
+        beamStep: 2,
         workingOut: `${n} + ${n} = ${value}`,
         bar: [whole(n), { totalKnown: false, parts: repeat(2, n, true) }],
     }
@@ -43,7 +47,7 @@ function halveDraft(rng: Rng, cap: number): Draft {
     return {
         prompt: `${total} ÷ 2 = ?`,
         value,
-        nearMisses: [value + 1, value - 1, value + 2, value - 2, total - 2, value * 4],
+        beamStep: 1,
         workingOut: `${value} + ${value} = ${total}`,
         bar: [whole(total), { totalKnown: true, parts: repeat(2, value, false) }],
     }
@@ -57,7 +61,7 @@ function nearDoubleDraft(rng: Rng, cap: number): Draft {
     return {
         prompt: `${n} + ${other} = ?`,
         value,
-        nearMisses: [n * 2, n * 2 + gap * 2, value + 1, value - 1, value + 2, value - 2],
+        beamStep: 1,
         workingOut: `${n} + ${n} = ${n * 2} → ${n * 2} + ${gap} = ${value}`,
         bar: [
             { totalKnown: false, parts: [{ value: n, known: true }, { value: other, known: true }] },
@@ -77,7 +81,7 @@ function doubleDoubleDraft(rng: Rng, cap: number): Draft {
     return {
         prompt: `4 × ${n} = ?`,
         value,
-        nearMisses: [n * 2, n * 3, value + 1, value - 1, value + 2, n * 8],
+        beamStep: 4,
         workingOut: `${n} + ${n} = ${n * 2} → ${n * 2} + ${n * 2} = ${value}`,
         bar: [whole(n), { totalKnown: false, parts: repeat(4, n, true) }],
     }
@@ -89,7 +93,7 @@ function quarterDraft(rng: Rng, cap: number): Draft {
     return {
         prompt: `${total} ÷ 4 = ?`,
         value,
-        nearMisses: [total / 2, value + 1, value - 1, value * 2, value + 2, value - 2],
+        beamStep: 1,
         workingOut: `${total} ÷ 2 = ${total / 2} → ${total / 2} ÷ 2 = ${value}`,
         bar: [whole(total), { totalKnown: true, parts: repeat(4, value, false) }],
     }
@@ -112,7 +116,7 @@ function fractionOfDraft(rng: Rng, cap: number): Draft {
     return {
         prompt: `${glyph} × ${total} = ?`,
         value,
-        nearMisses: [unit, total - value, value + 1, value - 1, value + unit, Math.floor(total / 2)],
+        beamStep: 1,
         workingOut: `${total} ÷ ${denominator} = ${unit} → ${numerator} × ${unit} = ${value}`,
         bar: [
             whole(total),
@@ -137,7 +141,7 @@ function tenTimesDraft(rng: Rng, cap: number): Draft {
         return {
             prompt: `${TEN} × ${n} = ?`,
             value: total,
-            nearMisses: [n, total + TEN, total - TEN, total + 1, total - 1, n * TEN * TEN],
+            beamStep: TEN,
             workingOut: `${n} × ${TEN} = ${total}`,
             bar: [whole(n), { totalKnown: false, parts: repeat(TEN, n, true) }],
         }
@@ -145,7 +149,7 @@ function tenTimesDraft(rng: Rng, cap: number): Draft {
     return {
         prompt: `${total} ÷ ${TEN} = ?`,
         value: n,
-        nearMisses: [total, n + 1, n - 1, n + TEN, n - TEN, total - TEN],
+        beamStep: 1,
         workingOut: `${n} × ${TEN} = ${total}`,
         bar: [whole(total), { totalKnown: true, parts: repeat(TEN, n, false) }],
     }
@@ -159,7 +163,7 @@ function bondDraft(rng: Rng, cap: number): Draft {
     return {
         prompt: `? + ${part} = ${cap}`,
         value,
-        nearMisses: [cap, part, value + 1, value - 1, cap + part, value + 2],
+        beamStep: step,
         workingOut: `${cap} ${MINUS} ${part} = ${value}`,
         bar: [
             whole(cap),
@@ -172,7 +176,7 @@ function bondDraft(rng: Rng, cap: number): Draft {
 }
 
 function splitDraft(rng: Rng, cap: number): Draft {
-    const magnitude = cap >= 1000 ? 100 : TEN
+    const magnitude = TEN
     const rest = randomInt(rng, 1, magnitude - 1)
     const round = randomInt(rng, 1, Math.floor((cap - rest) / magnitude)) * magnitude
     const total = round + rest
@@ -182,7 +186,7 @@ function splitDraft(rng: Rng, cap: number): Draft {
     return {
         prompt: askRound ? `${total} = ? + ${rest}` : `${total} = ${round} + ?`,
         value,
-        nearMisses: [total, given, value + 1, value - 1, value + magnitude, total - value + 1],
+        beamStep: askRound ? magnitude : 1,
         workingOut: `${total} ${MINUS} ${given} = ${value}`,
         bar: [
             whole(total),
@@ -212,34 +216,26 @@ const drafts: Record<BeamSkill, (rng: Rng, cap: number) => Draft> = {
 export type CreateBeamQuestionOptions = {
     readonly skill: BeamSkill
     readonly tier: BeamTier
-    /** Ask for the slider; ignored when the answer would not land on a stop. */
-    readonly preferBeam?: boolean
     readonly rng?: Rng
 }
 
-export function createBeamQuestion({
-    skill,
-    tier,
-    preferBeam = false,
-    rng = defaultRng,
-}: CreateBeamQuestionOptions): BeamQuestion {
+/**
+ * Every question is answered on the beam — that is what this section is for.
+ * There is no tile fallback, so the beam's step comes from the skill and the
+ * answer is guaranteed to land on a stop.
+ */
+export function createBeamQuestion({ skill, tier, rng = defaultRng }: CreateBeamQuestionOptions): BeamQuestion {
     const draft = drafts[skill](rng, capFor(skill, tier))
-    const bar = buildBar(draft.bar)
-    const beamMax = beamMaxFor(draft.value, bar.scale)
-    const answer = String(draft.value)
-    const options = buildNumericOptions(rng, draft.value, [...draft.nearMisses])
-    const input: BeamInput = preferBeam && isBeamEligible(draft.value, beamMax) ? 'beam' : 'tiles'
+    const beamMax = beamMaxFor(draft.value, draft.beamStep, rng)
 
     return {
         skill,
         prompt: draft.prompt,
         value: draft.value,
-        answer,
-        options,
-        correctIndex: options.indexOf(answer),
+        answer: String(draft.value),
         beamMax,
+        beamStep: draft.beamStep,
         workingOut: draft.workingOut,
-        input,
-        bar,
+        bar: buildBar(draft.bar),
     }
 }

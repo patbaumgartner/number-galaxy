@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 import { store, type ScoreEntry } from '../store'
 import { RANKS, type Rank } from '../game'
 import TopBar from '../components/TopBar'
-import { translations } from '../translations'
+import { translations } from '../i18n'
 import { useDocumentLanguage } from '../hooks'
 
 type Group = { rank: Rank; timed: boolean; entries: ScoreEntry[] }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { fill, translations } from './translations'
+import { fill, translations } from './index'
 
 type TranslationValue = string | TranslationValue[] | { [key: string]: TranslationValue }
 

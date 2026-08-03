@@ -40,31 +40,17 @@ function answerForPrompt(): number {
     throw new Error(`Unsupported beam prompt: ${text}`)
 }
 
-const usingBeam = (): boolean => screen.queryByRole('slider') !== null
-
-function answerCorrectly(): void {
-    const answer = answerForPrompt()
-    if (usingBeam()) {
-        fireEvent.change(screen.getByRole('slider'), { target: { value: String(answer) } })
-        fireEvent.click(screen.getByRole('button', { name: /Land on/ }))
-        return
-    }
-    fireEvent.click(screen.getByRole('button', { name: String(answer) }))
+function land(on: number): void {
+    fireEvent.change(screen.getByRole('slider'), { target: { value: String(on) } })
+    fireEvent.click(screen.getByRole('button', { name: /Land on/ }))
 }
 
+const answerCorrectly = (): void => land(answerForPrompt())
+
 function answerWrongly(): void {
-    const answer = String(answerForPrompt())
-    if (usingBeam()) {
-        const slider = screen.getByRole('slider') as HTMLInputElement
-        const wrong = Number(answer) === 0 ? Number(slider.step) : 0
-        fireEvent.change(slider, { target: { value: String(wrong) } })
-        fireEvent.click(screen.getByRole('button', { name: /Land on/ }))
-        return
-    }
-    const wrong = screen.getAllByRole('button', { name: /^\d+$/ })
-        .find(button => button.getAttribute('aria-label') !== answer)
-    if (wrong === undefined) throw new Error('Expected a distractor tile')
-    fireEvent.click(wrong)
+    const slider = screen.getByRole('slider') as HTMLInputElement
+    const answer = answerForPrompt()
+    land(answer === 0 ? Number(slider.step) : 0)
 }
 
 const playThrough = (outcome: (index: number) => boolean): void => {
@@ -82,12 +68,24 @@ describe('BeamDrillPage', () => {
     })
     afterEach(() => vi.useRealTimers())
 
-    it('opens on the first question with the bar picture and four tiles', () => {
+    it('opens on the first question with the bar picture and the beam', () => {
         renderDrill('double')
         expect(screen.getByText('Question 1/10')).toBeInTheDocument()
         expect(screen.getByRole('img', { name: /Bar picture/ })).toBeInTheDocument()
-        expect(screen.getAllByRole('button', { name: /^\d+$/ })).toHaveLength(4)
+        expect(screen.getByRole('slider', { name: 'Move the alien along the beam' })).toBeInTheDocument()
         expect(screen.getByText('Tier 1')).toBeInTheDocument()
+    })
+
+    it('answers every question of a whole drill on the beam, never on tiles', () => {
+        renderDrill('halve')
+        for (let index = 0; index < 10; index += 1) {
+            expect(screen.getByRole('slider')).toBeInTheDocument()
+            // The arcade's tile grid must never appear here; the beam is the only input.
+            expect(document.querySelector('.answer-grid')).toBeNull()
+            answerCorrectly()
+            if (index < 9) act(() => vi.advanceTimersByTime(WRONG_MS))
+        }
+        expect(screen.getByRole('dialog', { name: 'Station complete!' })).toBeInTheDocument()
     })
 
     it('scores a right answer and moves on to the next question', () => {
@@ -100,14 +98,12 @@ describe('BeamDrillPage', () => {
         expect(screen.getByText(/Streak 1/)).toBeInTheDocument()
     })
 
-    it('answers the second question by sliding the alien along the beam', () => {
-        renderDrill('double')
-        answerCorrectly()
-        act(() => vi.advanceTimersByTime(CORRECT_MS))
-
-        expect(screen.getByRole('slider', { name: 'Move the alien along the beam' })).toBeInTheDocument()
-        answerCorrectly()
-        expect(screen.getByText('Correct!')).toBeInTheDocument()
+    it('always offers a beam stop exactly on the answer', () => {
+        seedBeamStars({ double: 1, halve: 1, quarter: 1, fractionOf: 1 })
+        renderDrill('tenTimes')
+        const slider = screen.getByRole('slider') as HTMLInputElement
+        expect(answerForPrompt() % Number(slider.step)).toBe(0)
+        expect(Number(slider.max)).toBeGreaterThan(answerForPrompt())
     })
 
     it('reveals the working and the numbers behind the bar after a miss', () => {

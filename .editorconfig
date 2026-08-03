@@ -1,0 +1,19 @@
+# Editor defaults, so a contributor's IDE agrees with `npm run lint`
+# before the linter ever runs. The TypeScript rules here mirror
+# web/eslint.config.js — change both together.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{json,jsonc,yml,yaml,css,html}]
+indent_size = 2
+
+[*.md]
+# Two trailing spaces are a hard line break in Markdown.
+trim_trailing_whitespace = false

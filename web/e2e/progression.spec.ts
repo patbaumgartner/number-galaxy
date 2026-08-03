@@ -19,7 +19,9 @@ async function returnToMap(page: Page): Promise<void> {
     await expect(page.getByRole('heading', { name: mapTitle })).toBeVisible()
 }
 
-async function choosePhase(page: Page, planet: ReturnType<typeof planetButton> | ReturnType<typeof squaresButton>, phase: RegExp): Promise<void> {
+type PlanetLocator = ReturnType<typeof planetButton> | ReturnType<typeof squaresButton>
+
+async function choosePhase(page: Page, planet: PlanetLocator, phase: RegExp): Promise<void> {
     await planet.click()
     const dialog = page.getByRole('dialog')
     await expect(dialog).toBeVisible()

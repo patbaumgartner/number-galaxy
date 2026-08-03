@@ -17,7 +17,9 @@ test('registers the production service worker and renders after reload', async (
     await seedStorage(page, { settings })
     await gotoApp(page)
     await page.evaluate(async () => navigator.serviceWorker.ready)
-    expect(await page.evaluate(() => navigator.serviceWorker.controller !== null || navigator.serviceWorker.getRegistration().then(registration => registration !== undefined))).toBeTruthy()
+    const controlled = await page.evaluate(async () => navigator.serviceWorker.controller !== null
+        || (await navigator.serviceWorker.getRegistration()) !== undefined)
+    expect(controlled).toBeTruthy()
     await page.reload()
     await expect(page.getByRole('heading', { level: 1, name: 'MATH INVADERS' })).toBeVisible()
 })

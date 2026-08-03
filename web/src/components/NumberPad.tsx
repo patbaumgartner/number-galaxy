@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
-import { store } from '../store';
-import { translations } from '../translations';
+import { useEffect } from 'react'
+import { store } from '../store'
+import { translations } from '../i18n'
 
 type NumberPadProps = {
     readonly value: string
@@ -10,50 +10,50 @@ type NumberPadProps = {
 }
 
 export function NumberPad({ value, onChange, onSubmit, disabled }: NumberPadProps) {
-    const t = translations[store.getSettings().language];
+    const t = translations[store.getSettings().language]
 
     useEffect(() => {
-        if (disabled) return;
+        if (disabled) return
 
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key >= '0' && e.key <= '9') {
-                e.preventDefault();
+                e.preventDefault()
                 if (value.length < 3) {
-                    onChange(value + e.key);
+                    onChange(value + e.key)
                 }
             } else if (e.key === 'Backspace') {
-                e.preventDefault();
-                onChange(value.slice(0, -1));
+                e.preventDefault()
+                onChange(value.slice(0, -1))
             } else if (e.key === 'Enter') {
-                e.preventDefault();
+                e.preventDefault()
                 if (value !== '') {
-                    onSubmit();
+                    onSubmit()
                 }
             }
-        };
+        }
 
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [value, onChange, onSubmit, disabled]);
+        window.addEventListener('keydown', handleKeyDown)
+        return () => window.removeEventListener('keydown', handleKeyDown)
+    }, [value, onChange, onSubmit, disabled])
 
     const handleDigit = (digit: string) => {
-        if (disabled) return;
+        if (disabled) return
         if (value.length < 3) {
-            onChange(value + digit);
+            onChange(value + digit)
         }
-    };
+    }
 
     const handleBackspace = () => {
-        if (disabled) return;
-        onChange(value.slice(0, -1));
-    };
+        if (disabled) return
+        onChange(value.slice(0, -1))
+    }
 
     const handleSubmit = () => {
-        if (disabled) return;
+        if (disabled) return
         if (value !== '') {
-            onSubmit();
+            onSubmit()
         }
-    };
+    }
 
     return (
         <div className="numpad">
@@ -96,5 +96,5 @@ export function NumberPad({ value, onChange, onSubmit, disabled }: NumberPadProp
                 </button>
             </div>
         </div>
-    );
+    )
 }

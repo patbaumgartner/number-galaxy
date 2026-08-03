@@ -51,6 +51,22 @@ export function writeJson(key: string, value: unknown): void {
     }
 }
 
+/** Narrows a parsed value to a plain object, rejecting null and arrays. */
+export const isRecord = (value: unknown): value is Record<string, unknown> =>
+    typeof value === 'object' && value !== null && !Array.isArray(value)
+
+/**
+ * A stored keyed collection, or an empty one.
+ *
+ * Every feature store keeps its progress as `{ [id]: entry }` and has to cope
+ * with the same tampering, so the parse lives here once rather than in each of
+ * them; the caller still validates its own entry shape.
+ */
+export function readRecord(key: string): Record<string, unknown> {
+    const stored = readJson<unknown>(key, null)
+    return isRecord(stored) ? stored : {}
+}
+
 export function hasKey(key: string): boolean {
     const storage = available()
     if (!storage) return false
@@ -61,7 +77,8 @@ export function hasKey(key: string): boolean {
     }
 }
 
-export function clearAll(): void {
+/** Drops every key under `prefix`, which is how each game resets only its own progress. */
+export function removeByPrefix(prefix: string): void {
     const storage = available()
     if (!storage) return
     try {
@@ -69,10 +86,12 @@ export function clearAll(): void {
         const doomed: string[] = []
         for (let i = 0; i < storage.length; i += 1) {
             const key = storage.key(i)
-            if (key !== null && key.startsWith(PREFIX)) doomed.push(key)
+            if (key !== null && key.startsWith(prefix)) doomed.push(key)
         }
         doomed.forEach(key => storage.removeItem(key))
     } catch {
         /* nothing to clear */
     }
 }
+
+export const clearAll = (): void => removeByPrefix(PREFIX)

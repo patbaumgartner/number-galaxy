@@ -1,4 +1,5 @@
 import type { BarModel, BarRow, BarSegment, BarTone } from './types'
+import type { Rng } from '../game/rng'
 import { BEAM_ALIENS } from './types'
 
 /**
@@ -65,25 +66,24 @@ export function buildBar(spec: BarSpec): BarModel {
 /**
  * How far the beam runs.
  *
- * Rounded up to a landmark so the answer is never simply "all the way to the
- * end", which would let a child slide without counting.
+ * Scaled to the answer rather than to the bar: tying it to the bar put a
+ * ten-times answer in the first tenth of the beam every time, which both gave
+ * the answer away and made the beam unusable. The headroom is drawn from the
+ * question's own rng so the answer does not sit at a predictable fraction, and
+ * the result is always a multiple of `step`, which is what keeps the answer
+ * reachable. A floor of {@link MIN_BEAM_STOPS} stops it collapsing on small
+ * answers: `2 x 2` would otherwise offer a four-stop beam and hand the answer over.
  */
-export function beamMaxFor(value: number, scale: number): number {
-    const target = Math.max(value, scale)
-    const step = target <= 20 ? 5 : target <= 50 ? 10 : target <= 200 ? 25 : 100
-    const rounded = Math.ceil(target / step) * step
-    return rounded === value ? rounded + step : rounded
+const MIN_BEAM_STOPS = 10
+
+export function beamMaxFor(value: number, step: number, rng: Rng): number {
+    const headroom = 1.2 + rng() * 0.4
+    const rounded = Math.ceil((value * headroom) / step) * step
+    return Math.max(rounded, value + step, step * MIN_BEAM_STOPS)
 }
 
-/** Coarser steps on longer beams, so a thumb can still land on the answer. */
-export const beamStepFor = (beamMax: number): number =>
-    beamMax <= 30 ? 1 : beamMax <= 150 ? 5 : 10
-
-/** At most 30 stops, and the answer has to be one of them. */
-export function isBeamEligible(value: number, beamMax: number): boolean {
-    const step = beamStepFor(beamMax)
-    return value % step === 0 && beamMax / step <= 30
-}
+/** Positions a child can actually stop on; bounded so a fingertip can reach each. */
+export const beamStops = (beamMax: number, step: number): number => Math.round(beamMax / step)
 
 /**
  * The bar as a sentence, for anyone who cannot see it.

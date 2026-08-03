@@ -1,0 +1,19 @@
+/*
+ * The whole stylesheet, in cascade order.
+ *
+ * Order is load-bearing — later rules override earlier ones — so this list
+ * reproduces exactly the order the old imports produced, and the built bundle
+ * is byte-identical to the one a single 1546-line `App.css` emitted. The parts
+ * are that file's own former section boundaries.
+ */
+@import './backdrop.css';
+@import './tokens.css';
+@import './layout.css';
+@import './home.css';
+@import './arcade.css';
+@import './settings.css';
+@import './hall-of-fame.css';
+@import './motion.css';
+@import './chrome.css';
+@import './trainer.css';
+@import './beam.css';

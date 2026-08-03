@@ -3,7 +3,6 @@ export type {
     BarRow,
     BarSegment,
     BarTone,
-    BeamInput,
     BeamQuestion,
     BeamSkill,
     BeamStarLevel,
@@ -12,7 +11,6 @@ export type {
 } from './types'
 export {
     BEAM_ALIENS,
-    BEAM_INPUTS,
     BEAM_SKILLS,
     BEAM_TIERS,
     BEAM_ZONE_IDS,
@@ -22,7 +20,7 @@ export {
 } from './types'
 
 export type { BarPartSpec, BarRowSpec, BarSpec } from './bars'
-export { beamMaxFor, beamStepFor, buildBar, isBeamEligible } from './bars'
+export { beamMaxFor, beamStops, buildBar } from './bars'
 
 export type { BeamStars, BeamStation, BeamZone } from './stations'
 export {

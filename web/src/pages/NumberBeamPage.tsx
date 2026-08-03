@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 import TopBar from '../components/TopBar'
 import { BEAM_ZONES, beamStore, isZoneUnlocked, nextRecommendedStation } from '../beam'
 import { store } from '../store'
-import { fill, translations } from '../translations'
+import { fill, translations } from '../i18n'
 import { useDocumentLanguage } from '../hooks'
 
 export default function NumberBeamPage() {

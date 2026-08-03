@@ -55,10 +55,9 @@ test('draws the whole above its two halves and reveals the numbers after a miss'
 
     const prompt = (await page.locator('.equation__prompt').textContent()) ?? ''
     const answer = Number(prompt.split('÷')[0].trim()) / 2
-    // Matched on the tile's aria-label, which is exactly the option value. Its
-    // text also carries the alien and the keyboard hint, so a text filter would
-    // never exclude the right answer and the click would land on it at random.
-    await page.locator(`.answer-tile:not([aria-label="${answer}"])`).first().click()
+    const slider = page.getByRole('slider')
+    await slider.fill(String(answer === 0 ? Number(await slider.getAttribute('step')) : 0))
+    await page.getByRole('button', { name: /Land on/ }).click()
 
     await expect(page.getByText(/Missed! The answer was/)).toBeVisible()
     await expect(bar).toHaveAttribute('aria-label', /Bar picture: \d+ = \d+ · \d+ = \d+ \+ \d+/)
@@ -68,31 +67,35 @@ test('moves the alien along the beam with a drag, the nudges and the arrow keys'
     await seedStorage(page, { settings, player })
     await gotoApp(page, '/number-beam/drill/double')
 
-    // The second question always asks for the beam.
-    await answerBeamQuestion(page)
     const slider = page.getByRole('slider')
     await expect(slider).toBeVisible()
+    // Each station sets its own step, so the expected readouts are derived from
+    // the control rather than assumed to be one.
+    const step = Number(await slider.getAttribute('step'))
+    const landOn = (value: number) => page.getByRole('button', { name: new RegExp(`Land on ${value}$`) })
 
     const alienX = async () => (await page.locator('.beam__alien').boundingBox())?.x ?? 0
     const start = await alienX()
 
     await page.getByRole('button', { name: 'One step on' }).click()
-    await expect(page.getByRole('button', { name: /Land on 1$/ })).toBeVisible()
+    await expect(landOn(step)).toBeVisible()
 
     await slider.press('ArrowRight')
-    await expect(page.getByRole('button', { name: /Land on 2$/ })).toBeVisible()
+    await expect(landOn(step * 2)).toBeVisible()
     expect(await alienX()).toBeGreaterThan(start)
 
     await page.getByRole('button', { name: 'One step back' }).click()
-    await expect(page.getByRole('button', { name: /Land on 1$/ })).toBeVisible()
+    await expect(landOn(step)).toBeVisible()
 })
 
-test('plays a full drill on the beam and the tiles, earning and keeping a star', async ({ page }) => {
+test('plays a full drill entirely on the beam, earning and keeping a star', async ({ page }) => {
     await seedStorage(page, { settings, player })
     await gotoApp(page, '/number-beam/drill/double')
 
     for (let index = 0; index < 10; index += 1) {
         await expect(page.getByText(`Question ${index + 1}/10`)).toBeVisible()
+        // Never a tile grid: the beam is the only way to answer in this section.
+        await expect(page.locator('.answer-grid')).toHaveCount(0)
         await answerBeamQuestion(page)
     }
 

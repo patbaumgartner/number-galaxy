@@ -65,14 +65,19 @@ Open a [💡 Feature Request](.github/ISSUE_TEMPLATE/feature_request.yml) with:
 The game supports German, Italian, English and French. To add another:
 
 1. Open `web/src/game/types.ts` and add your code to the `Language` union
-2. Open `web/src/translations.ts` and add a full block for it — the `Translations` type
-   means TypeScript will list every key you still owe
-3. Open `web/src/constants.ts` and add a `languageLabels` entry with its flag
-4. Add the remainder separator in `web/src/game/equations.ts` (`remainderSeparator`)
-5. Run `npm test` — `translations.test.ts` checks key parity, array lengths and
+2. Copy `web/src/i18n/en.ts` to `web/src/i18n/<code>.ts` and translate the values —
+   the `Translations` type means TypeScript lists every key you still owe. One
+   language per file, so you never touch anyone else's translation
+3. Register it in `web/src/i18n/index.ts`
+4. Open `web/src/constants.ts` and add a `languageNames` entry, written in the
+   language itself (e.g. `Français`, not `French`)
+5. Draw the flag in `web/src/components/Flag.tsx` — flags are SVG, because emoji
+   flags collapse to bare "DE"/"GB" letters on Windows and most Linux desktops
+6. Add the remainder separator in `web/src/game/equations.ts` (`remainderSeparator`)
+7. Run `npm test` — `i18n/translations.test.ts` checks key parity, array lengths and
    `{placeholder}` parity across every language, so a missing key fails the build
-6. Check every screen in the new language, including Settings and the trainer
-7. Submit a PR titled `feat: add [language] translation`
+8. Check every screen in the new language, including Settings and both trainers
+9. Submit a PR titled `feat: add [language] translation`
 
 ### Submitting Code
 
@@ -130,15 +135,15 @@ math-invaders/
 │   │   ├── pages/            # Route-level pages, incl. trainer/ phases
 │   │   ├── components/       # Reusable UI components
 │   │   ├── game/             # Arcade domain: rng, equations, questions, mission
-│   │   ├── store/            # localStorage: settings, scores, progress
+│   │   ├── beam/             # Number Beam domain: skills, bars, drill, stars
 │   │   ├── timesTable/       # Trainer domain: facts, Leitner, sessions, stars
+│   │   ├── store/            # localStorage: settings, scores, progress
+│   │   ├── i18n/             # One file per language, plus the shared key type
+│   │   ├── styles/           # Design tokens and per-area stylesheets
 │   │   ├── test/             # Shared jsdom setup and render helpers
 │   │   ├── App.tsx           # Router
-│   │   ├── App.css           # Token-driven design system
-│   │   ├── timesTable.css    # Trainer styles
 │   │   ├── hooks.ts          # Countdown, page visibility, modal dialogs
-│   │   ├── translations.ts   # i18n (de/it/en/fr)
-│   │   └── constants.ts      # Avatars, language labels
+│   │   └── constants.ts      # Avatars, language names
 │   ├── vite.config.ts
 │   ├── vitest.config.ts      # Two projects: domain (node), ui (jsdom)
 │   ├── playwright.config.ts
@@ -159,10 +164,15 @@ renders. See [docs/TESTING.md](docs/TESTING.md).
 
 ## Style Guide
 
-- **TypeScript** strictly typed; never `any`, `@ts-ignore` or `@ts-expect-error`
+- **Formatting is enforced, not described.** `npm run lint` owns indentation, quotes,
+  semicolons and line length; `npm run lint:fix` applies them. Do not hand-format
+- **TypeScript** strictly typed; never `any`, `@ts-ignore` or `@ts-expect-error`.
+  `strict` plus `exactOptionalPropertyTypes`, `noImplicitReturns` and
+  `noImplicitOverride` are on, and `e2e/` and the config files are type-checked too
 - **React** functional components with hooks only
-- **CSS** use the existing custom properties from `App.css`; no inline styles, and no
-  class in the markup without a matching rule
+- **CSS** use the design tokens in `src/styles/tokens.css`; no class in the markup
+  without a matching rule, and no static inline styles — `style` is for values only
+  known at runtime, such as a bar's width or a slider's position
 - **Domain logic stays out of components** — `game/`, `store/` and `timesTable/` contain
   no React, which is what makes them cheap to test exhaustively
 - **Randomness is injected**, never called directly, so tests can replay a seed

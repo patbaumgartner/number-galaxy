@@ -11,7 +11,7 @@ import { buildSpeedSession } from '../../timesTable/session'
 import { getPlanet } from '../../timesTable/tables'
 import { computeStars, ttStore } from '../../timesTable/ttStore'
 import type { Fact, PlanetId, StarLevel } from '../../timesTable/types'
-import { translations } from '../../translations'
+import { translations } from '../../i18n'
 
 export function SpeedPhase({ planetId }: { planetId: PlanetId }) {
     const lang = store.getSettings().language
@@ -41,26 +41,23 @@ export function SpeedPhase({ planetId }: { planetId: PlanetId }) {
         if (stars < 1) navigate(`/times-tables/train/${planetId}/practice`, { replace: true })
     }, [planetId, navigate])
     useEffect(() => {
-        if (!started && session.length > 0) {
-            if (countdown > 0) {
-                const timer = setTimeout(() => setCountdown(countdown - 1), 1000)
-                return () => clearTimeout(timer)
-            }
-            const timerId = setTimeout(() => { setStarted(true); startTimeRef.current = window.performance.now() }, 0)
-            return () => clearTimeout(timerId)
-        }
-    }, [countdown, started, session])
-    useEffect(() => {
-        if (started && !finished) {
-            const interval = setInterval(() => setDisplayTime(window.performance.now() - startTimeRef.current), 10)
-            return () => clearInterval(interval)
-        }
-    }, [started, finished])
-    useEffect(() => {
-        if (shake) {
-            const timer = setTimeout(() => setShake(false), 500)
+        if (started || session.length === 0) return
+        if (countdown > 0) {
+            const timer = setTimeout(() => setCountdown(countdown - 1), 1000)
             return () => clearTimeout(timer)
         }
+        const timerId = setTimeout(() => { setStarted(true); startTimeRef.current = window.performance.now() }, 0)
+        return () => clearTimeout(timerId)
+    }, [countdown, started, session])
+    useEffect(() => {
+        if (!started || finished) return
+        const interval = setInterval(() => setDisplayTime(window.performance.now() - startTimeRef.current), 10)
+        return () => clearInterval(interval)
+    }, [started, finished])
+    useEffect(() => {
+        if (!shake) return
+        const timer = setTimeout(() => setShake(false), 500)
+        return () => clearTimeout(timer)
     }, [shake])
 
     if (session.length === 0) return null

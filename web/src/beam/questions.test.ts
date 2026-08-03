@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { createRng } from '../game/rng'
-import { beamMaxFor, beamStepFor, buildBar, isBeamEligible } from './bars'
+import { beamMaxFor, beamStops, buildBar } from './bars'
 import { createBeamQuestion } from './questions'
-import { BEAM_STATIONS, capFor } from './stations'
+import { BEAM_STATIONS } from './stations'
 import { BEAM_SKILLS, BEAM_TIERS, type BeamQuestion } from './types'
 
 const SEEDS = 200
@@ -11,7 +11,7 @@ const everyQuestion = (visit: (question: BeamQuestion) => void): void => {
     for (const skill of BEAM_SKILLS) {
         for (const tier of BEAM_TIERS) {
             for (let seed = 0; seed < SEEDS; seed += 1) {
-                visit(createBeamQuestion({ skill, tier, preferBeam: seed % 2 === 0, rng: createRng(seed) }))
+                visit(createBeamQuestion({ skill, tier, rng: createRng(seed) }))
             }
         }
     }
@@ -20,15 +20,6 @@ const everyQuestion = (visit: (question: BeamQuestion) => void): void => {
 const sum = (values: readonly number[]): number => values.reduce((total, value) => total + value, 0)
 
 describe('beam questions', () => {
-    it('always offers four distinct options containing the answer exactly once', () => {
-        everyQuestion(question => {
-            expect(question.options).toHaveLength(4)
-            expect(new Set(question.options).size).toBe(4)
-            expect(question.options.filter(option => option === question.answer)).toHaveLength(1)
-            expect(question.options[question.correctIndex]).toBe(question.answer)
-        })
-    })
-
     it('answers with a positive whole number that matches its display string', () => {
         everyQuestion(question => {
             expect(Number.isInteger(question.value)).toBe(true)
@@ -44,46 +35,57 @@ describe('beam questions', () => {
         })
     })
 
-    it('keeps the answer inside the beam and on one of its stops', () => {
+    it('always puts a beam stop exactly on the answer', () => {
         everyQuestion(question => {
-            expect(question.beamMax).toBeGreaterThanOrEqual(question.value)
-            if (question.input === 'beam') {
-                expect(question.value % beamStepFor(question.beamMax)).toBe(0)
-                expect(question.beamMax / beamStepFor(question.beamMax)).toBeLessThanOrEqual(30)
-            }
+            expect(question.value % question.beamStep).toBe(0)
+            expect(question.beamMax % question.beamStep).toBe(0)
         })
     })
 
-    it('never puts the answer at the very end of the beam', () => {
+    it('never puts the answer at either end of the beam', () => {
         everyQuestion(question => {
-            expect(question.beamMax).not.toBe(question.value)
+            expect(question.value).toBeGreaterThan(0)
+            expect(question.beamMax).toBeGreaterThan(question.value)
         })
     })
 
-    it('offers the slider whenever the answer lands on a stop', () => {
-        const inputs = new Set<string>()
-        everyQuestion(question => void inputs.add(question.input))
-        expect(inputs).toEqual(new Set(['tiles', 'beam']))
+    it('keeps every beam long enough to be a real number line and short enough to aim at', () => {
+        everyQuestion(question => {
+            const stops = beamStops(question.beamMax, question.beamStep)
+            expect(stops).toBeGreaterThanOrEqual(10)
+            expect(stops).toBeLessThanOrEqual(70)
+        })
     })
 
-    it('falls back to tiles when the slider was asked for but cannot be used', () => {
-        const question = createBeamQuestion({ skill: 'split', tier: 2, preferBeam: true, rng: createRng(7) })
-        expect(question.input === 'beam' || !isBeamEligible(question.value, question.beamMax)).toBe(true)
-    })
-
-    it('keeps every operand within the station cap for its tier', () => {
-        for (const station of BEAM_STATIONS) {
-            for (const tier of BEAM_TIERS) {
-                const cap = capFor(station.id, tier)
-                for (let seed = 0; seed < SEEDS; seed += 1) {
-                    const question = createBeamQuestion({ skill: station.id, tier, rng: createRng(seed) })
-                    const operands = [...question.prompt.matchAll(/\d+/g)].map(match => Number(match[0]))
-                    // The whole a bar is drawn against is the cap's real subject;
-                    // a doubled or ten-timesed result is allowed to exceed it.
-                    expect(Math.min(...operands)).toBeLessThanOrEqual(cap)
-                }
+    it('does not park the answer at a fixed fraction of the beam, which would give it away', () => {
+        for (const skill of BEAM_SKILLS) {
+            const fractions = new Set<number>()
+            for (let seed = 0; seed < 60; seed += 1) {
+                const question = createBeamQuestion({ skill, tier: 1, rng: createRng(seed) })
+                fractions.add(Math.round((question.value / question.beamMax) * 10))
             }
+            expect(fractions.size).toBeGreaterThan(1)
         }
+    })
+
+    it('grows the numbers from tier to tier at every station', () => {
+        for (const station of BEAM_STATIONS) {
+            const averageScale = BEAM_TIERS.map(tier => {
+                const scales = Array.from({ length: SEEDS }, (_unused, seed) =>
+                    createBeamQuestion({ skill: station.id, tier, rng: createRng(seed) }).bar.scale)
+                return scales.reduce((total, scale) => total + scale, 0) / scales.length
+            })
+            expect(averageScale[0]).toBeLessThan(averageScale[1])
+            expect(averageScale[1]).toBeLessThan(averageScale[2])
+        }
+    })
+
+    it('keeps the bar to a scale a child can still read', () => {
+        everyQuestion(question => {
+            expect(question.bar.scale).toBeLessThanOrEqual(300)
+            expect([...question.prompt.matchAll(/\d+/g)]
+                .every(match => Number(match[0]) > 0)).toBe(true)
+        })
     })
 })
 
@@ -163,25 +165,19 @@ describe('beam bars', () => {
 })
 
 describe('beam sizing', () => {
-    it('rounds the beam up to a landmark instead of stopping on the answer', () => {
-        expect(beamMaxFor(7, 14)).toBe(15)
-        expect(beamMaxFor(14, 14)).toBe(15)
-        expect(beamMaxFor(40, 40)).toBe(50)
-        expect(beamMaxFor(70, 70)).toBe(75)
-        expect(beamMaxFor(600, 600)).toBe(700)
+    it('always clears the answer and lands on a multiple of the step', () => {
+        const rng = createRng(11)
+        for (const [value, step] of [[7, 1], [70, 10], [24, 4], [50, 2], [95, 5]] as const) {
+            for (let attempt = 0; attempt < 50; attempt += 1) {
+                const max = beamMaxFor(value, step, rng)
+                expect(max % step).toBe(0)
+                expect(max).toBeGreaterThan(value)
+            }
+        }
     })
 
-    it('widens the step as the beam gets longer', () => {
-        expect(beamStepFor(20)).toBe(1)
-        expect(beamStepFor(100)).toBe(5)
-        expect(beamStepFor(300)).toBe(10)
-    })
-
-    it('rejects an answer that no stop on the beam can reach', () => {
-        expect(isBeamEligible(7, 15)).toBe(true)
-        expect(isBeamEligible(19, 40)).toBe(false)
-        expect(isBeamEligible(40, 300)).toBe(true)
-        expect(isBeamEligible(40, 400)).toBe(false)
-        expect(isBeamEligible(40, 1000)).toBe(false)
+    it('counts the stops a child can land on', () => {
+        expect(beamStops(20, 1)).toBe(20)
+        expect(beamStops(200, 10)).toBe(20)
     })
 })

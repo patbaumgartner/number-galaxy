@@ -1,5 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
-import './App.css'
+import './styles/index.css'
 import HomePage from './pages/HomePage'
 import GamePage from './pages/GamePage'
 import HallOfFamePage from './pages/HallOfFamePage'
@@ -9,8 +9,6 @@ import TimesTablesPage from './pages/TimesTablesPage'
 import TableTrainerPage from './pages/TableTrainerPage'
 import NumberBeamPage from './pages/NumberBeamPage'
 import BeamDrillPage from './pages/BeamDrillPage'
-import './timesTable.css'
-import './beam.css'
 
 export default function App() {
     return (

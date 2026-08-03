@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { NumberPad } from './NumberPad'
-import { translations } from '../translations'
+import { translations } from '../i18n'
 import { seedLanguage, userEvent } from '../test/utils'
 
 function renderPad(overrides: Partial<React.ComponentProps<typeof NumberPad>> = {}) {

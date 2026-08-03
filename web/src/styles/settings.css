@@ -1,0 +1,237 @@
+/* Settings */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  text-align: left;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  width: 100%;
+}
+
+/* Scoped to unselected options: a bare `.option:hover` outranks
+   `.option--active` and stripped the selection border off whichever one the
+   pointer happened to be over. */
+.option:not(.option--active):hover {
+  border-color: var(--border-highlight);
+}
+
+.option--active {
+  border-color: var(--color-cyan);
+  background: rgba(0, 245, 255, 0.05);
+}
+
+.option--active:hover {
+  background: rgba(0, 245, 255, 0.12);
+}
+
+.option__badge {
+  background: var(--color-pink);
+  color: var(--bg-base);
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.option__marks {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: none;
+}
+
+.option__state {
+  font-weight: 800;
+  color: var(--color-cyan);
+}
+
+/* Held rather than disabled: it stays selected, it just cannot be switched off. */
+.option--locked {
+  cursor: default;
+}
+
+.option--locked .option__state {
+  color: var(--text-muted);
+}
+
+.panel__note {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  margin: var(--space-3) 0 0;
+}
+
+.ladder {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.rung {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  text-align: left;
+  width: 100%;
+}
+
+.rung--active {
+  border-color: var(--color-pink);
+  background: rgba(255, 77, 219, 0.05);
+}
+
+.rung__name {
+  font-weight: 700;
+}
+
+.rung__meta {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.switch-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.panel > .switch-row:first-child {
+  padding-top: 0;
+}
+
+.switch-row__title + .panel__hint {
+  margin-bottom: 0;
+}
+
+.switch-row--stack {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.switch-row__title {
+  font-weight: 600;
+}
+
+.switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 48px;
+  padding: 0;
+  flex: none;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+}
+
+.switch__track {
+  width: 52px;
+  height: 32px;
+  flex: none;
+  position: relative;
+  background: var(--bg-surface-highlight);
+  border-radius: var(--radius-pill);
+  transition: background-color 0.2s ease;
+}
+
+.switch__thumb {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 24px;
+  height: 24px;
+  background: var(--text-main);
+  border-radius: 50%;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.switch--on .switch__track,
+.switch[aria-checked="true"] .switch__track {
+  background: var(--color-success);
+}
+
+.switch--on .switch__thumb,
+.switch[aria-checked="true"] .switch__thumb {
+  transform: translateX(20px);
+}
+
+/* Forms */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.field__label {
+  font-weight: 600;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.field__input {
+  width: 100%;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-4);
+  min-height: 48px;
+  font-size: var(--text-base);
+  color: var(--text-main);
+  transition: border-color 0.2s;
+}
+
+.field__input:focus {
+  outline: none;
+  border-color: var(--color-cyan);
+}
+
+.avatars {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface-elevated);
+  border: 2px solid var(--border-hairline);
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.avatar--active {
+  border-color: var(--color-cyan);
+  background: rgba(0, 245, 255, 0.1);
+  transform: scale(1.1);
+}
+

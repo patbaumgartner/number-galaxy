@@ -1,4 +1,4 @@
-import { readJson, storageKey, writeJson } from '../store/storage'
+import { isRecord, readJson, readRecord, removeByPrefix, storageKey, writeJson } from '../store/storage'
 import { isBeamSkill, type BeamStars } from './stations'
 import type { BeamSkill, BeamStarLevel } from './types'
 
@@ -14,9 +14,6 @@ export type BeamSettings = {
 
 const defaultBeamSettings: BeamSettings = { alwaysShowBar: true }
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-    typeof value === 'object' && value !== null && !Array.isArray(value)
-
 const isStarLevel = (value: unknown): value is BeamStarLevel =>
     value === 0 || value === 1 || value === 2 || value === 3
 
@@ -24,18 +21,13 @@ const isStarLevel = (value: unknown): value is BeamStarLevel =>
 const isAccuracy = (value: unknown): value is number =>
     typeof value === 'number' && Number.isFinite(value) && value >= 0 && value <= 1
 
-function storedRecord(key: string): Record<string, unknown> {
-    const stored = readJson<unknown>(key, null)
-    return isRecord(stored) ? stored : {}
-}
-
 /**
  * Anything unrecognised is dropped rather than trusted: a tampered or
  * half-migrated entry should cost a child their star, not crash their game.
  */
 function readStars(): BeamStars {
     return Object.fromEntries(
-        Object.entries(storedRecord(STARS_KEY))
+        Object.entries(readRecord(STARS_KEY))
             .filter((entry): entry is [BeamSkill, BeamStarLevel] =>
                 isBeamSkill(entry[0]) && isStarLevel(entry[1])),
     )
@@ -43,7 +35,7 @@ function readStars(): BeamStars {
 
 function readBests(): Partial<Record<BeamSkill, number>> {
     return Object.fromEntries(
-        Object.entries(storedRecord(BESTS_KEY))
+        Object.entries(readRecord(BESTS_KEY))
             .filter((entry): entry is [BeamSkill, number] => isBeamSkill(entry[0]) && isAccuracy(entry[1])),
     )
 }
@@ -85,11 +77,7 @@ export const beamStore = {
     },
 
     resetBeamProgress(): void {
-        if (typeof window === 'undefined') return
-        for (let index = window.localStorage.length - 1; index >= 0; index -= 1) {
-            const key = window.localStorage.key(index)
-            if (key?.startsWith(BEAM_PREFIX)) window.localStorage.removeItem(key)
-        }
+        removeByPrefix(BEAM_PREFIX)
     },
 }
 

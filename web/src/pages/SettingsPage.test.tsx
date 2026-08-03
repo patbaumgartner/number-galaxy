@@ -1,8 +1,18 @@
 import { screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beamStore } from '../beam'
 import { progressKeys, store } from '../store'
 import { ttStore } from '../timesTable/ttStore'
-import { LOCATION_TEST_ID, renderWithRouter, seedLanguage, seedOperations, seedPlayer, userEvent } from '../test/utils'
+import {
+    LOCATION_TEST_ID,
+    renderWithRouter,
+    seedBeamSettings,
+    seedBeamStars,
+    seedLanguage,
+    seedOperations,
+    seedPlayer,
+    userEvent,
+} from '../test/utils'
 import SettingsPage from './SettingsPage'
 
 describe('SettingsPage', () => {
@@ -80,6 +90,42 @@ describe('SettingsPage', () => {
         await user.click(screen.getByRole('button', { name: /delete all data/i }))
         expect(store.getPlayer()).toBeNull()
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/')
+    })
+
+    it('persists the Number Beam bar switch', async () => {
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<SettingsPage />)
+        const barSwitch = screen.getByRole('switch', {
+            name: (_name, element) => /always show the bar/i.test(element.closest('.switch-row')?.textContent ?? ''),
+        })
+
+        expect(barSwitch).toHaveAttribute('aria-checked', 'true')
+        await user.click(barSwitch)
+        expect(beamStore.getBeamSettings().alwaysShowBar).toBe(false)
+        expect(barSwitch).toHaveAttribute('aria-checked', 'false')
+
+        await user.click(barSwitch)
+        expect(beamStore.getBeamSettings().alwaysShowBar).toBe(true)
+    })
+
+    it('resets only beam data after confirmation and does nothing when cancelled', async () => {
+        seedPlayer()
+        seedBeamStars({ double: 2 })
+        seedBeamSettings(false)
+        ttStore.saveTTSettings({ strategyCards: false })
+        vi.spyOn(window, 'confirm').mockReturnValue(false)
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<SettingsPage />)
+
+        await user.click(screen.getByRole('button', { name: /reset beam progress/i }))
+        expect(beamStore.getStars().double).toBe(2)
+
+        vi.spyOn(window, 'confirm').mockReturnValue(true)
+        await user.click(screen.getByRole('button', { name: /reset beam progress/i }))
+        expect(beamStore.getStars()).toEqual({})
+        expect(beamStore.getBeamSettings().alwaysShowBar).toBe(true)
+        expect(ttStore.getTTSettings().strategyCards).toBe(false)
+        expect(store.getPlayer()).not.toBeNull()
     })
 
     it('offers only game-neutral navigation, because both games share this page', () => {

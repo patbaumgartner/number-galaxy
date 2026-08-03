@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { SessionSummary } from './SessionSummary'
-import { translations } from '../translations'
+import { translations } from '../i18n'
 import { LOCATION_TEST_ID, renderWithRouter, seedLanguage, userEvent } from '../test/utils'
 
 const labels = translations.en.tt

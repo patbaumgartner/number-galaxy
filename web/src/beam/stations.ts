@@ -31,19 +31,19 @@ export const BEAM_ZONES: readonly BeamZone[] = [
             {
                 id: 'double',
                 emoji: '✌️',
-                caps: [10, 20, 50],
+                caps: [10, 20, 40],
                 sample: { prompt: '2 × 7 = ?', answer: '14', steps: '7 + 7 = 14' },
             },
             {
                 id: 'halve',
                 emoji: '🪞',
-                caps: [20, 40, 100],
+                caps: [20, 40, 80],
                 sample: { prompt: '14 ÷ 2 = ?', answer: '7', steps: '7 + 7 = 14' },
             },
             {
                 id: 'nearDouble',
                 emoji: '➕',
-                caps: [10, 20, 50],
+                caps: [10, 15, 20],
                 sample: { prompt: '7 + 8 = ?', answer: '15', steps: '7 + 7 = 14 → 14 + 1 = 15' },
             },
         ],
@@ -61,13 +61,13 @@ export const BEAM_ZONES: readonly BeamZone[] = [
             {
                 id: 'quarter',
                 emoji: '🥧',
-                caps: [20, 40, 100],
+                caps: [20, 60, 100],
                 sample: { prompt: '20 ÷ 4 = ?', answer: '5', steps: '20 ÷ 2 = 10 → 10 ÷ 2 = 5' },
             },
             {
                 id: 'fractionOf',
                 emoji: '🍰',
-                caps: [12, 24, 60],
+                caps: [12, 24, 40],
                 sample: { prompt: '¾ × 20 = ?', answer: '15', steps: '20 ÷ 4 = 5 → 3 × 5 = 15' },
             },
         ],
@@ -79,7 +79,7 @@ export const BEAM_ZONES: readonly BeamZone[] = [
             {
                 id: 'tenTimes',
                 emoji: '🔟',
-                caps: [10, 20, 50],
+                caps: [5, 10, 20],
                 sample: { prompt: '10 × 7 = ?', answer: '70', steps: '7 × 10 = 70' },
             },
             {
@@ -91,7 +91,7 @@ export const BEAM_ZONES: readonly BeamZone[] = [
             {
                 id: 'split',
                 emoji: '✂️',
-                caps: [20, 100, 1000],
+                caps: [20, 100, 200],
                 sample: { prompt: '24 = 20 + ?', answer: '4', steps: `24 ${MINUS} 20 = 4` },
             },
         ],

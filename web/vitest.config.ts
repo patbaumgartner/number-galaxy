@@ -47,11 +47,13 @@ export default defineConfig({
                 'src/main.tsx',
                 'src/vite-env.d.ts',
             ],
+            // Ratcheted to just under the measured numbers, so a change that
+            // adds untested code fails here rather than quietly eroding cover.
             thresholds: {
-                statements: 95,
-                branches: 92,
-                functions: 95,
-                lines: 97,
+                statements: 96,
+                branches: 94,
+                functions: 97,
+                lines: 98,
             },
         },
     },

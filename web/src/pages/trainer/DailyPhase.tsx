@@ -12,7 +12,7 @@ import { GALAXIES, getPlanet } from '../../timesTable/tables'
 import { computeStars, ttStore } from '../../timesTable/ttStore'
 import type { Fact, FactKey, PlanetId } from '../../timesTable/types'
 import { useModalDialog, useSoundSetting } from '../../hooks'
-import { translations } from '../../translations'
+import { translations } from '../../i18n'
 
 const planetForFact = (fact: Fact): PlanetId => {
     for (const galaxy of GALAXIES) {
@@ -99,10 +99,23 @@ export function DailyPhase() {
     if (fact === undefined) return null
 
     const planet = getPlanet(planetId)
+    const strategyCard = getStrategyCard(planetId, settings.language)
+    const dismissExplanation = () => {
+        setExplanation(null)
+        if (index + 1 < session.length) setIndex(current => current + 1)
+        else finish(false)
+    }
+
     return (
         <TrainerFrame title={t.dailyMission} exit={t.trainExit}>
-            {showStrategy && <Dialog title={getStrategyCard(planetId, settings.language).title} onClose={() => setShowStrategy(false)}>{getStrategyCard(planetId, settings.language).lines.map(line => <p key={line}>{line}</p>)}</Dialog>}
-            {explanation !== null ? <Dialog title={explanation} onClose={() => { setExplanation(null); if (index + 1 < session.length) setIndex(current => current + 1); else finish(false) }}><p>{explanation}</p></Dialog> : (
+            {showStrategy && (
+                <Dialog title={strategyCard.title} onClose={() => setShowStrategy(false)}>
+                    {strategyCard.lines.map(line => <p key={line}>{line}</p>)}
+                </Dialog>
+            )}
+            {explanation !== null ? (
+                <Dialog title={explanation} onClose={dismissExplanation}><p>{explanation}</p></Dialog>
+            ) : (
                 <section className="panel practice-card">
                     <div className="progress-bar">{index + 1} / {session.length}</div>
                     <div className="streak-bar"><span>🔥 {streak}</span>{ttStore.getTTSettings().strategyCards && <button type="button" className="btn btn--ghost btn--sm" onClick={() => setShowStrategy(true)}>💡</button>}</div>

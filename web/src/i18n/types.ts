@@ -141,6 +141,13 @@ export type Translations = {
         groupShared: string
         groupSharedHint: string
     }
+    printables: {
+        title: string
+        hint: string
+        dotCards: string
+        tenFrames: string
+        numberLines: string
+    }
     progress: {
         title: string
         tagline: string

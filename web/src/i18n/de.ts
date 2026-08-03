@@ -165,6 +165,13 @@ export const de: Translations = {
         readableTitle: 'Leichter lesen',
         readableHint: 'Mehr Abstand zwischen Buchstaben, Wörtern und Zeilen, in einer ruhigen Schrift. Hilft beim Lesen, wenn Buchstaben sonst ineinanderlaufen.',
     },
+    printables: {
+        title: 'Zum Ausdrucken',
+        hint: 'Material für den Tisch statt für den Bildschirm: Punktekarten zum Zeigen, leere Zehnerfelder und leere Zahlenstrahlen. Ein Gerät reicht nicht für zwanzig Kinder — Papier schon.',
+        dotCards: 'Punktekarten',
+        tenFrames: 'Zehnerfelder',
+        numberLines: 'Zahlenstrahlen',
+    },
     progress: {
         title: '📋 Fortschritt',
         tagline: 'Für Eltern und Lehrpersonen — bleibt auf diesem Gerät',

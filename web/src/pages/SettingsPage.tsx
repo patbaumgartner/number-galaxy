@@ -346,6 +346,16 @@ export default function SettingsPage() {
                     </div>
 
                     <div className="panel">
+                        <h3 className="panel__title">🖨 {t.printables.title}</h3>
+                        <p className="panel__hint">{t.printables.hint}</p>
+                        <div className="panel__action">
+                            <button type="button" className="btn btn--ghost" onClick={() => navigate('/printables')}>
+                                {t.printables.title}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="panel">
                         <h3 className="panel__title">{t.progress.title}</h3>
                         <p className="panel__hint">{t.progress.tagline}</p>
                         <div className="panel__action">

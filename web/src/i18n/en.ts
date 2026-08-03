@@ -165,6 +165,13 @@ export const en: Translations = {
         readableTitle: 'Easier reading',
         readableHint: 'More space between letters, words and lines, in a plain typeface. Helps when letters otherwise run into each other.',
     },
+    printables: {
+        title: 'To print',
+        hint: 'Material for the table rather than the screen: dot cards to flash, empty ten-frames and empty number lines. One device does not go round twenty children — paper does.',
+        dotCards: 'Dot cards',
+        tenFrames: 'Ten-frames',
+        numberLines: 'Number lines',
+    },
     progress: {
         title: '📋 Progress',
         tagline: 'For parents and teachers — stays on this device',

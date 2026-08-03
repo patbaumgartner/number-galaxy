@@ -165,6 +165,13 @@ export const fr: Translations = {
         readableTitle: 'Lecture facilitée',
         readableHint: 'Plus d’espace entre les lettres, les mots et les lignes, dans une police simple. Aide quand les lettres se confondent.',
     },
+    printables: {
+        title: 'À imprimer',
+        hint: 'Du matériel pour la table plutôt que pour l’écran : cartes à points, grilles de dix vides et lignes numériques vides. Un appareil ne suffit pas pour vingt enfants — le papier, si.',
+        dotCards: 'Cartes à points',
+        tenFrames: 'Grilles de dix',
+        numberLines: 'Lignes numériques',
+    },
     progress: {
         title: '📋 Progrès',
         tagline: 'Pour les parents et les enseignants — reste sur cet appareil',

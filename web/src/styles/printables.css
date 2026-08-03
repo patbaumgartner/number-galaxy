@@ -1,0 +1,121 @@
+/* Printables.
+   Everything here is drawn in outline on white, because a child fills these in
+   and a printer that has to lay down the app's dark background wastes a
+   cartridge doing it. The screen preview shows the same outlines, so what a
+   teacher sees is what comes out. */
+
+.printables {
+  max-width: 900px;
+}
+
+.printables__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.print-sheet {
+  background: #fff;
+  color: #111;
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-5);
+}
+
+.print-sheet__title {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-lg);
+  color: #111;
+}
+
+.print-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-4);
+}
+
+.print-card__face {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  aspect-ratio: 1;
+  padding: 10px;
+  border: 3px solid #111;
+  border-radius: 12px;
+}
+
+.print-dot {
+  border-radius: 50%;
+  background: #111;
+  aspect-ratio: 1;
+}
+
+.print-dot--off {
+  background: transparent;
+}
+
+.print-frames {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-5);
+}
+
+.print-frame__row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.print-cell {
+  aspect-ratio: 1;
+  border: 2px solid #111;
+  margin: -1px 0 0 -1px;
+}
+
+.print-line {
+  position: relative;
+  height: 54px;
+  margin-bottom: var(--space-5);
+}
+
+.print-line__rail {
+  position: absolute;
+  top: 24px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #111;
+}
+
+.print-line__tick {
+  position: absolute;
+  top: 12px;
+  width: 3px;
+  height: 27px;
+  background: #111;
+}
+
+/* Paper. The chrome goes, the sheets stay, and each one gets its own page so a
+   ten-frame is never cut in half by a page break. */
+@media print {
+  .no-print {
+    display: none;
+  }
+
+  .page,
+  .printables {
+    background: #fff;
+    padding: 0;
+    max-width: none;
+  }
+
+  .print-sheet {
+    break-after: page;
+    padding: 0;
+    margin: 0;
+  }
+
+  .print-sheet:last-child {
+    break-after: auto;
+  }
+}

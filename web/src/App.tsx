@@ -14,6 +14,7 @@ import NumberSensePage from './pages/NumberSensePage'
 import SenseDrillPage from './pages/SenseDrillPage'
 import SensePlayPage from './pages/SensePlayPage'
 import ProgressPage from './pages/ProgressPage'
+import PrintablesPage from './pages/PrintablesPage'
 
 export default function App() {
     return (
@@ -26,6 +27,7 @@ export default function App() {
                     <Route path="/hall-of-fame" element={<HallOfFamePage />} />
                     <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/progress" element={<ProgressPage />} />
+                    <Route path="/printables" element={<PrintablesPage />} />
                     <Route path="/times-tables" element={<TimesTablesPage />} />
                     <Route path="/times-tables/train/:planetId/:phase" element={<TableTrainerPage />} />
                     <Route path="/number-beam" element={<NumberBeamPage />} />

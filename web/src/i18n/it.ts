@@ -165,6 +165,13 @@ export const it: Translations = {
         readableTitle: 'Lettura facilitata',
         readableHint: 'Più spazio tra lettere, parole e righe, con un carattere semplice. Aiuta quando le lettere si confondono tra loro.',
     },
+    printables: {
+        title: 'Da stampare',
+        hint: 'Materiale per il tavolo invece che per lo schermo: carte con i puntini, griglie del dieci vuote e linee dei numeri vuote. Un dispositivo non basta per venti bambini — la carta sì.',
+        dotCards: 'Carte con i puntini',
+        tenFrames: 'Griglie del dieci',
+        numberLines: 'Linee dei numeri',
+    },
     progress: {
         title: '📋 Progressi',
         tagline: 'Per genitori e insegnanti — resta su questo dispositivo',

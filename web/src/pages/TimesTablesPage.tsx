@@ -79,7 +79,13 @@ export default function TimesTablesPage() {
                                     const unlocked = isPlanetUnlocked(planet.id, stars)
                                     const starLevel = stars[planet.id] ?? 0
                                     return (
-                                        <button key={planet.id} type="button" className={`trainer-planet${unlocked ? '' : ' trainer-planet--locked'}`} disabled={!unlocked} onClick={() => selectPlanet(planet.id)}>
+                                        <button
+                                            key={planet.id}
+                                            type="button"
+                                            className={`trainer-planet${unlocked ? '' : ' trainer-planet--locked'}`}
+                                            disabled={!unlocked}
+                                            onClick={() => selectPlanet(planet.id)}
+                                        >
                                             <span aria-hidden="true">{planet.emoji}</span>
                                             <strong>{planet.label}</strong>
                                             <span aria-label={`${starLevel} stars`}>{'⭐'.repeat(starLevel)}</span>
@@ -97,8 +103,19 @@ export default function TimesTablesPage() {
                     <h2 className="panel__title">{t.heatmapTitle}</h2>
                     <div className="trainer-tabs" role="tablist" aria-label={t.heatmapTitle}>
                         {(['core', 'extended', 'squares'] as const).map(view => {
-                            const label = view === 'core' ? t.heatmapCore : view === 'extended' ? t.heatmapExtended : t.heatmapSquares
-                            return <button key={view} type="button" role="tab" className="btn btn--ghost btn--sm" aria-pressed={heatmapView === view} onClick={() => setHeatmapView(view)}>{label}</button>
+                            const label = view === 'core'
+                                ? t.heatmapCore
+                                : view === 'extended' ? t.heatmapExtended : t.heatmapSquares
+                            return (
+                                <button
+                                    key={view}
+                                    type="button"
+                                    role="tab"
+                                    className="btn btn--ghost btn--sm"
+                                    aria-pressed={heatmapView === view}
+                                    onClick={() => setHeatmapView(view)}
+                                >{label}</button>
+                            )
                         })}
                     </div>
                     <FactHeatmap progress={progress} view={heatmapView} />
@@ -109,7 +126,12 @@ export default function TimesTablesPage() {
                 <PhaseChooser title={`${activePlanetInfo.emoji} ${activePlanetInfo.label}`} onClose={() => setActivePlanet(null)}>
                     <button type="button" className="btn btn--ghost" autoFocus onClick={() => train('learn')}>{t.phaseLearn}</button>
                     <button type="button" className="btn btn--primary" onClick={() => train('practice')}>{t.phasePractice}</button>
-                    <button type="button" className="btn btn--ghost" disabled={(stars[activePlanet] ?? 0) < 1} onClick={() => train('speed')}>{t.phaseSpeed}</button>
+                    <button
+                        type="button"
+                        className="btn btn--ghost"
+                        disabled={(stars[activePlanet] ?? 0) < 1}
+                        onClick={() => train('speed')}
+                    >{t.phaseSpeed}</button>
                 </PhaseChooser>
             )}
         </div>

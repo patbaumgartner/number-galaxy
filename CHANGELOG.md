@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Mission phases for tables, squares, shortcuts and advanced facts.
 - Leitner-style review, persistent stars and best times, strategy cards, a mastery
   heatmap and independent trainer-progress reset in Settings.
-- **Three-layer test suite, 481 tests.** Domain logic in Node, React components and
+- **Three-layer test suite, 483 tests.** Domain logic in Node, React components and
   pages in jsdom via Testing Library, and the built bundle driven through desktop and
   mobile Chromium with Playwright. Coverage is gated at 95 % statements / 92 % branches
   and the end-to-end suite runs in CI. See [docs/TESTING.md](docs/TESTING.md).

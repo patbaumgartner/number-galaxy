@@ -2,7 +2,21 @@ import { expect, test } from '@playwright/test'
 import { gotoApp, seedStorage } from './fixtures'
 
 const settings = { language: 'en', operations: ['addition'], rank: 'rookie', timed: false, sound: false, hints: true }
-const score = (player: string, scoreValue: number, rank: string, timed: boolean) => ({ playerId: player, player, avatarId: '🚀', rulesetVersion: 2, rank, timed, operations: ['addition'], score: scoreValue, correct: 20, total: 25, stars: 2, bestStreak: 5, updatedAt: '2026-01-01T00:00:00.000Z' })
+const score = (player: string, scoreValue: number, rank: string, timed: boolean) => ({
+    playerId: player,
+    player,
+    avatarId: '🚀',
+    rulesetVersion: 2,
+    rank,
+    timed,
+    operations: ['addition'],
+    score: scoreValue,
+    correct: 20,
+    total: 25,
+    stars: 2,
+    bestStreak: 5,
+    updatedAt: '2026-01-01T00:00:00.000Z',
+})
 
 test('shows the empty best-score state without legacy results', async ({ page }) => {
     await seedStorage(page, { settings })

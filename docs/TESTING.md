@@ -4,11 +4,11 @@ Math Invaders is tested in three layers, each answering a different question.
 
 | Layer | Question it answers | Runner | Count |
 |-------|--------------------|--------|-------|
-| **Domain** | Is the maths correct? | Vitest (`node`) | 197 tests · 22 files |
-| **UI** | Does the interface behave? | Vitest (`jsdom`) + Testing Library | 146 tests · 24 files |
+| **Domain** | Is the maths correct? | Vitest (`node`) | 196 tests · 22 files |
+| **UI** | Does the interface behave? | Vitest (`jsdom`) + Testing Library | 149 tests · 24 files |
 | **End-to-end** | Does the shipped bundle work? | Playwright (Chromium desktop + mobile) | 138 tests · 10 files |
 
-**481 tests total.** Everything below runs from `web/`.
+**483 tests total.** Everything below runs from `web/`.
 
 ```bash
 npm test              # both Vitest projects
@@ -170,10 +170,10 @@ and **fails** below these floors:
 
 | Metric | Floor | Current |
 |--------|-------|---------|
-| Statements | 95 % | 96.5 % |
-| Branches | 92 % | 94.9 % |
-| Functions | 95 % | 97.4 % |
-| Lines | 97 % | 98.2 % |
+| Statements | 96 % | 97.0 % |
+| Branches | 94 % | 95.0 % |
+| Functions | 97 % | 98.0 % |
+| Lines | 98 % | 98.6 % |
 
 Excluded: test files, `src/test/`, and `src/main.tsx` (the bootstrap, exercised by the
 end-to-end suite instead).

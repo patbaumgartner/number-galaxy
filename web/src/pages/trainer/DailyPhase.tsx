@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import TopBar from '../../components/TopBar'
 import { NumberPad } from '../../components/NumberPad'
 import { SessionSummary } from '../../components/SessionSummary'
+import TrainerFrame from '../../components/TrainerFrame'
 import { playCorrect, playLevelUp, playWrong } from '../../sound'
 import { store } from '../../store'
 import { factsForPlanet } from '../../timesTable/facts'
@@ -91,10 +91,26 @@ export function DailyPhase() {
     }
 
     if (finished && session.length === 0) {
-        return <TrainerFrame title={t.dailyMission} exit={t.trainExit}><section className="panel"><h2>{t.allCaughtUp}</h2></section></TrainerFrame>
+        return (
+            <TrainerFrame title={t.dailyMission} exit={t.trainExit}>
+                <section className="panel"><h2>{t.allCaughtUp}</h2></section>
+            </TrainerFrame>
+        )
     }
     if (finished) {
-        return <TrainerFrame title={t.dailyMission} exit={t.trainExit}><SessionSummary phase="daily" planetId="mission" accuracy={accuracy} streak={bestStreak} leveledUpCount={levelledUp} earnedStars={0} starsChanged={false} /></TrainerFrame>
+        return (
+            <TrainerFrame title={t.dailyMission} exit={t.trainExit}>
+                <SessionSummary
+                    phase="daily"
+                    planetId="mission"
+                    accuracy={accuracy}
+                    streak={bestStreak}
+                    leveledUpCount={levelledUp}
+                    earnedStars={0}
+                    starsChanged={false}
+                />
+            </TrainerFrame>
+        )
     }
     if (fact === undefined) return null
 
@@ -118,7 +134,16 @@ export function DailyPhase() {
             ) : (
                 <section className="panel practice-card">
                     <div className="progress-bar">{index + 1} / {session.length}</div>
-                    <div className="streak-bar"><span>🔥 {streak}</span>{ttStore.getTTSettings().strategyCards && <button type="button" className="btn btn--ghost btn--sm" onClick={() => setShowStrategy(true)}>💡</button>}</div>
+                    <div className="streak-bar">
+                        <span>🔥 {streak}</span>
+                        {ttStore.getTTSettings().strategyCards && (
+                            <button
+                                type="button"
+                                className="btn btn--ghost btn--sm"
+                                onClick={() => setShowStrategy(true)}
+                            >💡</button>
+                        )}
+                    </div>
                     <p className="question-header" aria-hidden="true">{planet?.emoji}</p>
                     <p className="question-display">{fact.a} × {fact.b} = ?</p>
                     <NumberPad value={value} onChange={setValue} onSubmit={submit} />
@@ -128,11 +153,21 @@ export function DailyPhase() {
     )
 }
 
-function TrainerFrame({ title, exit, children }: { readonly title: string; readonly exit: string; readonly children: ReactNode }) {
-    return <div className="page trainer-page"><TopBar back={{ label: exit, to: '/times-tables' }} title={title} /><main className="shell"><div className="trainer-body">{children}</div></main></div>
+type DialogProps = {
+    readonly title: string
+    readonly children: ReactNode
+    readonly onClose: () => void
 }
 
-function Dialog({ title, children, onClose }: { readonly title: string; readonly children: ReactNode; readonly onClose: () => void }) {
+function Dialog({ title, children, onClose }: DialogProps) {
     const dialog = useModalDialog<HTMLDivElement>(onClose)
-    return <div className="overlay" role="dialog" aria-modal="true" aria-label={title} ref={dialog}><section className="overlay__card"><h2>{title}</h2>{children}<button type="button" className="btn btn--primary" autoFocus onClick={onClose}>OK</button></section></div>
+    return (
+        <div className="overlay" role="dialog" aria-modal="true" aria-label={title} ref={dialog}>
+            <section className="overlay__card">
+                <h2>{title}</h2>
+                {children}
+                <button type="button" className="btn btn--primary" autoFocus onClick={onClose}>OK</button>
+            </section>
+        </div>
+    )
 }

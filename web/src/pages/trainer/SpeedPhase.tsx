@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router'
-import TopBar from '../../components/TopBar'
+import TrainerFrame from '../../components/TrainerFrame'
 import { NumberPad } from '../../components/NumberPad'
 import { SessionSummary } from '../../components/SessionSummary'
 import { playCorrect, playLevelUp, playWrong } from '../../sound'
@@ -61,8 +61,32 @@ export function SpeedPhase({ planetId }: { planetId: PlanetId }) {
     }, [shake])
 
     if (session.length === 0) return null
-    if (finished) return <div className="page trainer-page"><TopBar back={{ label: t.tt.trainExit, to: '/times-tables' }} title={<>{planet.emoji} {planet.label} — {t.tt.phaseSpeed}</>} /><main className="shell"><div className="trainer-body"><SessionSummary phase="speed" planetId={planetId} accuracy={accuracy} streak={0} leveledUpCount={0} earnedStars={earnedStars} starsChanged={starsChanged} timeMs={totalMs} isNewBest={isNewBest} /></div></main></div>
-    if (!started) return <div className="page trainer-page"><TopBar back={{ label: t.tt.trainExit, to: '/times-tables' }} title={<>{planet.emoji} {planet.label} — {t.tt.phaseSpeed}</>} /><main className="shell"><div className="trainer-body"><div className="panel speed-ready-card"><h2>{countdown > 0 ? countdown : t.tt.speedGo}</h2></div></div></main></div>
+    const title = <>{planet.emoji} {planet.label} — {t.tt.phaseSpeed}</>
+
+    if (finished) {
+        return (
+            <TrainerFrame title={title} exit={t.tt.trainExit}>
+                <SessionSummary
+                    phase="speed"
+                    planetId={planetId}
+                    accuracy={accuracy}
+                    streak={0}
+                    leveledUpCount={0}
+                    earnedStars={earnedStars}
+                    starsChanged={starsChanged}
+                    timeMs={totalMs}
+                    isNewBest={isNewBest}
+                />
+            </TrainerFrame>
+        )
+    }
+    if (!started) {
+        return (
+            <TrainerFrame title={title} exit={t.tt.trainExit}>
+                <div className="panel speed-ready-card"><h2>{countdown > 0 ? countdown : t.tt.speedGo}</h2></div>
+            </TrainerFrame>
+        )
+    }
 
     const currentFact = session[currentIdx]
     const handlePadSubmit = () => {
@@ -98,5 +122,16 @@ export function SpeedPhase({ planetId }: { planetId: PlanetId }) {
         const ds = Math.floor((ms % 1000) / 100)
         return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}.${ds}`
     }
-    return <div className="page trainer-page"><TopBar back={{ label: t.tt.trainExit, to: '/times-tables' }} title={<>{planet.emoji} {planet.label} — {t.tt.phaseSpeed}</>} /><main className="shell"><div className="trainer-body"><div className="panel speed-card"><div className="speed-timer">{formatDisplayTime(displayTime)}</div><div className="progress-bar">{currentIdx + 1} / {session.length}</div><div className={`question-display ${shake ? 'shake' : ''}`}>{currentFact.a} × {currentFact.b} = ?</div><div className="pad-wrapper"><NumberPad value={padValue} onChange={setPadValue} onSubmit={handlePadSubmit} /></div></div></div></main></div>
+    return (
+        <TrainerFrame title={title} exit={t.tt.trainExit}>
+            <div className="panel speed-card">
+                <div className="speed-timer">{formatDisplayTime(displayTime)}</div>
+                <div className="progress-bar">{currentIdx + 1} / {session.length}</div>
+                <div className={`question-display ${shake ? 'shake' : ''}`}>{currentFact.a} × {currentFact.b} = ?</div>
+                <div className="pad-wrapper">
+                    <NumberPad value={padValue} onChange={setPadValue} onSubmit={handlePadSubmit} />
+                </div>
+            </div>
+        </TrainerFrame>
+    )
 }

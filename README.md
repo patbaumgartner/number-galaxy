@@ -376,7 +376,7 @@ Output in `web/dist/` — deploy to GitHub Pages or any static host.
 ### Test
 
 ```bash
-npm test              # 343 unit tests (domain + UI)
+npm test              # 345 unit tests (domain + UI)
 npm run test:coverage # with coverage, gated at 95 % statements
 npm run test:e2e      # 138 Playwright tests, desktop + mobile Chromium
 npm run test:all      # everything

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import TopBar from '../../components/TopBar'
+import TrainerFrame from '../../components/TrainerFrame'
 import { NumberPad } from '../../components/NumberPad'
 import { SessionSummary } from '../../components/SessionSummary'
 import { playCorrect, playLevelUp, playWrong } from '../../sound'
@@ -48,8 +48,22 @@ export function PracticePhase({ planetId }: { planetId: PlanetId }) {
         return () => clearTimeout(timer)
     }, [shake])
 
+    const title = <>{planet.emoji} {planet.label} — {t.tt.phasePractice}</>
+
     if (finished) {
-        return <div className="page trainer-page"><TopBar back={{ label: t.tt.trainExit, to: '/times-tables' }} title={<>{planet.emoji} {planet.label} — {t.tt.phasePractice}</>} /><main className="shell"><div className="trainer-body"><SessionSummary phase="practice" planetId={planetId} accuracy={accuracy} streak={bestStreak} leveledUpCount={leveledUpCount} earnedStars={earnedStars} starsChanged={starsChanged} /></div></main></div>
+        return (
+            <TrainerFrame title={title} exit={t.tt.trainExit}>
+                <SessionSummary
+                    phase="practice"
+                    planetId={planetId}
+                    accuracy={accuracy}
+                    streak={bestStreak}
+                    leveledUpCount={leveledUpCount}
+                    earnedStars={earnedStars}
+                    starsChanged={starsChanged}
+                />
+            </TrainerFrame>
+        )
     }
     if (session.length === 0) return null
     const currentFact = session[currentIdx]
@@ -96,7 +110,43 @@ export function PracticePhase({ planetId }: { planetId: PlanetId }) {
             setSession(prev => prev.filter(f => f.key === currentFact.key).length > 1 ? prev : [...prev, currentFact])
         }
     }
-    return <div className="page trainer-page"><TopBar back={{ label: t.tt.trainExit, to: '/times-tables' }} title={<>{planet.emoji} {planet.label} — {t.tt.phasePractice}</>} /><main className="shell"><div className="trainer-body">{showStrategy && <StrategyOverlay planetId={planetId} lang={lang} dismiss={t.tt.learnCardDismiss} onClose={() => setShowStrategy(false)} />}{explanation ? <ExplanationDialog explanation={explanation} dismiss={t.tt.learnCardDismiss} onClose={() => { setExplanation(null); advance() }} /> : <div className="panel practice-card"><div className="progress-bar">{currentIdx + 1} / {session.length}</div><div className="streak-bar"><span>🔥 {streak}</span>{ttSettings.strategyCards && <button type="button" className="btn btn--ghost btn--sm" onClick={() => setShowStrategy(true)}>💡</button>}</div><div className={`question-display ${shake ? 'shake' : ''}`}>{currentFact.a} × {currentFact.b} = ?</div><div className="pad-wrapper"><NumberPad value={padValue} onChange={setPadValue} onSubmit={handlePadSubmit} /></div></div>}</div></main></div>
+    return (
+        <TrainerFrame title={title} exit={t.tt.trainExit}>
+            {showStrategy && (
+                <StrategyOverlay
+                    planetId={planetId}
+                    lang={lang}
+                    dismiss={t.tt.learnCardDismiss}
+                    onClose={() => setShowStrategy(false)}
+                />
+            )}
+            {explanation ? (
+                <ExplanationDialog
+                    explanation={explanation}
+                    dismiss={t.tt.learnCardDismiss}
+                    onClose={() => { setExplanation(null); advance() }}
+                />
+            ) : (
+                <div className="panel practice-card">
+                    <div className="progress-bar">{currentIdx + 1} / {session.length}</div>
+                    <div className="streak-bar">
+                        <span>🔥 {streak}</span>
+                        {ttSettings.strategyCards && (
+                            <button
+                                type="button"
+                                className="btn btn--ghost btn--sm"
+                                onClick={() => setShowStrategy(true)}
+                            >💡</button>
+                        )}
+                    </div>
+                    <div className={`question-display ${shake ? 'shake' : ''}`}>{currentFact.a} × {currentFact.b} = ?</div>
+                    <div className="pad-wrapper">
+                        <NumberPad value={padValue} onChange={setPadValue} onSubmit={handlePadSubmit} />
+                    </div>
+                </div>
+            )}
+        </TrainerFrame>
+    )
 }
 
 type StrategyOverlayProps = {

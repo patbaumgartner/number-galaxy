@@ -218,9 +218,13 @@ whereas round-number arithmetic is a real mental strategy and a real thing to ge
 Multiplication and division need no such rule: their factors never leave the ×12 tables.
 
 **Inside the rank, the numbers tune themselves.** A rolling window of the last 20 answers
-nudges a working ceiling up or down within the rank, aiming to keep a child somewhere around
-80 % — the rate at which people learn fastest. It never leaves the rank that was chosen, and
-never says anything about it: the point is to keep the practice fitting, not to grade it.
+nudges a working ceiling up or down within the rank, keeping a child inside a **70–90 %**
+success band — easing off below it, climbing back above it. That band brackets the ~85 %
+success rate [Wilson et al. 2019](https://doi.org/10.1038/s41467-019-12874-3) identified as
+where learning is fastest; their result comes from models rather than from children, so it is
+treated here as a design target rather than a finding about eight-year-olds. It never leaves
+the rank that was chosen, and never says anything about it: the point is to keep the practice
+fitting, not to grade it.
 
 ### Scoring and stars
 
@@ -286,8 +290,10 @@ clock. Settings offers three settings rather than two:
 | **Gentle** | The bar shows the time going by, then simply stops. Nothing counts as a miss. |
 | **On** | Running out ends the question. |
 
-The clock's problem was never the clock; it was that running out counted against you. It
-pauses when Help is open or the tab is hidden.
+The clock's problem was never the clock; it was that running out counted against you — which
+is what *Gentle* removes. It pauses when Help is open or the tab is hidden. The evidence
+behind this is genuinely mixed and worth reading if you are deciding for a particular child:
+see [Why the clock is off](#why-the-clock-is-off).
 
 ### 🏆 Hall of Fame
 
@@ -456,7 +462,7 @@ and mental arithmetic. Where a design choice looks unusual, it is usually delibe
 | Design choice | Why it is right |
 |---|---|
 | No accounts, no ads, no analytics, no network calls, offline-first | The architecture *is* the privacy policy — satisfied structurally rather than by policy text. |
-| The countdown is **off by default** | Framing, not the clock, is the documented anxiety vector (Maki et al. 2024). |
+| The countdown is **off by default**, and offers *Gentle* as well as on/off | The evidence on timing is genuinely mixed — running out is the part that hurts, not seeing the clock. See [Why the clock is off](#why-the-clock-is-off). |
 | A wrong answer never ends a run | A hard day yields *more* practice, not less. |
 | A local Hall of Fame, one entry per rank × clock | This is a **personal-best board**, not a leaderboard. The social-comparison harms need visible peers; there are none. |
 | No daily-login streak | The combo streak is within-mission and resets each run, so there is no cross-day loss aversion to exploit. |
@@ -464,37 +470,135 @@ and mental arithmetic. Where a design choice looks unusual, it is usually delibe
 | Speed shown only at ≥ 80 % accuracy | Fluency is flexibility, accuracy and strategy before it is pace (NCTM 2020). |
 | A miss waits for *Got it* rather than a timer | Elaborated feedback only works if it is read; two seconds is under the time it takes to read a two-step working. |
 | Distractors are built from real near-misses | Documented arithmetic bugs, not absurd fillers — which is what lets a wrong answer be named. |
-| Leitner scheduling, commutativity-canonical (`7×8 ≡ 8×7`) | Real spaced repetition, and half as many facts to carry. |
+| Leitner scheduling, commutativity-canonical (`7×8 ≡ 8×7`) | Spacing practice out over days beats massing it (Murray et al. 2025); treating `7×8` and `8×7` as one fact halves what there is to carry. |
 | Number Sense allows a near miss when placing a number | The skill is a sense of magnitude; marking 38-for-37 wrong would measure something else. Everywhere a quantity is exact, it has to be exact. |
 | WCAG 2.1 AA axe-audited on two viewports | The test suite fails on a single violation. |
 
-### Curriculum
+### Why the clock is off
 
-The games are mapped to **Lehrplan 21**, the Swiss curriculum, so a teacher can see which
-competency each station serves — from `MA.1.A.2.b` (*"Anzahlen bis 5 ohne Zählen erfassen"*,
-which is Number Sense's Sight Bay) through `MA.1.C.1` (worked routes and word problems) to
-`MA.1.A.3.d` (typed recall in the trainer). Codes and descriptor text are quoted verbatim
-from [zh.lehrplan.ch](https://zh.lehrplan.ch).
+The honest summary of the research is that it does not agree with itself, so the app does not
+pretend otherwise.
 
-Lehrplan 21 is also the source of the caution the whole design follows: *"Ein zu frühes,
-nicht vorstellungs- und verständnisorientiertes Automatisieren… behindert weiterführende
-Lernprozesse."* Automaticity stays a goal; it is never the starting point. That is why the
-floor — seeing, placing and counting on — is a game in its own right rather than a warm-up.
+Timed testing raises anxiety in primary-age children, and test anxiety accounts for a
+meaningful share of the gender gap in maths attainment. But a *visible* countdown has also
+been found to **reduce** anticipatory anxiety and off-task behaviour in 7–9 year-olds — and
+in Maki et al. (2024), children with higher maths anxiety and maths difficulties actually did
+*better* when the timing was overt.
+
+What the studies do agree on is narrower and more useful: the harm is concentrated in
+**running out and having that count against you**, not in the presence of a clock. So:
+
+- **Off** is the default, because a first-time player should meet the maths, not a deadline.
+- **Gentle** exists precisely because of the above — it shows the time passing but nothing
+  ever counts as a miss.
+- **On** is available for children who prefer the edge, and some do.
+
+The clock also pauses whenever Help is open or the tab is hidden, so thinking time is never
+punished.
+
+### Curriculum — Lehrplan 21
+
+Every station is mapped to a **Lehrplan 21** competency, so a Swiss teacher can see exactly
+which part of the curriculum it serves. Codes and the German descriptor text are quoted
+**verbatim** from the Kanton Zürich *Fachbereichslehrplan Mathematik* (13.03.2017), and can be
+checked at [zh.lehrplan.ch](https://zh.lehrplan.ch). Zyklus 1 ≈ Kindergarten + 1./2. Klasse;
+Zyklus 2 ≈ 3.–6. Klasse.
+
+#### 👀 Number Sense
+
+| Station | Code | Zyklus | Kompetenzstufe |
+|---|---|---|---|
+| At a glance · Ten-frame · Bead rack | `MA.1.A.2.b` | 1 | *"können im Zahlenraum bis 20 von beliebigen Zahlen aus vorwärts und rückwärts zählen. können in 2er-Schritten vorwärts zählen, von 2 bis 20. können Fingerbilder von 1 bis 10 spontan zeigen sowie Anzahlen bis 5 ohne Zählen erfassen."* |
+| Dot patterns | `MA.1.C.2.a` | 1 | *"können Anzahlen verschieden darstellen (z.B. mit Punkten oder Strichen) und verschieden anordnen (z.B. auf einer Linie und in der Fläche verteilt)."* |
+| Ten-frame · Bead rack, grouped in fives | `MA.1.C.2.b` | 1 | *"können Anzahlen bis 20 strukturiert darstellen (z.B. an 5ern und 10ern orientiert: 9 = 5 + 4; 12 = 10 + 2). können Additionen und Subtraktionen mit Handlungen, Rechengeschichten und Bildern konkretisieren."* |
+| Place it | `MA.1.C.1.b` | 1 | *"können Summen darstellen und Darstellungen nachvollziehen (z.B. auf dem 20er-Feld oder auf dem Zahlenstrahl)."* |
+| Place it, larger ranges | `MA.1.A.2.c` | 1 | *"können im Zahlenraum bis 100 in 1er-, 2er-, 5er- und 10er-Schritten vorwärts zählen. können im 100er-Raum Zahlen ordnen (z.B. auf dem Zahlenstrahl und auf der 100er-Tafel)."* |
+| Count on | `MA.1.A.2.a` | 1 | *"können bis zu 20 Elemente auszählen und im Zahlenraum bis 10 von jeder möglichen Zahl aus vor- und rückwärts zählen."* |
+| Dot array | `MA.1.C.1.d` | 1 | *"erkennen in grafischen Modellen multiplikative Beziehungen, insbesondere Verdoppelungen und 1 · mehr bzw. 1 · weniger (z.B. 3 · 4 und 6 · 4 in einem Punktefeld als Verdoppelung)."* |
+
+#### 📏 Number Beam
+
+| Station | Code | Zyklus | Kompetenzstufe |
+|---|---|---|---|
+| Double · Halve · Double twice, on the bar | `MA.1.C.1.d` | 1 | *"erkennen in grafischen Modellen multiplikative Beziehungen, insbesondere Verdoppelungen und 1 · mehr bzw. 1 · weniger (z.B. 3 · 4 und 6 · 4 in einem Punktefeld als Verdoppelung)."* |
+| Double · Halve as arithmetic | `MA.1.A.3.a` | 1 | *"können im Zahlenraum bis 20 ohne Zählen verdoppeln, halbieren, addieren und subtrahieren."* |
+| Number bonds · Split | `MA.1.A.3.b` | 1 | *"können bis 100 ohne 10er-Überträge addieren und subtrahieren ohne Zählen (z.B. 35 + 13) können auf den nächsten 10er ergänzen. können bis 100 verdoppeln (5er- und 10er-Zahlen) und halbieren (10er-Zahlen). können zweistellige Zahlen in 10er und 1er zerlegen (z.B. 25 in zwei 10er und fünf 1er)."* |
+| Quarters · Fraction of | `MA.1.C.1.g` | 2 | *"können Summen, Differenzen und Produkte von Brüchen und von Dezimalzahlen mit geeigneten Modellen darstellen und beschreiben (z.B. Produkt: ⅓ von ¾ mit dem Rechteckmodell; Summe: ½ + ¼ mit dem Kreismodell)."* |
+
+#### 🛸 Math Invaders
+
+| Feature | Code | Zyklus | Kompetenzstufe |
+|---|---|---|---|
+| ➕ ➖ within 20 | `MA.1.A.3.a` | 1 | *"können im Zahlenraum bis 20 ohne Zählen verdoppeln, halbieren, addieren und subtrahieren."* |
+| ➕ ➖ within 100 | `MA.1.A.3.b` | 1 | *"können bis 100 ohne 10er-Überträge addieren und subtrahieren ohne Zählen (z.B. 35 + 13) können auf den nächsten 10er ergänzen. können bis 100 verdoppeln (5er- und 10er-Zahlen) und halbieren (10er-Zahlen). können zweistellige Zahlen in 10er und 1er zerlegen (z.B. 25 in zwei 10er und fünf 1er)."* |
+| ✖️ ➗ and the ×2/×5/×10 tables | `MA.1.A.3.c` | 2 | *"können im Zahlenraum bis 100 verdoppeln, halbieren, addieren und subtrahieren. kennen Produkte aus dem kleinen Einmaleins mit den Faktoren 2, 5 und 10. können Produkte aus dem kleinen Einmaleins in Faktoren zerlegen (z.B. 36 = 6 · 6 = 4 · 9)."* |
+| Symbols and vocabulary | `MA.1.A.1.c` | 1 | *"verstehen und verwenden die Begriffe mal, grösser als, kleiner als, gerade, ungerade, ergänzen, halbieren, verdoppeln, Zehner, Einer und die Symbole ·, <, >. können natürliche Zahlen bis 100 lesen und schreiben."* |
+| 🔢 Division with remainder | `MA.1.B.2.e` | 2 | *"können Divisionen mit Rest mit der Umkehroperation begründen (z.B. 32 : 6 gibt Rest, weil 32 keine Zahl aus der 6er-Reihe ist)."* |
+| 💡 Worked solutions | `MA.1.C.1.c` | 1 | *"können Rechenwege zu Additionen und Subtraktionen darstellen und nachvollziehen (z.B. 18 + 14 mit Hilfe des Rechenstrichs)."* |
+| 💡 Worked solutions, all operations | `MA.1.C.1.e` | 2 | *"können Rechenwege zu den Grundoperationen darstellen, austauschen und nachvollziehen (z.B. 80 + 5 + 5 + 5 + 5 = 80 + 4 · 5; 347 - 160 → 160 + 40 + 147 = 347)."* |
+| 📖 Word problems | `MA.1.C.2.d` | 1 | *"können Grundoperationen mit Handlungen, Sachbildern, Rechengeschichten und grafischen Strukturen veranschaulichen und Veranschaulichungen interpretieren. können Beziehungen in und zwischen Grundoperationen zeigen und beschreiben (z.B. die Veränderung der Produkte 1 · 3, 2 · 4, 3 · 5, 4 · 6, ...)."* |
+| Missing-number shapes | `MA.1.B.1.b` | 1 | *"können Additionen bis 20 systematisch variieren, Auswirkungen beschreiben bzw. mit Anschauungsmaterial aufzeigen (z.B. 8 + 8 = 16, 8 + 9 = 17; die Summe erhöht sich um 1, weil der zweite Summand um 1 zunimmt). können Zahlenfolgen (figurierte Zahlen) bilden, weiterführen und verändern (z.B. 1, 2, 3 / 2, 3, 4 / 3, 4, 5 / 4, 5, 6)."* |
+
+#### ✖️ Times Tables
+
+| Feature | Code | Zyklus | Kompetenzstufe |
+|---|---|---|---|
+| ×2, ×5, ×10 planets | `MA.1.A.3.c` | 2 | *"können im Zahlenraum bis 100 verdoppeln, halbieren, addieren und subtrahieren. kennen Produkte aus dem kleinen Einmaleins mit den Faktoren 2, 5 und 10. können Produkte aus dem kleinen Einmaleins in Faktoren zerlegen (z.B. 36 = 6 · 6 = 4 · 9)."* |
+| **Recall of the whole 1–12 table** | `MA.1.A.3.d` | 2 | *"können beim Addieren und Subtrahieren Rechenwege notieren und Ergebnisse überprüfen. können schriftlich addieren und subtrahieren. kennen die Produkte des kleinen Einmaleins."* |
+| Squares Nebula | `MA.1.C.2.f` | 2 | *"können Zahlenfolgen und Produkte veranschaulichen (z.B. 14 · 14 mit dem Malkreuz; die Zahlenfolge 1, 3, 6, 10, ... mit Punkten)."* |
+| Strategy cards | `MA.1.B.1.d` | 2 | *"können Produkte systematisch variieren und Auswirkungen beschreiben bzw. mit Anschauungsmaterial zeigen (z.B. 3 · 3, 6 · 3; 3 · 4, 6 · 4; 3 · 5, 6 · 5). suchen eigene Lösungswege und tauschen sie aus."* |
+
+#### What this does **not** cover
+
+Just as useful to know. All four games sit inside `MA.1 Zahl und Variable`. Nothing here
+teaches:
+
+| Area | Code | Kompetenz |
+|---|---|---|
+| Form und Raum (geometry) | `MA.2.A.2` | *"Die Schülerinnen und Schüler können Figuren und Körper abbilden, zerlegen und zusammensetzen."* |
+| Length, area, volume | `MA.2.A.3` | *"Die Schülerinnen und Schüler können Längen, Flächen und Volumen bestimmen und berechnen."* |
+| Grössen and measuring | `MA.3.A.2` | *"Die Schülerinnen und Schüler können Grössen schätzen, messen, umwandeln, runden und mit ihnen rechnen."* |
+| Daten und Zufall | `MA.3.C.1` | *"Die Schülerinnen und Schüler können Daten zu Statistik, Kombinatorik und Wahrscheinlichkeit erheben, ordnen, darstellen, auswerten und interpretieren."* |
+
+This is an arithmetic trainer. It is meant to sit beside a maths lesson, not to replace one.
+
+#### The caution the design follows
+
+Lehrplan 21 states it plainly, under **Didaktische Hinweise → Automatisieren**:
+
+> *"Ein zu frühes, nicht vorstellungs- und verständnisorientiertes Automatisieren kann zwar zu
+> kurzfristigen Lernerfolgen führen, behindert jedoch weiterführende Lernprozesse."*
+
+Automaticity stays a goal; it is never the starting point. That is why the floor — seeing,
+placing and counting on — is a game in its own right rather than a warm-up.
 
 ### Sources
 
-Barbieri et al. 2023, *Educational Psychology Review* · Baroody et al. 2025,
-*Mathematical Thinking and Learning* · Bjork & Bjork 2011 · Booth & Siegler 2006 ·
-Brunmair & Richter 2019 · Carmosino 2024, *IJSG* · Cezarotto & Battaiola 2021 ·
-Chen et al. 2024, *Labour Economics* · Ebner et al. 2025, *Remedial and Special Education* ·
-Frykholm 2010 · Hopkins et al. 2020 · ICO, [*Age Appropriate Design Code*](https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/childrens-information/childrens-code-guidance-and-resources/)
-and *EdTech Examined* 2024 · Kuo et al. 2026, IDC · Lau et al. 2018, *Nature Neuroscience* ·
-Leuenberger et al. 2024 · Maki et al. 2024, *Journal of School Psychology* ·
-Murray et al. 2025, *Educational Psychology Review* ·
-NCTM 2020, [*Procedural Fluency in Mathematics*](https://www.nctm.org/standards-and-positions/Position-Statements/Procedural-Fluency-in-Mathematics/) ·
-Reed et al. 2014 · Rohrer & Taylor 2007 · Ryan & Deci 2020 · Shute 2008 ·
-Siegler & Opfer 2003, *Psychological Science* · Töllner et al. 2026, *Learning and Instruction* ·
-Yorulmaz & Önal 2017 · D-EDK, [*Lehrplan 21 Mathematik*](https://zh.lehrplan.ch)
+Every source below was checked to exist and to say what it is cited for. Anything that could
+not be verified has been removed rather than left in to look thorough.
+
+| Claim it supports | Source | Link |
+|---|---|---|
+| Subitizing and early number sense are worth training in their own right | Leuenberger et al. 2024, *Fostering Computation Competence* | [Springer](https://doi.org/10.1007/s10763-024-10453-7) |
+| Where a number sits on a line is a real, separate skill | Siegler & Opfer 2003, *Psychological Science* | [10.1111/1467-9280.02438](https://doi.org/10.1111/1467-9280.02438) |
+| Number-line estimation predicts later attainment | Booth & Siegler 2006, *Developmental Psychology* | [10.1037/0012-1649.41.6.189](https://doi.org/10.1037/0012-1649.41.6.189) |
+| Counting on past the point of usefulness holds children back | Hopkins et al. 2020, *Mathematical Thinking and Learning* | [10.1080/10986065.2020.1842968](https://doi.org/10.1080/10986065.2020.1842968) |
+| Mixing topics beats blocking them (🎲 Surprise me) | Brunmair & Richter 2019, *Psychological Bulletin* | [10.1037/bul0000209](https://doi.org/10.1037/bul0000209) |
+| Shuffling maths problems improves retention | Rohrer & Taylor 2007, *Instructional Science* | [10.1007/s11251-007-9015-8](https://doi.org/10.1007/s11251-007-9015-8) |
+| Spacing practice out beats massing it | Murray et al. 2025, *Educational Psychology Review* | [10.1007/s10648-025-10035-1](https://doi.org/10.1007/s10648-025-10035-1) |
+| Worked examples help learners who do not yet have the strategy | Barbieri et al. 2023, *Educational Psychology Review* | [10.1007/s10648-023-09745-1](https://doi.org/10.1007/s10648-023-09745-1) |
+| Feedback has to say more than right/wrong | Shute 2008, *Review of Educational Research* | [10.3102/0034654307313795](https://doi.org/10.3102/0034654307313795) |
+| How much feedback helps depends on what the child already knows | Töllner et al. 2026, *Learning and Instruction* | [10.1016/j.learninstruc.2026.102413](https://doi.org/10.1016/j.learninstruc.2026.102413) |
+| Choosing between competing answers can build multiplication fluency | Reed et al. 2014, *Research in Mathematics Education* | [10.1080/14794802.2014.962074](https://doi.org/10.1080/14794802.2014.962074) |
+| Some difficulty is desirable — the beam is deliberately harder than tiles | Bjork & Bjork 2011, *Psychology and the Real World* | [PDF](https://bjorklab.psych.ucla.edu/wp-content/uploads/sites/13/2016/04/EBjork_RBjork_2011.pdf) |
+| Timing effects are mixed; task complexity matters | Maki et al. 2024, *Journal of School Psychology* | [10.1016/j.jsp.2024.101316](https://doi.org/10.1016/j.jsp.2024.101316) |
+| Around 85 % correct is roughly where practice stays productive | Wilson et al. 2019, *Nature Communications* | [10.1038/s41467-019-12874-3](https://doi.org/10.1038/s41467-019-12874-3) |
+| Fluency is flexibility and accuracy before it is speed | NCTM 2020, *Procedural Fluency in Mathematics* | [Position statement](https://www.nctm.org/standards-and-positions/Position-Statements/Procedural-Fluency-in-Mathematics/) |
+| Rewards that control rather than inform undermine motivation | Ryan & Deci 2020, *Contemporary Educational Psychology* | [10.1016/j.cedpsych.2020.101860](https://doi.org/10.1016/j.cedpsych.2020.101860) |
+| Designing maths games for dyscalculia | Cezarotto & Battaiola 2021, *Estudos em Design* | [v29 n3](https://doi.org/10.35522/eed.v29i3.1500) |
+| Children's data deserves structural protection, not a policy page | ICO, *Age Appropriate Design Code* | [ico.org.uk](https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/childrens-information/childrens-code-guidance-and-resources/) |
+| Curriculum mapping | D-EDK / Kanton Zürich, *Lehrplan 21 — Fachbereichslehrplan Mathematik* (13.03.2017) | [zh.lehrplan.ch](https://zh.lehrplan.ch) |
+
 
 ---
 

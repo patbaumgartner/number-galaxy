@@ -130,6 +130,33 @@ function arrayDraft(rng: Rng, cap: number): Draft {
     }
 }
 
+/**
+ * How far off still counts as a good estimate: a fifth either way.
+ *
+ * Wide on purpose. The question is "about how many", and a band tight enough to
+ * need the exact answer would be asking a different question — the one the other
+ * five stations already ask.
+ */
+const estimateTolerance = (value: number): number => Math.max(2, Math.round(value / 5))
+
+function estimateDraft(rng: Rng, cap: number): Draft {
+    // Never small enough to subitize and never tidy enough to be a known fact,
+    // so there is nothing to fall back on but an estimate.
+    const value = randomInt(rng, Math.max(11, Math.floor(cap / 2)), cap)
+    const { dots, columns } = patternFor(value, false)
+    const tolerance = estimateTolerance(value)
+    return {
+        prompt: '≈ ?',
+        value,
+        answer: String(value),
+        beamMax: beamFor(value, 1, cap, rng),
+        beamStep: 1,
+        tolerance,
+        workingOut: `${value}`,
+        visual: { kind: 'dots', dots, columns, brief: true },
+    }
+}
+
 const drafts: Record<SenseSkill, (rng: Rng, cap: number) => Draft> = {
     subitize: subitizeDraft,
     tenFrame: tenFrameDraft,
@@ -137,6 +164,7 @@ const drafts: Record<SenseSkill, (rng: Rng, cap: number) => Draft> = {
     placeNumber: placeNumberDraft,
     countOn: countOnDraft,
     array: arrayDraft,
+    estimate: estimateDraft,
 }
 
 export type CreateSenseQuestionOptions = {

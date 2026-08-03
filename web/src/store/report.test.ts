@@ -125,7 +125,7 @@ describe('the progress report', () => {
         expect(report.beam.stars).toBe(2)
         expect(report.sense.stars).toBe(1)
         expect(report.beam.outOf).toBe(27)
-        expect(report.sense.outOf).toBe(18)
+        expect(report.sense.outOf).toBe(21)
     })
 
     it('names the child it is about', () => {

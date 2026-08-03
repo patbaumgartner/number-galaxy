@@ -291,6 +291,7 @@ export const de: Translations = {
             placeNumber: 'Zahl setzen',
             countOn: 'Weiterzählen',
             array: 'Punktefeld',
+            estimate: 'Ungefähr',
         },
         howMany: 'Wie viele?',
         placeIt: 'Setze die Zahl',

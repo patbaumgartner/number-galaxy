@@ -293,6 +293,7 @@ export const en: Translations = {
             placeNumber: 'Place it',
             countOn: 'Count on',
             array: 'Dot array',
+            estimate: 'Roughly',
         },
         howMany: 'How many?',
         placeIt: 'Put it where it belongs',

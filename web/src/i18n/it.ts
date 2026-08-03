@@ -293,6 +293,7 @@ export const it: Translations = {
             placeNumber: 'Mettilo al posto',
             countOn: 'Contare avanti',
             array: 'Griglia di punti',
+            estimate: 'Circa',
         },
         howMany: 'Quanti sono?',
         placeIt: 'Metti il numero al suo posto',

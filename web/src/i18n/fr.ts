@@ -293,6 +293,7 @@ export const fr: Translations = {
             placeNumber: 'Place-le',
             countOn: 'Compter plus loin',
             array: 'Grille de points',
+            estimate: 'À peu près',
         },
         howMany: 'Combien ?',
         placeIt: 'Mets le nombre à sa place',

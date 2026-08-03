@@ -36,6 +36,7 @@ export const SENSE_ZONES: readonly SenseZone[] = [
             { id: 'placeNumber', emoji: '🎯', caps: [10, 20, 100] },
             { id: 'countOn', emoji: '🦘', caps: [10, 20, 30] },
             { id: 'array', emoji: '🟦', caps: [4, 6, 10] },
+            { id: 'estimate', emoji: '🍇', caps: [20, 30, 40] },
         ],
     },
 ]

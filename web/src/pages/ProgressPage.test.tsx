@@ -65,7 +65,7 @@ describe('ProgressPage', () => {
         renderWithRouter(<ProgressPage />)
 
         expect(screen.getByText('2 of 27 ⭐')).toBeInTheDocument()
-        expect(screen.getByText('1 of 18 ⭐')).toBeInTheDocument()
+        expect(screen.getByText('1 of 21 ⭐')).toBeInTheDocument()
     })
 
     it('hands the data over as a file without sending it anywhere', async () => {

@@ -114,11 +114,25 @@ describe('placing a number', () => {
     })
 
     it('demands the exact quantity everywhere a quantity is exact', () => {
+        // The only two stations that may forgive a near miss are the two whose
+        // subject *is* the near miss: where a number sits, and roughly how many.
+        const approximate: readonly SenseSkill[] = ['placeNumber', 'estimate']
         for (const skill of SENSE_SKILLS) {
-            if (skill === 'placeNumber') continue
+            if (approximate.includes(skill)) continue
             const q = createSenseQuestion({ skill, tier: 0, rng: createRng(7) })
             expect(q.tolerance).toBe(0)
             expect(isSenseAnswerCorrect(q, q.value + 1)).toBe(false)
+        }
+    })
+
+    it('gives an estimate room to be an estimate, and still not a guess', () => {
+        for (let seed = 1; seed < 20; seed += 1) {
+            const q = createSenseQuestion({ skill: 'estimate', tier: 1, rng: createRng(seed) })
+            expect(q.tolerance).toBeGreaterThan(1)
+            expect(isSenseAnswerCorrect(q, q.value + q.tolerance)).toBe(true)
+            expect(isSenseAnswerCorrect(q, q.value + q.tolerance + 1)).toBe(false)
+            // Too many to take in at a glance is what makes it an estimate.
+            expect(q.value).toBeGreaterThan(10)
         }
     })
 

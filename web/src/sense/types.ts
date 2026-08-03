@@ -20,6 +20,7 @@ export type SenseSkill =
     | 'placeNumber' // put 37 where it belongs on 0–100
     | 'countOn' // start at 7, jump 5 — where do you land?
     | 'array' // rows of dots, read as rows × columns
+    | 'estimate' // far too many to count in a glance — about how many?
 
 export const SENSE_SKILLS: readonly SenseSkill[] = [
     'subitize',
@@ -28,6 +29,7 @@ export const SENSE_SKILLS: readonly SenseSkill[] = [
     'placeNumber',
     'countOn',
     'array',
+    'estimate',
 ]
 
 /** Two groups of three: seeing a quantity, then placing it. */

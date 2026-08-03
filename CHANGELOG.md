@@ -194,6 +194,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     only ever clears the current namespace, so a child's name would have sat on
     the device permanently with nothing in the interface able to reach it.
   - The address and the repository are unchanged, so no link breaks.
+- **Two settings were filed under the wrong game.** Settings is grouped by what
+  each control affects, and two did not match. 🧠 **Thinking time** sat under
+  Math Invaders while it also sets the line at which a times-tables fact counts
+  as known by heart — it is read by all three trainer phases, the mastery check
+  and the heatmap. 📋 **Progress** sat in a group of its own, untitled, directly
+  under Times Tables, as though it belonged to the trainer, while it reports on
+  all four games. Both moved to ⚙️ All games, and a test now files every control
+  against the group it belongs to so neither can drift back.
 - **The home page stopped being the arcade's.** It carried "Your mission" — the
   arcade's operations, rank and clock — and 🏆 Best scores, neither of which the
   other three games have any part in. Home is now the four games and nothing
@@ -300,6 +308,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - **A "How to play" title still said Times Tables Galaxy** in all four languages,
   which the rename had missed.
+- **The README credited the tables trainer with word problems it does not have.**
+  The section had been copied from the arcade; there is no story code under
+  `timesTable/` or `pages/trainer/` at all.
 - **A phone held sideways left no way out of a mission.** The arcade's stage is
   positioned and its top bar was not, so on a short screen the stage painted
   straight over Back, How to play, Help and Finish — every exit at once. Only the

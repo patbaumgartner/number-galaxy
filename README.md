@@ -289,11 +289,6 @@ clock. Settings offers three settings rather than two:
 The clock's problem was never the clock; it was that running out counted against you. It
 pauses when Help is open or the tab is hidden.
 
-**🧠 More thinking time** stretches every clock, and the three-second line at which a fact
-counts as known by heart, by ×1.5 or ×2. That is the same standard measured with a fairer
-instrument — for a child working in a second language, with dyscalculia, or with a hand that
-does not do as it is told.
-
 ### 🏆 Hall of Fame
 
 Reached from the Math Invaders screen and from the end of a mission — the leaderboard
@@ -339,21 +334,6 @@ are solid.
 | **Practice** | Adapts to the facts that are due or weak; a wrong answer is explained and re-queued |
 | **Speed Run** | Unlocks after the first star; the same facts against the clock |
 | **Daily Mission** | Whatever is due for review today, across every planet |
-
-### Word problems
-
-**Off by default.** Switched on in Settings, a sum arrives inside a short situation rather
-than as bare numbers — because choosing the operation is a separate skill from carrying it
-out, and bare equations never exercise it.
-
-The distinction that matters most is inside division: *sharing* 24 apples between 6 children
-and *grouping* 24 apples into bags of 6 give the same answer for entirely different reasons,
-and a child who meets only one of them reliably comes unstuck on the other. Both are asked.
-A situation the numbers would make nonsense of — sharing 3 apples between 12 children — is
-never told at all.
-
-Reading a situation is a second load on top of the arithmetic, which is why it is the
-teacher's or parent's call when to add it.
 
 ### How it adapts
 
@@ -420,17 +400,27 @@ they run simplest first — the same order as the home screen.
 | Practise | 🛸 Arcade | ➕ ➖ ✖️ ➗ 🔢, several at once | ➕ Addition |
 | Rank | 🛸 Arcade | Rookie → Supernova | 🌱 Rookie |
 | ⏱ Countdown | 🛸 Arcade | Off · Gentle · On | Off |
-| 🧠 Thinking time | 🛸 Arcade · ✖️ Trainer | Normal · More · Most | Normal |
 | 💡 Worked solutions | 🛸 Arcade | On / Off | On |
 | 📖 Word problems | 🛸 Arcade | On / Off | Off |
 | Strategy cards | ✖️ Trainer | On / Off | On |
 | Trainer progress | ✖️ Trainer | Reset | — |
+| 🧠 Thinking time | ⚙️ All games | Normal · More · Most | Normal |
+| 📋 Progress | ⚙️ All games | — | — |
 | Language | ⚙️ All games | German · Italian · English · French | German |
 | 🔊 Sound | ⚙️ All games | On / Off | On |
 | Delete all data | ⚙️ All games | — | — |
 
 Each game's reset clears only its own progress, so wiping the trainer never touches
 arcade scores.
+
+### Thinking time
+
+**🧠 More thinking time** stretches every clock, and the three-second line at which a fact
+counts as known by heart, by ×1.5 or ×2. It reaches the arcade and the tables trainer
+alike, which is why it sits with the settings that apply everywhere.
+
+That is the same standard measured with a fairer instrument — for a child working in a
+second language, with dyscalculia, or with a hand that does not do as it is told.
 
 ### Accessibility
 

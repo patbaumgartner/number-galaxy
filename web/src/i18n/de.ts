@@ -153,7 +153,7 @@ export const de: Translations = {
         timerTimed: 'Mit Uhr',
         timerGentleHint: 'Sanft zeigt die Zeit, zählt aber nichts als Fehler.',
         thinkingTitle: 'Mehr Zeit zum Denken',
-        thinkingHint: 'Verlängert jede Uhr — nützlich beim Rechnen in einer zweiten Sprache.',
+        thinkingHint: 'Verlängert jede Uhr und die Grenze, ab der eine Aufgabe als auswendig gekonnt zählt — nützlich beim Rechnen in einer zweiten Sprache.',
         thinkingNormal: 'Normal',
         thinkingMore: 'Mehr',
         thinkingMost: 'Am meisten',

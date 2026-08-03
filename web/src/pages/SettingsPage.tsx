@@ -235,22 +235,6 @@ export default function SettingsPage() {
                         </div>
                         <p className="panel__hint">{t.settings.timerGentleHint}</p>
 
-                        <h3 className="switch-row__title">🧠 {t.settings.thinkingTitle}</h3>
-                        <p className="panel__hint">{t.settings.thinkingHint}</p>
-                        <div className="options options--row">
-                            {THINKING_TIMES.map(value => (
-                                <button
-                                    key={value}
-                                    type="button"
-                                    className={`option${settings.thinkingTime === value ? ' option--active' : ''}`}
-                                    aria-pressed={settings.thinkingTime === value}
-                                    onClick={() => update({ thinkingTime: value })}
-                                >
-                                    {thinkingLabel(t, value)}
-                                </button>
-                            ))}
-                        </div>
-
                         <div className="switch-row">
                             <div>
                                 <h3 className="switch-row__title">💡 {t.settings.hintsTitle}</h3>
@@ -294,18 +278,6 @@ export default function SettingsPage() {
                 </section>
 
                 <section className="group">
-                    <div className="panel">
-                        <h2 className="panel__title">{t.progress.title}</h2>
-                        <p className="panel__hint">{t.progress.tagline}</p>
-                        <div className="panel__action">
-                            <button type="button" className="btn btn--ghost" onClick={() => navigate('/progress')}>
-                                {t.progress.title}
-                            </button>
-                        </div>
-                    </div>
-                </section>
-
-                <section className="group">
                     <div className="group__head">
                         <h2 className="group__title">{t.settings.groupShared}</h2>
                         <p className="group__hint">{t.settings.groupSharedHint}</p>
@@ -326,6 +298,34 @@ export default function SettingsPage() {
                                     {languageNames[code]}
                                 </button>
                             ))}
+                        </div>
+                    </div>
+
+                    <div className="panel">
+                        <h3 className="panel__title">🧠 {t.settings.thinkingTitle}</h3>
+                        <p className="panel__hint">{t.settings.thinkingHint}</p>
+                        <div className="options options--row">
+                            {THINKING_TIMES.map(value => (
+                                <button
+                                    key={value}
+                                    type="button"
+                                    className={`option${settings.thinkingTime === value ? ' option--active' : ''}`}
+                                    aria-pressed={settings.thinkingTime === value}
+                                    onClick={() => update({ thinkingTime: value })}
+                                >
+                                    {thinkingLabel(t, value)}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="panel">
+                        <h3 className="panel__title">{t.progress.title}</h3>
+                        <p className="panel__hint">{t.progress.tagline}</p>
+                        <div className="panel__action">
+                            <button type="button" className="btn btn--ghost" onClick={() => navigate('/progress')}>
+                                {t.progress.title}
+                            </button>
                         </div>
                     </div>
 

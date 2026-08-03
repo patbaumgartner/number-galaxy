@@ -153,7 +153,7 @@ export const it: Translations = {
         timerTimed: 'Con tempo',
         timerGentleHint: 'Gentile mostra il tempo che passa, ma non conta mai un errore.',
         thinkingTitle: 'Più tempo per pensare',
-        thinkingHint: 'Allunga ogni orologio — utile quando si calcola in una seconda lingua.',
+        thinkingHint: 'Allunga ogni orologio e la soglia oltre la quale un fatto conta come saputo a memoria — utile quando si calcola in una seconda lingua.',
         thinkingNormal: 'Normale',
         thinkingMore: 'Di più',
         thinkingMost: 'Il massimo',

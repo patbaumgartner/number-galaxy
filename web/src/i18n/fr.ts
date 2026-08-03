@@ -153,7 +153,7 @@ export const fr: Translations = {
         timerTimed: 'Avec chrono',
         timerGentleHint: 'Doux montre le temps qui passe, sans jamais compter d’erreur.',
         thinkingTitle: 'Plus de temps pour réfléchir',
-        thinkingHint: 'Allonge chaque chrono — utile quand on calcule dans une deuxième langue.',
+        thinkingHint: 'Allonge chaque chrono et le seuil à partir duquel un fait compte comme su par cœur — utile quand on calcule dans une deuxième langue.',
         thinkingNormal: 'Normal',
         thinkingMore: 'Plus',
         thinkingMost: 'Le plus',

@@ -153,7 +153,7 @@ export const en: Translations = {
         timerTimed: 'On',
         timerGentleHint: 'Gentle shows the time going by, but nothing counts as a miss.',
         thinkingTitle: 'More thinking time',
-        thinkingHint: 'Stretches every clock — useful when working in a second language.',
+        thinkingHint: 'Stretches every clock, and the line at which a fact counts as known by heart — useful when working in a second language.',
         thinkingNormal: 'Normal',
         thinkingMore: 'More',
         thinkingMost: 'Most',

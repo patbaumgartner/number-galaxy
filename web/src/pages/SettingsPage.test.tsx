@@ -149,6 +149,31 @@ describe('SettingsPage', () => {
         expect(store.getPlayer()).not.toBeNull()
     })
 
+    /**
+     * Every control sits under the game it actually affects. Two had drifted:
+     * thinking time also sets the line at which a times-tables fact counts as
+     * known by heart, and the progress report covers all four games — so neither
+     * belongs to Math Invaders, which is where the first one was.
+     */
+    it('files every control under the game it actually affects', () => {
+        renderWithRouter(<SettingsPage />)
+
+        // Headings carry an emoji, so match the label rather than the whole node.
+        const groupOf = (label: string | RegExp): string => {
+            const node = screen.getAllByText(label)[0].closest('section.group')
+            return node?.querySelector('.group__title')?.textContent ?? 'no group'
+        }
+
+        expect(groupOf('What do you want to practise?')).toContain('Math Invaders')
+        expect(groupOf(/^⏱ Countdown$/)).toContain('Math Invaders')
+        expect(groupOf(/^📖 Word problems$/)).toContain('Math Invaders')
+        expect(groupOf('Strategy cards')).toContain('Times Tables')
+
+        // Cross-game, so neither may sit under a single game.
+        expect(groupOf(/^🧠 More thinking time$/)).toContain('All games')
+        expect(groupOf(/^📋 Progress$/)).toContain('All games')
+    })
+
     it('offers only game-neutral navigation, because every game shares this page', () => {
         seedLanguage('en')
         renderWithRouter(<SettingsPage />)

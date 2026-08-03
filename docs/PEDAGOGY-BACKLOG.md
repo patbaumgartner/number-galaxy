@@ -70,7 +70,7 @@ the built game in a browser.
 
 ---
 
-## Tier 1 — Make the arcade adaptive
+## Tier 1 — Make the arcade adaptive ✅ done
 
 **8. Fact-level memory in the arcade.** ✅ **done** — `game/facts.ts` keys a fact by its pair
 of operands, canonical across commutativity *and* across inverse (`12 − 5` ≡ `12 − 7`,
@@ -93,8 +93,10 @@ by tapping one of four tiles — that is elimination, not mental arithmetic. Obs
 multiplication.
 · LP21 Zyklus 2 expects `Rechenwege notieren` for large numbers · `MA.1.A.3.d`
 
-**11. Typed answers, auto-switching on mastery.** Start on tiles; move a fact to the
-`NumberPad` once it reaches Leitner box 3+. Recognition ≠ production.
+**11. Typed answers, auto-switching on mastery.** ✅ **done** — a fact at box 4 is asked on the
+`NumberPad` rather than the tiles. The input mode is frozen for the question's lifetime:
+a miss drops the box, and playing it showed the pad turning back into four tiles while the
+child was still looking at it. Operators and remainders keep their tiles.
 · Reed et al. 2014 — recall practice produces greater fluency gains than choosing · `MA.1.A.3.d`
 
 **12. Guarantee interleaving inside a mission.** ✅ **done** — no operation may run past three
@@ -106,8 +108,10 @@ the boost expressed against `DIRECT_FORM_WEIGHT` so a struggling shape can never
 `direct` and turn a mission into a run of the hardest thing the child has met.
 · `MA.1.B.1`
 
-**14. Fade the worked examples.** Keyed off item 8's box: box 1–2 full working, box 3 first
-step only, box 4–5 answer alone.
+**14. Fade the worked examples.** ✅ **done** — full route below the owned box, opening move
+only at or above it, read from the box *before* the answer. The original three-level design
+withdrew the route entirely at the top, which never once fired: a miss resets the box, so the
+faded level was unreachable. Two levels, and never nothing.
 · Expertise reversal (Barbieri et al. 2023) · `MA.1.C.1`
 
 ## Tier 2 — Teach strategy, not just answers

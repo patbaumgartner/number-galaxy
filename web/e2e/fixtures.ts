@@ -107,11 +107,25 @@ export async function answerCurrentQuestion(page: Page): Promise<void> {
     // Tiles stay disabled while a miss is on screen: it waits to be dismissed.
     const gotIt = page.locator('.equation__next')
     if (await gotIt.count() > 0) await gotIt.click()
+
+    // Wait for whichever input the next question brings before choosing a branch:
+    // during feedback the previous question's disabled tiles are still on screen.
+    await expect(page.locator('.answer-tile:not([disabled]), .numpad-btn:not([disabled])').first()).toBeVisible()
+
     // The prompt has no accessible name; this stable component class is its public UI hook.
-    await expect(page.locator('.answer-tile:not([disabled])').first()).toBeVisible()
     const prompt = page.locator('.equation__prompt')
     await expect(prompt).toBeVisible()
     const answer = calculateArcadeAnswer((await prompt.textContent()) ?? '')
+
+    // An owned fact is typed on the pad; anything newer is picked from four tiles.
+    if (await page.locator('.numpad').count() > 0) {
+        for (const digit of answer) {
+            await page.locator('.numpad-btn').filter({ hasText: new RegExp(`^${digit}$`) }).click()
+        }
+        await page.locator('.numpad-btn-action').last().click()
+        return
+    }
+
     await page.getByRole('button', { name: answer, exact: true }).click()
 }
 

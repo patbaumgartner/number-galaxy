@@ -1,4 +1,4 @@
-import { act, fireEvent, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { store } from '../store'
 import { LOCATION_TEST_ID, renderWithRouter, seedLanguage, seedOperations, seedPlayer, seedRank, seedSettings } from '../test/utils'
@@ -12,7 +12,15 @@ const answerForPrompt = (): string => {
 }
 
 const answerCorrectly = () => {
-    fireEvent.click(screen.getByRole('button', { name: answerForPrompt() }))
+    const answer = answerForPrompt()
+    // An owned fact is typed on the pad rather than picked from four tiles.
+    const pad = screen.queryByRole('button', { name: 'Submit' })
+    if (pad === null) {
+        fireEvent.click(screen.getByRole('button', { name: answer }))
+        return
+    }
+    for (const digit of answer) fireEvent.click(screen.getByRole('button', { name: digit }))
+    fireEvent.click(pad)
 }
 
 describe('GamePage', () => {
@@ -96,6 +104,23 @@ describe('GamePage', () => {
         expect(store.getScores()).toHaveLength(1)
         fireEvent.click(screen.getByRole('button', { name: 'Play again' }))
         expect(screen.getByText('0/25')).toBeInTheDocument()
+    })
+
+    it('asks for an owned fact to be typed rather than picked from four tiles', () => {
+        renderWithRouter(<GamePage />)
+        expect(screen.queryByRole('button', { name: 'Submit' })).not.toBeInTheDocument()
+        cleanup()
+
+        // Every addition fact Rookie can write, marked as owned.
+        for (let a = 2; a <= 8; a += 1) {
+            for (let b = a; a + b <= 10; b += 1) {
+                for (let round = 0; round < 4; round += 1) store.recordFact(`addition:${a}:${b}`, true, 900)
+            }
+        }
+
+        renderWithRouter(<GamePage />)
+        expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument()
+        expect(screen.queryByRole('group', { name: /pick an answer/i })).not.toBeInTheDocument()
     })
 
     it('navigates from summary actions and the back button', async () => {

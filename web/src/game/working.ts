@@ -175,6 +175,26 @@ function candidatesFor(equation: Equation): Candidate[] {
  * decompose, and an honest restatement beats a working that names numbers the
  * child has never been shown.
  */
+/** The box from which a fact counts as owned, and its working is trimmed back. */
+const FADE_FROM_BOX = 4
+
+/**
+ * How much of a route to show, given how well the fact is already known.
+ *
+ * A full worked example is what a novice needs and what an expert stops reading:
+ * once an answer is recalled rather than worked out, spelling out the route
+ * costs attention and returns nothing. A child who owns the fact and slipped
+ * gets the opening move and no more; one still learning it gets the whole thing.
+ *
+ * It is never withdrawn altogether. Whatever the schedule believes, a child
+ * looking at a wrong answer is a child who needs something.
+ */
+export function fadeWorking(workingOut: string, box: number): string {
+    if (box < FADE_FROM_BOX) return workingOut
+    const [first, ...rest] = workingOut.split(' → ')
+    return rest.length === 0 ? workingOut : `${first} → …`
+}
+
 export function strategyWorking(equation: Equation, maxValue: number): string {
     const { left, right, result, symbol } = equation
     const fitting = candidatesFor(equation)

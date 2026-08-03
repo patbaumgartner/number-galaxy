@@ -7,9 +7,11 @@ type NumberPadProps = {
     readonly onChange: (value: string) => void
     readonly onSubmit: () => void
     readonly disabled?: boolean
+    /** Digits accepted. Three suits the tables; the arcade reaches a thousand. */
+    readonly maxLength?: number
 }
 
-export function NumberPad({ value, onChange, onSubmit, disabled }: NumberPadProps) {
+export function NumberPad({ value, onChange, onSubmit, disabled, maxLength = 3 }: NumberPadProps) {
     const t = translations[store.getSettings().language]
 
     useEffect(() => {
@@ -18,7 +20,7 @@ export function NumberPad({ value, onChange, onSubmit, disabled }: NumberPadProp
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key >= '0' && e.key <= '9') {
                 e.preventDefault()
-                if (value.length < 3) {
+                if (value.length < maxLength) {
                     onChange(value + e.key)
                 }
             } else if (e.key === 'Backspace') {
@@ -34,11 +36,11 @@ export function NumberPad({ value, onChange, onSubmit, disabled }: NumberPadProp
 
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [value, onChange, onSubmit, disabled])
+    }, [value, onChange, onSubmit, disabled, maxLength])
 
     const handleDigit = (digit: string) => {
         if (disabled) return
-        if (value.length < 3) {
+        if (value.length < maxLength) {
             onChange(value + digit)
         }
     }

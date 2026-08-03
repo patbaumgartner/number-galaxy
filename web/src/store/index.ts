@@ -15,6 +15,7 @@ import {
     computeBadge,
     getArcadeFacts,
     getDueFacts,
+    getFactBox,
     getFormAccuracy,
     getFormStats,
     getWorkingMax,
@@ -82,6 +83,7 @@ export const store = {
 
     getArcadeFacts,
     getDueFacts,
+    getFactBox,
     recordFact,
 
     getFormStats,

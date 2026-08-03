@@ -170,6 +170,9 @@ export function getArcadeFacts(): ArcadeFacts {
 
 const today = (): number => localEpochDay(Date.now(), new Date().getTimezoneOffset())
 
+/** How well a fact is known, 0 for one never met. */
+export const getFactBox = (key: string): number => (key.length === 0 ? 0 : getArcadeFacts()[key]?.box ?? 0)
+
 /** Moves one fact along the review schedule, keeping only the newest entries. */
 export function recordFact(key: string, correct: boolean, ms: number): void {
     if (key.length === 0) return

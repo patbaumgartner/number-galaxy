@@ -12,6 +12,7 @@ import {
     getQuestionSeconds,
     getStars,
     getWorkedExample,
+    fadeWorking,
     scoreAnswer,
     type AnswerOutcome,
     type MissionState,
@@ -19,6 +20,7 @@ import {
 import { RULESET_VERSION, store } from '../store'
 import { translations } from '../i18n'
 import AnswerGrid from '../components/arcade/AnswerGrid'
+import { NumberPad } from '../components/trainer/NumberPad'
 import TopBar from '../components/TopBar'
 import WorkedExampleDialog from '../components/WorkedExampleDialog'
 import PlayHud from '../components/PlayHud'
@@ -42,6 +44,18 @@ import {
 
 const CORRECT_MS = 650
 
+/**
+ * The box from which a fact is typed rather than picked from four tiles.
+ *
+ * Recognising an answer among four and producing one are not the same skill, and
+ * it is producing it that predicts being able to use the fact elsewhere. But
+ * typing is the harder ask, so it waits until a fact is owned — the tiles are how
+ * a child meets something, the pad is how they show they have it. This is the
+ * same box at which the worked example is withdrawn, so a fact stops being
+ * explained and starts being asked for outright at the same moment.
+ */
+const TYPED_FROM_BOX = 4
+
 type Feedback = {
     outcome: AnswerOutcome
     answer: string
@@ -49,6 +63,10 @@ type Feedback = {
     firedIndex: number | null
     points: number
 }
+
+/** Typing needs a number to type: an operator or a remainder has no such answer. */
+const canBeTyped = (question: MissionState['question']): boolean =>
+    question.form !== 'missingOperator' && question.operation !== 'remainders'
 
 type MissionResult = {
     score: number
@@ -92,6 +110,7 @@ export default function GamePage() {
     const [helpOpen, setHelpOpen] = useState(false)
     const [result, setResult] = useState<MissionResult | null>(null)
     const [runs, setRuns] = useState(1)
+    const [entry, setEntry] = useState('')
 
     const resolvedRef = useRef(false)
     const questionStartRef = useRef(0)
@@ -120,7 +139,7 @@ export default function GamePage() {
      * for the same question, so both funnel through this guard and only the
      * first one counts.
      */
-    const resolve = useCallback((outcome: AnswerOutcome, firedIndex: number | null) => {
+    const resolve = useCallback((outcome: AnswerOutcome, firedIndex: number | null, chosen: string) => {
         if (resolvedRef.current || mission.phase !== 'answering') return
         resolvedRef.current = true
 
@@ -128,6 +147,9 @@ export default function GamePage() {
         const wasCorrect = outcome === 'correct'
         const next = scoreAnswer(mission, outcome)
         const elapsed = Date.now() - questionStartRef.current
+        // Read before recording: a miss drops the box, and how much of the route
+        // to show depends on what the child knew going in, not coming out.
+        const priorBox = store.getFactBox(question.factKey)
 
         store.recordAnswer(question.operation, wasCorrect, answered)
         store.recordFact(question.factKey, wasCorrect, elapsed)
@@ -146,7 +168,7 @@ export default function GamePage() {
                 operation: question.operation,
                 form: question.form,
                 prompt: question.prompt,
-                chosen: firedIndex === null ? '' : question.options[firedIndex],
+                chosen,
                 answer: question.answer,
                 at: new Date().toISOString(),
             })
@@ -157,7 +179,7 @@ export default function GamePage() {
         setFeedback({
             outcome,
             answer: question.answer,
-            workingOut: question.workingOut,
+            workingOut: fadeWorking(question.workingOut, priorBox),
             firedIndex,
             points: next.score - mission.score,
         })
@@ -168,14 +190,21 @@ export default function GamePage() {
         seconds,
         running: mission.phase === 'answering' && mission.timed && !helpOpen && visible,
         resetKey: answered,
-        onExpire: () => resolve('timeout', null),
+        onExpire: () => resolve('timeout', null, ''),
     })
 
     const fire = useCallback((index: number) => {
         if (mission.phase !== 'answering') return
         playShoot()
-        resolve(index === mission.question.correctIndex ? 'correct' : 'wrong', index)
+        const option = mission.question.options[index]
+        resolve(index === mission.question.correctIndex ? 'correct' : 'wrong', index, option)
     }, [mission, resolve])
+
+    const submitTyped = useCallback(() => {
+        if (mission.phase !== 'answering' || entry.length === 0) return
+        playShoot()
+        resolve(entry === mission.question.answer ? 'correct' : 'wrong', null, entry)
+    }, [mission, resolve, entry])
 
     useEffect(() => {
         if (mission.phase !== 'answering') return
@@ -185,6 +214,7 @@ export default function GamePage() {
 
     const proceed = useCallback(() => {
         setFeedback(null)
+        setEntry('')
         setMission(current => advanceMission(current, {
             weakness: store.getWeakness(),
             srData: store.getSpacedRepetition(),
@@ -247,6 +277,7 @@ export default function GamePage() {
         newBestRef.current = false
         setResult(null)
         setFeedback(null)
+        setEntry('')
         setHelpOpen(false)
         setRuns(count => count + 1)
         setMission(freshMission())
@@ -261,6 +292,12 @@ export default function GamePage() {
     }, [restart])
 
     const answering = mission.phase === 'answering' && !helpOpen
+    // Frozen for the question's lifetime: a miss drops the box, and the pad must
+    // not turn back into four tiles while the child is still looking at it.
+    const typedAnswer = useMemo(
+        () => canBeTyped(mission.question) && store.getFactBox(mission.question.factKey) >= TYPED_FROM_BOX,
+        [mission.question],
+    )
     const example = getWorkedExample(mission.question.operation, mission.language)
     const resultText = feedback && (feedback.outcome === 'correct'
         ? `${t.game.correct} +${feedback.points}`
@@ -331,15 +368,25 @@ export default function GamePage() {
                     )}
                 </section>
 
-                <AnswerGrid
-                    options={mission.question.options}
-                    disabled={!answering}
-                    firedIndex={feedback?.firedIndex ?? null}
-                    revealIndex={feedback ? mission.question.correctIndex : null}
-                    groupLabel={t.game.answerHint}
-                    optionLabel={option => option}
-                    onFire={fire}
-                />
+                {typedAnswer ? (
+                    <NumberPad
+                        value={entry}
+                        onChange={setEntry}
+                        onSubmit={submitTyped}
+                        disabled={!answering}
+                        maxLength={String(mission.maxValue).length}
+                    />
+                ) : (
+                    <AnswerGrid
+                        options={mission.question.options}
+                        disabled={!answering}
+                        firedIndex={feedback?.firedIndex ?? null}
+                        revealIndex={feedback ? mission.question.correctIndex : null}
+                        groupLabel={t.game.answerHint}
+                        optionLabel={option => option}
+                        onFire={fire}
+                    />
+                )}
 
                 <p className="stage__rocket" aria-hidden="true">🚀</p>
             </main>

@@ -21,6 +21,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - A fact is only offered when every number it would show fits inside the rank,
     and never twice within four questions, so review can never narrow to the same
     handful of sums — the run a struggling beginner would otherwise have got.
+- **A fact you own is typed, not picked from four.** Recognising an answer among
+  four tiles and producing one are not the same skill, and it is producing it
+  that predicts being able to use the fact anywhere else. Once a fact reaches the
+  box where it counts as owned, the arcade asks for it on the number pad instead.
+  The tiles are how a child meets something; the pad is how they show they have
+  it. Operators and remainders keep their tiles, having no number to type.
+- **Worked solutions fade as a fact is learnt.** A full route is what a novice
+  needs and what an expert stops reading. A child who owns a fact and slips now
+  gets the opening move and no more; one still learning it gets the whole thing,
+  and a second miss brings the whole thing back. It is never withdrawn entirely —
+  whatever the schedule believes, a child looking at a wrong answer needs
+  something.
 - **The numbers tune themselves inside the rank.** A rank is a wide band, and a
   child at the wrong end of it is either bored or drowning. A rolling window of
   the last 20 answers now nudges a working ceiling up or down within the rank,

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { createEquation, type BinaryOperation } from './equations'
 import { createRng } from './rng'
 import { RANKS, rankConfig, MINUS } from './types'
-import { strategyWorking } from './working'
+import { fadeWorking, strategyWorking } from './working'
 
 const equation = (left: number, right: number, result: number, symbol: '+' | '−' | '×' | '÷') =>
     ({ left, right, result, symbol }) as const
@@ -64,5 +64,28 @@ describe('strategyWorking', () => {
         }
 
         expect(problems).toEqual([])
+    })
+})
+
+describe('fading a working as a fact becomes known', () => {
+    const twoStep = '55 + 5 = 60 → 60 + 1 = 61'
+    const oneStep = '6 × 4 = 24'
+
+    it('shows the whole route while the fact is still being learnt', () => {
+        expect(fadeWorking(twoStep, 0)).toBe(twoStep)
+        expect(fadeWorking(twoStep, 3)).toBe(twoStep)
+    })
+
+    it('leaves only the opening move once the fact is owned', () => {
+        expect(fadeWorking(twoStep, 4)).toBe('55 + 5 = 60 → …')
+        expect(fadeWorking(twoStep, 5)).toBe('55 + 5 = 60 → …')
+    })
+
+    it('never withdraws it altogether, whatever the schedule believes', () => {
+        for (let box = 0; box <= 5; box += 1) expect(fadeWorking(twoStep, box)).not.toBe('')
+    })
+
+    it('keeps a single-step working whole, having no step to hide', () => {
+        expect(fadeWorking(oneStep, 4)).toBe(oneStep)
     })
 })

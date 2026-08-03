@@ -9,6 +9,9 @@ type StorageSeed = {
     readonly ttStars?: unknown
     readonly ttBests?: unknown
     readonly ttSettings?: unknown
+    readonly beamStars?: unknown
+    readonly beamBests?: unknown
+    readonly beamSettings?: unknown
 }
 
 const APP_PATH = '/math-invaders'
@@ -21,6 +24,9 @@ const storageEntries = (seed: StorageSeed): readonly [string, unknown][] => [
     ['math-invaders-tt-stars', seed.ttStars],
     ['math-invaders-tt-bests', seed.ttBests],
     ['math-invaders-tt-settings', seed.ttSettings],
+    ['math-invaders-beam-stars', seed.beamStars],
+    ['math-invaders-beam-bests', seed.beamBests],
+    ['math-invaders-beam-settings', seed.beamSettings],
 ].filter((entry): entry is [string, unknown] => entry[1] !== undefined)
 
 export async function seedStorage(page: Page, seed: StorageSeed): Promise<void> {
@@ -109,6 +115,45 @@ export async function answerCurrentFact(page: Page): Promise<void> {
     // `isMastered`, which made star assertions flaky. The pad accepts real keys.
     await page.keyboard.type(answer)
     await page.keyboard.press('Enter')
+}
+
+export const calculateBeamAnswer = (prompt: string): number => {
+    const times = prompt.match(/^(\d+) × (\d+) = \?$/)
+    if (times !== null) return Number(times[1]) * Number(times[2])
+    const divide = prompt.match(/^(\d+) ÷ (\d+) = \?$/)
+    if (divide !== null) return Number(divide[1]) / Number(divide[2])
+    const add = prompt.match(/^(\d+) \+ (\d+) = \?$/)
+    if (add !== null) return Number(add[1]) + Number(add[2])
+    const bond = prompt.match(/^\? \+ (\d+) = (\d+)$/)
+    if (bond !== null) return Number(bond[2]) - Number(bond[1])
+    const split = prompt.match(/^(\d+) = (?:\? \+ (\d+)|(\d+) \+ \?)$/)
+    if (split !== null) return Number(split[1]) - Number(split[2] ?? split[3])
+    const fraction = prompt.match(/^([½⅓⅔¼¾]) × (\d+) = \?$/)
+    if (fraction !== null) {
+        const share: Record<string, number> = { '½': 1 / 2, '⅓': 1 / 3, '⅔': 2 / 3, '¼': 1 / 4, '¾': 3 / 4 }
+        return share[fraction[1]] * Number(fraction[2])
+    }
+    throw new Error(`Unsupported beam prompt: ${prompt}`)
+}
+
+/** Answers whichever input the current beam question happens to be using. */
+export async function answerBeamQuestion(page: Page): Promise<void> {
+    // Feedback disables the controls between questions, so the next question is
+    // only really on screen once one of its two inputs accepts a click. These
+    // component classes are the only handle both inputs share.
+    await expect(page.locator('.answer-tile:not([disabled]), .beam__fire:not([disabled])').first()).toBeVisible()
+
+    const prompt = page.locator('.equation__prompt')
+    await expect(prompt).toBeVisible()
+    const answer = String(Math.round(calculateBeamAnswer((await prompt.textContent()) ?? '')))
+
+    const slider = page.getByRole('slider')
+    if ((await slider.count()) > 0) {
+        await slider.fill(answer)
+        await page.getByRole('button', { name: /Land on/ }).click()
+        return
+    }
+    await page.getByRole('button', { name: answer, exact: true }).click()
 }
 
 export function collectConsoleErrors(page: Page): string[] {

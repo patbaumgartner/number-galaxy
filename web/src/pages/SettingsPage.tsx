@@ -8,11 +8,13 @@ import { fill, translations, type Translations } from '../translations'
 import { useDocumentLanguage } from '../hooks'
 import type { Language } from '../game'
 import { ttStore } from '../timesTable/ttStore'
+import { beamStore } from '../beam'
 
 export default function SettingsPage() {
     const navigate = useNavigate()
     const [settings, setSettings] = useState<GameSettings>(() => store.getSettings())
     const [trainerSettings, setTrainerSettings] = useState(() => ttStore.getTTSettings())
+    const [beamSettings, setBeamSettings] = useState(() => beamStore.getBeamSettings())
     const t = translations[settings.language]
     const skills = useMemo(() => store.getSkillStats(), [])
     const badges = useMemo(
@@ -41,10 +43,22 @@ export default function SettingsPage() {
         ttStore.saveTTSettings(next)
     }
 
+    const updateBeam = (alwaysShowBar: boolean) => {
+        const next = { alwaysShowBar }
+        setBeamSettings(next)
+        beamStore.saveBeamSettings(next)
+    }
+
     const resetTrainer = () => {
         if (!confirm(t.tt.settingsResetConfirm)) return
         ttStore.resetTrainerProgress()
         setTrainerSettings(ttStore.getTTSettings())
+    }
+
+    const resetBeam = () => {
+        if (!confirm(t.beam.settingsResetConfirm)) return
+        beamStore.resetBeamProgress()
+        setBeamSettings(beamStore.getBeamSettings())
     }
 
     const reset = () => {
@@ -159,6 +173,30 @@ export default function SettingsPage() {
                         </div>
                         <div className="panel__action">
                             <button type="button" className="btn btn--danger" onClick={resetTrainer}>{t.tt.settingsReset}</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="group">
+                    <div className="group__head">
+                        <h2 className="group__title">{t.settings.groupBeam}</h2>
+                        <p className="group__hint">{t.settings.groupBeamHint}</p>
+                    </div>
+
+                    <div className="panel">
+                        <div className="switch-row">
+                            <div>
+                                <h3 className="switch-row__title">📏 {t.beam.settingsBar}</h3>
+                                <p className="panel__hint">{t.beam.settingsBarHint}</p>
+                            </div>
+                            <Switch
+                                labels={t.settings}
+                                on={beamSettings.alwaysShowBar}
+                                onToggle={() => updateBeam(!beamSettings.alwaysShowBar)}
+                            />
+                        </div>
+                        <div className="panel__action">
+                            <button type="button" className="btn btn--danger" onClick={resetBeam}>{t.beam.settingsReset}</button>
                         </div>
                     </div>
                 </section>

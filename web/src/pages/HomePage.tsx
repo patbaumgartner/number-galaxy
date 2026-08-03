@@ -74,6 +74,11 @@ export default function HomePage() {
                                 <strong>{t.home.gameTables}</strong>
                                 <small>{t.home.gameTablesBlurb}</small>
                             </button>
+                            <button type="button" className="game-picker__card" onClick={() => navigate('/number-beam')}>
+                                <span aria-hidden="true">📏</span>
+                                <strong>{t.home.gameBeam}</strong>
+                                <small>{t.home.gameBeamBlurb}</small>
+                            </button>
                         </div>
                     </section>
                 )}
@@ -124,6 +129,19 @@ export default function HomePage() {
                         <h3 className="panel__title">{t.home.howToTablesTitle}</h3>
                         <ol className="steps">
                             {t.home.howToTablesSteps.map((step, index) => <li key={index}>{step}</li>)}
+                        </ol>
+                    </div>
+                </section>
+
+                <section className="group">
+                    <div className="group__head">
+                        <h2 className="group__title">{t.beam.title}</h2>
+                    </div>
+
+                    <div className="panel">
+                        <h3 className="panel__title">{t.home.howToBeamTitle}</h3>
+                        <ol className="steps">
+                            {t.home.howToBeamSteps.map((step, index) => <li key={index}>{step}</li>)}
                         </ol>
                     </div>
                 </section>

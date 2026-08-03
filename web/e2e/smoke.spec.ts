@@ -10,6 +10,7 @@ for (const route of [
     ['/hall-of-fame', 'Best scores'],
     ['/settings', 'Settings'],
     ['/times-tables', 'Times Tables Galaxy'],
+    ['/number-beam', '📏 Number Beam'],
 ] as const) {
     test(`loads ${route[0]} with its English heading and no console errors`, async ({ page }) => {
         const errors = collectConsoleErrors(page)

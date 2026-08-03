@@ -1,0 +1,234 @@
+/* Number Beam — the station map, the bar model and the alien-on-a-beam input. */
+
+.beam-shell { max-width: 760px; }
+
+.beam-zone { margin-top: var(--space-4); }
+
+.beam-stations {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.beam-station {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: var(--space-1);
+  min-height: 132px;
+  padding: var(--space-3);
+  border: 1px solid var(--border-highlight);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  text-align: center;
+  transition: transform .2s ease, border-color .2s ease, background-color .2s ease;
+}
+
+.beam-station:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: var(--color-cyan);
+  background: var(--bg-surface-elevated);
+}
+
+.beam-station__emoji { font-size: var(--text-xl); }
+
+.beam-station__sample {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-sm);
+  color: var(--color-cyan);
+}
+
+.beam-station small { color: var(--text-muted); font-size: .65rem; line-height: 1.2; }
+.beam-station--locked { opacity: .58; cursor: not-allowed; }
+.beam-station__next { position: absolute; right: var(--space-2); top: var(--space-2); color: var(--color-pink); }
+
+/* --------------------------------------------------------------- bar model -- */
+
+.bar-model {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+}
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.bar-row__track {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  gap: 2px;
+  height: 46px;
+}
+
+.bar-row__total {
+  flex: 0 0 auto;
+  min-width: 2.5ch;
+  text-align: right;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-gold);
+}
+
+/* Keeps a shorter row short: without it flex would stretch every row to the
+   full width and the whole point — one bar being twice the other — is lost. */
+.bar-row__rest { flex-basis: 0; min-width: 0; }
+
+.bar-seg {
+  flex-basis: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-highlight);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-sm);
+  line-height: 1.1;
+}
+
+.bar-seg__alien { font-size: 1rem; }
+.bar-seg__label { white-space: nowrap; }
+
+.bar-seg--whole { background: var(--bg-surface-highlight); border-color: var(--color-gold); }
+.bar-seg--part { background: rgba(0, 245, 255, 0.16); border-color: var(--color-cyan); }
+.bar-seg--unknown { background: var(--bg-surface-elevated); border-style: dashed; border-color: var(--color-pink); }
+.bar-seg--extra { background: var(--bg-surface-elevated); opacity: .5; border-style: dashed; }
+
+/* ------------------------------------------------------------------- beam -- */
+
+.beam {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-2);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  --beam-thumb: 40px;
+}
+
+.beam__rail {
+  position: relative;
+  padding-top: 34px;
+}
+
+/* The alien rides the native thumb: the thumb is inset by half its own width
+   at both ends, so the unitless --beam-pos is offset by the same amount. */
+.beam__alien {
+  position: absolute;
+  top: 0;
+  left: calc(var(--beam-thumb) / 2 + var(--beam-pos) * (100% - var(--beam-thumb)));
+  transform: translateX(-50%);
+  font-size: 1.75rem;
+  pointer-events: none;
+  transition: left .12s ease-out;
+}
+
+.beam__range {
+  width: 100%;
+  height: var(--beam-thumb);
+  margin: 0;
+  background: transparent;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.beam__range::-webkit-slider-runnable-track {
+  height: 12px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, var(--color-cyan), var(--color-pink));
+  box-shadow: var(--glow-score);
+}
+
+.beam__range::-moz-range-track {
+  height: 12px;
+  border-radius: var(--radius-pill);
+  background: linear-gradient(90deg, var(--color-cyan), var(--color-pink));
+}
+
+.beam__range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: var(--beam-thumb);
+  height: var(--beam-thumb);
+  margin-top: calc((12px - var(--beam-thumb)) / 2);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-gold);
+  background: var(--bg-surface-highlight);
+}
+
+.beam__range::-moz-range-thumb {
+  width: var(--beam-thumb);
+  height: var(--beam-thumb);
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--color-gold);
+  background: var(--bg-surface-highlight);
+}
+
+.beam__range:disabled { opacity: .5; }
+
+.beam__ticks {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 var(--space-1);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.beam__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.beam__nudge { flex: 0 0 auto; font-size: var(--text-xl); }
+.beam__fire { flex: 1; font-variant-numeric: tabular-nums; }
+
+/* ------------------------------------------------------------------ drill -- */
+
+/* The drill is a study screen, not the arcade's one-viewport loop: it carries a
+   bar picture and an input on top of the question. `safe center` centres it when
+   it fits and falls back to start-alignment when it does not — plain `center`
+   would push the overflow off both ends and out of reach. */
+.beam-stage {
+  gap: var(--space-3);
+  max-width: 620px;
+  justify-content: safe center;
+}
+
+.beam-progress {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.beam-drill .equation { flex: 0 0 auto; min-height: 0; padding: var(--space-4) var(--space-3); }
+.beam-drill .equation__prompt { font-size: clamp(1.75rem, 8vw, 3.25rem); }
+.beam-drill .answer-grid { margin-bottom: 0; }
+
+.overlay__stars { font-size: var(--text-2xl); margin: 0 0 var(--space-2); color: var(--color-gold); }
+.overlay__note { margin: var(--space-1) 0; color: var(--color-success); font-weight: 700; }
+
+@media (prefers-reduced-motion: reduce) {
+  .beam__alien, .beam-station { transition: none; }
+}
+
+@media (min-width: 720px) {
+  .bar-row__track { height: 56px; }
+  .beam-drill .equation { min-height: 140px; }
+}

@@ -8,11 +8,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **📏 Number Beam:** a third section for doubling, halving and the number sense that
+  grows out of them. Nine stations across three zones — Doubling Deck (double, halve,
+  near doubles), Parts Bay (double twice, quarters, fraction of) and Tens Belt
+  (×10 ÷10, number bonds, split) — each with three tiers that widen as stars are
+  earned, and a ten-question drill per run.
+- **Every Number Beam question is drawn as a bar model.** The whole sits on top, the
+  parts that make it sit underneath, and both rows are measured against one shared
+  scale, so a doubled bar really is twice as long. Unknown parts stay behind a `?`
+  and fill in once the answer is given. Aliens ride the segments.
+- **Answering by moving an alien along the beam.** Every other question replaces the
+  answer tiles with a slider: drag the alien, nudge it with −/+, or use the arrow
+  keys, then land it on the answer. It is a native range input underneath, so it is
+  keyboard-operable and screen-reader-announced, and the bar carries a maths-notation
+  description as its accessible name.
+- Number Beam settings: the bar can be hidden until a miss, for children ready to work
+  in their head, and beam progress can be reset on its own.
 - **Times Tables Galaxy trainer:** planet map, Learn, Practice, Speed Run and Daily
   Mission phases for tables, squares, shortcuts and advanced facts.
 - Leitner-style review, persistent stars and best times, strategy cards, a mastery
   heatmap and independent trainer-progress reset in Settings.
-- **Three-layer test suite, 355 tests.** Domain logic in Node, React components and
+- **Three-layer test suite, 481 tests.** Domain logic in Node, React components and
   pages in jsdom via Testing Library, and the built bundle driven through desktop and
   mobile Chromium with Playwright. Coverage is gated at 95 % statements / 92 % branches
   and the end-to-end suite runs in CI. See [docs/TESTING.md](docs/TESTING.md).

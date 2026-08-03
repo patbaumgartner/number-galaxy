@@ -4,7 +4,7 @@ import { gotoApp, seedStorage } from './fixtures'
 const settings = { language: 'en', operations: ['addition'], rank: 'rookie', timed: false, sound: false, hints: true }
 const player = { id: 'a11y-pilot', playerName: 'Nova', avatarId: '🚀', createdAt: '2026-01-01T00:00:00.000Z' }
 
-const routes = ['/', '/hall-of-fame', '/settings', '/times-tables'] as const
+const routes = ['/', '/hall-of-fame', '/settings', '/times-tables', '/number-beam', '/number-beam/drill/double'] as const
 
 test.describe.configure({ mode: 'parallel' })
 

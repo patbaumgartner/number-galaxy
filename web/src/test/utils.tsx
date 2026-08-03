@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import type { ReactElement } from 'react'
 import { MemoryRouter, Route, Routes, useLocation } from 'react-router'
 import type { Language, Operation, Rank } from '../game'
+import { beamStore, type BeamSkill, type BeamStarLevel } from '../beam'
 import { store, type GameSettings } from '../store'
 import type { FactKey, FactProgress, PlanetId, StarLevel } from '../timesTable/types'
 import { ttStore } from '../timesTable/ttStore'
@@ -91,5 +92,14 @@ export function seedStars(stars: Partial<Record<PlanetId, StarLevel>>): void {
         ttStore.raiseStars(planetId as PlanetId, level as StarLevel)
     }
 }
+
+export function seedBeamStars(stars: Partial<Record<BeamSkill, BeamStarLevel>>): void {
+    for (const [skill, level] of Object.entries(stars)) {
+        beamStore.raiseStars(skill as BeamSkill, level as BeamStarLevel)
+    }
+}
+
+export const seedBeamSettings = (alwaysShowBar: boolean): void =>
+    beamStore.saveBeamSettings({ alwaysShowBar })
 
 export { userEvent }

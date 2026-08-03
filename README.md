@@ -20,6 +20,10 @@
 |---------------------|------------------|
 | ![Times Tables Galaxy](./docs/math-invaders-times-tables.png) | ![Trainer practice](./docs/math-invaders-trainer-practice.png) |
 
+| Number Beam stations | Moving the alien on the bar |
+|----------------------|-----------------------------|
+| ![Number Beam station map](./docs/math-invaders-number-beam.png) | ![Number Beam drill](./docs/math-invaders-beam-drill.png) |
+
 ---
 
 ## 🎮 How to Play
@@ -41,6 +45,38 @@ card; Practice adapts to due and weak facts; and an accurate Speed Run unlocks a
 first star. Earn ⭐ for Practice, ⭐⭐ for a fast accurate run, and ⭐⭐⭐ by mastering every
 fact. Leitner-style review builds a Daily Mission, while the mastery heatmap distinguishes
 unseen, learning, due, and mastered facts.
+
+## 📏 Number Beam
+
+Number Beam is the third section in the game picker, and it is about doubling, halving
+and the number sense that grows out of them. **Every question is drawn as a bar**: the
+whole on top, the parts that make it underneath. Both rows are measured against one
+shared scale, so a doubled bar really is twice as long — and unknown parts stay behind
+a `?` until you answer, then fill in with their numbers.
+
+**Every other question is answered by moving an alien along the beam.** Instead of
+picking a tile, you drag the alien, nudge it with −/+ or walk it with the arrow keys,
+then land it on the answer. Underneath it is a native range slider, so it works with a
+finger, a mouse, a keyboard and a screen reader alike.
+
+### Stations
+
+Nine stations in three zones. Each one opens once two stations in the zone before it
+have a star:
+
+| Zone | Stations | Example |
+|------|----------|---------|
+| 🔁 Doubling Deck | Double · Halve · Near doubles | `2 × 7 = ?` · `14 ÷ 2 = ?` · `7 + 8 = ?` |
+| 🧩 Parts Bay | Double twice · Quarters · Fraction of | `4 × 6 = ?` · `20 ÷ 4 = ?` · `¾ × 20 = ?` |
+| 🔟 Tens Belt | Ten times · Number bonds · Split | `10 × 7 = ?` · `? + 7 = 10` · `24 = 20 + ?` |
+
+Prompts are written in pure maths notation, so they read identically in all four
+languages — the station name carries the concept and the bar carries the meaning.
+
+Each station has **three tiers**, and the tier is simply how many stars you already
+hold: numbers widen as you improve, so a station you have mastered never goes stale.
+A drill is ten questions. ⭐ at 70 % accuracy, ⭐⭐ at 90 % once you hold one, and ⭐⭐⭐
+for a clean sweep once you hold two. Stars never fall.
 
 **Controls:**
 - **Touch / mouse:** tap or click an answer tile
@@ -159,11 +195,12 @@ The fastest correct response per operation is tracked and celebrated on the summ
 
 ## ⚙️ Settings Reference
 
-Settings are grouped by the game they affect, because both games share the page:
+Settings are grouped by the game they affect, because all three games share the page:
 
 - **🛸 Math Invaders** — what to practise, rank, countdown, worked solutions
 - **✖️ Times Tables Galaxy** — strategy cards, trainer progress reset
-- **⚙️ Both games** — language, sound, clearing all data
+- **📏 Number Beam** — always show the bar, beam progress reset
+- **⚙️ All games** — language, sound, clearing all data
 
 
 | Setting | Options | Default | Notes |
@@ -176,6 +213,8 @@ Settings are grouped by the game they affect, because both games share the page:
 | 💡 Worked solutions | On / Off | On | Working after a miss, plus the Help button |
 | ✖️ Strategy cards | On / Off | On | Optional hints during trainer practice |
 | ✖️ Trainer progress | Reset | — | Clears only trainer facts, stars and best times |
+| 📏 Always show the bar | On / Off | On | Off hides the bar model until a miss |
+| 📏 Beam progress | Reset | — | Clears only Number Beam stars and best scores |
 | 🗄 Data | — | — | Clear everything stored on this device |
 
 ---
@@ -199,14 +238,16 @@ the arcade game, so the trainer does not link to it.
 
 ```
 ┌─ React 19 + TypeScript
-├─ Two games, one shell
-│  ├─ 🛸 Math Invaders     — the one-tap arcade game
-│  └─ ✖️ Times Tables Galaxy — the multiplication trainer
+├─ Three games, one shell
+│  ├─ 🛸 Math Invaders      — the one-tap arcade game
+│  ├─ ✖️ Times Tables Galaxy — the multiplication trainer
+│  └─ 📏 Number Beam        — doubling and halving on a bar model
 ├─ Pages
 │  ├─ Home: profile and the game picker
 │  ├─ Game: the arcade mission loop
 │  ├─ Hall of Fame: Math Invaders leaderboards
 │  ├─ Times Tables: galaxy map and the four trainer phases
+│  ├─ Number Beam: station map and the ten-question drill
 │  └─ Settings: grouped by which game each control affects
 ├─ Storage
 │  └─ localStorage: Player data, game state, scores
@@ -241,15 +282,19 @@ web/
 │   │   ├── HallOfFamePage.tsx  # Scores by rank
 │   │   ├── SettingsPage.tsx    # Three choices + advanced
 │   │   ├── TimesTablesPage.tsx # Times Tables Galaxy map
+│   │   ├── NumberBeamPage.tsx  # Number Beam station map
+│   │   ├── BeamDrillPage.tsx   # Number Beam drill loop
 │   │   └── trainer/            # Learn, Practice, Speed Run and Daily Mission
 │   ├── components/
 │   │   ├── AnswerGrid.tsx      # 2x2 one-tap answer tiles
 │   │   ├── GameHud.tsx         # Score, combo, timer ring, trail
 │   │   ├── MissionSummary.tsx  # Stars, stats, play again
 │   │   ├── NumberPad.tsx       # Trainer numeric input
+│   │   ├── BarModel.tsx        # Whole-and-parts bar with aliens
+│   │   ├── BeamSlider.tsx      # Move the alien along the beam
 │   │   ├── FactHeatmap.tsx     # Trainer mastery grid
 │   │   ├── SessionSummary.tsx  # Trainer results
-│   │   ├── TopBar.tsx         # The one navigation bar, used by both games
+│   │   ├── TopBar.tsx         # The one navigation bar, used by every game
 │   │   ├── Flag.tsx           # Drawn language flags
 │   │   └── ErrorBoundary.tsx   # Crash fallback
 │   ├── game/                   # Pure domain — no React, fully tested
@@ -260,6 +305,13 @@ web/
 │   │   ├── questions.ts        # Assembles forms into questions
 │   │   ├── mission.ts          # Mission state reducer
 │   │   └── examples.ts         # Worked examples
+│   ├── beam/                   # Number Beam domain — no React, fully tested
+│   │   ├── types.ts            # Skills, bar model, tiers and stars
+│   │   ├── stations.ts         # Zones, stations, caps and unlocking
+│   │   ├── questions.ts        # One generator per skill
+│   │   ├── bars.ts             # Bar geometry and beam sizing
+│   │   ├── session.ts          # Drill reducer
+│   │   └── beamStore.ts        # Stars, bests and beam settings
 │   ├── store/                  # localStorage — no React
 │   │   ├── storage.ts          # Safe JSON read/write
 │   │   ├── settings.ts         # Settings + v1 migration
@@ -270,6 +322,7 @@ web/
 │   ├── App.tsx         # Router
 │   ├── App.css         # Token-driven design system
 │   ├── timesTable.css  # Trainer-specific styles
+│   ├── beam.css        # Bar model and beam styles
 │   ├── hooks.ts        # Countdown, page visibility, modal dialogs
 │   ├── sound.ts        # Web Audio effects
 │   ├── translations.ts # i18n (de/it/en/fr)
@@ -311,9 +364,9 @@ Output in `web/dist/` — deploy to GitHub Pages or any static host.
 ### Test
 
 ```bash
-npm test              # 255 unit tests (domain + UI)
+npm test              # 343 unit tests (domain + UI)
 npm run test:coverage # with coverage, gated at 95 % statements
-npm run test:e2e      # 100 Playwright tests, desktop + mobile Chromium
+npm run test:e2e      # 138 Playwright tests, desktop + mobile Chromium
 npm run test:all      # everything
 ```
 
@@ -354,8 +407,8 @@ See [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) for details.
   `prefers-reduced-motion` support, dialogs that trap focus and close on Escape, and
   labels that stay in the accessibility tree even when a phone hides them — all
   verified by the automated accessibility and responsive suites
-- **Consistent:** both games share one navigation bar, so the way out is always the
-  first control in the top-left, whichever game a child is in
+- **Consistent:** all three games share one navigation bar, so the way out is always
+  the first control in the top-left, whichever game a child is in
 
 ---
 

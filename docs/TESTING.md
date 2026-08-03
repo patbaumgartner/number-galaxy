@@ -4,11 +4,11 @@ Math Invaders is tested in three layers, each answering a different question.
 
 | Layer | Question it answers | Runner | Count |
 |-------|--------------------|--------|-------|
-| **Domain** | Is the maths correct? | Vitest (`node`) | 153 tests · 20 files |
-| **UI** | Does the interface behave? | Vitest (`jsdom`) + Testing Library | 102 tests · 20 files |
-| **End-to-end** | Does the shipped bundle work? | Playwright (Chromium desktop + mobile) | 100 tests · 8 files |
+| **Domain** | Is the maths correct? | Vitest (`node`) | 197 tests · 22 files |
+| **UI** | Does the interface behave? | Vitest (`jsdom`) + Testing Library | 146 tests · 24 files |
+| **End-to-end** | Does the shipped bundle work? | Playwright (Chromium desktop + mobile) | 138 tests · 10 files |
 
-**355 tests total.** Everything below runs from `web/`.
+**481 tests total.** Everything below runs from `web/`.
 
 ```bash
 npm test              # both Vitest projects
@@ -27,7 +27,7 @@ npm run test:all      # unit + end-to-end
 
 | Pattern | Environment | Use it for |
 |---------|-------------|------------|
-| `src/**/*.test.ts` | `node` | Pure logic — `game/`, `store/`, `timesTable/`, `translations`, `sound` |
+| `src/**/*.test.ts` | `node` | Pure logic — `game/`, `beam/`, `store/`, `timesTable/`, `translations`, `sound` |
 | `src/**/*.test.tsx` | `jsdom` | Anything that renders React |
 
 This is configured as two Vitest projects in [`vitest.config.ts`](../web/vitest.config.ts). Keeping
@@ -61,6 +61,7 @@ What each area locks down:
 - **`game/options`** — always exactly four distinct options, one of which is the answer; every remainder distractor is itself legal.
 - **`game/questions`** — structural validity for every rank × operation × form, and that missing-operator prompts are only kept when exactly one operator fits.
 - **`game/mission`** — the mission reducer: streaks, combo scoring, phase transitions, and the guarantee that a run always reaches 25 questions.
+- **`beam/`** — every station × tier across 200 seeds: four distinct options, an answer that lands on a beam stop but never at its very end, both bar rows measured against one scale, a fraction's wanted parts summing to the answer, zone unlocking and the star ladder.
 - **`store/`** — the v1→v2 settings migration, score keying per rank and clock, badge tiers, and that tampered or corrupt localStorage degrades to defaults instead of throwing.
 - **`timesTable/`** — Leitner scheduling, session building, planet unlocking, star awards and strategy cards.
 - **`translations`** — full key parity across `de`/`it`/`en`/`fr`, equal array lengths, and matching `{placeholder}` sets.
@@ -96,6 +97,7 @@ expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/times-tables')
 - `seedSettings` / `seedLanguage` / `seedOperations` / `seedRank` / `seedPlayer` —
   write state *before* first render, because components read the store during render.
 - `seedStars` / `seedFactProgress` / `masteredFact` — trainer progress.
+- `seedBeamStars` / `seedBeamSettings` — Number Beam stars and whether the bar is always shown.
 
 ### Deriving expectations, never hard-coding them
 
@@ -138,6 +140,8 @@ Two projects run each spec: `chromium-desktop` (1280×800) and `chromium-mobile`
 | `settings.spec.ts` | Every control survives a reload; the last operation cannot be switched off; clearing data |
 | `hall-of-fame.spec.ts` | Empty state, grouping by rank and clock, medals, the legacy section |
 | `times-tables.spec.ts` | Galaxy map and locks, phase chooser, Learn end to end, Practice earning a star, Speed Run gating and timing, Daily Mission, heatmap tabs |
+| `number-beam.spec.ts` | Station map and zone locks, a full ten-question drill across both inputs, dragging/nudging/arrow-keying the alien along the beam, the bar revealing its numbers after a miss, hiding the bar, resetting beam progress |
+| `progression.spec.ts` | Rank and star progression across both games |
 | `a11y.spec.ts` | Heading structure, keyboard reachability, accessible names, dialog semantics, no positive `tabindex` |
 | `responsive.spec.ts` | No horizontal overflow and adequate touch targets at 360×640, 768×1024 and 1280×800 |
 | `pwa.spec.ts` | Manifest validity, service worker registration, survival across reload, the `404.html` redirect |
@@ -166,10 +170,10 @@ and **fails** below these floors:
 
 | Metric | Floor | Current |
 |--------|-------|---------|
-| Statements | 95 % | 96.3 % |
-| Branches | 92 % | 94.1 % |
-| Functions | 95 % | 97.0 % |
-| Lines | 97 % | 98.6 % |
+| Statements | 95 % | 96.5 % |
+| Branches | 92 % | 94.9 % |
+| Functions | 95 % | 97.4 % |
+| Lines | 97 % | 98.2 % |
 
 Excluded: test files, `src/test/`, and `src/main.tsx` (the bootstrap, exercised by the
 end-to-end suite instead).

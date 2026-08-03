@@ -39,6 +39,14 @@ export default function NumberSensePage() {
                     <p className="panel__hint">{t.sense.mapHint}</p>
                 </section>
 
+                <button
+                    type="button"
+                    className="btn btn--ghost sense-play__entry"
+                    onClick={() => navigate('/number-sense/play')}
+                >
+                    🧩 {t.sense.playCard}
+                </button>
+
                 {SENSE_ZONES.map(zone => {
                     const unlocked = isSenseZoneUnlocked(zone.id, stars)
                     return (

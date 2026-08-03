@@ -12,6 +12,7 @@ import NumberBeamPage from './pages/NumberBeamPage'
 import BeamDrillPage from './pages/BeamDrillPage'
 import NumberSensePage from './pages/NumberSensePage'
 import SenseDrillPage from './pages/SenseDrillPage'
+import SensePlayPage from './pages/SensePlayPage'
 import ProgressPage from './pages/ProgressPage'
 
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
                     <Route path="/number-beam" element={<NumberBeamPage />} />
                     <Route path="/number-beam/drill/:skill" element={<BeamDrillPage />} />
                     <Route path="/number-sense" element={<NumberSensePage />} />
+                    <Route path="/number-sense/play" element={<SensePlayPage />} />
                     <Route path="/number-sense/drill/:skill" element={<SenseDrillPage />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>

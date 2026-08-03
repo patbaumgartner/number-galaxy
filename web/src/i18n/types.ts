@@ -214,6 +214,16 @@ export type Translations = {
         howMany: string
         placeIt: string
         lookAgain: string
+        exitToMap: string
+        playTitle: string
+        playHint: string
+        playLess: string
+        playMore: string
+        playDots: string
+        playFrame: string
+        playRack: string
+        playLine: string
+        playCard: string
         glanceHint: string
         closeEnough: string
         pictureLabel: string

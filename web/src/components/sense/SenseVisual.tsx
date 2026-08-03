@@ -31,14 +31,18 @@ export default function SenseVisual({ visual, visible, label }: SenseVisualProps
 
 function Drawing({ visual }: { readonly visual: Visual }) {
     switch (visual.kind) {
-        case 'dots':
+        case 'dots': {
+            // Rows come from the dots rather than a fixed three: the drills never
+            // ask for more than twelve, but Explore goes to twenty and the last
+            // row would otherwise be cut off the bottom of the grid.
+            const rows = Math.max(3, ...visual.dots.map(dot => dot.row + 1))
             return (
                 <div
                     className="sense-dots"
                     style={{ gridTemplateColumns: `repeat(${visual.columns}, 1fr)` }}
                     aria-hidden="true"
                 >
-                    {Array.from({ length: 3 * visual.columns }, (_unused, cell) => {
+                    {Array.from({ length: rows * visual.columns }, (_unused, cell) => {
                         const row = Math.floor(cell / visual.columns)
                         const column = cell % visual.columns
                         const dot = visual.dots.find(entry => entry.row === row && entry.column === column)
@@ -51,6 +55,7 @@ function Drawing({ visual }: { readonly visual: Visual }) {
                     })}
                 </div>
             )
+        }
 
         case 'tenFrame':
             return (
@@ -103,7 +108,7 @@ function Drawing({ visual }: { readonly visual: Visual }) {
                             <span className="sense-line__jump-label">+{visual.jump}</span>
                         </div>
                     )}
-                    {visual.jump > 0 && (
+                    {visual.jump > 0 && visual.from > 0 && (
                         <span className="sense-line__mark" style={{ left: `${(visual.from / visual.max) * 100}%` }}>
                             {visual.from}
                         </span>

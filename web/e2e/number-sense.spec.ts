@@ -66,3 +66,19 @@ test('answers on the beam and finishes a ten-question drill', async ({ page }) =
     await expect(summary.getByText('10/10')).toBeVisible()
     await expect(summary.locator('.summary__stars')).toHaveAttribute('aria-label', '1/3')
 })
+
+test('explores a number in four representations without asking anything', async ({ page }) => {
+    await seedStorage(page, { settings, player })
+    await gotoApp(page, '/number-sense')
+
+    await page.getByRole('button', { name: /Explore numbers/ }).click()
+    await expect(page).toHaveURL(/\/number-sense\/play/)
+
+    await expect(page.getByRole('img', { name: '5 as a dot pattern' })).toBeVisible()
+    await page.getByRole('button', { name: '10 more' }).click()
+    await expect(page.getByRole('img', { name: '15 on the ten-frame' })).toBeVisible()
+    await expect(page.getByRole('img', { name: '15 on the bead rack' })).toBeVisible()
+
+    // A sandbox stops being one the moment it keeps score.
+    await expect(page.locator('.hud')).toHaveCount(0)
+})

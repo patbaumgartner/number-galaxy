@@ -148,3 +148,50 @@
 .is-reserved {
   visibility: hidden;
 }
+
+/* Explore numbers — the sandbox. No score row, no timer, no star, because the
+   whole point is that nothing here is being measured. */
+.sense-play__entry {
+  width: 100%;
+  margin-bottom: var(--space-4);
+}
+
+.sense-play__number {
+  text-align: center;
+}
+
+.sense-play__value {
+  display: block;
+  font-size: var(--text-fluid-eq);
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--color-gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.sense-play__controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.sense-play__step {
+  min-width: 64px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sense-play__views {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.sense-play__caption {
+  margin: var(--space-3) 0 0;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text-muted);
+  text-align: center;
+}

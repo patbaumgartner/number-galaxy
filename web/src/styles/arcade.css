@@ -645,3 +645,10 @@
   padding: var(--space-2) var(--space-3);
   font-size: var(--text-sm);
 }
+
+/* Read-aloud sits inside the story rather than in the bar, because it belongs to
+   the sentence it reads and not to the mission. */
+.equation__speak {
+  margin-left: var(--space-2);
+  vertical-align: middle;
+}

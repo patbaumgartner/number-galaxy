@@ -70,6 +70,7 @@ export const de: Translations = {
         quit: 'Beenden',
         help: 'Hilfe',
         helpTitle: 'So rechnest du',
+        readAloud: 'Vorlesen',
         helpClose: 'Weiter',
         start: 'Los geht’s',
         startHint: 'Tippe auf die richtige Antwort',
@@ -161,6 +162,8 @@ export const de: Translations = {
         thinkingNormal: 'Normal',
         thinkingMore: 'Mehr',
         thinkingMost: 'Am meisten',
+        readableTitle: 'Leichter lesen',
+        readableHint: 'Mehr Abstand zwischen Buchstaben, Wörtern und Zeilen, in einer ruhigen Schrift. Hilft beim Lesen, wenn Buchstaben sonst ineinanderlaufen.',
     },
     progress: {
         title: '📋 Fortschritt',

@@ -92,3 +92,27 @@ button {
   border: 0;
 }
 
+
+/* Easier reading.
+   Extra letter, word and line spacing in a plain sans-serif — the intervention
+   the eye-tracking evidence actually supports, rather than a bespoke "dyslexia
+   font" whose benefit is not well established and which would cost an
+   offline-first app a font download. Numbers keep their tabular alignment, so
+   an equation still lines up. */
+.reading-comfort body,
+.reading-comfort {
+  --font-ui: Verdana, Tahoma, 'Trebuchet MS', system-ui, sans-serif;
+}
+
+.reading-comfort body {
+  letter-spacing: 0.05em;
+  word-spacing: 0.14em;
+  line-height: 1.7;
+}
+
+.reading-comfort p,
+.reading-comfort small,
+.reading-comfort li,
+.reading-comfort .panel__hint {
+  max-width: 62ch;
+}

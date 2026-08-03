@@ -34,6 +34,7 @@ import {
     useSurpriseRun,
     type SurpriseActions,
 } from '../hooks'
+import { canSpeak, speak } from '../speech'
 import {
     playCombo,
     playCorrect,
@@ -387,7 +388,19 @@ export default function GamePage() {
 
                 <section className={`equation${feedback ? ` equation--${feedback.outcome}` : ''}`}>
                     {mission.question.story.length > 0 && (
-                        <p className="equation__story">{mission.question.story}</p>
+                        <p className="equation__story">
+                            {mission.question.story}
+                            {canSpeak() && (
+                                <button
+                                    type="button"
+                                    className="btn btn--icon equation__speak"
+                                    onClick={() => speak(mission.question.story, settings.language)}
+                                    aria-label={t.game.readAloud}
+                                >
+                                    🔊
+                                </button>
+                            )}
+                        </p>
                     )}
                     <p className={`equation__prompt${mission.question.story.length > 0 ? ' equation__prompt--small' : ''}`}>
                         {mission.question.story.length > 0 && feedback === null ? '?' : mission.question.prompt}

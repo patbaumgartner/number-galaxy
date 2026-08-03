@@ -49,6 +49,15 @@ export type GameSettings = {
      * ticking over beside the question.
      */
     showScore: boolean
+    /**
+     * Wider letter, word and line spacing, in a plain sans-serif.
+     *
+     * Spacing rather than a special "dyslexia font": the eye-tracking evidence
+     * for extra spacing is solid, while the benefit of the bespoke typefaces is
+     * not, and shipping a font file would cost an offline-first app its weight
+     * for a weaker effect.
+     */
+    readableText: boolean
 }
 
 export const THINKING_TIMES: readonly GameSettings['thinkingTime'][] = [1, 1.5, 2]
@@ -69,6 +78,7 @@ export const defaultSettings: GameSettings = {
     hints: true,
     stories: false,
     showScore: true,
+    readableText: false,
 }
 
 /**
@@ -128,6 +138,7 @@ function fromLegacy(legacy: LegacySettings): GameSettings {
         sound: true,
         hints: legacy.tips !== false || legacy.workedExamples !== false,
         showScore: defaultSettings.showScore,
+        readableText: defaultSettings.readableText,
     }
 }
 
@@ -142,6 +153,7 @@ function sanitize(value: Partial<GameSettings> & { timed?: unknown }): GameSetti
         hints: value.hints !== false,
         stories: value.stories === true,
         showScore: value.showScore !== false,
+        readableText: value.readableText === true,
     }
 }
 

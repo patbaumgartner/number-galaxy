@@ -56,6 +56,7 @@ export type Translations = {
         quit: string
         help: string
         helpTitle: string
+        readAloud: string
         helpClose: string
         start: string
         startHint: string
@@ -127,6 +128,8 @@ export type Translations = {
         thinkingNormal: string
         thinkingMore: string
         thinkingMost: string
+        readableTitle: string
+        readableHint: string
         groupInvaders: string
         groupInvadersHint: string
         groupTables: string

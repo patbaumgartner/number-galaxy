@@ -70,6 +70,7 @@ export const it: Translations = {
         quit: 'Termina',
         help: 'Aiuto',
         helpTitle: 'Come si calcola',
+        readAloud: 'Leggi ad alta voce',
         helpClose: 'Continua',
         start: 'Via!',
         startHint: 'Tocca la risposta giusta',
@@ -161,6 +162,8 @@ export const it: Translations = {
         thinkingNormal: 'Normale',
         thinkingMore: 'Di più',
         thinkingMost: 'Il massimo',
+        readableTitle: 'Lettura facilitata',
+        readableHint: 'Più spazio tra lettere, parole e righe, con un carattere semplice. Aiuta quando le lettere si confondono tra loro.',
     },
     progress: {
         title: '📋 Progressi',

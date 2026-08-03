@@ -7,17 +7,26 @@ import { store } from './store'
 import { nextSurprise, surpriseRoute, SURPRISE_PARAM } from './surprise'
 
 /**
- * Mirrors the chosen UI language onto `<html lang>` and the tab title.
+ * Mirrors the document-level preferences: language, and easier reading.
  *
  * The title cannot stay in `index.html`: the app name is translated, so a static
  * one leaves an English or French child looking at a German tab. The markup
  * keeps the German name for first paint, which is the default language.
+ *
+ * Easier reading rides along rather than getting a hook of its own, because it
+ * has to be on *every* screen — a setting a dyslexic child switched on and then
+ * lost by walking into the trainer is worse than no setting. This hook is the
+ * one every page already calls, so it cannot be half-applied.
  */
 export function useDocumentLanguage(language: Language): void {
     useEffect(() => {
         document.documentElement.lang = language
         document.title = translations[language].home.appName
     }, [language])
+
+    useEffect(() => {
+        document.documentElement.classList.toggle('reading-comfort', store.getSettings().readableText)
+    })
 }
 
 /**

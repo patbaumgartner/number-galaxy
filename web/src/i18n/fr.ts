@@ -70,6 +70,7 @@ export const fr: Translations = {
         quit: 'Terminer',
         help: 'Aide',
         helpTitle: 'Comment calculer',
+        readAloud: 'Lire à voix haute',
         helpClose: 'Continuer',
         start: 'C’est parti',
         startHint: 'Touche la bonne réponse',
@@ -161,6 +162,8 @@ export const fr: Translations = {
         thinkingNormal: 'Normal',
         thinkingMore: 'Plus',
         thinkingMost: 'Le plus',
+        readableTitle: 'Lecture facilitée',
+        readableHint: 'Plus d’espace entre les lettres, les mots et les lignes, dans une police simple. Aide quand les lettres se confondent.',
     },
     progress: {
         title: '📋 Progrès',

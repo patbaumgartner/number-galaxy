@@ -332,6 +332,20 @@ export default function SettingsPage() {
                     </div>
 
                     <div className="panel">
+                        <div className="switch-row">
+                            <div>
+                                <h3 className="switch-row__title">🔤 {t.settings.readableTitle}</h3>
+                                <p className="panel__hint">{t.settings.readableHint}</p>
+                            </div>
+                            <Switch
+                                labels={t.settings}
+                                on={settings.readableText}
+                                onToggle={() => update({ readableText: !settings.readableText })}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="panel">
                         <h3 className="panel__title">{t.progress.title}</h3>
                         <p className="panel__hint">{t.progress.tagline}</p>
                         <div className="panel__action">

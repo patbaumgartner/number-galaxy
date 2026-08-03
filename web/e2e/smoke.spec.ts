@@ -12,6 +12,7 @@ for (const route of [
     ['/times-tables', 'Times Tables Galaxy'],
     ['/number-beam', '📏 Number Beam'],
     ['/number-sense', '👀 Number Sense'],
+    ['/progress', '📋 Progress'],
 ] as const) {
     test(`loads ${route[0]} with its English heading and no console errors`, async ({ page }) => {
         const errors = collectConsoleErrors(page)

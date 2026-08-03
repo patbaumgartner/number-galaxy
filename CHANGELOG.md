@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **📋 A progress page for parents and teachers.** The mastery data was all there
+  and none of it was reachable: the README said outright that there was no
+  report. There is one now, reached from Settings, and it answers the only
+  question a grown-up actually has — *what should we practise next?* — in words
+  rather than percentages: the habit worth naming ("you took the smaller digit
+  from the bigger one") and a short list of sums to look at.
+  - Per-operation accuracy, facts secure, stars in each of the four sections.
+  - **Download as a file** and **Print**, with a print stylesheet that drops the
+    chrome so a teacher can hand it over on paper.
+  - It reads what is already on the device and records nothing of its own — a
+    test holds that building it twice writes nothing at all. Nothing is sent
+    anywhere, because there is still nowhere to send it.
 - **📖 Word problems, off by default.** A child who can work out `24 ÷ 6`
   perfectly well may still not know that this is the sum a question about
   sharing apples is asking for — choosing the operation is a separate skill from

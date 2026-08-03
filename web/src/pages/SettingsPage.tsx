@@ -246,6 +246,18 @@ export default function SettingsPage() {
                 </section>
 
                 <section className="group">
+                    <div className="panel">
+                        <h2 className="panel__title">{t.progress.title}</h2>
+                        <p className="panel__hint">{t.progress.tagline}</p>
+                        <div className="panel__action">
+                            <button type="button" className="btn btn--ghost" onClick={() => navigate('/progress')}>
+                                {t.progress.title}
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section className="group">
                     <div className="group__head">
                         <h2 className="group__title">{t.settings.groupSense}</h2>
                         <p className="group__hint">{t.settings.groupSenseHint}</p>

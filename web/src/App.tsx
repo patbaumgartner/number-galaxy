@@ -11,6 +11,7 @@ import NumberBeamPage from './pages/NumberBeamPage'
 import BeamDrillPage from './pages/BeamDrillPage'
 import NumberSensePage from './pages/NumberSensePage'
 import SenseDrillPage from './pages/SenseDrillPage'
+import ProgressPage from './pages/ProgressPage'
 
 export default function App() {
     return (
@@ -21,6 +22,7 @@ export default function App() {
                     <Route path="/game" element={<GamePage />} />
                     <Route path="/hall-of-fame" element={<HallOfFamePage />} />
                     <Route path="/settings" element={<SettingsPage />} />
+                    <Route path="/progress" element={<ProgressPage />} />
                     <Route path="/times-tables" element={<TimesTablesPage />} />
                     <Route path="/times-tables/train/:planetId/:phase" element={<TableTrainerPage />} />
                     <Route path="/number-beam" element={<NumberBeamPage />} />

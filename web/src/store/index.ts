@@ -55,6 +55,9 @@ export type {
 } from './progress'
 export { BADGE_EMOJI, computeBadge, progressKeys } from './progress'
 
+export type { ProgressReport, SectionLine, SkillLine } from './report'
+export { buildReport, readableFact } from './report'
+
 export { storageKey } from './storage'
 
 export const store = {

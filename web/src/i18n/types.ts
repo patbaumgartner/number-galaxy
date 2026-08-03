@@ -123,6 +123,27 @@ export type Translations = {
         groupShared: string
         groupSharedHint: string
     }
+    progress: {
+        title: string
+        tagline: string
+        forWhom: string
+        arcadeTitle: string
+        answered: string
+        notYet: string
+        factsKnown: string
+        practiseNext: string
+        nothingDue: string
+        tablesTitle: string
+        tablesKnown: string
+        beamTitle: string
+        senseTitle: string
+        stars: string
+        exportTitle: string
+        exportHint: string
+        exportButton: string
+        printButton: string
+        privacy: string
+    }
     hof: {
         title: string
         subtitle: string

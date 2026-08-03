@@ -4,7 +4,7 @@ import { gotoApp, seedStorage } from './fixtures'
 const settings = { language: 'en', operations: ['addition'], rank: 'rookie', timed: false, sound: false, hints: true }
 const player = { id: 'responsive-pilot', playerName: 'Nova', avatarId: '🚀', createdAt: '2026-01-01T00:00:00.000Z' }
 const viewports = [{ width: 360, height: 640 }, { width: 768, height: 1024 }, { width: 1280, height: 800 }] as const
-const routes = ['/', '/hall-of-fame', '/settings', '/times-tables', '/number-beam', '/number-beam/drill/double', '/number-sense', '/number-sense/drill/subitize'] as const
+const routes = ['/', '/hall-of-fame', '/settings', '/times-tables', '/number-beam', '/number-beam/drill/double', '/number-sense', '/number-sense/drill/subitize', '/progress'] as const
 
 test.describe.configure({ mode: 'parallel' })
 

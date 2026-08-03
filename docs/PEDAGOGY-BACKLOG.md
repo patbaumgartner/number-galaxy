@@ -189,11 +189,12 @@ shown as failure.
 · Cezarotto & Battaiola 2021
 · LP21: *"Ein zu frühes, nicht vorstellungs- und verständnisorientiertes Automatisieren… behindert weiterführende Lernprozesse."*
 
-## Tier 5 — School, parents, inclusion
+## Tier 5 — School, parents, inclusion ✅ done
 
-**29. Parent and teacher view.** A `/progress` route over data already stored: facts mastered,
-accuracy trend, "practise next", per game. JSON export + print stylesheet. No account, no
-server. Pairs with a printable sheet generated from the child's own weak facts.
+**29. Parent and teacher view.** ✅ **done** — `/progress`, reached from Settings. Names the
+habit worth naming, lists the sums to practise next, shows accuracy and stars per game.
+Download and print, with a print stylesheet. Reads only what is already stored and writes
+nothing, which a test holds.
 · ICO EdTech audit 2024 — data portability is the most-missed standard even in privacy-conscious products
 
 **30. Multiple profiles on one device.** ✅ **done** — shipped ahead of Tier 1, because it
@@ -206,7 +207,7 @@ namespace on every call.
 
 ## Suggested order
 
-Items 29 and 18 remain. `4` and `30` (both shipped)
+Item 18 remains — see the note against it. `4` and `30` (both shipped)
 unblock Tier 2 and Tier 1 respectively.
 
 ## Sources

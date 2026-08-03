@@ -52,9 +52,13 @@ If you would rather not choose, **🎲 Surprise me** picks for them — see
 - **Skill badges** in Settings, one per arcade operation, from a rolling 30-answer
   accuracy history.
 - **Worked solutions** after every miss, so a wrong answer teaches something.
+- **📋 A progress page** — Settings → Progress — written for you rather than for the child.
+  It names the mistake that keeps coming up in plain language, lists the sums to look at
+  next, and shows accuracy and stars per game. It can be **printed** or **saved as a file**.
 
-There is no dashboard and no report to log into: progress lives on the device the child
-plays on, and that is the whole privacy model.
+There is no account and nothing to log into: the progress page reads what is already on the
+device, records nothing of its own, and sends nothing anywhere. That is the whole privacy
+model.
 
 ### What it never does
 

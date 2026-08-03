@@ -247,3 +247,50 @@
   flex: 1 1 auto;
   justify-content: center;
 }
+
+/* Parent and teacher report */
+.report__skills {
+  list-style: none;
+  margin: 0 0 var(--space-4);
+  padding: 0;
+}
+
+.report__skill {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border-hairline);
+}
+
+.report__value {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.report__privacy {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  text-wrap: balance;
+  margin: var(--space-4) 0 var(--space-8);
+}
+
+/* A report a teacher can hand over on paper: ink-friendly, no chrome, no controls. */
+@media print {
+  body { background: #fff; color: #000; }
+
+  .game-bar,
+  .report__actions,
+  .stage__rocket { display: none; }
+
+  .page, .shell, .panel {
+    background: #fff;
+    color: #000;
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+
+  .panel__title, .report__value, .report__privacy, .chip { color: #000; }
+  .chip { border: 1px solid #666; }
+}

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router'
 import BarModelView from '../components/beam/BarModel'
 import BeamSlider from '../components/beam/BeamSlider'
+import DrillSummary, { type DrillResult } from '../components/beam/DrillSummary'
 import PlayHud from '../components/PlayHud'
 import TopBar from '../components/TopBar'
 import WorkedExampleDialog from '../components/WorkedExampleDialog'
@@ -21,10 +22,10 @@ import {
     type BeamSkill,
     type BeamStarLevel,
 } from '../beam'
-import { useDocumentLanguage, useModalDialog, useSoundSetting, useSurpriseRun, type SurpriseActions } from '../hooks'
+import { useDocumentLanguage, useSoundSetting, useSurpriseActions } from '../hooks'
 import { playCorrect, playShoot, playVictory, playWrong } from '../sound'
 import { store } from '../store'
-import { fill, translations, type Translations } from '../i18n'
+import { fill, translations } from '../i18n'
 
 const CORRECT_MS = 700
 const WRONG_MS = 2400
@@ -33,16 +34,6 @@ type Feedback = {
     readonly correct: boolean
     readonly answer: string
     readonly workingOut: string
-}
-
-type DrillResult = {
-    readonly correct: number
-    readonly total: number
-    readonly accuracy: number
-    readonly bestStreak: number
-    readonly stars: BeamStarLevel
-    readonly gained: boolean
-    readonly newBest: boolean
 }
 
 export default function BeamDrillPage() {
@@ -78,16 +69,7 @@ function BeamDrill({ skill, onReplay }: { readonly skill: BeamSkill; readonly on
     const [helpOpen, setHelpOpen] = useState(false)
     const [result, setResult] = useState<DrillResult | null>(null)
     const savedRef = useRef(false)
-    const surprise = useSurpriseRun()
-
-    const surpriseActions: SurpriseActions | undefined = surprise.active
-        ? {
-            againLabel: t.surprise.again,
-            homeLabel: t.nav.home,
-            onAgain: surprise.again,
-            onHome: surprise.home,
-        }
-        : undefined
+    const surpriseActions = useSurpriseActions(t)
 
     const question = currentQuestion(drill)
     const answering = drill.phase === 'answering' && !helpOpen
@@ -215,59 +197,6 @@ function BeamDrill({ skill, onReplay }: { readonly skill: BeamSkill; readonly on
                     surprise={surpriseActions}
                 />
             )}
-        </div>
-    )
-}
-
-type DrillSummaryProps = {
-    readonly labels: Translations['beam']
-    readonly result: DrillResult
-    readonly onPlayAgain: () => void
-    readonly onExit: () => void
-    /** Set when the picker chose this station, not the player. */
-    readonly surprise?: SurpriseActions | undefined
-}
-
-function DrillSummary({ labels, result, onPlayAgain, onExit, surprise }: DrillSummaryProps) {
-    const dialog = useModalDialog<HTMLDivElement>()
-
-    return (
-        <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="beam-summary-title" ref={dialog}>
-            <div className="overlay__card">
-                <h2 className="overlay__title" id="beam-summary-title">{labels.summaryTitle}</h2>
-                <p className="overlay__stars" aria-label={`${result.stars} stars`}>
-                    {'⭐'.repeat(result.stars) || '☆'}
-                </p>
-                <p className="overlay__steps">
-                    {labels.summaryAccuracy}: {result.correct}/{result.total} ({Math.round(result.accuracy * 100)}%)
-                    {' · '}
-                    {labels.summaryStreak}: {result.bestStreak}
-                </p>
-                {result.gained && <p className="overlay__note">{fill(labels.summaryStars, { n: result.stars })}</p>}
-                {result.newBest && <p className="overlay__note">{labels.summaryNewBest}</p>}
-                {!result.gained && result.stars === 0 && <p className="overlay__note">{labels.summaryKeepGoing}</p>}
-                <div className="overlay__actions">
-                    {surprise === undefined ? (
-                        <>
-                            <button type="button" className="btn btn--primary" onClick={onPlayAgain}>
-                                {labels.playAgain}
-                            </button>
-                            <button type="button" className="btn btn--ghost" onClick={onExit}>
-                                {labels.exit}
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <button type="button" className="btn btn--primary" onClick={surprise.onAgain}>
-                                {surprise.againLabel}
-                            </button>
-                            <button type="button" className="btn btn--ghost" onClick={surprise.onHome}>
-                                {surprise.homeLabel}
-                            </button>
-                        </>
-                    )}
-                </div>
-            </div>
         </div>
     )
 }

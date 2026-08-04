@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router'
 import TopBar from '../components/TopBar'
+import SenseSummary, { type SenseResult } from '../components/sense/SenseSummary'
 import PlayHud from '../components/PlayHud'
 import BeamSlider from '../components/beam/BeamSlider'
 import SenseVisual from '../components/sense/SenseVisual'
@@ -24,7 +25,7 @@ import {
 } from '../sense'
 import { store } from '../store'
 import { fill, translations, type Translations } from '../i18n'
-import { useDocumentLanguage, useSoundSetting, useSurpriseRun, type SurpriseActions } from '../hooks'
+import { useDocumentLanguage, useSoundSetting, useSurpriseActions } from '../hooks'
 import { playCorrect, playShoot, playVictory, playWrong } from '../sound'
 
 const CORRECT_MS = 700
@@ -33,16 +34,6 @@ const CORRECT_MS = 700
 const GLANCE_MS = 1400
 
 type Feedback = { readonly correct: boolean; readonly exact: boolean; readonly answer: string }
-
-type SenseResult = {
-    readonly correct: number
-    readonly total: number
-    readonly accuracy: number
-    readonly bestStreak: number
-    readonly stars: SenseStarLevel
-    readonly gained: boolean
-    readonly newBest: boolean
-}
 
 /**
  * What a screen reader is told about the picture.
@@ -86,11 +77,7 @@ function SenseDrill({ skill, onReplay }: { readonly skill: SenseSkill; readonly 
     const [helpOpen, setHelpOpen] = useState(false)
     const [result, setResult] = useState<SenseResult | null>(null)
     const savedRef = useRef(false)
-    const surprise = useSurpriseRun()
-
-    const surpriseActions: SurpriseActions | undefined = surprise.active
-        ? { againLabel: t.surprise.again, homeLabel: t.nav.home, onAgain: surprise.again, onHome: surprise.home }
-        : undefined
+    const surpriseActions = useSurpriseActions(t)
 
     const question = currentSenseQuestion(drill)
     const answering = drill.phase === 'answering'
@@ -238,74 +225,6 @@ function SenseDrill({ skill, onReplay }: { readonly skill: SenseSkill; readonly 
                     surprise={surpriseActions}
                 />
             )}
-        </div>
-    )
-}
-
-type SenseSummaryProps = {
-    readonly labels: Translations
-    readonly result: SenseResult
-    readonly onPlayAgain: () => void
-    readonly onExit: () => void
-    readonly surprise?: SurpriseActions | undefined
-}
-
-function SenseSummary({ labels, result, onPlayAgain, onExit, surprise }: SenseSummaryProps) {
-    const t = labels.beam
-
-    return (
-        <div className="summary" role="dialog" aria-modal="true" aria-labelledby="sense-summary-title">
-            <div className="summary__card">
-                <h2 className="summary__title" id="sense-summary-title">{t.summaryTitle}</h2>
-                <div className="summary__stars" aria-label={`${result.stars}/3`}>
-                    {[0, 1, 2].map(index => (
-                        <span
-                            key={index}
-                            className={`summary__star${index < result.stars ? ' summary__star--earned' : ''}`}
-                            aria-hidden="true"
-                        >
-                            ★
-                        </span>
-                    ))}
-                </div>
-
-                {result.gained && <p className="summary__badge">⭐ {fill(t.summaryStars, { n: result.stars })}</p>}
-                {result.newBest && <p className="summary__badge">🏆 {t.summaryNewBest}</p>}
-                {!result.gained && !result.newBest && <p className="summary__hint">{t.summaryKeepGoing}</p>}
-
-                <dl className="summary__stats">
-                    <div className="summary__stat">
-                        <dt>{t.summaryAccuracy}</dt>
-                        <dd>{result.correct}/{result.total}</dd>
-                    </div>
-                    <div className="summary__stat">
-                        <dt>{t.summaryStreak}</dt>
-                        <dd>{result.bestStreak}🔥</dd>
-                    </div>
-                </dl>
-
-                <div className="summary__actions">
-                    {surprise === undefined ? (
-                        <>
-                            <button type="button" className="btn btn--primary btn--lg" onClick={onPlayAgain}>
-                                {t.playAgain}
-                            </button>
-                            <button type="button" className="btn btn--ghost" onClick={onExit}>
-                                {t.exit}
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <button type="button" className="btn btn--primary btn--lg" onClick={surprise.onAgain}>
-                                {surprise.againLabel}
-                            </button>
-                            <button type="button" className="btn btn--ghost" onClick={surprise.onHome}>
-                                {surprise.homeLabel}
-                            </button>
-                        </>
-                    )}
-                </div>
-            </div>
         </div>
     )
 }

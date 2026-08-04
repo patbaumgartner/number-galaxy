@@ -43,7 +43,7 @@ const finish = (draft: Draft): Question => ({
     correctIndex: draft.options.indexOf(draft.answer),
 })
 
-// ---------------------------------------------------------------- direct ----
+// Direct
 
 function directQuestion(
     rng: Rng,
@@ -82,7 +82,7 @@ function remainderQuestion(rng: Rng, language: Language, maxValue: number): Ques
     })
 }
 
-// -------------------------------------------------------- missing operand ----
+// Missing operand
 
 /** How to recover each operand — the inverse operation, spelled out. */
 function inverseWorking(equation: Equation, form: 'missingLeft' | 'missingRight'): string {
@@ -130,7 +130,7 @@ function missingOperandQuestion(
     })
 }
 
-// ------------------------------------------------------- missing operator ----
+// Missing operator
 
 function missingOperatorQuestion(
     rng: Rng,
@@ -157,7 +157,7 @@ function missingOperatorQuestion(
     return null
 }
 
-// ----------------------------------------------------------------- chain ----
+// Chain
 
 /** Second step is always `+` or `−`, and the bracket is always explicit. */
 function chainQuestion(rng: Rng, operation: BinaryOperation, maxValue: number): Question | null {
@@ -195,7 +195,7 @@ function chainQuestion(rng: Rng, operation: BinaryOperation, maxValue: number): 
     return null
 }
 
-// ------------------------------------------------------------ public API ----
+// Public API
 
 /**
  * The most weight a shaky shape may reach.

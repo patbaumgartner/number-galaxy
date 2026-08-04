@@ -1,4 +1,4 @@
-/* Hall of Fame */
+/* Hall of Fame — one personal best per rank and clock setting. */
 .board {
   background: var(--bg-surface);
   border-radius: var(--radius-lg);

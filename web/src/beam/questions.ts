@@ -26,7 +26,7 @@ const repeat = (count: number, value: number, known: boolean): BarSpec[1]['parts
 
 const TEN = 10
 
-// ----------------------------------------------------------------- doubles ----
+// Doubles
 
 function doubleDraft(rng: Rng, cap: number): Draft {
     const n = randomInt(rng, 2, cap)
@@ -73,7 +73,7 @@ function nearDoubleDraft(rng: Rng, cap: number): Draft {
     }
 }
 
-// ------------------------------------------------------------------- parts ----
+// Parts
 
 function doubleDoubleDraft(rng: Rng, cap: number): Draft {
     const n = randomInt(rng, 2, cap)
@@ -132,7 +132,7 @@ function fractionOfDraft(rng: Rng, cap: number): Draft {
     }
 }
 
-// ------------------------------------------------------------------- place ----
+// Place
 
 function tenTimesDraft(rng: Rng, cap: number): Draft {
     const n = randomInt(rng, 2, cap)

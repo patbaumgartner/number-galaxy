@@ -1,4 +1,3 @@
-/* Expanded hit area for chip edit */
 .chip__edit::after {
   content: '';
   position: absolute;

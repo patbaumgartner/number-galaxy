@@ -44,7 +44,7 @@
 .beam-station--locked { opacity: .58; cursor: not-allowed; }
 .beam-station__next { position: absolute; right: var(--space-2); top: var(--space-2); color: var(--color-pink); }
 
-/* --------------------------------------------------------------- bar model -- */
+/* Bar Model */
 
 .bar-model {
   display: flex;
@@ -107,7 +107,7 @@
 .bar-seg--unknown { background: var(--bg-surface-elevated); border-style: dashed; border-color: var(--color-pink); }
 .bar-seg--extra { background: var(--bg-surface-elevated); opacity: .5; border-style: dashed; }
 
-/* ------------------------------------------------------------------- beam -- */
+/* Beam */
 
 .beam {
   display: flex;
@@ -215,7 +215,7 @@
 .beam__nudge { flex: 0 0 auto; font-size: var(--text-xl); }
 .beam__fire { flex: 1; font-variant-numeric: tabular-nums; }
 
-/* ------------------------------------------------------------------ drill -- */
+/* Drill */
 
 /* Every play screen shares this rhythm: the status strip sits directly under the
    top bar and content flows down from there. Centring the column instead made
@@ -243,7 +243,7 @@
   .beam-drill .equation { min-height: 140px; }
 }
 
-/* --------------------------------------------------------------- surprise -- */
+/* Surprise */
 
 /* A fourth game rather than a special control beside three: same card, same
    affordance, just the one whose subject is "whatever you need next". */

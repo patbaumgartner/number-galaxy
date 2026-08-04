@@ -30,21 +30,18 @@ describe('heatmap', () => {
     it('every fact of every planet appears in >=1 view', () => {
         const allViewsFacts = new Set<string>()
 
-        // Add core facts
         for (const r of VIEW_GRIDS.core.rows) {
             for (const c of VIEW_GRIDS.core.cols) {
                 allViewsFacts.add(canonicalKey(r, c))
             }
         }
 
-        // Add extended facts
         for (const r of VIEW_GRIDS.extended.rows) {
             for (const c of VIEW_GRIDS.extended.cols) {
                 allViewsFacts.add(canonicalKey(r, c))
             }
         }
 
-        // Add squares facts
         for (const c of VIEW_GRIDS.squares.cols) {
             allViewsFacts.add(canonicalKey(c, c))
         }

@@ -1,8 +1,6 @@
-/*
- * Painted on a fixed layer rather than on `body`: as a body background this
- * grid repaints across the whole scroll height on every scroll frame, which
- * is a real cost on phones.
- */
+/* Painted on a fixed layer rather than on `body`: as a body background this grid
+   repaints across the whole scroll height on every scroll frame, which is a real
+   cost on phones. */
 body::before {
   content: '';
   position: fixed;

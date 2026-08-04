@@ -1,9 +1,11 @@
-// Math Invaders service worker.
-//
-// Navigations are network-first so a fresh deploy is picked up on the next
-// visit; a cache-first shell would keep serving the previous release until a
-// second load. Build output is content-hashed and therefore safe to serve
-// cache-first.
+/**
+ * Number Galaxy service worker.
+ *
+ * Navigations are network-first so a fresh deploy is picked up on the next
+ * visit; a cache-first shell would keep serving the previous release until a
+ * second load. Build output is content-hashed and therefore safe to serve
+ * cache-first.
+ */
 
 const CACHE_NAME = 'math-invaders-v3'
 

@@ -1,4 +1,4 @@
-/* Settings */
+/* Settings — grouped by the game each control affects. */
 .options {
   display: flex;
   flex-direction: column;

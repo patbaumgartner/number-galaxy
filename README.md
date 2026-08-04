@@ -14,6 +14,7 @@
 **[👀 Number Sense](#-number-sense--seeing-how-many)** ·
 **[📏 Number Beam](#-number-beam--doubling-halving-and-bar-models)** ·
 **[🛸 The arcade](#-math-invaders--the-arcade-game)** ·
+**[👥 Two players](#-two-players--one-device)** ·
 **[✖️ Times tables](#️-times-tables--the-multiplication-trainer)** ·
 **[🛠 Development](docs/DEVELOPMENT.md)**
 
@@ -313,8 +314,59 @@ belongs to this game, so the other three do not link to it.
 - **One best entry per rank and per clock setting**, so a relaxed run never overwrites a
   timed one.
 - Scores stay in the browser. There is no backend and no global leaderboard.
-- Scores from before the 2.0 rework are kept read-only under "Earlier"; combo scoring and
-  the fixed 25-question mission make the old numbers incomparable.
+- A two-player round is never listed here — see [Two players](#-two-players--one-device).
+
+---
+
+## 👥 Two players — one device
+
+Reached from the Math Invaders screen. There is no server and never will be, so a second
+player is the one sitting next to the first.
+
+### How a round works
+
+**16 questions, eight each**, alternating strictly. A solo mission is 25, but in a pair
+every question costs two children's attention — one answering and one waiting — so the same
+count would be twice the sitting.
+
+**Every question opens on a handover screen**, the first one included. It names whose turn
+it is and waits for *Bereit / Ready*. Without that pause the quicker child answers both
+turns and the slower one stops playing.
+
+### Two modes, and the default is not the competitive one
+
+| Mode | What happens |
+|------|--------------|
+| 🤝 **Together** | One shared result. Nobody wins. |
+| ⚔️ **Head to head** | Each child counts for themselves, and there is a winner — or a draw. |
+
+**Together is the default because the case for playing in pairs is about talking** — a child
+explaining a route out loud is doing more than one answering silently. Head to head exists
+because some pairs want it, and it is the adult's choice rather than the default.
+
+A draw is reported as nobody winning rather than as a tie: *"nobody won"* and *"you both got
+the same"* are the same sentence to a seven-year-old, and it is the truthful one.
+
+**Head to head scores each child on their own streak.** The combo multiplier climbs with a
+run of right answers, so a *shared* combo hands whoever goes first a different rung of the
+ladder from whoever goes second — two children answering everything correctly finished 250
+to 230 purely on turn order. Playing together keeps the shared combo on purpose: building
+one streak between them is the collaboration.
+
+### It records nothing
+
+A two-player round writes nothing at all — no stars, no scores, no review schedule, no rank
+tuning, and nothing in the Hall of Fame.
+
+That is a design decision rather than an omission. Every adaptive signal in this app
+describes **one** child: the review schedule, the weak-fact weighting, the working ceiling
+inside a rank. Two children answering into one profile would describe a composite child who
+does not exist, and the next solo session would be tuned for that invented person. It is the
+same reason profiles exist at all.
+
+The two names are typed on the setup screen rather than taken from the device's profiles,
+for the same reason — a visiting cousin should not inherit a rank and a review schedule
+tuned to somebody else, nor leave anything behind in them.
 
 ---
 
@@ -475,8 +527,7 @@ no account, no server, no cloud and no analytics — nothing to send anywhere. C
 browser's data, or **Settings → ⚙️ All games → Delete all data**, removes it permanently.
 
 Each child on the device gets their own namespace, so removing one child removes only their
-things. An install from before profiles existed is adopted by the first child automatically,
-with nothing lost.
+things.
 
 Because progress is per-device and per-browser, a child who plays on both a tablet and a
 laptop will have separate progress on each.
@@ -666,6 +717,11 @@ Yes. Tap the name on the home screen to open **Who is playing?**, and add one pr
 child. Each keeps their own rank, stars, review schedule and best scores, so what one child
 practises never changes what another is given — and nobody sees anybody else's scores.
 Language and sound are shared, because those belong to the household rather than the child.
+
+**Can two children play at once?**
+Yes — **👥 Two players** on the Math Invaders screen. They share one device and take turns,
+with a handover screen before every question. The round is not saved to anybody's profile,
+on purpose: see [Two players](#-two-players--one-device).
 
 **Can I use it on a phone?**
 Yes — it is built mobile-first and every game fits a portrait screen.

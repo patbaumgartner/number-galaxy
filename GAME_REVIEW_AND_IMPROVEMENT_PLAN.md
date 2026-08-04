@@ -714,3 +714,57 @@ argument of Part A applied to my own work.
   already at the end of the rail.
 
 All three lived in code shared with the drills, and none could surface there.
+
+### Phase 6 — Two players, one device
+
+| Ref | Change | Evidence it works |
+|---|---|---|
+| 6.1 | **👥 Two players** — 16 questions, eight each, alternating strictly by questions answered, reached from the Math Invaders screen | `duel.ts` is a pure state machine with its own unit tests; an e2e test plays a full round |
+| 6.2 | **A handover screen before every question**, the first included — without the pause the quicker child answers both turns | The e2e round asserts eight handovers naming each child; played live at 360 and 1280 |
+| 6.3 | **🤝 Together is the default; ⚔️ Head to head is opt-in.** A draw reports nobody winning rather than a tie | `duelWinner` returns `null` both for `together` and for equal scores |
+| 6.4 | **The round records nothing at all** | The e2e test snapshots `localStorage` before and after and asserts it is byte-identical |
+
+**Head to head had to stop sharing the combo.** The multiplier climbs with a run of right
+answers, so a shared streak handed whoever went first a different rung of the ladder from
+whoever went second — two children answering *everything* correctly finished 250 to 230
+purely on turn order. Each child now scores on their own streak. Together keeps the shared
+combo deliberately: building one streak between them is the collaboration.
+
+**Why it records nothing.** Every adaptive signal in this app describes one child — the
+review schedule, the weak-fact weighting, the working ceiling inside a rank. Two children
+answering into one profile would describe a composite child who does not exist, and the next
+solo session would be tuned for that invented person. The two names are typed on the setup
+screen rather than taken from the device's profiles for the same reason: a visiting cousin
+should not inherit somebody else's rank, nor leave anything behind in it.
+
+### The migrations came out
+
+`adoptLegacyProfile`, `purgeRetiredStorage`, `fromLegacy` and `loadLegacyScores` are gone,
+along with the Hall of Fame's read-only "Earlier" section — and with them `listKeys`,
+`moveKey`, `storageName` and `SHARED_KEYS`, which nothing else used.
+
+This falsified two README claims: that pre-2.0 scores are kept under "Earlier", and that an
+install from before profiles existed is adopted by the first child automatically. Neither
+was true any more. Both have been removed, which is Part A's argument applied once again to
+this document's own output.
+
+### Four more defects found by using it, not by testing it
+
+The Phase 4 pattern held. None of these were caught by 683 unit tests, 235 e2e tests or a
+WCAG audit on two viewports — every one needed somebody to look at the screen.
+
+- **The game title was clipped to "🛸 Math Inva…" from 561px to 1023px.** The action labels
+  appeared at 561px, but the bar stayed capped at 620px until 1024px, so across a 463px-wide
+  band the title — the only item allowed to shrink — absorbed the entire squeeze. Every
+  landscape phone and small tablet sat inside it, and an earlier fix at `min-width: 1024px`
+  had left the band open. The labels now wait until the bar is wide enough to carry them.
+- **The 🚀 is pinned to the bottom of the stage, which on a sideways phone is exactly where
+  the answer tiles are.** It now stands down below 500px of height.
+- **The handover read `🚀Du bist dran`.** JSX drops the newline between the avatar span and
+  the name, so they rendered touching.
+- **The two-player e2e test was flaky under load.** It branched on `count()`, which reads
+  whatever the DOM holds at that instant rather than waiting for it; when the re-render had
+  not landed the loop skipped the handover, then spent its whole 60-second timeout waiting
+  for an answer tile that the handover had already replaced. Each step now waits for the
+  screen it is about to act on — which also made the round assert that the handover gates
+  every one of its sixteen questions.

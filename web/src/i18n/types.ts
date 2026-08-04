@@ -189,6 +189,7 @@ export type Translations = {
     ranks: Record<Rank, string>
     tt: {
         padSubmit: string; padDelete: string; title: string
+        help: string
         galaxyHome: string; galaxyHomeTagline: string; galaxySquares: string; galaxySquaresTagline: string
         galaxyShortcuts: string; galaxyShortcutsTagline: string; galaxyDeep: string; galaxyDeepTagline: string
         dailyMission: string; duePlayMission: string; allCaughtUp: string
@@ -236,6 +237,7 @@ export type Translations = {
         playCard: string
         glanceHint: string
         closeEnough: string
+        tier: string
         pictureLabel: string
         settingsGlance: string
         settingsGlanceHint: string

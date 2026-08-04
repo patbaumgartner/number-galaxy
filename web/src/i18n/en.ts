@@ -231,6 +231,7 @@ export const en: Translations = {
     tt: {
         padSubmit: 'Submit', padDelete: 'Delete', title: '✖️ Times Tables',
         galaxyHome: 'Home Galaxy',
+        help: 'Help',
         galaxyHomeTagline: 'Times tables 1 to 12',
         galaxySquares: 'Squares Nebula',
         galaxySquaresTagline: 'Numbers times themselves',
@@ -317,6 +318,7 @@ export const en: Translations = {
         playCard: 'Explore numbers — nothing asked',
         glanceHint: 'A quick look — do not count.',
         closeEnough: 'Close enough!',
+        tier: 'Tier {n}',
         pictureLabel: 'Picture for this question',
         settingsGlance: 'Show only briefly',
         settingsGlanceHint: 'Off: the dots stay until you have answered.',

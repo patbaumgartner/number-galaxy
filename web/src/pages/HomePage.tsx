@@ -167,7 +167,7 @@ export default function HomePage() {
                             className="game-picker__card game-picker__card--surprise"
                             onClick={() => openGame(surpriseRoute(nextSurprise()))}
                         >
-                            <span className="game-picker__emoji" aria-hidden="true">🎲</span>
+                            <span className="game-picker__emoji" aria-hidden="true">🔀</span>
                             <strong>{t.surprise.title}</strong>
                             <small>{t.surprise.blurb}</small>
                         </button>

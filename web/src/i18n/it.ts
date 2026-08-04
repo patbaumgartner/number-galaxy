@@ -231,6 +231,7 @@ export const it: Translations = {
     tt: {
         padSubmit: 'Invia', padDelete: 'Cancella', title: '✖️ Tabelline',
         galaxyHome: 'Galassia base',
+        help: 'Aiuto',
         galaxyHomeTagline: 'Le tabelline da 1 a 12',
         galaxySquares: 'Nebulosa dei quadrati',
         galaxySquaresTagline: 'Numeri moltiplicati per se stessi',
@@ -317,6 +318,7 @@ export const it: Translations = {
         playCard: 'Esplora i numeri — senza domande',
         glanceHint: 'Un’occhiata — non contare.',
         closeEnough: 'Abbastanza vicino!',
+        tier: 'Livello {n}',
         pictureLabel: 'Immagine della domanda',
         settingsGlance: 'Mostra solo un attimo',
         settingsGlanceHint: 'Spento: i punti restano finché non rispondi.',

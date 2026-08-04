@@ -58,7 +58,7 @@ export default function TimesTablesPage() {
                 title={t.title}
                 actions={<>
                     <button type="button" className="btn btn--icon" onClick={() => setHowToOpen(true)}>
-                        📖<span className="game-bar__hide-sm"> {home.howToPlay}</span>
+                        ℹ️<span className="game-bar__hide-sm"> {home.howToPlay}</span>
                     </button>
                     <button type="button" className="btn btn--icon" onClick={() => navigate('/settings')}>
                         ⚙️<span className="game-bar__hide-sm"> {translations[settings.language].nav.settings}</span>

@@ -74,7 +74,7 @@ export const BEAM_ZONES: readonly BeamZone[] = [
     },
     {
         id: 'place',
-        emoji: '🔟',
+        emoji: '📊',
         stations: [
             {
                 id: 'tenTimes',

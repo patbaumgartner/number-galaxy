@@ -152,9 +152,9 @@ function SenseDrill({ skill, onReplay }: { readonly skill: SenseSkill; readonly 
     return (
         <div className="page beam-drill">
             <TopBar
-                back={{ label: t.beam.exit, to: '/number-sense' }}
+                back={{ label: t.sense.exitToMap, to: '/number-sense' }}
                 title={<>{station.emoji}<span className="game-bar__hide-sm"> {t.sense.skills[skill]}</span></>}
-                actions={<span className="chip chip--sm">{fill(t.beam.tier, { n: drill.tier + 1 })}</span>}
+                actions={<span className="chip chip--sm">{fill(t.sense.tier, { n: drill.tier + 1 })}</span>}
             />
 
             <main className="shell beam-stage">

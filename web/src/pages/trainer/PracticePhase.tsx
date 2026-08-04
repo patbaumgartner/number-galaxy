@@ -127,7 +127,7 @@ export function PracticePhase({ planetId }: { planetId: PlanetId }) {
             exit={t.tt.trainExit}
             actions={ttSettings.strategyCards && (
                 <button type="button" className="btn btn--icon" onClick={() => setShowStrategy(true)}>
-                    💡<span className="game-bar__hide-sm"> {t.beam.help}</span>
+                    💡<span className="game-bar__hide-sm"> {t.tt.help}</span>
                 </button>
             )}
         >

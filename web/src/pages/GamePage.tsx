@@ -343,7 +343,7 @@ export default function GamePage() {
                         <span className="game-bar__hide-sm">{player.playerName}</span>
                     </span>
                     <button type="button" className="btn btn--icon" onClick={() => setHowToOpen(true)}>
-                        📖<span className="game-bar__hide-sm"> {t.home.howToPlay}</span>
+                        ℹ️<span className="game-bar__hide-sm"> {t.home.howToPlay}</span>
                     </button>
                     {settings.hints && (
                         <button

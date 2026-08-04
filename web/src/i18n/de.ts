@@ -231,6 +231,7 @@ export const de: Translations = {
     tt: {
         padSubmit: 'Bestätigen', padDelete: 'Löschen', title: '✖️ Einmaleins',
         galaxyHome: 'Start-Galaxie',
+        help: 'Hilfe',
         galaxyHomeTagline: 'Die Reihen 1 bis 12',
         galaxySquares: 'Quadrat-Nebel',
         galaxySquaresTagline: 'Zahlen mal sich selbst',
@@ -315,6 +316,7 @@ export const de: Translations = {
         playCard: 'Zahlen entdecken — ohne Aufgabe',
         glanceHint: 'Kurz hinsehen — nicht zählen.',
         closeEnough: 'Nah genug!',
+        tier: 'Stufe {n}',
         pictureLabel: 'Bild zur Aufgabe',
         settingsGlance: 'Nur kurz zeigen',
         settingsGlanceHint: 'Aus: Die Punkte bleiben stehen, bis du geantwortet hast.',

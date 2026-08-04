@@ -45,7 +45,7 @@ serve, with its best scores beside it. A run is short and finite by design: **25
 the arcade, **10** in a beam drill, one planet's worth of facts in the trainer. A wrong
 answer never ends a run early, so a hard day means *more* practice, not less.
 
-If you would rather not choose, **🎲 Surprise me** picks for them — see
+If you would rather not choose, **🔀 Surprise me** picks for them — see
 [below](#-surprise-me).
 
 ### How you can see progress
@@ -367,7 +367,7 @@ a gap is visible at a glance rather than inferred from a score.
 
 ---
 
-## 🎲 Surprise me
+## 🔀 Surprise me
 
 A fifth card in the picker that chooses a game — the game whose subject is "whatever you
 need next".
@@ -626,7 +626,7 @@ not be verified has been removed rather than left in to look thorough.
 | Where a number sits on a line is a real, separate skill | Siegler & Opfer 2003, *Psychological Science* | [10.1111/1467-9280.02438](https://doi.org/10.1111/1467-9280.02438) |
 | Number-line estimation predicts later attainment | Booth & Siegler 2006, *Developmental Psychology* | [10.1037/0012-1649.41.6.189](https://doi.org/10.1037/0012-1649.41.6.189) |
 | Counting on past the point of usefulness holds children back | Hopkins et al. 2020, *Mathematical Thinking and Learning* | [10.1080/10986065.2020.1842968](https://doi.org/10.1080/10986065.2020.1842968) |
-| Mixing topics beats blocking them (🎲 Surprise me) | Brunmair & Richter 2019, *Psychological Bulletin* | [10.1037/bul0000209](https://doi.org/10.1037/bul0000209) |
+| Mixing topics beats blocking them (🔀 Surprise me) | Brunmair & Richter 2019, *Psychological Bulletin* | [10.1037/bul0000209](https://doi.org/10.1037/bul0000209) |
 | Shuffling maths problems improves retention | Rohrer & Taylor 2007, *Instructional Science* | [10.1007/s11251-007-9015-8](https://doi.org/10.1007/s11251-007-9015-8) |
 | Spacing practice out beats massing it | Murray et al. 2025, *Educational Psychology Review* | [10.1007/s10648-025-10035-1](https://doi.org/10.1007/s10648-025-10035-1) |
 | Worked examples help learners who do not yet have the strategy | Barbieri et al. 2023, *Educational Psychology Review* | [10.1007/s10648-023-09745-1](https://doi.org/10.1007/s10648-023-09745-1) |

@@ -140,7 +140,7 @@ export function DailyPhase() {
             exit={t.trainExit}
             actions={ttStore.getTTSettings().strategyCards && (
                 <button type="button" className="btn btn--icon" onClick={() => setShowStrategy(true)}>
-                    💡<span className="game-bar__hide-sm"> {translations[settings.language].beam.help}</span>
+                    💡<span className="game-bar__hide-sm"> {translations[settings.language].tt.help}</span>
                 </button>
             )}
         >

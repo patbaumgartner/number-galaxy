@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import TopBar from '../components/TopBar'
 import { store } from '../store'
 import { translations } from '../i18n'
 import { useDocumentLanguage } from '../hooks'
@@ -32,23 +32,20 @@ const dieDots = (count: number): readonly boolean[] => {
 }
 
 export default function PrintablesPage() {
-    const navigate = useNavigate()
     const settings = store.getSettings()
     const t = translations[settings.language]
     useDocumentLanguage(settings.language)
 
     return (
         <div className="page">
+            <TopBar back={{ label: t.nav.settings, to: '/settings' }} title={`🖨 ${t.printables.title}`} />
+
             <main className="shell printables">
                 <section className="panel no-print">
-                    <h1 className="panel__title">🖨 {t.printables.title}</h1>
                     <p className="panel__hint">{t.printables.hint}</p>
                     <div className="printables__actions">
                         <button type="button" className="btn btn--primary" onClick={() => window.print()}>
                             🖨 {t.progress.printButton}
-                        </button>
-                        <button type="button" className="btn btn--ghost" onClick={() => navigate('/settings')}>
-                            {t.nav.settings}
                         </button>
                     </div>
                 </section>

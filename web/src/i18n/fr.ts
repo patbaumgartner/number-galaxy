@@ -231,6 +231,7 @@ export const fr: Translations = {
     tt: {
         padSubmit: 'Valider', padDelete: 'Effacer', title: '✖️ Galaxie des multiplications',
         galaxyHome: 'Galaxie de départ',
+        help: 'Aide',
         galaxyHomeTagline: 'Les tables de 1 à 12',
         galaxySquares: 'Nébuleuse des carrés',
         galaxySquaresTagline: 'Les nombres multipliés par eux-mêmes',
@@ -317,6 +318,7 @@ export const fr: Translations = {
         playCard: 'Explorer les nombres — sans question',
         glanceHint: 'Un coup d’œil — ne compte pas.',
         closeEnough: 'Assez proche !',
+        tier: 'Niveau {n}',
         pictureLabel: 'Image de la question',
         settingsGlance: 'Montrer brièvement',
         settingsGlanceHint: 'Désactivé : les points restent jusqu’à ta réponse.',

@@ -2,12 +2,14 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { store, gameRouteOf, type Player } from '../store'
 import { avatars } from '../constants'
-import { fill, translations, type Translations } from '../i18n'
-import { useDocumentLanguage, useModalDialog } from '../hooks'
+import { fill, translations } from '../i18n'
+import { useDocumentLanguage } from '../hooks'
 import { nextSurprise, surpriseRoute } from '../surprise'
 import { localEpochDay } from '../review/leitner'
 import { countDueFacts } from '../timesTable/session'
 import { ttStore } from '../timesTable/ttStore'
+import PlayerSwitcher from '../components/home/PlayerSwitcher'
+import ProfileEditor from '../components/home/ProfileEditor'
 
 type ProfileView = 'none' | 'switch' | 'edit'
 
@@ -206,142 +208,6 @@ export default function HomePage() {
                     onCancel={() => setView('none')}
                 />
             )}
-        </div>
-    )
-}
-
-type PlayerSwitcherProps = {
-    labels: Translations['home']
-    players: Player[]
-    activeId: string
-    onChoose: (id: string) => void
-    onRemove: (player: Player) => void
-    onAdd: () => void
-    onRename: () => void
-    onCancel: () => void
-}
-
-function PlayerSwitcher({
-    labels,
-    players,
-    activeId,
-    onChoose,
-    onRemove,
-    onAdd,
-    onRename,
-    onCancel,
-}: PlayerSwitcherProps) {
-    const dialog = useModalDialog<HTMLDivElement>(onCancel)
-
-    return (
-        <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="switcher-title" ref={dialog}>
-            <div className="overlay__card">
-                <h2 className="overlay__title" id="switcher-title">{labels.whoIsPlaying}</h2>
-
-                <ul className="players">
-                    {players.map(entry => (
-                        <li key={entry.id} className="players__row">
-                            <button
-                                type="button"
-                                className={`players__pick${entry.id === activeId ? ' players__pick--active' : ''}`}
-                                aria-current={entry.id === activeId}
-                                aria-label={fill(labels.switchTo, { name: entry.playerName })}
-                                onClick={() => onChoose(entry.id)}
-                            >
-                                <span aria-hidden="true">{entry.avatarId}</span>
-                                <strong>{entry.playerName}</strong>
-                                {entry.id === activeId && <small>{labels.playingNow}</small>}
-                            </button>
-                            {players.length > 1 && (
-                                <button
-                                    type="button"
-                                    className="btn btn--ghost btn--sm"
-                                    aria-label={`${labels.removePlayer} ${entry.playerName}`}
-                                    onClick={() => onRemove(entry)}
-                                >
-                                    🗑
-                                </button>
-                            )}
-                        </li>
-                    ))}
-                </ul>
-
-                <div className="overlay__actions">
-                    <button type="button" className="btn btn--primary" onClick={onAdd}>
-                        ➕ {labels.addPlayer}
-                    </button>
-                    <button type="button" className="btn btn--ghost" onClick={onRename}>
-                        ✏️ {labels.rename}
-                    </button>
-                    <button type="button" className="btn btn--ghost" onClick={onCancel}>
-                        {labels.cancel}
-                    </button>
-                </div>
-            </div>
-        </div>
-    )
-}
-
-type ProfileEditorProps = {
-    labels: Translations['home']
-    title: string
-    name: string
-    avatar: string
-    onName: (name: string) => void
-    onAvatar: (avatar: string) => void
-    onSave: () => void
-    onCancel: () => void
-}
-
-function ProfileEditor({ labels, title, name, avatar, onName, onAvatar, onSave, onCancel }: ProfileEditorProps) {
-    const dialog = useModalDialog<HTMLDivElement>(onCancel)
-
-    return (
-        <div className="overlay" role="dialog" aria-modal="true" aria-labelledby="profile-title" ref={dialog}>
-            <div className="overlay__card">
-                <h2 className="overlay__title" id="profile-title">{title}</h2>
-
-                <label className="field">
-                    <span className="field__label">{labels.nameLabel}</span>
-                    <input
-                        className="field__input"
-                        type="text"
-                        autoComplete="off"
-                        maxLength={20}
-                        placeholder={labels.namePlaceholder}
-                        value={name}
-                        onChange={event => onName(event.target.value)}
-                        autoFocus
-                    />
-                </label>
-
-                <fieldset className="field">
-                    <legend className="field__label">{labels.avatarLabel}</legend>
-                    <div className="avatars">
-                        {avatars.map(option => (
-                            <button
-                                key={option}
-                                type="button"
-                                className={`avatar${avatar === option ? ' avatar--active' : ''}`}
-                                aria-pressed={avatar === option}
-                                aria-label={option}
-                                onClick={() => onAvatar(option)}
-                            >
-                                {option}
-                            </button>
-                        ))}
-                    </div>
-                </fieldset>
-
-                <div className="overlay__actions">
-                    <button type="button" className="btn btn--primary" onClick={onSave}>
-                        {labels.save}
-                    </button>
-                    <button type="button" className="btn btn--ghost" onClick={onCancel}>
-                        {labels.cancel}
-                    </button>
-                </div>
-            </div>
         </div>
     )
 }

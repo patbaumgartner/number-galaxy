@@ -81,6 +81,8 @@ from a number, and say roughly where a number sits. Those are not safe assumptio
 are the strongest predictors of later arithmetic, and every one of them is trainable. This
 is where a child who is not yet ready for `2 × 7` has somewhere to be.
 
+![The Number Sense map: two zones of stations, with Explore numbers above them](./docs/math-invaders-number-sense.png)
+
 ### Seven stations in two zones, and a sandbox
 
 | Zone | Stations | What it asks |
@@ -323,6 +325,8 @@ belongs to this game, so the other three do not link to it.
 Reached from the Math Invaders screen. There is no server and never will be, so a second
 player is the one sitting next to the first.
 
+![A two-player round pausing to hand the device over, with both tallies on the board](./docs/math-invaders-two-players.png)
+
 ### How a round works
 
 **16 questions, eight each**, alternating strictly. A solo mission is 25, but in a pair
@@ -347,11 +351,11 @@ because some pairs want it, and it is the adult's choice rather than the default
 A draw is reported as nobody winning rather than as a tie: *"nobody won"* and *"you both got
 the same"* are the same sentence to a seven-year-old, and it is the truthful one.
 
-**Head to head scores each child on their own streak.** The combo multiplier climbs with a
-run of right answers, so a *shared* combo hands whoever goes first a different rung of the
-ladder from whoever goes second — two children answering everything correctly finished 250
-to 230 purely on turn order. Playing together keeps the shared combo on purpose: building
-one streak between them is the collaboration.
+**Head to head is decided on right answers**, because that is the only number the round
+ever puts in front of a child. It used to be decided on points, and points are never shown
+here — so a streak could crown the child who got *fewer* right: five in a row beat six with
+a miss in the middle, 80 to 60, while both scoreboards said 5 against 6. A verdict a child
+cannot check against what they were shown is not one they can trust.
 
 ### It records nothing
 
@@ -478,14 +482,14 @@ they run simplest first — the same order as the home screen.
 | ⏱ Countdown | 🛸 Arcade | Off · Gentle · On | Off |
 | 💡 Worked solutions | 🛸 Arcade | On / Off | On |
 | 📖 Word problems | 🛸 Arcade | On / Off | Off |
+| 🏅 Show points while playing | 🛸 Arcade | On / Off | On |
 | Strategy cards | ✖️ Trainer | On / Off | On |
 | Trainer progress | ✖️ Trainer | Reset | — |
-| 🏅 Show points while playing | 🛸 Arcade | On / Off | On |
+| Language | ⚙️ All games | German · Italian · English · French | German |
 | 🧠 Thinking time | ⚙️ All games | Normal · More · Most | Normal |
 | 🔤 Easier reading | ⚙️ All games | On / Off | Off |
 | 🖨 To print | ⚙️ All games | — | — |
 | 📋 Progress | ⚙️ All games | — | — |
-| Language | ⚙️ All games | German · Italian · English · French | German |
 | 🔊 Sound | ⚙️ All games | On / Off | On |
 | Delete all data | ⚙️ All games | — | — |
 
@@ -558,7 +562,9 @@ and mental arithmetic. Where a design choice looks unusual, it is usually delibe
 | No daily-login streak | The combo streak is within-mission and resets each run, so there is no cross-day loss aversion to exploit. |
 | Stars start at 65 %, not 50 % | With four tiles, guessing alone scores 25 %. Below 65 % the game offers smaller numbers instead of a verdict. |
 | Speed shown only at ≥ 80 % accuracy | Fluency is flexibility, accuracy and strategy before it is pace (NCTM 2020). |
-| A miss waits for *Got it* rather than a timer | Elaborated feedback only works if it is read; two seconds is under the time it takes to read a two-step working. |
+| A miss waits for *Got it* rather than a timer | Elaborated feedback only works if it is read; two seconds is under the time it takes to read a two-step working. A right answer never waits: there is nothing on screen to have read. |
+| A first run sets a personal best without announcing one | A best means beating your previous self, and on run one there is no previous self. The stars carry that run's celebration instead. |
+| A two-player round is decided on right answers, and records nothing | Points are never shown in that mode, so deciding on them crowned the child holding the smaller number. And two children answering into one profile would describe a composite child who does not exist. |
 | Distractors are built from real near-misses | Documented arithmetic bugs, not absurd fillers — which is what lets a wrong answer be named. |
 | Leitner scheduling, commutativity-canonical (`7×8 ≡ 8×7`) | Spacing practice out over days beats massing it (Murray et al. 2025); treating `7×8` and `8×7` as one fact halves what there is to carry. |
 | Number Sense allows a near miss when placing a number | The skill is a sense of magnitude; marking 38-for-37 wrong would measure something else. Everywhere a quantity is exact, it has to be exact. |

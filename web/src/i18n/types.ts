@@ -238,6 +238,9 @@ export type Translations = {
         glanceHint: string
         closeEnough: string
         tier: string
+        help: string
+        helpTitle: string
+        helpClose: string
         pictureLabel: string
         settingsGlance: string
         settingsGlanceHint: string

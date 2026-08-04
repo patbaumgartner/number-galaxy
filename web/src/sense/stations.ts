@@ -1,3 +1,4 @@
+import { MINUS } from '../game/types'
 import type { SenseSkill, SenseStarLevel, SenseTier, SenseZoneId } from './types'
 
 /**
@@ -11,6 +12,12 @@ export type SenseStation = {
     readonly emoji: string
     /** The headline number cap per tier — each generator reads it its own way. */
     readonly caps: readonly [number, number, number]
+    /**
+     * The worked example behind 💡, always on numbers the drill is not asking
+     * about. Help that solves the question in front of the child hands over the
+     * answer; help that shows the same idea somewhere else can be carried back.
+     */
+    readonly sample: { readonly prompt: string; readonly answer: string; readonly steps: string }
 }
 
 export type SenseZone = {
@@ -24,19 +31,40 @@ export const SENSE_ZONES: readonly SenseZone[] = [
         id: 'see',
         emoji: '👀',
         stations: [
-            { id: 'subitize', emoji: '🎲', caps: [5, 10, 12] },
-            { id: 'tenFrame', emoji: '🔟', caps: [10, 10, 20] },
-            { id: 'rekenrek', emoji: '🧮', caps: [10, 20, 20] },
+            {
+                id: 'subitize', emoji: '🎲', caps: [5, 10, 12],
+                sample: { prompt: '●●●●●\u2003●●', answer: '7', steps: '5 + 2 = 7' },
+            },
+            {
+                id: 'tenFrame', emoji: '🔟', caps: [10, 10, 20],
+                sample: { prompt: '? + 6 = 10', answer: '4', steps: `10 ${MINUS} 6 = 4` },
+            },
+            {
+                id: 'rekenrek', emoji: '🧮', caps: [10, 20, 20],
+                sample: { prompt: '5 + 3 = ?', answer: '8', steps: '5 + 3 = 8' },
+            },
         ],
     },
     {
         id: 'line',
         emoji: '📍',
         stations: [
-            { id: 'placeNumber', emoji: '🎯', caps: [10, 20, 100] },
-            { id: 'countOn', emoji: '🦘', caps: [10, 20, 30] },
-            { id: 'array', emoji: '🟦', caps: [4, 6, 10] },
-            { id: 'estimate', emoji: '🍇', caps: [20, 30, 40] },
+            {
+                id: 'placeNumber', emoji: '🎯', caps: [10, 20, 100],
+                sample: { prompt: '0 … 37 … 100', answer: '37', steps: '37 ≈ 40' },
+            },
+            {
+                id: 'countOn', emoji: '🦘', caps: [10, 20, 30],
+                sample: { prompt: '7 + 5 = ?', answer: '12', steps: '7 + 3 = 10 → 10 + 2 = 12' },
+            },
+            {
+                id: 'array', emoji: '🟦', caps: [4, 6, 10],
+                sample: { prompt: '3 × 4 = ?', answer: '12', steps: '3 × 4 = 12' },
+            },
+            {
+                id: 'estimate', emoji: '🍇', caps: [20, 30, 40],
+                sample: { prompt: '≈ ?', answer: '≈ 20', steps: '4 × 5 = 20' },
+            },
         ],
     },
 ]

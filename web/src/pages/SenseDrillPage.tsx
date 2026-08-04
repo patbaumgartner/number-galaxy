@@ -4,6 +4,7 @@ import TopBar from '../components/TopBar'
 import PlayHud from '../components/PlayHud'
 import BeamSlider from '../components/beam/BeamSlider'
 import SenseVisual from '../components/sense/SenseVisual'
+import WorkedExampleDialog from '../components/WorkedExampleDialog'
 import {
     advanceSenseDrill,
     answerSenseDrill,
@@ -82,6 +83,7 @@ function SenseDrill({ skill, onReplay }: { readonly skill: SenseSkill; readonly 
     const [feedback, setFeedback] = useState<Feedback | null>(null)
     const [beamValue, setBeamValue] = useState(0)
     const [glanceOver, setGlanceOver] = useState(false)
+    const [helpOpen, setHelpOpen] = useState(false)
     const [result, setResult] = useState<SenseResult | null>(null)
     const savedRef = useRef(false)
     const surprise = useSurpriseRun()
@@ -154,7 +156,17 @@ function SenseDrill({ skill, onReplay }: { readonly skill: SenseSkill; readonly 
             <TopBar
                 back={{ label: t.sense.exitToMap, to: '/number-sense' }}
                 title={<>{station.emoji}<span className="game-bar__hide-sm"> {t.sense.skills[skill]}</span></>}
-                actions={<span className="chip chip--sm">{fill(t.sense.tier, { n: drill.tier + 1 })}</span>}
+                actions={<>
+                    <span className="chip chip--sm">{fill(t.sense.tier, { n: drill.tier + 1 })}</span>
+                    <button
+                        type="button"
+                        className="btn btn--icon"
+                        onClick={() => setHelpOpen(true)}
+                        disabled={drill.phase === 'summary'}
+                    >
+                        💡<span className="game-bar__hide-sm"> {t.sense.help}</span>
+                    </button>
+                </>}
             />
 
             <main className="shell beam-stage">
@@ -207,6 +219,15 @@ function SenseDrill({ skill, onReplay }: { readonly skill: SenseSkill; readonly 
                     onFire={resolve}
                 />
             </main>
+            {helpOpen && (
+                <WorkedExampleDialog
+                    title={t.sense.helpTitle}
+                    close={t.sense.helpClose}
+                    example={station.sample}
+                    onClose={() => setHelpOpen(false)}
+                />
+            )}
+
 
             {result !== null && (
                 <SenseSummary

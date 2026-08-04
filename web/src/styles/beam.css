@@ -157,6 +157,10 @@
 .beam__range {
   width: 100%;
   height: var(--beam-thumb);
+  /* The alien is 40px, which is what it should look like, but a finger needs the
+     44px this app promises everywhere else. Growing the input rather than the
+     thumb buys the hit area without redrawing the alien. */
+  min-height: 44px;
   margin: 0;
   background: transparent;
   -webkit-appearance: none;

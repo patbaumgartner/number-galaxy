@@ -51,16 +51,18 @@ export function submitScore(entry: ScoreEntry): { improved: boolean; entries: Sc
     if (entry.score <= 0) return { improved: false, entries: all }
 
     const index = all.findIndex(existing => sameSlot(existing, entry))
-    const improved = index === -1 || all[index].score < entry.score
+    const first = index === -1
+    const beaten = !first && all[index].score < entry.score
 
-    if (improved) {
-        if (index >= 0) all[index] = entry
-        else all.push(entry)
-    }
+    if (first) all.push(entry)
+    else if (beaten) all[index] = entry
 
     all.sort(byScore)
     writeJson(scoresKey(), all)
-    return { improved, entries: all }
+    // A first run takes its place on the board but is not announced as a
+    // record: a record means beating your previous self, and on run one there
+    // is no previous self. The stars carry that run's celebration instead.
+    return { improved: beaten, entries: all }
 }
 
 export const scoreKeys = { current: scoresKey() }

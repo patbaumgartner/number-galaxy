@@ -86,6 +86,15 @@ describe('settings', () => {
 })
 
 describe('scores', () => {
+    it('puts a first score on the board without calling it a record', () => {
+        const first = store.submitScore(entry({ score: 100 }))
+
+        // Kept — the board must show it — but there was nothing to beat.
+        expect(first.improved).toBe(false)
+        expect(first.entries).toHaveLength(1)
+        expect(first.entries[0].score).toBe(100)
+    })
+
     it('keeps one best entry per rank', () => {
         store.submitScore(entry({ score: 100 }))
         const second = store.submitScore(entry({ score: 250 }))

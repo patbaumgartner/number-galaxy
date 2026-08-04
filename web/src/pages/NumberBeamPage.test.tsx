@@ -92,4 +92,15 @@ describe('NumberBeamPage', () => {
         expect(screen.getByRole('heading', { name: /Doppel-Deck/ })).toBeInTheDocument()
         expect(screen.getByRole('button', { name: /Verdoppeln/ })).toBeInTheDocument()
     })
+
+    it('opens and closes the rules without leaving the map', async () => {
+        seedLanguage('en')
+        renderWithRouter(<NumberBeamPage />)
+
+        await user.click(screen.getByRole('button', { name: /How to play/ }))
+        expect(screen.getByRole('dialog', { name: /How to play: Number Beam/ })).toBeInTheDocument()
+
+        await user.click(screen.getByRole('button', { name: 'Continue' }))
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    })
 })

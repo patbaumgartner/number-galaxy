@@ -112,6 +112,9 @@ describe('SenseDrillPage', () => {
 
         expect(await screen.findByRole('dialog', { name: 'Station complete!' })).toBeInTheDocument()
         expect(senseStore.getStars().subitize).toBeGreaterThanOrEqual(1)
+
+        await user.click(screen.getByRole('button', { name: 'Back to map' }))
+        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/number-sense')
     })
 
     it('shows a worked example on other numbers, and closes it again', async () => {

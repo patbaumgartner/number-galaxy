@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { Operation } from '../game'
 import { RULESET_VERSION, store } from '../store'
-import { renderWithRouter, seedLanguage } from '../test/utils'
+import { LOCATION_TEST_ID, renderWithRouter, seedLanguage, userEvent } from '../test/utils'
 import HallOfFamePage from './HallOfFamePage'
 
 const score = (rank: 'rookie' | 'legend', timed: boolean, player: string, stars: number, value: number) => ({
@@ -44,4 +44,12 @@ describe('HallOfFamePage', () => {
         expect(screen.getAllByText(/Correct 20\/25 · Streak 9/)).toHaveLength(5)
     })
 
+
+    it('reaches settings from the top bar', async () => {
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<HallOfFamePage />)
+
+        await user.click(screen.getByRole('button', { name: /Settings/ }))
+        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/settings')
+    })
 })

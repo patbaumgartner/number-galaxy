@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { act, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useCountdown, useDocumentLanguage, useModalDialog, usePageVisible } from './hooks'
+import { store } from './store'
 import { userEvent } from './test/utils'
 
 function DialogProbe({ onClose, dismissible = true }: { onClose?: () => void; dismissible?: boolean }) {
@@ -47,6 +48,22 @@ describe('hooks', () => {
         view.rerender(<LanguageProbe language="en" />)
         expect(document.documentElement.lang).toBe('en')
         expect(document.title).toBe('Number Galaxy')
+    })
+
+    it('carries easier reading onto every screen, and takes it off again', () => {
+        // It rides along with the language hook precisely so it cannot be
+        // half-applied: a setting lost by walking into the trainer is worse than
+        // no setting at all.
+        const view = render(<LanguageProbe language="de" />)
+        expect(document.documentElement.classList.contains('reading-comfort')).toBe(false)
+
+        store.saveSettings({ ...store.getSettings(), readableText: true })
+        view.rerender(<LanguageProbe language="en" />)
+        expect(document.documentElement.classList.contains('reading-comfort')).toBe(true)
+
+        store.saveSettings({ ...store.getSettings(), readableText: false })
+        view.rerender(<LanguageProbe language="de" />)
+        expect(document.documentElement.classList.contains('reading-comfort')).toBe(false)
     })
 
     it('tracks document visibility and removes its listener on unmount', () => {

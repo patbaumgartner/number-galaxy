@@ -61,4 +61,20 @@ describe('speech', () => {
         expect(() => stopSpeaking()).not.toThrow()
         expect(spoken).toHaveLength(0)
     })
+
+    it('survives a window that throws when asked for speech', () => {
+        vi.stubGlobal('window', { get speechSynthesis(): never { throw new Error('blocked') } })
+
+        expect(canSpeak()).toBe(false)
+        expect(() => speak('anything', 'en')).not.toThrow()
+        expect(() => stopSpeaking()).not.toThrow()
+    })
+
+    it('stays silent where there is no window at all, as on a server', () => {
+        vi.unstubAllGlobals()
+
+        expect(canSpeak()).toBe(false)
+        expect(() => speak('anything', 'de')).not.toThrow()
+        expect(() => stopSpeaking()).not.toThrow()
+    })
 })

@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { renderWithRouter, seedLanguage, seedPlayer, userEvent } from '../test/utils'
+import { LOCATION_TEST_ID, renderWithRouter, seedLanguage, seedPlayer, userEvent } from '../test/utils'
 import SensePlayPage from './SensePlayPage'
 
 describe('SensePlayPage', () => {
@@ -49,5 +49,13 @@ describe('SensePlayPage', () => {
         expect(document.querySelector('.hud')).toBeNull()
         expect(document.querySelector('.hud__timer')).toBeNull()
         expect(screen.queryByText('⭐')).not.toBeInTheDocument()
+    })
+
+    it('goes back to the map from the foot of the page as well as the bar', async () => {
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<SensePlayPage />)
+
+        await user.click(screen.getAllByRole('button', { name: /Back to map/ }).at(-1)!)
+        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/number-sense')
     })
 })

@@ -222,4 +222,23 @@ describe('GamePage', () => {
         fireEvent.click(screen.getByRole('button', { name: /How to play/ }))
         expect(screen.getByRole('dialog', { name: /How to play: Math Invaders/ })).toBeInTheDocument()
     })
+
+    it('offers to read a word problem aloud, and says nothing when there is no voice', () => {
+        seedSettings({ stories: true })
+        const speak = vi.fn()
+        vi.stubGlobal('speechSynthesis', { speak, cancel: vi.fn() })
+        vi.stubGlobal('SpeechSynthesisUtterance', class { constructor(public text: string) {} })
+
+        const withVoice = renderWithRouter(<GamePage />)
+        expect(screen.getByRole('button', { name: 'Read aloud' })).toBeInTheDocument()
+        withVoice.unmount()
+
+        // A device with no speech at all must simply not offer it, rather than
+        // showing a button that does nothing when a child presses it.
+        vi.stubGlobal('speechSynthesis', undefined)
+        renderWithRouter(<GamePage />)
+        expect(screen.queryByRole('button', { name: 'Read aloud' })).not.toBeInTheDocument()
+
+        vi.unstubAllGlobals()
+    })
 })

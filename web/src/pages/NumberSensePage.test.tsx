@@ -63,4 +63,12 @@ describe('NumberSensePage', () => {
         await user.click(screen.getByRole('button', { name: /settings/i }))
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/settings')
     })
+
+    it('opens the sandbox from the map without needing a star', async () => {
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<NumberSensePage />)
+
+        await user.click(screen.getByRole('button', { name: /Explore numbers/ }))
+        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/number-sense/play')
+    })
 })

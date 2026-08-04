@@ -388,8 +388,8 @@ export default function GamePage() {
 
                 <section className={`equation${feedback ? ` equation--${feedback.outcome}` : ''}`}>
                     {mission.question.story.length > 0 && (
-                        <p className="equation__story">
-                            {mission.question.story}
+                        <div className="equation__story-row">
+                            <p className="equation__story">{mission.question.story}</p>
                             {canSpeak() && (
                                 <button
                                     type="button"
@@ -400,7 +400,7 @@ export default function GamePage() {
                                     🔊
                                 </button>
                             )}
-                        </p>
+                        </div>
                     )}
                     <p className={`equation__prompt${mission.question.story.length > 0 ? ' equation__prompt--small' : ''}`}>
                         {mission.question.story.length > 0 && feedback === null ? '?' : mission.question.prompt}

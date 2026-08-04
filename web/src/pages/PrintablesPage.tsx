@@ -45,7 +45,7 @@ export default function PrintablesPage() {
                     <p className="panel__hint">{t.printables.hint}</p>
                     <div className="printables__actions">
                         <button type="button" className="btn btn--primary" onClick={() => window.print()}>
-                            🖨 {t.progress.printButton}
+                            {t.progress.printButton}
                         </button>
                     </div>
                 </section>

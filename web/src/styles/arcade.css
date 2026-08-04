@@ -73,6 +73,9 @@
   line-height: 1.15;
   margin: 0;
   pointer-events: none;
+  /* Decoration must never paint over a control. It is pinned to the bottom of
+     the stage, which is where "Got it" ends up once the stage has to scroll. */
+  z-index: 0;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
 }
 
@@ -217,7 +220,13 @@
 /* Equation */
 .equation {
   flex: 1;
-  min-height: 0;
+  /* Never below its own content. `min-height: 0` let this box shrink smaller
+     than what is inside it, and because the content is centred it then spilled
+     out of *both* ends — the story over the HUD above, "Got it" over the answer
+     tiles below. A word problem, a read-aloud button and a two-line miss note
+     together are tall enough to trigger it on any short phone. The page scrolls
+     instead, which is the honest thing to do when there is not enough room. */
+  min-height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -231,6 +240,7 @@
   padding: var(--space-4) var(--space-3);
   box-shadow: var(--shadow-md);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  z-index: 1;
 }
 
 .equation--correct {
@@ -298,6 +308,8 @@
 
 /* Answers */
 .answer-grid {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
@@ -608,13 +620,22 @@
   font-size: var(--text-base);
 }
 
+.equation__story-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  max-width: 100%;
+}
+
 .equation__story {
   color: var(--text-main);
   font-size: var(--text-lg);
   line-height: 1.4;
-  margin: 0 0 var(--space-3);
+  margin: 0;
   text-wrap: balance;
-  max-width: 100%;
+  min-width: 0;
 }
 
 .equation__prompt--small {

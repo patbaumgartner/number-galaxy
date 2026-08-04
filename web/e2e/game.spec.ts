@@ -59,10 +59,18 @@ test('names the mistake when a wrong answer is a known one', async ({ page }) =>
 
     // Take the smaller digit from the larger in each column — the documented
     // subtraction bug — and check the game names it rather than only correcting it.
-    for (let attempt = 0; attempt < 24; attempt += 1) {
+    // Which sums a mission draws is down to Math.random, and a single run does
+    // not always offer a regrouping subtraction whose classic bug is on a tile.
+    // Play on into the next mission rather than calling that a failure.
+    for (let attempt = 0; attempt < 90; attempt += 1) {
         const gotIt = page.locator('.equation__next')
         if (await gotIt.count() > 0) await gotIt.click()
-        if (await page.locator('.summary').count() > 0) break
+
+        const replay = page.getByRole('button', { name: 'Play again' })
+        if (await replay.count() > 0) {
+            await replay.click()
+            await expect(page.locator('.answer-tile').first()).toBeVisible()
+        }
 
         await expect(page.locator('.answer-tile:not([disabled])').first()).toBeVisible()
         const prompt = (await page.locator('.equation__prompt').textContent()) ?? ''
@@ -88,7 +96,7 @@ test('names the mistake when a wrong answer is a known one', async ({ page }) =>
             return
         }
     }
-    throw new Error('no regrouping subtraction offered its bug in a whole mission')
+    throw new Error('no regrouping subtraction offered its bug in three whole missions')
 })
 
 test('asks a missed question again later in the same mission', async ({ page }) => {

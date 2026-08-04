@@ -92,3 +92,50 @@ for (const viewport of [{ width: 844, height: 390 }, { width: 667, height: 375 }
         expect(covered).toEqual([])
     })
 }
+
+/**
+ * The equation card used to carry `min-height: 0`, which let it shrink below its
+ * own content. Because that content is centred it then spilled out of both ends:
+ * the story over the HUD above, "Got it" over the answer tiles below. A word
+ * problem plus a read-aloud button plus a two-line miss note is tall enough to
+ * trigger it on any short phone.
+ */
+test('keeps a word problem and its feedback inside the card on a short screen', async ({ page }) => {
+    await seedStorage(page, {
+        settings: { language: 'en', operations: ['division'], rank: 'cadet', timer: 'off', sound: false, hints: true, stories: true },
+        player: { id: 'me', playerName: 'Nova', avatarId: '🚀', createdAt: '2026-01-01T00:00:00.000Z' },
+    })
+
+    for (const height of [560, 640, 740]) {
+        await page.setViewportSize({ width: 412, height })
+        await gotoApp(page, '/game/play')
+
+        // A story hides the sum, so the answer cannot be worked out from the
+        // page — tap until one of them is wrong and the explanation appears.
+        const gotIt = page.getByRole('button', { name: 'Got it' })
+        for (let attempt = 0; attempt < 8 && !await gotIt.isVisible(); attempt += 1) {
+            await page.locator('.answer-tile').nth(attempt % 4).click()
+            await page.waitForTimeout(150)
+            if (await gotIt.isVisible()) break
+            const knew = page.getByRole('button', { name: 'I knew it' })
+            if (await knew.isVisible()) await knew.click()
+        }
+        await expect(gotIt).toBeVisible()
+
+        const clear = await page.evaluate(() => {
+            const box = (selector: string) => document.querySelector(selector)?.getBoundingClientRect() ?? null
+            const card = box('.equation')
+            const story = box('.equation__story')
+            const hud = box('.hud')
+            const grid = box('.answer-grid')
+            const gotIt = [...document.querySelectorAll('.equation button')]
+                .filter(button => !button.className.includes('speak'))[0]?.getBoundingClientRect() ?? null
+            if (!card || !hud || !grid) return false
+            const storyInside = story === null || (story.top >= card.top - 1 && story.top >= hud.bottom - 1)
+            const buttonInside = gotIt === null || (gotIt.bottom <= card.bottom + 1 && gotIt.bottom <= grid.top + 1)
+            return storyInside && buttonInside
+        })
+
+        expect(clear, `content escaped the equation card at 412x${height}`).toBe(true)
+    }
+})

@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
-import { LOCATION_TEST_ID, renderWithRouter, seedLanguage, seedStars } from '../test/utils'
+import { LOCATION_TEST_ID, renderWithRouter, seedLanguage, seedSettings, seedStars } from '../test/utils'
 import TableTrainerPage from './TableTrainerPage'
 
 const renderRoute = (route: string) => renderWithRouter(<TableTrainerPage />, {
@@ -23,6 +23,18 @@ describe('TableTrainerPage', () => {
         speed.unmount()
         renderRoute('/times-tables/train/mission/daily')
         expect(screen.getByRole('heading', { name: /daily mission/i })).toBeInTheDocument()
+    })
+
+    it('carries the language and Easier reading into the trainer', () => {
+        // Every other route mirrors both. This one did not, so `<html lang>` stayed
+        // German whatever was chosen and a dyslexic child lost the spacing here.
+        seedLanguage('en')
+        seedSettings({ readableText: true })
+
+        renderRoute('/times-tables/train/t3/practice')
+
+        expect(document.documentElement.lang).toBe('en')
+        expect(document.documentElement.classList.contains('reading-comfort')).toBe(true)
     })
 
     it('redirects unknown, locked, and unearned speed deep links', () => {

@@ -96,6 +96,36 @@ describe('GamePage', () => {
         expect(screen.getByText('×2')).toBeInTheDocument()
     })
 
+    it('asks how a right answer was worked out, records the reply, and moves on', () => {
+        // The ask is a 12% coin flip the suite otherwise pins away; this is the
+        // test that wants it, so it gets a coin that always lands on "ask".
+        vi.spyOn(Math, 'random').mockReturnValue(0)
+        const recorded = vi.spyOn(store, 'recordStrategy')
+        renderWithRouter(<GamePage />)
+
+        answerCorrectly()
+        expect(screen.getByText('How did you do that?')).toBeInTheDocument()
+
+        fireEvent.click(screen.getByRole('button', { name: /knew it/i }))
+
+        expect(recorded).toHaveBeenCalledWith('addition', 'knew')
+        // Answering it advances immediately rather than waiting out the timer.
+        expect(screen.getByText('1/25')).toBeInTheDocument()
+    })
+
+    it('moves on by itself when the child ignores the question', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(0)
+        renderWithRouter(<GamePage />)
+
+        answerCorrectly()
+        expect(screen.getByText('How did you do that?')).toBeInTheDocument()
+
+        act(() => vi.advanceTimersByTime(3600))
+
+        expect(screen.queryByText('How did you do that?')).not.toBeInTheDocument()
+        expect(screen.getByText('1/25')).toBeInTheDocument()
+    })
+
     it('reveals worked answers after a wrong tap without ending the mission', async () => {
         renderWithRouter(<GamePage />)
         const answer = answerForPrompt()

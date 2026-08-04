@@ -195,9 +195,9 @@ test('plays a two-player round without leaving a trace on either profile', async
         await tile.waitFor()
         await tile.click()
 
-        // The final answer ends the round outright; every other one offers the
-        // working and waits for "Got it".
-        await page.locator('.equation__next, .duel-result').first().waitFor()
+        // Three ways a question can end: a miss waits for "Got it", a right answer
+        // applauds and hands over by itself, and the last answer ends the round.
+        await page.locator('.equation__next, .duel-handover, .duel-result').first().waitFor()
         const next = page.locator('.equation__next')
         if (await next.count() > 0) await next.click()
     }

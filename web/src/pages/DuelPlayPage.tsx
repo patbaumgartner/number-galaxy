@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
 import TopBar from '../components/TopBar'
 import PlayHud from '../components/PlayHud'
@@ -7,7 +7,7 @@ import { store } from '../store'
 import { avatars } from '../constants'
 import { fill, translations } from '../i18n'
 import { useDocumentLanguage, useSoundSetting } from '../hooks'
-import { playCorrect, playShoot, playVictory } from '../sound'
+import { playCorrect, playShoot, playVictory, playWrong } from '../sound'
 import {
     QUESTIONS_PER_DUEL,
     advanceDuel,
@@ -22,6 +22,9 @@ import {
 } from '../game'
 
 type Feedback = { outcome: 'correct' | 'wrong'; revealIndex: number; firedIndex: number }
+
+/** A right answer needs a beat of applause, not a button. Same as the arcade. */
+const CORRECT_MS = 650
 
 /**
  * A round of two, on one device.
@@ -82,11 +85,12 @@ export default function DuelPlayPage() {
         const correct = index === question.correctIndex
         playShoot()
         if (correct) playCorrect()
+        else playWrong()
         setFeedback({ outcome: correct ? 'correct' : 'wrong', revealIndex: question.correctIndex, firedIndex: index })
         setDuel(current => answerDuel(current, correct ? 'correct' : 'wrong'))
     }
 
-    const next = () => {
+    const next = useCallback(() => {
         setFeedback(null)
         setDuel(current => {
             const moved = advanceDuel(current)
@@ -94,7 +98,16 @@ export default function DuelPlayPage() {
             return moved
         })
         setHandedOver(true)
-    }
+    }, [])
+
+    useEffect(() => {
+        // A right answer moves on by itself. Only a miss waits for a tap, because
+        // only a miss puts a worked route on screen to be read — asking a child
+        // to confirm they understood being right is a button that means nothing.
+        if (over || feedback?.outcome !== 'correct') return
+        const timer = setTimeout(next, CORRECT_MS)
+        return () => clearTimeout(timer)
+    }, [over, feedback?.outcome, next])
 
     const restart = () => {
         setDuel(freshRound())
@@ -165,9 +178,9 @@ export default function DuelPlayPage() {
             <main className="stage">
                 <PlayHud
                     stats={[
-                        { label: names[0], value: `${duel.tallies[0].correct}`, ...(turn === 0 ? { modifier: 'score' } : {}) },
+                        { label: names[0], value: `${duel.tallies[0].correct}`, ...(showing === 0 ? { modifier: 'score' } : {}) },
                         { label: t.play.question, value: `${duel.mission.results.length}/${QUESTIONS_PER_DUEL}` },
-                        { label: names[1], value: `${duel.tallies[1].correct}`, ...(turn === 1 ? { modifier: 'score' } : {}) },
+                        { label: names[1], value: `${duel.tallies[1].correct}`, ...(showing === 1 ? { modifier: 'score' } : {}) },
                     ]}
                     results={duel.mission.results}
                     total={QUESTIONS_PER_DUEL}
@@ -189,11 +202,17 @@ export default function DuelPlayPage() {
                         <section className={`equation${feedback ? ` equation--${feedback.outcome}` : ''}`}>
                             <p className="duel-turn" aria-live="polite">{fill(t.duel.turnOf, { name: names[showing] })}</p>
                             <p className="equation__prompt">{question.prompt}</p>
-                            {feedback === null && <p className="equation__result">{t.game.answerHint}</p>}
+                            <p className="equation__result" aria-live="polite">
+                                {feedback === null
+                                    ? t.game.answerHint
+                                    : feedback.outcome === 'correct'
+                                        ? t.game.correct
+                                        : `${t.game.wrong} ${t.game.theAnswerIs} ${question.answer}`}
+                            </p>
                             {feedback !== null && feedback.outcome !== 'correct' && (
                                 <p className="equation__working">{question.workingOut}</p>
                             )}
-                            {feedback !== null && (
+                            {feedback !== null && feedback.outcome !== 'correct' && (
                                 <button type="button" className="btn btn--primary equation__next" onClick={next} autoFocus>
                                     {t.game.gotIt}
                                 </button>

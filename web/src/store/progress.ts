@@ -292,7 +292,9 @@ export function updatePersonalBest(operation: Operation, elapsedMs: number): boo
     if (current !== undefined && elapsedMs >= current) return false
     bests[operation] = elapsedMs
     writeJson(bestsKey(), bests)
-    return true
+    // A first run records the best without announcing one: a personal best
+    // means beating your previous self, and there is no previous self yet.
+    return current !== undefined
 }
 
 export const progressKeys = {

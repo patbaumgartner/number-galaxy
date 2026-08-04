@@ -56,7 +56,8 @@ describe('trainer persistence', () => {
 
         expect(ttStore.getProgress()).toEqual({ '2x3': factProgress })
         expect(ttStore.getStars()).toEqual({ t2: 1 })
-        expect(improved).toBe(true)
+        // Kept, but a first run announces nothing — there was no previous self.
+        expect(improved).toBe(false)
         expect(ttStore.getBests()).toEqual({ t2: 12_345 })
         expect(ttStore.getTTSettings()).toEqual({ strategyCards: false })
     })

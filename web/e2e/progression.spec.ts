@@ -73,7 +73,9 @@ test('earns the Times Tables unlock ladder through play', async ({ page }, testI
     await choosePhase(page, two, speed)
     await playPerfectSession(page)
     await expect(page.getByText(/Time:|Zeit:/)).toBeVisible()
-    await expect(page.getByText(/New best time|Neue Bestzeit/)).toBeVisible()
+    // A first speed run sets the time later runs have to beat, so it is kept
+    // without being announced: there is no previous self to have beaten.
+    await expect(page.getByText(/New best time|Neue Bestzeit/)).toHaveCount(0)
     await expect(page.locator('.summary-stars')).toContainText(/2 (star|Stern)/)
     await returnToMap(page)
     await expect(two.locator('[aria-label="2 stars"]')).toBeVisible()

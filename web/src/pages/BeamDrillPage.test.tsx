@@ -138,6 +138,8 @@ describe('BeamDrillPage', () => {
         expect(screen.getByText(/10\/10 · 100%/)).toBeInTheDocument()
         expect(beamStore.getStars().double).toBe(1)
         expect(beamStore.getBests().double).toBe(1)
+        // Kept, but not announced: a first run has no previous self to beat.
+        expect(screen.queryByText(/New personal best/)).not.toBeInTheDocument()
 
         fireEvent.click(screen.getByRole('button', { name: 'Play again' }))
         expect(hudStat('Question')).toBe('1/10')

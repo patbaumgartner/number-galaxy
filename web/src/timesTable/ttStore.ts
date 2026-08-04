@@ -108,7 +108,9 @@ export const ttStore = {
         if (current !== undefined && totalMs >= current) return false
 
         writeJson(bestsStorageKey(), { ...bests, [planetId]: totalMs })
-        return true
+        // A first run records the best without announcing one: a personal best
+        // means beating your previous self, and there is no previous self yet.
+        return current !== undefined
     },
 
     getTTSettings(): TTSettings {

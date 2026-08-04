@@ -63,7 +63,9 @@ export const beamStore = {
         const current = bests[skill]
         if (current !== undefined && accuracy <= current) return false
         writeJson(bestsKey(), { ...bests, [skill]: accuracy })
-        return true
+        // A first run records the best without announcing one: a personal best
+        // means beating your previous self, and there is no previous self yet.
+        return current !== undefined
     },
 
     getBeamSettings(): BeamSettings {

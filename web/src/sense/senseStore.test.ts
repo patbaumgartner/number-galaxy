@@ -48,7 +48,10 @@ describe('sense stars', () => {
 
 describe('sense bests', () => {
     it('records an accuracy and reports whether it beat the last', () => {
-        expect(senseStore.updateBest('subitize', 0.7)).toBe(true)
+        // The first run is kept but reports nothing: there was no previous self.
+        expect(senseStore.updateBest('subitize', 0.7)).toBe(false)
+        expect(senseStore.getBests().subitize).toBe(0.7)
+
         expect(senseStore.updateBest('subitize', 0.6)).toBe(false)
         expect(senseStore.updateBest('subitize', 0.9)).toBe(true)
         expect(senseStore.getBests().subitize).toBe(0.9)

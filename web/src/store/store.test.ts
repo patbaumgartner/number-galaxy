@@ -189,7 +189,10 @@ describe('progress tracking', () => {
     })
 
     it('only records a personal best when it is actually faster', () => {
-        expect(store.updatePersonalBest('addition', 4000)).toBe(true)
+        // The first time is kept but reports nothing: there was no previous self.
+        expect(store.updatePersonalBest('addition', 4000)).toBe(false)
+        expect(store.getPersonalBests().addition).toBe(4000)
+
         expect(store.updatePersonalBest('addition', 5000)).toBe(false)
         expect(store.updatePersonalBest('addition', 1200)).toBe(true)
         expect(store.getPersonalBests().addition).toBe(1200)

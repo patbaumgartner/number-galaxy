@@ -51,7 +51,10 @@ describe('beam store', () => {
     })
 
     it('records a best accuracy only when it is beaten', () => {
-        expect(beamStore.updateBest('halve', 0.8)).toBe(true)
+        // The first run is kept but reports nothing: there was no previous self.
+        expect(beamStore.updateBest('halve', 0.8)).toBe(false)
+        expect(beamStore.getBests().halve).toBe(0.8)
+
         expect(beamStore.updateBest('halve', 0.8)).toBe(false)
         expect(beamStore.updateBest('halve', 0.7)).toBe(false)
         expect(beamStore.updateBest('halve', 0.9)).toBe(true)

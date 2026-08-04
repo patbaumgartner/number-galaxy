@@ -1,4 +1,4 @@
-import { hasKey, listKeys, moveKey, readJson, removeByPrefix, storageKey, storageName, writeJson } from './storage'
+import { readJson, removeByPrefix, storageKey, writeJson } from './storage'
 
 /**
  * Who is playing, and where their things are kept.
@@ -24,12 +24,6 @@ export type Player = {
 
 const PLAYERS_KEY = storageKey('players')
 const ACTIVE_KEY = storageKey('active-player')
-
-/** The single-profile key this module replaced; read once by {@link adoptLegacyProfile}. */
-const LEGACY_PLAYER_KEY = storageKey('player')
-
-/** Keys that describe the device rather than any one child. */
-const SHARED_KEYS = new Set([PLAYERS_KEY, ACTIVE_KEY, LEGACY_PLAYER_KEY])
 
 /**
  * The id the first child gets, fixed rather than generated.
@@ -69,34 +63,7 @@ const activeId = (): string => {
 /** Where the active child's copy of `name` lives. */
 export const profileKey = (name: string): string => `${profilePrefix(activeId())}${name}`
 
-/**
- * Moves a pre-profile install under its owner, once.
- *
- * The trigger is any key still sitting outside a profile, not the presence of a
- * saved name: settings and progress are written from the first tap, while a name
- * is only ever written when someone opens the profile editor, so keying off the
- * name would strand everyone who simply played without introducing themselves.
- *
- * Everything that is not device-level belonged to whoever was using the tablet,
- * so it all moves wholesale rather than being enumerated — a list would silently
- * strand any key added after this was written.
- */
-export function adoptLegacyProfile(): void {
-    if (hasKey(PLAYERS_KEY)) return
-
-    const prefix = profilePrefix(DEFAULT_ID)
-    const strays = listKeys().filter(key => !SHARED_KEYS.has(key) && !key.startsWith(prefix))
-    if (strays.length === 0) return
-
-    for (const key of strays) moveKey(key, `${prefix}${storageName(key)}`)
-
-    const legacy = readJson<unknown>(LEGACY_PLAYER_KEY, null)
-    const owner: Player = isPlayer(legacy) ? { ...legacy, id: DEFAULT_ID } : blankPlayer(DEFAULT_ID)
-    if (owner.playerName.length > 0) writeJson(PLAYERS_KEY, [owner])
-}
-
 export function getPlayers(): Player[] {
-    adoptLegacyProfile()
     return readPlayers()
 }
 
@@ -180,6 +147,5 @@ export function removePlayer(id: string): boolean {
 export const profileKeys = {
     players: PLAYERS_KEY,
     active: ACTIVE_KEY,
-    legacyPlayer: LEGACY_PLAYER_KEY,
     defaultId: DEFAULT_ID,
 }

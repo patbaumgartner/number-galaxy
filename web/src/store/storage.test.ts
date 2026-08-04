@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { clearAll, hasKey, purgeRetiredStorage, readJson, writeJson } from './storage'
+import { clearAll, hasKey, readJson, writeJson } from './storage'
 
 class MemoryStorage implements Storage {
     private map = new Map<string, string>()
@@ -79,21 +79,6 @@ describe('JSON storage', () => {
         expect(storage.getItem('another-app')).toBe('keep')
     })
 
-    it('drops the namespace the app used before it was renamed, and nothing else', () => {
-        // Orphaned by the rename: nothing in the UI can reach these, so leaving
-        // them would strand a child's name on the device permanently.
-        storage.setItem('math-invaders-ume-player', '{"playerName":"Mia"}')
-        storage.setItem('math-invaders-settings-v2', '{}')
-        storage.setItem('number-galaxy-settings-v2', '{"rank":"ace"}')
-        storage.setItem('another-app', 'keep')
-
-        purgeRetiredStorage()
-
-        expect(storage.getItem('math-invaders-ume-player')).toBeNull()
-        expect(storage.getItem('math-invaders-settings-v2')).toBeNull()
-        expect(storage.getItem('number-galaxy-settings-v2')).toBe('{"rank":"ace"}')
-        expect(storage.getItem('another-app')).toBe('keep')
-    })
 
     it('becomes a safe no-op when window is unavailable', () => {
         Object.defineProperty(globalThis, 'window', { value: undefined, configurable: true, writable: true })

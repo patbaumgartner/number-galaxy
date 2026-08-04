@@ -63,7 +63,6 @@ export type GameSettings = {
 export const THINKING_TIMES: readonly GameSettings['thinkingTime'][] = [1, 1.5, 2]
 
 const settingsKey = () => profileKey('settings-v2')
-const legacySettingsKey = () => profileKey('settings')
 
 const LANGUAGES: Language[] = ['de', 'it', 'en', 'fr']
 
@@ -81,34 +80,8 @@ export const defaultSettings: GameSettings = {
     readableText: false,
 }
 
-/**
- * Ceiling-preserving map from the seven old levels. The three hardest all land
- * on Legend rather than being spread out, so nobody is silently demoted.
- */
-const legacyLevelToRank: Record<string, Rank> = {
-    starter: 'rookie',
-    beginner: 'cadet',
-    elementary: 'pilot',
-    intermediate: 'ace',
-    advanced: 'legend',
-    expert: 'legend',
-    master: 'legend',
-}
-
-type LegacySettings = {
-    language?: unknown
-    operations?: unknown
-    level?: unknown
-    mode?: unknown
-    tips?: unknown
-    workedExamples?: unknown
-}
-
-const asTimer = (value: unknown, timed: unknown): TimerMode => {
-    if (TIMER_MODES.includes(value as TimerMode)) return value as TimerMode
-    // The boolean this replaced: on meant timed, off meant off.
-    return timed === true ? 'timed' : defaultSettings.timer
-}
+const asTimer = (value: unknown): TimerMode =>
+    TIMER_MODES.includes(value as TimerMode) ? (value as TimerMode) : defaultSettings.timer
 
 const asThinkingTime = (value: unknown): GameSettings['thinkingTime'] =>
     THINKING_TIMES.includes(value as GameSettings['thinkingTime'])
@@ -127,27 +100,12 @@ function asOperations(value: unknown): Operation[] {
     return valid.length > 0 ? valid : [...defaultSettings.operations]
 }
 
-function fromLegacy(legacy: LegacySettings): GameSettings {
-    return {
-        language: asLanguage(legacy.language),
-        operations: asOperations(legacy.operations),
-        rank: legacyLevelToRank[String(legacy.level)] ?? defaultSettings.rank,
-        timer: legacy.mode === 'drill' ? 'timed' : 'off',
-        thinkingTime: defaultSettings.thinkingTime,
-        stories: defaultSettings.stories,
-        sound: true,
-        hints: legacy.tips !== false || legacy.workedExamples !== false,
-        showScore: defaultSettings.showScore,
-        readableText: defaultSettings.readableText,
-    }
-}
-
-function sanitize(value: Partial<GameSettings> & { timed?: unknown }): GameSettings {
+function sanitize(value: Partial<GameSettings>): GameSettings {
     return {
         language: asLanguage(value.language),
         operations: asOperations(value.operations),
         rank: asRank(value.rank),
-        timer: asTimer(value.timer, value.timed),
+        timer: asTimer(value.timer),
         thinkingTime: asThinkingTime(value.thinkingTime),
         sound: value.sound !== false,
         hints: value.hints !== false,
@@ -157,25 +115,13 @@ function sanitize(value: Partial<GameSettings> & { timed?: unknown }): GameSetti
     }
 }
 
-/**
- * Reads v2 settings, converting v1 once and writing the result back so the
- * migration runs at most a single time and never re-clobbers later edits.
- */
 export function loadSettings(): GameSettings {
-    if (hasKey(settingsKey())) {
-        return sanitize(readJson<Partial<GameSettings>>(settingsKey(), {}))
-    }
-    if (hasKey(legacySettingsKey())) {
-        const migrated = fromLegacy(readJson<LegacySettings>(legacySettingsKey(), {}))
-        writeJson(settingsKey(), migrated)
-        return migrated
-    }
-    return { ...defaultSettings, operations: [...defaultSettings.operations] }
+    if (!hasKey(settingsKey())) return { ...defaultSettings, operations: [...defaultSettings.operations] }
+    return sanitize(readJson<Partial<GameSettings>>(settingsKey(), {}))
 }
 
 export function saveSettings(settings: GameSettings): void {
     writeJson(settingsKey(), sanitize(settings))
 }
 
-export const settingsKeys = { current: settingsKey(), legacy: legacySettingsKey() }
-export { legacyLevelToRank }
+export const settingsKeys = { current: settingsKey() }

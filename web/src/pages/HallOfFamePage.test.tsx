@@ -1,8 +1,8 @@
 import { screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { Operation } from '../game'
-import { RULESET_VERSION, scoreKeys, store } from '../store'
-import { LOCATION_TEST_ID, renderWithRouter, seedLanguage, userEvent } from '../test/utils'
+import { RULESET_VERSION, store } from '../store'
+import { renderWithRouter, seedLanguage } from '../test/utils'
 import HallOfFamePage from './HallOfFamePage'
 
 const score = (rank: 'rookie' | 'legend', timed: boolean, player: string, stars: number, value: number) => ({
@@ -24,10 +24,6 @@ const score = (rank: 'rookie' | 'legend', timed: boolean, player: string, stars:
 describe('HallOfFamePage', () => {
     beforeEach(() => seedLanguage('en'))
 
-    it('shows the empty state when neither current nor legacy scores exist', () => {
-        renderWithRouter(<HallOfFamePage />)
-        expect(screen.getByText(/nothing here yet/i)).toBeInTheDocument()
-    })
 
     it('groups ranks highest first with clock sections, medals, stars, and stats', () => {
         store.submitScore(score('rookie', false, 'Fourth', 1, 40))
@@ -48,16 +44,4 @@ describe('HallOfFamePage', () => {
         expect(screen.getAllByText(/Correct 20\/25 · Streak 9/)).toHaveLength(5)
     })
 
-    it('keeps legacy scores inside a collapsed details panel and navigates all controls', async () => {
-        localStorage.setItem(scoreKeys.legacy, JSON.stringify([{ player: 'Earlier', avatarId: '👾', score: 7, answeredCount: 3 }]))
-        const user = userEvent.setup({ delay: null })
-        renderWithRouter(<HallOfFamePage />)
-        const details = screen.getByText('Earlier', { selector: 'summary' }).closest('details')
-        expect(details).not.toHaveAttribute('open')
-        expect(details).toBeInTheDocument()
-        await user.click(screen.getByRole('button', { name: /back/i }))
-        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/')
-        await user.click(screen.getByRole('button', { name: /settings/i }))
-        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/settings')
-    })
 })

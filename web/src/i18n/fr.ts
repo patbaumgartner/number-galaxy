@@ -205,8 +205,6 @@ export const fr: Translations = {
         untimed: 'Sans chrono',
         accuracy: 'Bonnes',
         streak: 'Série',
-        legacyTitle: 'Avant',
-        legacyHint: 'Résultats de l’ancienne version — non comparables.',
     },
     error: {
         title: '👾 Un problème est survenu',

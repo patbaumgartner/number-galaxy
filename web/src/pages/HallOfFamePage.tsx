@@ -14,7 +14,6 @@ export default function HallOfFamePage() {
     const t = translations[language]
     useDocumentLanguage(language)
     const scores = useMemo(() => store.getScores(), [])
-    const legacy = useMemo(() => store.getLegacyScores(), [])
 
     const groups = useMemo<Group[]>(() => {
         const result: Group[] = []
@@ -41,7 +40,7 @@ export default function HallOfFamePage() {
                     <p className="shell__tagline">{t.hof.subtitle}</p>
                 </header>
 
-                {groups.length === 0 && legacy.length === 0 && (
+                {groups.length === 0 && (
                     <section className="panel panel--empty">
                         <p>{t.hof.empty}</p>
                     </section>
@@ -81,22 +80,6 @@ export default function HallOfFamePage() {
                     </section>
                 ))}
 
-                {legacy.length > 0 && (
-                    <details className="panel panel--details">
-                        <summary className="panel__title">{t.hof.legacyTitle}</summary>
-                        <p className="panel__hint">{t.hof.legacyHint}</p>
-                        <ol className="board board--legacy">
-                            {legacy.map((entry, index) => (
-                                <li key={index} className="board__row">
-                                    <span className="board__rank" aria-hidden="true">{index + 1}</span>
-                                    <span className="board__avatar" aria-hidden="true">{entry.avatarId}</span>
-                                    <span className="board__name">{entry.player}</span>
-                                    <span className="board__score">{entry.score}</span>
-                                </li>
-                            ))}
-                        </ol>
-                    </details>
-                )}
 
             </main>
         </div>

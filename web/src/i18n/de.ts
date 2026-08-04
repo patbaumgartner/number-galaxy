@@ -205,8 +205,6 @@ export const de: Translations = {
         untimed: 'Ohne Countdown',
         accuracy: 'Richtig',
         streak: 'Serie',
-        legacyTitle: 'Früher',
-        legacyHint: 'Ergebnisse aus der alten Version — nicht vergleichbar.',
     },
     error: {
         title: '👾 Da ist etwas schiefgelaufen',

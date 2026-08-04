@@ -1,9 +1,8 @@
 import { clearAll } from './storage'
 import { loadSettings, saveSettings } from './settings'
-import { loadLegacyScores, loadScores, submitScore } from './scores'
+import { loadScores, submitScore } from './scores'
 import {
     addPlayer,
-    adoptLegacyProfile,
     ensurePlayer,
     getLastGame,
     getPlayer,
@@ -39,13 +38,13 @@ import {
 } from './progress'
 
 export type { GameSettings, TimerMode } from './settings'
-export { THINKING_TIMES, TIMER_MODES, defaultSettings, legacyLevelToRank, settingsKeys } from './settings'
+export { THINKING_TIMES, TIMER_MODES, defaultSettings, settingsKeys } from './settings'
 
-export type { LegacyScoreEntry, ScoreEntry } from './scores'
+export type { ScoreEntry } from './scores'
 export { RULESET_VERSION, scoreKeys } from './scores'
 
 export type { GameRoute, Player } from './profiles'
-export { adoptLegacyProfile, gameRouteOf, profileKey, profileKeys, profilePrefix } from './profiles'
+export { gameRouteOf, profileKey, profileKeys, profilePrefix } from './profiles'
 
 export type {
     ArcadeFacts,
@@ -65,10 +64,9 @@ export { BADGE_EMOJI, STRATEGIES, computeBadge, progressKeys } from './progress'
 export type { ProgressReport, SectionLine, SkillLine } from './report'
 export { buildReport, readableFact } from './report'
 
-export { purgeRetiredStorage, storageKey } from './storage'
+export { storageKey } from './storage'
 
 export const store = {
-    adoptLegacyProfile,
 
     getSettings: loadSettings,
     saveSettings,
@@ -85,7 +83,6 @@ export const store = {
     setLastGame,
 
     getScores: loadScores,
-    getLegacyScores: loadLegacyScores,
     submitScore,
 
     getWeakness,

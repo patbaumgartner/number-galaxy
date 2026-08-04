@@ -25,16 +25,7 @@ export type ScoreEntry = {
     updatedAt: string
 }
 
-/** Read-only remains of the pre-rework leaderboard. */
-export type LegacyScoreEntry = {
-    player: string
-    avatarId: string
-    score: number
-    answeredCount: number
-}
-
 const scoresKey = () => profileKey('scores-v2')
-const legacyScoresKey = () => profileKey('hall-of-fame')
 
 const byScore = (a: ScoreEntry, b: ScoreEntry) =>
     b.score - a.score || b.stars - a.stars || b.correct - a.correct
@@ -72,12 +63,4 @@ export function submitScore(entry: ScoreEntry): { improved: boolean; entries: Sc
     return { improved, entries: all }
 }
 
-export function loadLegacyScores(): LegacyScoreEntry[] {
-    const entries = readJson<LegacyScoreEntry[]>(legacyScoresKey(), [])
-    if (!Array.isArray(entries)) return []
-    return entries
-        .filter(entry => entry && typeof entry.score === 'number')
-        .sort((a, b) => b.score - a.score)
-}
-
-export const scoreKeys = { current: scoresKey(), legacy: legacyScoresKey() }
+export const scoreKeys = { current: scoresKey() }

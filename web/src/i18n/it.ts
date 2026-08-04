@@ -205,8 +205,6 @@ export const it: Translations = {
         untimed: 'Senza conto alla rovescia',
         accuracy: 'Giuste',
         streak: 'Serie',
-        legacyTitle: 'Prima',
-        legacyHint: 'Risultati della vecchia versione — non confrontabili.',
     },
     error: {
         title: '👾 Qualcosa è andato storto',

@@ -34,11 +34,3 @@ test('groups seeded scores by rank and clock setting with medals', async ({ page
     await expect(page.locator('.board__rank')).toContainText(['🥇', '🥈', '🥉'])
 })
 
-test('only exposes the legacy section when legacy scores exist', async ({ page }) => {
-    await seedStorage(page, { settings })
-    await page.addInitScript(() => window.localStorage.setItem('number-galaxy-hall-of-fame', JSON.stringify([{ player: 'Old', avatarId: '👾', score: 99, answeredCount: 10 }])))
-    await gotoApp(page, '/hall-of-fame')
-    await expect(page.getByText('Earlier')).toBeVisible()
-    await page.getByText('Earlier').click()
-    await expect(page.getByText('Old', { exact: true })).toBeVisible()
-})

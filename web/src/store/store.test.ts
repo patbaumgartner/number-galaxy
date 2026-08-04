@@ -4,7 +4,6 @@ import {
     RULESET_VERSION,
     computeBadge,
     defaultSettings,
-    legacyLevelToRank,
     profileKeys,
     progressKeys,
     scoreKeys,
@@ -56,50 +55,15 @@ const entry = (overrides: Partial<ScoreEntry> = {}): ScoreEntry => ({
     ...overrides,
 })
 
-describe('settings migration', () => {
+describe('settings', () => {
     it('falls back to defaults when nothing is stored', () => {
         expect(store.getSettings()).toEqual(defaultSettings)
     })
 
-    it('maps every old level onto a rank without demoting anyone', () => {
-        for (const [level, rank] of Object.entries(legacyLevelToRank)) {
-            installStorage()
-            storage = globalThis.window.localStorage
-            storage.setItem(settingsKeys.legacy, JSON.stringify({ level, mode: 'drill' }))
-            expect(store.getSettings().rank).toBe(rank)
-        }
-    })
 
-    it('turns explore mode into an untimed run and drill into a timed one', () => {
-        storage.setItem(settingsKeys.legacy, JSON.stringify({ level: 'starter', mode: 'explore' }))
-        expect(store.getSettings().timer).toBe('off')
 
-        installStorage()
-        globalThis.window.localStorage.setItem(
-            settingsKeys.legacy,
-            JSON.stringify({ level: 'starter', mode: 'drill' }),
-        )
-        expect(store.getSettings().timer).toBe('timed')
-    })
 
-    it('collapses the old worked-example and tip switches into one hints flag', () => {
-        storage.setItem(settingsKeys.legacy, JSON.stringify({ tips: false, workedExamples: false }))
-        expect(store.getSettings().hints).toBe(false)
-    })
 
-    it('writes the converted settings back so migration runs only once', () => {
-        storage.setItem(settingsKeys.legacy, JSON.stringify({ level: 'master', mode: 'drill' }))
-        expect(store.getSettings().rank).toBe('legend')
-
-        store.saveSettings({ ...store.getSettings(), rank: 'rookie' })
-        // The legacy blob is still present but must no longer win.
-        expect(store.getSettings().rank).toBe('rookie')
-    })
-
-    it('is idempotent', () => {
-        storage.setItem(settingsKeys.legacy, JSON.stringify({ level: 'elementary', mode: 'drill' }))
-        expect(store.getSettings()).toEqual(store.getSettings())
-    })
 
     it('repairs corrupt or unknown values instead of crashing', () => {
         storage.setItem(settingsKeys.current, '{ not json')
@@ -166,17 +130,6 @@ describe('scores', () => {
         expect(store.getScores().map(e => e.score)).toEqual([300, 200, 100])
     })
 
-    it('reads pre-rework scores without converting them', () => {
-        storage.setItem(
-            scoreKeys.legacy,
-            JSON.stringify([
-                { player: 'Old', avatarId: '👾', score: 40, answeredCount: 12 },
-                { player: 'Older', avatarId: '🛸', score: 90, answeredCount: 20 },
-            ]),
-        )
-        expect(store.getLegacyScores().map(e => e.score)).toEqual([90, 40])
-        expect(store.getScores()).toEqual([])
-    })
 
     it('does not record a run that never scored a point', () => {
         const abandoned = store.submitScore(entry({ score: 0, correct: 0, total: 1, stars: 0, bestStreak: 0 }))
@@ -403,14 +356,6 @@ describe('the mistake that keeps coming up', () => {
 })
 
 describe('the clock and the time to think', () => {
-    it('carries the old on/off switch onto the new three-way setting', () => {
-        storage.setItem(settingsKeys.current, JSON.stringify({ timed: true }))
-        expect(store.getSettings().timer).toBe('timed')
-
-        installStorage()
-        globalThis.window.localStorage.setItem(settingsKeys.current, JSON.stringify({ timed: false }))
-        expect(store.getSettings().timer).toBe('off')
-    })
 
     it('starts with no clock and normal thinking time', () => {
         expect(store.getSettings().timer).toBe('off')

@@ -181,8 +181,6 @@ export type Translations = {
         untimed: string
         accuracy: string
         streak: string
-        legacyTitle: string
-        legacyHint: string
     }
     error: { title: string; body: string; reload: string }
     operations: Record<Operation, string>

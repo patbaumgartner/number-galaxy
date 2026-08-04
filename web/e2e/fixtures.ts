@@ -16,27 +16,37 @@ type StorageSeed = {
 
 const APP_PATH = '/math-invaders'
 
-/**
- * Where a key lives once the app owns it.
- *
- * `seedStorage` deliberately writes the pre-profile layout, so every run also
- * exercises the migration. Anything written *after* the app has started must use
- * this instead, or the migration will decline to move it over what is already there.
- */
-export const profileStorageKey = (name: string): string => `number-galaxy-ume-${name}`
+/** The default profile id, and so the prefix every seeded key hangs under. */
+const PROFILE_ID = 'me'
+const PROFILE_PREFIX = `u${PROFILE_ID}-`
 
-const storageEntries = (seed: StorageSeed): readonly [string, unknown][] => [
-    ['number-galaxy-settings-v2', seed.settings],
-    ['number-galaxy-player', seed.player],
-    ['number-galaxy-scores-v2', seed.scores],
-    ['number-galaxy-tt-progress', seed.ttProgress],
-    ['number-galaxy-tt-stars', seed.ttStars],
-    ['number-galaxy-tt-bests', seed.ttBests],
-    ['number-galaxy-tt-settings', seed.ttSettings],
-    ['number-galaxy-beam-stars', seed.beamStars],
-    ['number-galaxy-beam-bests', seed.beamBests],
-    ['number-galaxy-beam-settings', seed.beamSettings],
-].filter((entry): entry is [string, unknown] => entry[1] !== undefined)
+/**
+ * Where a profile's own keys live.
+ *
+ * Everything a child owns is namespaced by their id; only the roster and the
+ * pointer to the active one sit at the top level. `seedStorage` writes exactly
+ * that layout, because it is the only one the app reads.
+ */
+export const profileStorageKey = (name: string): string => `number-galaxy-${PROFILE_PREFIX}${name}`
+
+const storageEntries = (seed: StorageSeed): readonly [string, unknown][] => {
+    const owned: readonly [string, unknown][] = [
+        [profileStorageKey('settings-v2'), seed.settings],
+        [profileStorageKey('scores-v2'), seed.scores],
+        [profileStorageKey('tt-progress'), seed.ttProgress],
+        [profileStorageKey('tt-stars'), seed.ttStars],
+        [profileStorageKey('tt-bests'), seed.ttBests],
+        [profileStorageKey('tt-settings'), seed.ttSettings],
+        [profileStorageKey('beam-stars'), seed.beamStars],
+        [profileStorageKey('beam-bests'), seed.beamBests],
+        [profileStorageKey('beam-settings'), seed.beamSettings],
+    ]
+    const roster: readonly [string, unknown][] = seed.player === undefined ? [] : [
+        ['number-galaxy-players', [{ ...(seed.player as object), id: PROFILE_ID }]],
+        ['number-galaxy-active-player', PROFILE_ID],
+    ]
+    return [...roster, ...owned].filter((entry): entry is [string, unknown] => entry[1] !== undefined)
+}
 
 export async function seedStorage(page: Page, seed: StorageSeed): Promise<void> {
     await page.addInitScript((entries: readonly [string, unknown][]) => {

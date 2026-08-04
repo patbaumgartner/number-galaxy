@@ -1,20 +1,6 @@
 const PREFIX = 'number-galaxy-'
 
-/**
- * The namespace used before the app was renamed. Not dead code: renaming the
- * prefix orphans the old keys rather than deleting them, and "Delete all data"
- * only ever clears the current namespace — so a child's name and progress would
- * sit on the device forever with nothing in the UI able to reach them. Progress
- * from before the rename is deliberately not carried over, so the old namespace
- * is dropped outright, once, on startup.
- */
-const RETIRED_PREFIX = 'math-invaders-'
-
 export const storageKey = (name: string): string => `${PREFIX}${name}`
-
-/** Strips the shared prefix, so a key can be re-homed under a profile. */
-export const storageName = (key: string): string =>
-    key.startsWith(PREFIX) ? key.slice(PREFIX.length) : key
 
 const available = (): Storage | null => {
     try {
@@ -108,36 +94,4 @@ export function removeByPrefix(prefix: string): void {
     }
 }
 
-/** Every key this app owns, snapshotted so callers may write while iterating. */
-export function listKeys(): string[] {
-    const storage = available()
-    if (!storage) return []
-    try {
-        const keys: string[] = []
-        for (let i = 0; i < storage.length; i += 1) {
-            const key = storage.key(i)
-            if (key !== null && key.startsWith(PREFIX)) keys.push(key)
-        }
-        return keys
-    } catch {
-        return []
-    }
-}
-
-/** Re-homes a stored value, leaving anything already at `to` untouched. */
-export function moveKey(from: string, to: string): void {
-    const storage = available()
-    if (!storage) return
-    try {
-        const value = storage.getItem(from)
-        if (value === null || storage.getItem(to) !== null) return
-        storage.setItem(to, value)
-        storage.removeItem(from)
-    } catch {
-        /* a full or blocked quota leaves the original where it is */
-    }
-}
-
 export const clearAll = (): void => removeByPrefix(PREFIX)
-
-export const purgeRetiredStorage = (): void => removeByPrefix(RETIRED_PREFIX)

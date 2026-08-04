@@ -768,3 +768,33 @@ WCAG audit on two viewports — every one needed somebody to look at the screen.
   for an answer tile that the handover had already replaced. Each step now waits for the
   screen it is about to act on — which also made the round assert that the handover gates
   every one of its sixteen questions.
+
+### Phase 7 — what a second pass over the same screens turned up
+
+| Ref | Change | Evidence it works |
+|---|---|---|
+| 7.1 | Every source file back under the 250-line ceiling: `GamePage` 436 → 201 behind a `useMissionRun` hook, `SettingsPage` 376 → 227, `HomePage` 297 → 174, `questions.ts` 255 → 110, `strategies.ts` 278 → 90 beside its card data | 708 unit and 235 e2e tests unchanged either side of the move |
+| 7.2 | One drill summary for the beam and the sense stations, on the `.summary` shell the arcade already used | The sense summary had declared `role="dialog" aria-modal` and managed no focus at all; a test now asserts focus lands inside |
+| 7.3 | Two-player feedback says what happened — "Richtig!", "Daneben! Richtig wäre 10" — and stops asking a child to confirm a right answer | Was colour-only, so a screen reader got nothing; `playWrong` had never been wired up either |
+| 7.4 | Head to head decided on right answers rather than hidden points | Five in a row used to beat six with a miss in the middle, 80 to 60, while the screen showed 5 against 6 |
+| 7.5 | No child addressed as a boy: the rank ladders, the French and Italian handover buttons, and Italian's "Bambino 1" | A test refuses the masculine generic and names the key; proved by putting `Pilot` back |
+
+### The tests that could not have caught these
+
+Three of the five were invisible to a green suite, and each for its own reason.
+
+**Head to head.** Every existing test handed one player all sixteen questions, so points and
+right answers always agreed and the two rules were indistinguishable. The new test sets
+them against each other on purpose.
+
+**The strategy self-report.** Whether a right answer is asked "how did you do that?" is a
+12 % coin flip, and the suite pinned the coin away with a note saying "unless a test wants
+it". None ever did, so a shipped feature had no coverage and its handlers were covered only
+when the flip happened to land that way elsewhere — which is what left the function-coverage
+gate one function from its threshold, failing at random.
+
+**Playwright was reusing a four-hour-stale preview server.** `reuseExistingServer` meant a
+build from before the refactor kept serving, so several runs reported green against code
+that no longer existed. It surfaced only because a failure snapshot showed markup from a
+component that had been deleted. Worth knowing the next time a suite looks too calm.
+

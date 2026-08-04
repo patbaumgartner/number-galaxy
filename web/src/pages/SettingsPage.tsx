@@ -1,18 +1,18 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { BADGE_EMOJI, THINKING_TIMES, TIMER_MODES, store, type GameSettings, type TimerMode } from '../store'
-import { OPERATIONS, RANKS, rankConfig, type Operation, type Rank } from '../game'
+import { THINKING_TIMES, store, type GameSettings } from '../store'
+import { OPERATIONS, type Operation } from '../game'
 import { languageNames } from '../constants'
 import Flag from '../components/Flag'
-import { fill, translations, type Translations } from '../i18n'
+import Switch from '../components/settings/Switch'
+import OneSwitchGroup from '../components/settings/OneSwitchGroup'
+import ArcadeSettings from '../components/settings/ArcadeSettings'
+import { translations, type Translations } from '../i18n'
 import { useDocumentLanguage } from '../hooks'
 import type { Language } from '../game'
 import { ttStore } from '../timesTable/ttStore'
 import { beamStore } from '../beam'
 import { senseStore } from '../sense'
-
-const timerLabel = (t: Translations, mode: TimerMode): string =>
-    mode === 'off' ? t.settings.timerOff : mode === 'gentle' ? t.settings.timerGentle : t.settings.timerTimed
 
 const thinkingLabel = (t: Translations, value: GameSettings['thinkingTime']): string =>
     value === 1 ? t.settings.thinkingNormal : value === 1.5 ? t.settings.thinkingMore : t.settings.thinkingMost
@@ -97,197 +97,50 @@ export default function SettingsPage() {
                     <p className="shell__tagline">{t.settings.tagline}</p>
                 </header>
 
-                <section className="group">
-                    <div className="group__head">
-                        <h2 className="group__title">{t.settings.groupSense}</h2>
-                        <p className="group__hint">{t.settings.groupSenseHint}</p>
-                    </div>
+                <OneSwitchGroup
+                    labels={t.settings}
+                    title={t.settings.groupSense}
+                    hint={t.settings.groupSenseHint}
+                    switchTitle={`👁 ${t.sense.settingsGlance}`}
+                    switchHint={t.sense.settingsGlanceHint}
+                    on={senseSettings.briefGlance}
+                    resetLabel={t.sense.settingsReset}
+                    onToggle={() => updateSense(!senseSettings.briefGlance)}
+                    onReset={resetSense}
+                />
 
-                    <div className="panel">
-                        <div className="switch-row">
-                            <div>
-                                <h3 className="switch-row__title">👁 {t.sense.settingsGlance}</h3>
-                                <p className="panel__hint">{t.sense.settingsGlanceHint}</p>
-                            </div>
-                            <Switch
-                                labels={t.settings}
-                                on={senseSettings.briefGlance}
-                                onToggle={() => updateSense(!senseSettings.briefGlance)}
-                            />
-                        </div>
-                        <div className="panel__action">
-                            <button type="button" className="btn btn--danger" onClick={resetSense}>{t.sense.settingsReset}</button>
-                        </div>
-                    </div>
-                </section>
+                <OneSwitchGroup
+                    labels={t.settings}
+                    title={t.settings.groupBeam}
+                    hint={t.settings.groupBeamHint}
+                    switchTitle={`📏 ${t.beam.settingsBar}`}
+                    switchHint={t.beam.settingsBarHint}
+                    on={beamSettings.alwaysShowBar}
+                    resetLabel={t.beam.settingsReset}
+                    onToggle={() => updateBeam(!beamSettings.alwaysShowBar)}
+                    onReset={resetBeam}
+                />
 
-                <section className="group">
-                    <div className="group__head">
-                        <h2 className="group__title">{t.settings.groupBeam}</h2>
-                        <p className="group__hint">{t.settings.groupBeamHint}</p>
-                    </div>
+                <ArcadeSettings
+                    t={t}
+                    settings={settings}
+                    badges={badges}
+                    mistake={mistake}
+                    onUpdate={update}
+                    onToggleOperation={toggleOperation}
+                />
 
-                    <div className="panel">
-                        <div className="switch-row">
-                            <div>
-                                <h3 className="switch-row__title">📏 {t.beam.settingsBar}</h3>
-                                <p className="panel__hint">{t.beam.settingsBarHint}</p>
-                            </div>
-                            <Switch
-                                labels={t.settings}
-                                on={beamSettings.alwaysShowBar}
-                                onToggle={() => updateBeam(!beamSettings.alwaysShowBar)}
-                            />
-                        </div>
-                        <div className="panel__action">
-                            <button type="button" className="btn btn--danger" onClick={resetBeam}>{t.beam.settingsReset}</button>
-                        </div>
-                    </div>
-                </section>
-
-                <section className="group">
-                    <div className="group__head">
-                        <h2 className="group__title">{t.settings.groupInvaders}</h2>
-                        <p className="group__hint">{t.settings.groupInvadersHint}</p>
-                    </div>
-
-                    {mistake !== null && (
-                        <div className="panel">
-                            <h3 className="panel__title">{t.settings.practiseNextTitle}</h3>
-                            <p className="panel__hint">{t.settings.practiseNextHint}</p>
-                            <p className="equation__note">{t.misses[mistake]}</p>
-                        </div>
-                    )}
-
-                    <div className="panel">
-                        <h3 className="panel__title">{t.settings.practiceTitle}</h3>
-                        <p className="panel__hint">{t.settings.practiceHint}</p>
-                        <div className="options">
-                            {OPERATIONS.map(operation => {
-                                const badge = badges.get(operation) ?? 'none'
-                                const active = settings.operations.includes(operation)
-                                const locked = active && settings.operations.length === 1
-                                return (
-                                    <button
-                                        key={operation}
-                                        type="button"
-                                        className={`option${active ? ' option--active' : ''}${locked ? ' option--locked' : ''}`}
-                                        aria-pressed={active}
-                                        aria-disabled={locked}
-                                        onClick={() => toggleOperation(operation)}
-                                    >
-                                        {t.operations[operation]}
-                                        <span className="option__marks">
-                                            {badge !== 'none' && (
-                                                <span className="option__badge" aria-hidden="true">{BADGE_EMOJI[badge]}</span>
-                                            )}
-                                            <span className="option__state" aria-hidden="true">
-                                                {locked ? '🔒' : active ? '✓' : ''}
-                                            </span>
-                                        </span>
-                                    </button>
-                                )
-                            })}
-                        </div>
-                        {settings.operations.length === 1 && (
-                            <p className="panel__note">{t.settings.keepOne}</p>
-                        )}
-                    </div>
-
-                    <div className="panel">
-                        <h3 className="panel__title">{t.settings.rankTitle}</h3>
-                        <p className="panel__hint">{t.settings.rankHint}</p>
-                        <div className="ladder">
-                            {RANKS.map((rank: Rank) => (
-                                <button
-                                    key={rank}
-                                    type="button"
-                                    className={`rung${settings.rank === rank ? ' rung--active' : ''}`}
-                                    aria-pressed={settings.rank === rank}
-                                    onClick={() => update({ rank })}
-                                >
-                                    <span className="rung__name">{t.ranks[rank]}</span>
-                                    <span className="rung__meta">
-                                        {fill(t.settings.rankRange, { max: rankConfig[rank].maxValue })}
-                                    </span>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="panel">
-                        <div>
-                            <h3 className="switch-row__title">⏱ {t.settings.timerTitle}</h3>
-                            <p className="panel__hint">{t.settings.timerHint}</p>
-                        </div>
-                        <div className="options options--row">
-                            {TIMER_MODES.map(mode => (
-                                <button
-                                    key={mode}
-                                    type="button"
-                                    className={`option${settings.timer === mode ? ' option--active' : ''}`}
-                                    aria-pressed={settings.timer === mode}
-                                    onClick={() => update({ timer: mode })}
-                                >
-                                    {timerLabel(t, mode)}
-                                </button>
-                            ))}
-                        </div>
-                        <p className="panel__hint">{t.settings.timerGentleHint}</p>
-
-                        <div className="switch-row">
-                            <div>
-                                <h3 className="switch-row__title">💡 {t.settings.hintsTitle}</h3>
-                                <p className="panel__hint">{t.settings.hintsHint}</p>
-                            </div>
-                            <Switch labels={t.settings} on={settings.hints} onToggle={() => update({ hints: !settings.hints })} />
-                        </div>
-
-                        <div className="switch-row">
-                            <div>
-                                <h3 className="switch-row__title">📖 {t.settings.storiesTitle}</h3>
-                                <p className="panel__hint">{t.settings.storiesHint}</p>
-                            </div>
-                            <Switch labels={t.settings} on={settings.stories} onToggle={() => update({ stories: !settings.stories })} />
-                        </div>
-
-                        <div className="switch-row">
-                            <div>
-                                <h3 className="switch-row__title">🏅 {t.settings.showScoreTitle}</h3>
-                                <p className="panel__hint">{t.settings.showScoreHint}</p>
-                            </div>
-                            <Switch
-                                labels={t.settings}
-                                on={settings.showScore}
-                                onToggle={() => update({ showScore: !settings.showScore })}
-                            />
-                        </div>
-                    </div>
-                </section>
-
-                <section className="group">
-                    <div className="group__head">
-                        <h2 className="group__title">{t.settings.groupTables}</h2>
-                        <p className="group__hint">{t.settings.groupTablesHint}</p>
-                    </div>
-
-                    <div className="panel">
-                        <div className="switch-row">
-                            <div>
-                                <h3 className="switch-row__title">{t.tt.settingsStrategyCards}</h3>
-                                <p className="panel__hint">{t.tt.settingsStrategyHint}</p>
-                            </div>
-                            <Switch
-                                labels={t.settings}
-                                on={trainerSettings.strategyCards}
-                                onToggle={() => updateTrainer(!trainerSettings.strategyCards)}
-                            />
-                        </div>
-                        <div className="panel__action">
-                            <button type="button" className="btn btn--danger" onClick={resetTrainer}>{t.tt.settingsReset}</button>
-                        </div>
-                    </div>
-                </section>
+                <OneSwitchGroup
+                    labels={t.settings}
+                    title={t.settings.groupTables}
+                    hint={t.settings.groupTablesHint}
+                    switchTitle={t.tt.settingsStrategyCards}
+                    switchHint={t.tt.settingsStrategyHint}
+                    on={trainerSettings.strategyCards}
+                    resetLabel={t.tt.settingsReset}
+                    onToggle={() => updateTrainer(!trainerSettings.strategyCards)}
+                    onReset={resetTrainer}
+                />
 
                 <section className="group">
                     <div className="group__head">
@@ -395,20 +248,5 @@ export default function SettingsPage() {
                 </nav>
             </main>
         </div>
-    )
-}
-
-type SwitchProps = {
-    readonly labels: Translations['settings']
-    readonly on: boolean
-    readonly onToggle: () => void
-}
-
-function Switch({ labels, on, onToggle }: SwitchProps) {
-    return (
-        <button type="button" className={`switch${on ? ' switch--on' : ''}`} role="switch" aria-checked={on} onClick={onToggle}>
-            <span className="switch__track"><span className="switch__thumb" /></span>
-            {on ? labels.on : labels.off}
-        </button>
     )
 }

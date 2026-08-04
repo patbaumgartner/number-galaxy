@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router'
 import TopBar from '../components/TopBar'
-import SenseSummary, { type SenseResult } from '../components/sense/SenseSummary'
+import DrillSummary, { type DrillResult } from '../components/DrillSummary'
 import PlayHud from '../components/PlayHud'
 import BeamSlider from '../components/beam/BeamSlider'
 import SenseVisual from '../components/sense/SenseVisual'
@@ -75,7 +75,7 @@ function SenseDrill({ skill, onReplay }: { readonly skill: SenseSkill; readonly 
     const [beamValue, setBeamValue] = useState(0)
     const [glanceOver, setGlanceOver] = useState(false)
     const [helpOpen, setHelpOpen] = useState(false)
-    const [result, setResult] = useState<SenseResult | null>(null)
+    const [result, setResult] = useState<DrillResult | null>(null)
     const savedRef = useRef(false)
     const surpriseActions = useSurpriseActions(t)
 
@@ -217,8 +217,8 @@ function SenseDrill({ skill, onReplay }: { readonly skill: SenseSkill; readonly 
 
 
             {result !== null && (
-                <SenseSummary
-                    labels={t}
+                <DrillSummary
+                    labels={t.beam}
                     result={result}
                     onPlayAgain={onReplay}
                     onExit={() => navigate('/number-sense')}

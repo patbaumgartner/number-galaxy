@@ -103,8 +103,9 @@ test('plays a full drill entirely on the beam, earning and keeping a star', asyn
 
     const summary = page.getByRole('dialog', { name: 'Station complete!' })
     await expect(summary).toBeVisible()
-    await expect(summary.getByLabel('1 stars')).toBeVisible()
-    await expect(summary.getByText(/10\/10 \(100%\)/)).toBeVisible()
+    await expect(summary.getByLabel('1/3')).toBeVisible()
+    await expect(summary.locator('.summary__star--earned')).toHaveCount(1)
+    await expect(summary.getByText(/10\/10 · 100%/)).toBeVisible()
 
     await summary.getByRole('button', { name: 'Back to map' }).click()
     await page.reload()

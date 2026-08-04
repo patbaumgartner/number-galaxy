@@ -131,8 +131,11 @@ describe('BeamDrillPage', () => {
         playThrough(() => true)
 
         expect(screen.getByRole('dialog', { name: 'Station complete!' })).toBeInTheDocument()
-        expect(screen.getByLabelText('1 stars')).toBeInTheDocument()
-        expect(screen.getByText(/10\/10 \(100%\)/)).toBeInTheDocument()
+        expect(screen.getByLabelText('1/3')).toBeInTheDocument()
+        // Three stars are always drawn; only the earned ones are filled in.
+        expect(document.querySelectorAll('.summary__star')).toHaveLength(3)
+        expect(document.querySelectorAll('.summary__star--earned')).toHaveLength(1)
+        expect(screen.getByText(/10\/10 · 100%/)).toBeInTheDocument()
         expect(beamStore.getStars().double).toBe(1)
         expect(beamStore.getBests().double).toBe(1)
 

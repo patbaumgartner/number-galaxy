@@ -113,4 +113,19 @@ describe('SenseDrillPage', () => {
         expect(await screen.findByRole('dialog', { name: 'Station complete!' })).toBeInTheDocument()
         expect(senseStore.getStars().subitize).toBeGreaterThanOrEqual(1)
     })
+
+    it('shows a worked example on other numbers, and closes it again', async () => {
+        const user = userEvent.setup({ delay: null })
+        renderDrill('subitize')
+
+        await user.click(screen.getByRole('button', { name: /Help/ }))
+        const help = await screen.findByRole('dialog')
+
+        // On numbers the drill is not asking about: help that solves the question
+        // in front of the child hands the answer over.
+        expect(help).toHaveTextContent('5 + 2 = 7')
+
+        await user.click(screen.getByRole('button', { name: 'Continue' }))
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    })
 })

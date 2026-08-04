@@ -452,6 +452,14 @@ was the point.
 solutions are written in pure maths notation (`12 − 7 = 5`) and read identically in every
 language.
 
+**No child is addressed as a boy.** German, French and Italian all inflect roles, and the
+masculine is the easy default — so the rank ladder used to greet every player as *Pilot*,
+*Débutant* and *Bambino 1*. Each language now uses whatever neutral form it actually has:
+French keeps *novice* and *pilote*, which are the same for everyone; German has no such
+word for these, so its ladder names stages rather than people — 🌱 Start, ⭐ Crew,
+🚀 Rakete. A test refuses the masculine generic and names the key when it finds one, so a
+new translation cannot quietly reintroduce it.
+
 ### Settings
 
 ![Settings page](./docs/math-invaders-settings.png)

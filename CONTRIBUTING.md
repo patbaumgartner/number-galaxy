@@ -73,10 +73,17 @@ The game supports German, Italian, English and French. To add another:
 5. Draw the flag in `web/src/components/Flag.tsx` — flags are SVG, because emoji
    flags collapse to bare "DE"/"GB" letters on Windows and most Linux desktops
 6. Add the remainder separator in `web/src/game/equations.ts` (`remainderSeparator`)
-7. Run `npm test` — `i18n/translations.test.ts` checks key parity, array lengths and
-   `{placeholder}` parity across every language, so a missing key fails the build
-8. Check every screen in the new language, including Settings and all three games
-9. Submit a PR titled `feat: add [language] translation`
+7. Write for every child. Where your language inflects a role — *Pilot/Pilotin*,
+   *débutant/débutante*, *bambino/bambina* — do not let the masculine stand for
+   both. Use a form your language already treats as neutral (French *novice*,
+   Italian *pilota*), or step around the role entirely, which is what the German
+   rank ladder does. `translations.test.ts` refuses the masculine generic, and
+   names the key when it finds one
+8. Run `npm test` — `i18n/translations.test.ts` also checks key parity, array
+   lengths and `{placeholder}` parity across every language, so a missing key
+   fails the build
+9. Check every screen in the new language, including Settings and all three games
+10. Submit a PR titled `feat: add [language] translation`
 
 ### Submitting Code
 

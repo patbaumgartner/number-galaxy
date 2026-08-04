@@ -82,7 +82,9 @@ test('moves the alien along the beam with a drag, the nudges and the arrow keys'
 
     await slider.press('ArrowRight')
     await expect(landOn(step * 2)).toBeVisible()
-    expect(await alienX()).toBeGreaterThan(start)
+    // The label updates the moment the value does, but the alien slides there
+    // over .12s — reading its box straight away catches it still at the start.
+    await expect.poll(alienX).toBeGreaterThan(start)
 
     await page.getByRole('button', { name: 'One step back' }).click()
     await expect(landOn(step)).toBeVisible()

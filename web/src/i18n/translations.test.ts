@@ -104,4 +104,33 @@ describe('translation integrity', () => {
             .map(([path, text]) => `${path}: ${text}`)
         expect(offenders).toEqual([])
     })
+    /**
+     * The masculine forms these languages inflect, which were being used for
+     * every child: a girl read "Pilot", "Débutant" and "Bambino 1" as herself.
+     *
+     * This refuses the masculine generic rather than pinning any wording, so a
+     * translator may reword freely so long as the result stays neutral.
+     */
+    it('addresses every child, not only the boys', () => {
+        const masculineGeneric = {
+            de: ['Spieler', 'Kadett', 'Pilot', 'Neuling', 'Lehrer', 'Schüler', 'Anfänger', 'Nutzer', 'Gewinner', 'Sieger'],
+            fr: ['débutant', 'joueur', 'joueurs', 'gagnant', 'utilisateur', 'enseignants', 'chacun', 'prêt'],
+            it: ['bambino', 'bambini', 'novellino', 'cadetto', 'giocatore', 'vincitore', 'pronto', 'alunno', 'ragazzi'],
+            en: ['he', 'she', 'his', 'him', 'her', 'himself', 'herself'],
+        } as const
+
+        const offenders: string[] = []
+        for (const language of ['de', 'fr', 'it', 'en'] as const) {
+            const strings = stringsByPath(translations[language])
+            for (const word of masculineGeneric[language]) {
+                // Letter boundaries rather than \\b, so umlauts and accents count
+                // as letters and "this" does not read as "his".
+                const pattern = new RegExp(`(^|[^\\p{L}])${word}([^\\p{L}]|$)`, 'iu')
+                for (const [path, text] of Object.entries(strings)) {
+                    if (pattern.test(text)) offenders.push(`${language} ${path}: ${text}`)
+                }
+            }
+        }
+        expect(offenders).toEqual([])
+    })
 })

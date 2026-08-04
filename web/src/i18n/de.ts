@@ -4,7 +4,7 @@ export const de: Translations = {
     nav: { home: 'Start', hallOfFame: 'Bestenliste', settings: 'Einstellungen' },
     home: {
         appName: 'Zahlen-Galaxie',
-        defaultName: 'Pilot',
+        defaultName: 'Ass',
         tagline: 'Vier Mathe-Spiele. Von den ersten Mengen bis zum Einmaleins.',
         subtitle: 'Kein Login · Immer kostenlos · Funktioniert offline',
         play: 'Spielen',
@@ -219,9 +219,9 @@ export const de: Translations = {
         remainders: '🔢 Mit Rest',
     },
     ranks: {
-        rookie: '🌱 Neuling',
-        cadet: '⭐ Kadett',
-        pilot: '🚀 Pilot',
+        rookie: '🌱 Start',
+        cadet: '⭐ Crew',
+        pilot: '🚀 Rakete',
         ace: '🔥 Ass',
         legend: '👑 Legende',
         supernova: '💫 Supernova',

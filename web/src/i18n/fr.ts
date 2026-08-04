@@ -174,7 +174,7 @@ export const fr: Translations = {
     },
     progress: {
         title: '📋 Progrès',
-        tagline: 'Pour les parents et les enseignants — reste sur cet appareil',
+        tagline: 'Pour les parents et le personnel enseignant — reste sur cet appareil',
         forWhom: 'Aperçu pour {name}',
         arcadeTitle: '🛸 Math Invaders',
         answered: '{n} réponses',
@@ -219,8 +219,8 @@ export const fr: Translations = {
         remainders: '🔢 Avec reste',
     },
     ranks: {
-        rookie: '🌱 Débutant',
-        cadet: '⭐ Cadet',
+        rookie: '🌱 Novice',
+        cadet: '⭐ Équipage',
         pilot: '🚀 Pilote',
         ace: '🔥 As',
         legend: '👑 Légende',
@@ -278,7 +278,7 @@ export const fr: Translations = {
     },
     duel: {
         title: 'À deux',
-        blurb: 'Un appareil, deux enfants — chacun son tour.',
+        blurb: 'Un appareil, deux enfants — à tour de rôle.',
         setupTitle: 'Qui joue ?',
         modeTitle: 'Comment voulez-vous jouer ?',
         modeTogether: '🤝 Ensemble',
@@ -292,7 +292,7 @@ export const fr: Translations = {
         turnOf: 'C’est à {name}',
         yourTurn: 'À toi, {name} !',
         handOver: 'Passe l’appareil',
-        ready: 'Prêt',
+        ready: 'C’est parti !',
         roundOver: 'Manche terminée !',
         togetherResult: 'Réussi ensemble',
         versusWinner: '{name} a gagné !',

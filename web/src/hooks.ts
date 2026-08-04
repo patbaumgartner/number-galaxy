@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import type { Language } from './game'
-import { translations } from './i18n'
+import { translations, type Translations } from './i18n'
 import { setSoundEnabled } from './sound'
 import { store } from './store'
 import { nextSurprise, surpriseRoute, SURPRISE_PARAM } from './surprise'
@@ -219,4 +219,21 @@ export function useSurpriseRun(): SurpriseRun {
     const home = useCallback(() => navigate('/'), [navigate])
 
     return { active, again, home }
+}
+
+/**
+ * The same run, shaped for a summary screen's buttons.
+ *
+ * Six summaries built this identical object from `useSurpriseRun` by hand, which
+ * is five chances for one of them to drift out of step with the others.
+ */
+export function useSurpriseActions(t: Translations): SurpriseActions | undefined {
+    const surprise = useSurpriseRun()
+    if (!surprise.active) return undefined
+    return {
+        againLabel: t.surprise.again,
+        homeLabel: t.nav.home,
+        onAgain: surprise.again,
+        onHome: surprise.home,
+    }
 }

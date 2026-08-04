@@ -5,7 +5,7 @@ import TrainerFrame from '../../components/trainer/TrainerFrame'
 import { NumberPad } from '../../components/trainer/NumberPad'
 import { SessionSummary } from '../../components/trainer/SessionSummary'
 import { playCorrect, playLevelUp, playWrong } from '../../sound'
-import { useSoundSetting, useSurpriseRun, type SurpriseActions } from '../../hooks'
+import { useSoundSetting, useSurpriseActions } from '../../hooks'
 import { store } from '../../store'
 import { applyAnswer, localEpochDay } from '../../review/leitner'
 import { buildSpeedSession } from '../../timesTable/session'
@@ -18,15 +18,7 @@ export function SpeedPhase({ planetId }: { planetId: PlanetId }) {
     const lang = store.getSettings().language
     useSoundSetting()
     const t = translations[lang]
-    const surprise = useSurpriseRun()
-    const surpriseActions: SurpriseActions | undefined = surprise.active
-        ? {
-            againLabel: t.surprise.again,
-            homeLabel: t.nav.home,
-            onAgain: surprise.again,
-            onHome: surprise.home,
-        }
-        : undefined
+    const surpriseActions = useSurpriseActions(t)
     const navigate = useNavigate()
     const planet = getPlanet(planetId)!
     const [todayEpochDay] = useState(() => localEpochDay(Date.now(), new Date().getTimezoneOffset()))

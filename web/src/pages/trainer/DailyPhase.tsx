@@ -12,7 +12,7 @@ import { explainFact, getStrategyCard } from '../../timesTable/strategies'
 import { GALAXIES, getPlanet } from '../../timesTable/tables'
 import { computeStars, ttStore } from '../../timesTable/ttStore'
 import type { Fact, FactKey, PlanetId } from '../../timesTable/types'
-import { useModalDialog, useSoundSetting, useSurpriseRun, type SurpriseActions } from '../../hooks'
+import { useModalDialog, useSoundSetting, useSurpriseActions } from '../../hooks'
 import { translations } from '../../i18n'
 
 const planetForFact = (fact: Fact): PlanetId => {
@@ -31,15 +31,7 @@ export function DailyPhase() {
     useSoundSetting()
     const t = translations[settings.language].tt
     const play = translations[settings.language].play
-    const surprise = useSurpriseRun()
-    const surpriseActions: SurpriseActions | undefined = surprise.active
-        ? {
-            againLabel: translations[settings.language].surprise.again,
-            homeLabel: translations[settings.language].nav.home,
-            onAgain: surprise.again,
-            onHome: surprise.home,
-        }
-        : undefined
+    const surpriseActions = useSurpriseActions(translations[settings.language])
     const [today] = useState(() => localEpochDay(Date.now(), new Date().getTimezoneOffset()))
     const [session, setSession] = useState(() => buildDailyMission(ttStore.getProgress(), ttStore.getStars(), today))
     const [index, setIndex] = useState(0)

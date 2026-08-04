@@ -12,7 +12,7 @@ import { getPlanet } from '../../timesTable/tables'
 import { computeStars, ttStore } from '../../timesTable/ttStore'
 import type { Fact, FactKey, PlanetId, StarLevel } from '../../timesTable/types'
 import type { Language } from '../../game'
-import { useModalDialog, useSoundSetting, useSurpriseRun, type SurpriseActions } from '../../hooks'
+import { useModalDialog, useSoundSetting, useSurpriseActions } from '../../hooks'
 import { translations } from '../../i18n'
 
 export function PracticePhase({ planetId }: { planetId: PlanetId }) {
@@ -20,15 +20,7 @@ export function PracticePhase({ planetId }: { planetId: PlanetId }) {
     useSoundSetting()
     const ttSettings = ttStore.getTTSettings()
     const t = translations[lang]
-    const surprise = useSurpriseRun()
-    const surpriseActions: SurpriseActions | undefined = surprise.active
-        ? {
-            againLabel: t.surprise.again,
-            homeLabel: t.nav.home,
-            onAgain: surprise.again,
-            onHome: surprise.home,
-        }
-        : undefined
+    const surpriseActions = useSurpriseActions(t)
     const planet = getPlanet(planetId)!
     const [todayEpochDay] = useState(() => localEpochDay(Date.now(), new Date().getTimezoneOffset()))
     const [initialSession] = useState<Fact[]>(

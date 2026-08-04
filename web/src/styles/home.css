@@ -39,10 +39,16 @@
   line-height: 1.5;
 }
 
+/* A <ul> styled as a flex row still carries the browser's list padding, which
+   indented every chip 40px past the heading above it. Flex already suppresses
+   the markers; only the padding needed clearing. */
 .chips {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .chip {

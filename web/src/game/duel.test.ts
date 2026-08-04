@@ -1,0 +1,141 @@
+import { describe, expect, it } from 'vitest'
+import {
+    QUESTIONS_PER_DUEL,
+    advanceDuel,
+    answerDuel,
+    createDuel,
+    duelCombined,
+    duelOver,
+    duelWinner,
+    turnOf,
+    type DuelMode,
+    type DuelState,
+} from './duel'
+import { createRng } from './rng'
+
+const players = [
+    { name: 'Nova', avatarId: '🚀' },
+    { name: 'Kim', avatarId: '👾' },
+] as const
+
+const start = (mode: DuelMode = 'together'): DuelState => createDuel({
+    mode,
+    players,
+    language: 'en',
+    rank: 'rookie',
+    timed: false,
+    operations: ['addition'],
+    rng: createRng(7),
+})
+
+/** Plays a whole round, with `hits` deciding the outcome of each question. */
+const play = (state: DuelState, hits: (index: number) => boolean): DuelState => {
+    let current = state
+    for (let index = 0; index < QUESTIONS_PER_DUEL; index += 1) {
+        current = answerDuel(current, hits(index) ? 'correct' : 'wrong', createRng(index + 1))
+        if (!duelOver(current)) current = advanceDuel(current, createRng(index + 1))
+    }
+    return current
+}
+
+describe('a two-player round', () => {
+    it('gives each player exactly half the questions', () => {
+        const done = play(start(), () => true)
+
+        expect(done.tallies[0].answered).toBe(QUESTIONS_PER_DUEL / 2)
+        expect(done.tallies[1].answered).toBe(QUESTIONS_PER_DUEL / 2)
+        expect(QUESTIONS_PER_DUEL % 2).toBe(0)
+    })
+
+    it('alternates strictly, so neither can take two turns running', () => {
+        let state = start()
+        const order: number[] = []
+        for (let index = 0; index < 6; index += 1) {
+            order.push(turnOf(state))
+            state = answerDuel(state, 'correct', createRng(index + 1))
+            state = advanceDuel(state, createRng(index + 1))
+        }
+        expect(order).toEqual([0, 1, 0, 1, 0, 1])
+    })
+
+    it('books a right answer to whoever actually gave it', () => {
+        let state = start()
+        state = answerDuel(state, 'correct', createRng(1))
+        state = advanceDuel(state, createRng(1))
+        state = answerDuel(state, 'wrong', createRng(2))
+
+        expect(state.tallies[0].correct).toBe(1)
+        expect(state.tallies[0].score).toBeGreaterThan(0)
+        expect(state.tallies[1].correct).toBe(0)
+        expect(state.tallies[1].score).toBe(0)
+    })
+
+    it('ends after its own number of questions rather than a solo mission\u2019s', () => {
+        const done = play(start(), () => true)
+
+        expect(duelOver(done)).toBe(true)
+        expect(done.mission.results).toHaveLength(QUESTIONS_PER_DUEL)
+        expect(QUESTIONS_PER_DUEL).toBeLessThan(25)
+    })
+
+    it('keeps a streak per player, so one child\u2019s miss cannot break the other\u2019s run', () => {
+        // Player 0 answers everything right, player 1 everything wrong.
+        const done = play(start(), index => index % 2 === 0)
+
+        expect(done.tallies[0].bestStreak).toBe(QUESTIONS_PER_DUEL / 2)
+        expect(done.tallies[1].bestStreak).toBe(0)
+    })
+})
+
+describe('playing together', () => {
+    it('never names a winner, whoever answered better', () => {
+        const done = play(start('together'), index => index % 2 === 0)
+
+        expect(duelWinner(done)).toBeNull()
+    })
+
+    it('adds the two up into one result that belongs to both', () => {
+        const done = play(start('together'), () => true)
+        const shared = duelCombined(done)
+
+        expect(shared.answered).toBe(QUESTIONS_PER_DUEL)
+        expect(shared.correct).toBe(QUESTIONS_PER_DUEL)
+        expect(shared.score).toBe(done.tallies[0].score + done.tallies[1].score)
+    })
+})
+
+describe('playing head to head', () => {
+    it('names whoever scored more', () => {
+        const done = play(start('versus'), index => index % 2 === 0)
+
+        expect(done.tallies[0].score).toBeGreaterThan(done.tallies[1].score)
+        expect(duelWinner(done)).toBe(0)
+    })
+
+    it('names the other one when the other one scores more', () => {
+        const done = play(start('versus'), index => index % 2 === 1)
+
+        expect(duelWinner(done)).toBe(1)
+    })
+
+    it('calls a draw nobody rather than picking one', () => {
+        const done = play(start('versus'), () => true)
+
+        expect(done.tallies[0].score).toBe(done.tallies[1].score)
+        expect(duelWinner(done)).toBeNull()
+    })
+
+    it('does not reward going first', () => {
+        // A shared combo multiplier put these two on different rungs of the same
+        // ladder: identical play finished 250 to 230 on turn order alone.
+        const done = play(start('versus'), () => true)
+
+        expect(done.tallies[0].score).toBe(done.tallies[1].score)
+    })
+})
+
+describe('what a round leaves behind', () => {
+    it('carries its own length rather than a solo mission\u2019s', () => {
+        expect(start().mission.total).toBe(QUESTIONS_PER_DUEL)
+    })
+})

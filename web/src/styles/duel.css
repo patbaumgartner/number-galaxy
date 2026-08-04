@@ -1,0 +1,124 @@
+/* Two players — the setup screen, the handover and the shared result. */
+
+.duel-names {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.duel-name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-xl);
+}
+
+.duel-name input {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-base);
+  color: var(--text-main);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+}
+
+/* A mode is a paragraph of consequence, not a word, so the choices stack and
+   each carries its own explanation rather than a tooltip nobody opens. */
+.option--block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  text-align: left;
+  width: 100%;
+}
+
+.option--block small {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
+.duel-note {
+  margin-top: var(--space-4);
+  text-align: center;
+}
+
+/* The handover fills the card the question would occupy, so the device is
+   plainly not asking the child holding it to answer yet. */
+.duel-handover {
+  gap: var(--space-4);
+}
+
+.duel-handover__who {
+  margin: 0;
+  font-size: var(--text-2xl);
+  font-weight: 800;
+  text-align: center;
+}
+
+.duel-handover__hint {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.duel-turn {
+  margin: 0;
+  font-weight: 700;
+  color: var(--color-gold);
+}
+
+.duel-result__headline {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  text-align: center;
+  margin: var(--space-3) 0;
+}
+
+.duel-result__score {
+  text-align: center;
+  font-size: var(--text-lg);
+  margin: 0 0 var(--space-3);
+}
+
+.duel-scores {
+  list-style: none;
+  margin: var(--space-3) 0;
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.duel-scores__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-surface-elevated);
+  border-radius: var(--radius-md);
+}
+
+.duel-scores__row strong {
+  flex: 1;
+  min-width: 0;
+}
+
+.duel-scores__row--won {
+  outline: 2px solid var(--color-gold);
+}
+
+.duel-result__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+/* The way into a two-player round sits under Play at the width of the buttons
+   around it, so it reads as another way to start rather than a footnote. */
+.btn--wide {
+  width: 100%;
+  margin-bottom: var(--space-4);
+}

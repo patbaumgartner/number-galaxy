@@ -26,6 +26,12 @@ export type MissionState = {
     maxValue: number
     timed: boolean
     operations: Operation[]
+    /**
+     * How many questions this run lasts. Fixed at the start and never changed,
+     * so the end of a run cannot move under a child who is halfway through it.
+     * A two-player round needs an even number; a solo mission uses 25.
+     */
+    total: number
     /** One entry per answered question, in order — drives the progress trail. */
     results: boolean[]
     /** Operations already used, so every chosen one is shown before any repeats. */
@@ -68,6 +74,8 @@ export type MissionConfig = {
     operations: Operation[]
     /** Omit to use the rank's own ceiling. */
     maxValue?: number
+    /** Omit for a solo mission's 25. */
+    total?: number
 } & MissionDeps
 
 export const getAnswered = (state: MissionState): number => state.results.length
@@ -147,6 +155,7 @@ export function createMission({
     timed,
     operations,
     maxValue = rankConfig[rank].maxValue,
+    total = QUESTIONS_PER_MISSION,
     ...deps
 }: MissionConfig): MissionState {
     const pool = operations.length > 0 ? operations : (['addition'] as Operation[])
@@ -157,6 +166,7 @@ export function createMission({
         maxValue,
         timed,
         operations: pool,
+        total,
         results: [],
         shownOperations: [question.operation],
         recentOperations: [question.operation],
@@ -200,7 +210,7 @@ export function scoreAnswer(state: MissionState, outcome: AnswerOutcome, rng: Rn
             ? [...state.retries, { question: state.question, dueAt: results.length + RETRY_GAP }]
             : state.retries,
         retried: requeue ? [...state.retried, prompt] : state.retried,
-        phase: results.length >= QUESTIONS_PER_MISSION ? 'summary' : 'feedback',
+        phase: results.length >= state.total ? 'summary' : 'feedback',
     }
 }
 

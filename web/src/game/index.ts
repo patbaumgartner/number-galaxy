@@ -70,3 +70,15 @@ export { equationFor, factKey, factOf, fitsWithin, keyOf, parseFactKey, peakOf, 
 
 export type { RankTuning } from './tuning'
 export { TUNING_WINDOW, floorFor, tuneAfter, workingMaxFor } from './tuning'
+
+export type { DuelConfig, DuelMode, DuelPlayer, DuelState, DuelTally } from './duel'
+export {
+    QUESTIONS_PER_DUEL,
+    advanceDuel,
+    answerDuel,
+    createDuel,
+    duelCombined,
+    duelOver,
+    duelWinner,
+    turnOf,
+} from './duel'

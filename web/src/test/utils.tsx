@@ -18,10 +18,15 @@ import { ttStore } from '../timesTable/ttStore'
 
 export const LOCATION_TEST_ID = 'test-location'
 
-/** Reports the current route so navigation can be asserted from the outside. */
+/**
+ * Reports the current route so navigation can be asserted from the outside.
+ *
+ * Includes the query string: a two-player round carries its shape and both names
+ * there, so a probe that stopped at the path could not tell one round from another.
+ */
 export function LocationProbe() {
     const location = useLocation()
-    return <div data-testid={LOCATION_TEST_ID}>{location.pathname}</div>
+    return <div data-testid={LOCATION_TEST_ID}>{location.pathname}{location.search}</div>
 }
 
 export type RouterRenderOptions = RenderOptions & {

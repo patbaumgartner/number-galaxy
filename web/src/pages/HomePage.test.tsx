@@ -189,10 +189,11 @@ describe('HomePage', () => {
 
         // A fresh player has nothing unlocked beyond the arcade, the home galaxy,
         // the first Number Sense zone and the Doubling Deck, so those are the
-        // only legal destinations.
+        // only legal destinations. A surprise run marks itself in the query
+        // string, so the address may carry one.
         const path = screen.getByTestId(LOCATION_TEST_ID).textContent ?? ''
         expect(path).toMatch(
-            /^\/(game\/play|times-tables\/train\/t\d+\/practice|number-beam\/drill\/(double|halve|nearDouble)|number-sense\/drill\/(subitize|tenFrame|rekenrek))$/,
+            /^\/(game\/play|times-tables\/train\/t\d+\/practice|number-beam\/drill\/(double|halve|nearDouble)|number-sense\/drill\/(subitize|tenFrame|rekenrek))(\?.*)?$/,
         )
     })
 })

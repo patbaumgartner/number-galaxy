@@ -157,3 +157,40 @@ test('fires tiles with digits and moves the roving answer focus with arrows', as
     await page.keyboard.press('1')
     await expect(page.locator('.equation__result')).not.toHaveText('Pick an answer')
 })
+
+test('plays a two-player round without leaving a trace on either profile', async ({ page }) => {
+    await seedStorage(page, { settings: untimed, player })
+    await gotoApp(page, '/game')
+    await page.getByRole('button', { name: /Two players/ }).click()
+
+    await page.getByLabel('Child 1').fill('Nova')
+    await page.getByLabel('Child 2').fill('Kim')
+    await page.getByRole('button', { name: 'Head to head' }).click()
+    await page.getByRole('button', { name: 'Start' }).click()
+
+    const before = await page.evaluate(() => JSON.stringify(window.localStorage))
+
+    // The handover before every question is what stops the quicker child taking
+    // both turns, so it has to be there each time rather than only at the start.
+    const names: string[] = []
+    for (let index = 0; index < 40; index += 1) {
+        if (await page.locator('.duel-result').count() > 0) break
+        const ready = page.getByRole('button', { name: 'Ready' })
+        if (await ready.count() > 0) {
+            names.push((await page.locator('.duel-handover__who').innerText()).replace(/\s+/g, ' ').trim())
+            await ready.click()
+            await page.waitForSelector('.answer-tile')
+        }
+        await page.locator('.answer-tile').first().click()
+        if (await page.locator('.duel-result').count() > 0) break
+        const next = page.locator('.equation__next')
+        if (await next.count() > 0) await next.click()
+    }
+
+    await expect(page.locator('.duel-result')).toBeVisible()
+    expect(names.filter(name => name.includes('Nova'))).toHaveLength(8)
+    expect(names.filter(name => name.includes('Kim'))).toHaveLength(8)
+
+    // Two children answering into one profile would describe a composite child.
+    expect(await page.evaluate(() => JSON.stringify(window.localStorage))).toBe(before)
+})

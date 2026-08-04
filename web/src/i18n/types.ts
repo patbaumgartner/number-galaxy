@@ -208,6 +208,32 @@ export type Translations = {
         question: string
         streak: string
     }
+    duel: {
+        title: string
+        blurb: string
+        setupTitle: string
+        modeTitle: string
+        modeTogether: string
+        modeTogetherHint: string
+        modeVersus: string
+        modeVersusHint: string
+        playerOne: string
+        playerTwo: string
+        namePlaceholder: string
+        start: string
+        turnOf: string
+        yourTurn: string
+        handOver: string
+        ready: string
+        roundOver: string
+        togetherResult: string
+        versusWinner: string
+        versusDraw: string
+        correctOf: string
+        again: string
+        exit: string
+        recordsNothing: string
+    }
     surprise: {
         title: string
         blurb: string

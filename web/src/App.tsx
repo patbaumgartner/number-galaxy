@@ -3,6 +3,8 @@ import './styles/index.css'
 import HomePage from './pages/HomePage'
 import ArcadePage from './pages/ArcadePage'
 import GamePage from './pages/GamePage'
+import DuelSetupPage from './pages/DuelSetupPage'
+import DuelPlayPage from './pages/DuelPlayPage'
 import HallOfFamePage from './pages/HallOfFamePage'
 import SettingsPage from './pages/SettingsPage'
 import ErrorBoundary from './components/ErrorBoundary'
@@ -24,6 +26,8 @@ export default function App() {
                     <Route path="/" element={<HomePage />} />
                     <Route path="/game" element={<ArcadePage />} />
                     <Route path="/game/play" element={<GamePage />} />
+                    <Route path="/game/two" element={<DuelSetupPage />} />
+                    <Route path="/game/two/play" element={<DuelPlayPage />} />
                     <Route path="/hall-of-fame" element={<HallOfFamePage />} />
                     <Route path="/settings" element={<SettingsPage />} />
                     <Route path="/progress" element={<ProgressPage />} />

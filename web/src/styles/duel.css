@@ -59,6 +59,13 @@
   text-align: center;
 }
 
+/* JSX drops the newline between the avatar and the name, which rendered them
+   touching as "🚀Du bist dran". A margin rather than a space because the
+   greeting wraps to two lines on a phone. */
+.duel-handover__who span {
+  margin-inline-end: var(--space-2);
+}
+
 .duel-handover__hint {
   margin: 0;
   color: var(--text-muted);

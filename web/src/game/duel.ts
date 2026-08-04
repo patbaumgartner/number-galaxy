@@ -128,6 +128,14 @@ export const advanceDuel = (state: DuelState, rng?: Rng): DuelState =>
 /**
  * Who won, or `null` when nobody did.
  *
+ * Decided on right answers, because that is the only number this round ever puts
+ * in front of a child. It used to be decided on points, and points are never
+ * shown here — so a streak could crown the child who got *fewer* right: five in
+ * a row beat six with a miss in the middle, 80 to 60, while both scoreboards
+ * said 5 and 6. A verdict a child cannot check against what they were shown is
+ * not one they can trust, and losing while holding the bigger number is the
+ * clearest way to teach them the game is arbitrary.
+ *
  * Always null in `together`: the whole point of that mode is that there is one
  * result and it belongs to both of them. A draw is null too — "nobody won" and
  * "you both got the same" are the same sentence to a seven-year-old, and it is
@@ -136,8 +144,8 @@ export const advanceDuel = (state: DuelState, rng?: Rng): DuelState =>
 export function duelWinner(state: DuelState): 0 | 1 | null {
     if (state.mode !== 'versus') return null
     const [first, second] = state.tallies
-    if (first.score === second.score) return null
-    return first.score > second.score ? 0 : 1
+    if (first.correct === second.correct) return null
+    return first.correct > second.correct ? 0 : 1
 }
 
 /** The pair's shared result, which is what `together` reports instead of a winner. */

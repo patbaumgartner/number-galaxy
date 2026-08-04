@@ -105,7 +105,7 @@ describe('playing together', () => {
 })
 
 describe('playing head to head', () => {
-    it('names whoever scored more', () => {
+    it('names whoever got more right', () => {
         const done = play(start('versus'), index => index % 2 === 0)
 
         expect(done.tallies[0].score).toBeGreaterThan(done.tallies[1].score)
@@ -123,6 +123,22 @@ describe('playing head to head', () => {
 
         expect(done.tallies[0].score).toBe(done.tallies[1].score)
         expect(duelWinner(done)).toBeNull()
+    })
+
+    it('never crowns the child holding the smaller number', () => {
+        // Points reward a streak, and the round shows a child nothing but their
+        // right answers. Five in a row used to beat six with a miss in the
+        // middle — 80 to 60 — while the screen said 5 against 6.
+        // Player 0 answers on the even questions, player 1 on the odd ones.
+        const runsOfFive = [0, 2, 4, 6, 8]              // five straight, then three misses
+        const sixNeverThree = [1, 3, 7, 9, 13, 15]      // six right, never three running
+        const streaky = play(start('versus'), index =>
+            runsOfFive.includes(index) || sixNeverThree.includes(index))
+        const [runner, scatterer] = streaky.tallies
+
+        expect(scatterer.correct).toBeGreaterThan(runner.correct)
+        expect(runner.score).toBeGreaterThan(scatterer.score)
+        expect(duelWinner(streaky)).toBe(1)
     })
 
     it('does not reward going first', () => {

@@ -172,24 +172,33 @@ test('plays a two-player round without leaving a trace on either profile', async
 
     // The handover before every question is what stops the quicker child taking
     // both turns, so it has to be there each time rather than only at the start.
+    // Each step waits for the screen it is about to act on: branching on `count()`
+    // read whatever the DOM held at that instant, which on a loaded machine was
+    // still the previous screen, so the loop skipped the handover and then waited
+    // out the clock for a tile that screen had already replaced.
+    const questionsPerDuel = 16
+    const turnsEach = questionsPerDuel / 2
     const names: string[] = []
-    for (let index = 0; index < 40; index += 1) {
-        if (await page.locator('.duel-result').count() > 0) break
-        const ready = page.getByRole('button', { name: 'Ready' })
-        if (await ready.count() > 0) {
-            names.push((await page.locator('.duel-handover__who').innerText()).replace(/\s+/g, ' ').trim())
-            await ready.click()
-            await page.waitForSelector('.answer-tile')
-        }
-        await page.locator('.answer-tile').first().click()
-        if (await page.locator('.duel-result').count() > 0) break
+    for (let question = 0; question < questionsPerDuel; question += 1) {
+        const who = page.locator('.duel-handover__who')
+        await who.waitFor()
+        names.push((await who.innerText()).replace(/\s+/g, ' ').trim())
+
+        await page.getByRole('button', { name: 'Ready' }).click()
+        const tile = page.locator('.answer-tile').first()
+        await tile.waitFor()
+        await tile.click()
+
+        // The final answer ends the round outright; every other one offers the
+        // working and waits for "Got it".
+        await page.locator('.equation__next, .duel-result').first().waitFor()
         const next = page.locator('.equation__next')
         if (await next.count() > 0) await next.click()
     }
 
     await expect(page.locator('.duel-result')).toBeVisible()
-    expect(names.filter(name => name.includes('Nova'))).toHaveLength(8)
-    expect(names.filter(name => name.includes('Kim'))).toHaveLength(8)
+    expect(names.filter(name => name.includes('Nova'))).toHaveLength(turnsEach)
+    expect(names.filter(name => name.includes('Kim'))).toHaveLength(turnsEach)
 
     // Two children answering into one profile would describe a composite child.
     expect(await page.evaluate(() => JSON.stringify(window.localStorage))).toBe(before)

@@ -66,6 +66,12 @@ test('names the mistake when a wrong answer is a known one', async ({ page }) =>
         const gotIt = page.locator('.equation__next')
         if (await gotIt.count() > 0) await gotIt.click()
 
+        // Clearing a miss either brings the next question or ends the mission,
+        // and both are re-renders. Waiting for whichever landed before asking
+        // which screen this is keeps a slow machine from reading the previous
+        // one and then waiting out the clock for tiles it has already replaced.
+        await page.locator('.answer-tile:not([disabled]), .summary').first().waitFor()
+
         const replay = page.getByRole('button', { name: 'Play again' })
         if (await replay.count() > 0) {
             await replay.click()

@@ -16,3 +16,12 @@ export function fill(template: string, values: Record<string, string | number>):
         template,
     )
 }
+
+/**
+ * Picks the singular or the plural wording, then fills `{n}`.
+ *
+ * Only counts a child actually reads are worth this, and the app announces
+ * exactly one: stars, which never exceed three. The alternative these replaced
+ * was "1 star(s)", which is a form no seven-year-old has ever met in a book.
+ */
+export const plural = (n: number, one: string, many: string): string => fill(n === 1 ? one : many, { n })

@@ -195,7 +195,7 @@ export type Translations = {
         phaseLearn: string; phasePractice: string; phaseSpeed: string
         heatmapTitle: string; heatmapCore: string; heatmapExtended: string; heatmapSquares: string
         trainExit: string; summaryAccuracy: string; summaryStreak: string; summaryLeveledUp: string
-        summaryPracticeBtn: string; summaryTime: string; summaryNewBest: string; summaryStarsEarned: string
+        summaryPracticeBtn: string; summaryTime: string; summaryNewBest: string; summaryStarsEarnedOne: string; summaryStarsEarned: string
         summarySpeedUnlocked: string; summaryMastered: string; summaryKeepPracticing: string
         learnFinish: string; learnCardDismiss: string; learnGuided: string; speedGo: string
         settingsTitle: string; settingsStrategyCards: string; settingsStrategyHint: string
@@ -300,6 +300,7 @@ export type Translations = {
         summaryTitle: string
         summaryAccuracy: string
         summaryStreak: string
+        summaryStarsOne: string
         summaryStars: string
         summaryNewBest: string
         summaryKeepGoing: string

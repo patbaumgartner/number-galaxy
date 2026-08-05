@@ -46,7 +46,7 @@ test('awards a practice star and renders it on the map after returning', async (
     await seedStorage(page, { settings, player })
     await gotoApp(page, '/times-tables/train/t1/practice')
     for (let index = 0; index < 12; index += 1) await answerCurrentFact(page)
-    await expect(page.getByText('You earned 1 star(s)!')).toBeVisible()
+    await expect(page.getByText('You earned 1 star!')).toBeVisible()
     await page.locator('.summary-actions').getByRole('button', { name: 'Back to map' }).click()
     await expect(page.getByRole('button', { name: /^×1\b/ })).toContainText('⭐')
 })

@@ -46,11 +46,17 @@ describe('SessionSummary', () => {
         expect(screen.queryByText(labels.summaryNewBest)).not.toBeInTheDocument()
     })
 
-    it('shows earned stars only after a positive star change and fills the star count label', () => {
+    it('shows earned stars only after a positive star change, and counts them in real words', () => {
         const { unmount } = renderSummary({ starsChanged: true, earnedStars: 2 })
 
-        expect(screen.getByText('You earned 2 star(s)!')).toBeInTheDocument()
+        expect(screen.getByText('You earned 2 stars!')).toBeInTheDocument()
         unmount()
+
+        // One star used to read "1 star(s)", which is not a form a child reads anywhere else.
+        const single = renderSummary({ starsChanged: true, earnedStars: 1 })
+        expect(screen.getByText('You earned 1 star!')).toBeInTheDocument()
+        single.unmount()
+
         renderSummary({ starsChanged: true, earnedStars: 0 })
         expect(screen.queryByText(/You earned/)).not.toBeInTheDocument()
     })

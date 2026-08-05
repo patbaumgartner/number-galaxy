@@ -1,5 +1,5 @@
 import { useModalDialog } from '../hooks'
-import { fill, type Translations } from '../i18n'
+import { plural, type Translations } from '../i18n'
 import type { SurpriseActions } from '../hooks'
 
 /** Both drills award the same three stars; the beam and sense types agree. */
@@ -56,7 +56,7 @@ export default function DrillSummary({ labels, result, onPlayAgain, onExit, surp
                     ))}
                 </div>
 
-                {result.gained && <p className="summary__badge">⭐ {fill(labels.summaryStars, { n: result.stars })}</p>}
+                {result.gained && <p className="summary__badge">⭐ {plural(result.stars, labels.summaryStarsOne, labels.summaryStars)}</p>}
                 {result.newBest && <p className="summary__badge">🏆 {labels.summaryNewBest}</p>}
                 {/* "Keep practising for a star" only makes sense to somebody without one. */}
                 {!result.gained && result.stars === 0 && <p className="summary__hint">{labels.summaryKeepGoing}</p>}

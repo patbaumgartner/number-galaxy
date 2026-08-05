@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router'
 import type { SurpriseActions } from '../../hooks'
 import { store } from '../../store'
-import { translations } from '../../i18n'
+import { plural, translations } from '../../i18n'
 import type { Phase, PlanetId } from '../../timesTable/types'
 
 type SessionSummaryProps = {
@@ -53,7 +53,7 @@ export function SessionSummary({
 
             {starsChanged && earnedStars > 0 && (
                 <div className="summary-stars">
-                    <p>{t.tt.summaryStarsEarned.replace('{n}', earnedStars.toString())}</p>
+                    <p>{plural(earnedStars, t.tt.summaryStarsEarnedOne, t.tt.summaryStarsEarned)}</p>
                     {earnedStars === 1 && phase === 'practice' && <p>{t.tt.summarySpeedUnlocked}</p>}
                     {earnedStars === 3 && <p>{t.tt.summaryMastered}</p>}
                 </div>

@@ -68,10 +68,6 @@ export default function ArcadePage() {
                     {t.home.play}
                 </button>
 
-                <button type="button" className="btn btn--ghost btn--wide" onClick={() => navigate('/game/two')}>
-                    👥 {t.duel.title}
-                </button>
-
                 <nav className="home-nav">
                     <button type="button" className="btn btn--ghost" onClick={() => navigate('/hall-of-fame')}>
                         🏆 {t.nav.hallOfFame}

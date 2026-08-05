@@ -169,12 +169,13 @@ describe('DuelPlayPage', () => {
         expect(screen.queryByText('Done together')).not.toBeInTheDocument()
     })
 
-    it('leaves the round for the arcade when asked', () => {
+    it('leaves the round for home, which is where the round was started from', () => {
         open('together')
         playRound(() => true)
 
         fireEvent.click(screen.getByRole('button', { name: 'Back' }))
 
-        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/game')
+        // Compared whole: '/' is a substring of every other route.
+        expect(screen.getByTestId(LOCATION_TEST_ID).textContent).toBe('/')
     })
 })

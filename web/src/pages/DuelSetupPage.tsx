@@ -38,7 +38,7 @@ export default function DuelSetupPage() {
 
     return (
         <div className="page">
-            <TopBar back={{ label: t.duel.exit, to: '/game' }} title={`👥 ${t.duel.title}`} />
+            <TopBar back={{ label: t.duel.exit, to: '/' }} title={`👥 ${t.duel.title}`} />
 
             <main className="shell">
                 <section className="panel">

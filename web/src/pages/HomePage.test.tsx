@@ -32,7 +32,8 @@ describe('HomePage', () => {
         renderWithRouter(<HomePage />)
 
         // It read "Keep playing" and did nothing at all once a profile existed.
-        await user.click(screen.getByRole('button', { name: /play/i }))
+        // Matched exactly, because "Two players" also contains "play".
+        await user.click(screen.getByRole('button', { name: 'Play' }))
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/number-sense')
     })
 
@@ -76,14 +77,37 @@ describe('HomePage', () => {
         seedPlayer()
         renderWithRouter(<HomePage />)
 
-        const cards = [...document.querySelectorAll('.game-picker__card:not(.game-picker__card--surprise)')]
-            .map(card => card.textContent ?? '')
+        const cards = [...document.querySelectorAll(
+            '.game-picker__card:not(.game-picker__card--surprise):not(.game-picker__card--duel)',
+        )].map(card => card.textContent ?? '')
 
         expect(cards).toHaveLength(4)
         expect(cards[0]).toContain('Number Sense')
         expect(cards[1]).toContain('Number Beam')
         expect(cards[2]).toContain('Math Invaders')
         expect(cards[3]).toContain('Times Tables')
+    })
+
+    it('offers a two-player round from the picker, rather than only from inside the arcade', async () => {
+        seedPlayer()
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<HomePage />)
+
+        await user.click(screen.getByRole('button', { name: /Two players/ }))
+        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/game/two')
+    })
+
+    it('does not let a two-player round become the game to keep playing', async () => {
+        seedPlayer()
+        const user = userEvent.setup({ delay: null })
+        renderWithRouter(<HomePage />)
+
+        await user.click(screen.getByRole('button', { name: /Two players/ }))
+
+        // `gameRouteOf('/game/two')` answers with the arcade, so sending this card
+        // through `openGame` would offer to keep playing a solo mission nobody ran
+        // — and the round itself is recorded nowhere by design.
+        expect(store.getLastGame()).toBeNull()
     })
 
     it('keeps the rules in the games rather than stacked on the way to them', () => {

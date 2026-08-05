@@ -120,7 +120,7 @@ export default function DuelPlayPage() {
         const shared = duelCombined(duel)
         return (
             <div className="page">
-                <TopBar back={{ label: t.duel.exit, to: '/game' }} title={`👥 ${t.duel.title}`} />
+                <TopBar back={{ label: t.duel.exit, to: '/' }} title={`👥 ${t.duel.title}`} />
                 <main className="shell">
                     <section className="panel duel-result">
                         <h2 className="panel__title">{t.duel.roundOver}</h2>
@@ -161,7 +161,7 @@ export default function DuelPlayPage() {
                             <button type="button" className="btn btn--primary" onClick={restart}>
                                 {t.duel.again}
                             </button>
-                            <button type="button" className="btn btn--ghost" onClick={() => navigate('/game')}>
+                            <button type="button" className="btn btn--ghost" onClick={() => navigate('/')}>
                                 {t.duel.exit}
                             </button>
                         </div>
@@ -173,7 +173,7 @@ export default function DuelPlayPage() {
 
     return (
         <div className="page page--game">
-            <TopBar back={{ label: t.duel.exit, to: '/game' }} title={`👥 ${t.duel.title}`} />
+            <TopBar back={{ label: t.duel.exit, to: '/' }} title={`👥 ${t.duel.title}`} />
 
             <main className="stage">
                 <PlayHud

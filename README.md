@@ -18,7 +18,7 @@
 **[✖️ Times tables](#️-times-tables--the-multiplication-trainer)** ·
 **[🛠 Development](docs/DEVELOPMENT.md)**
 
-![The home page, with the four games and the Surprise card](./docs/math-invaders-home.png)
+![The home page, with the four games, Two players and the Surprise card](./docs/math-invaders-home.png)
 
 ---
 
@@ -322,8 +322,8 @@ belongs to this game, so the other three do not link to it.
 
 ## 👥 Two players — one device
 
-Reached from the Math Invaders screen. There is no server and never will be, so a second
-player is the one sitting next to the first.
+Its own card on the home page, beside the four games. There is no server and never will
+be, so a second player is the one sitting next to the first.
 
 ![A two-player round pausing to hand the device over, with both tallies on the board](./docs/math-invaders-two-players.png)
 
@@ -733,7 +733,7 @@ practises never changes what another is given — and nobody sees anybody else's
 Language and sound are shared, because those belong to the household rather than the child.
 
 **Can two children play at once?**
-Yes — **👥 Two players** on the Math Invaders screen. They share one device and take turns,
+Yes — **👥 Two players**, its own card on the home page. They share one device and take turns,
 with a handover screen before every question. The round is not saved to anybody's profile,
 on purpose: see [Two players](#-two-players--one-device).
 

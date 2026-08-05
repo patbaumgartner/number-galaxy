@@ -165,6 +165,20 @@ export default function HomePage() {
                                 )}
                             </button>
                         ))}
+                        {/* Navigated directly rather than through `openGame`: a round
+                            here records nothing and types its own two names, so it
+                            needs no profile — and `gameRouteOf('/game/two')` resolves
+                            to the arcade, which would leave "keep playing" pointing at
+                            a solo mission the child never opened. */}
+                        <button
+                            type="button"
+                            className="game-picker__card game-picker__card--duel"
+                            onClick={() => navigate('/game/two')}
+                        >
+                            <span className="game-picker__emoji" aria-hidden="true">👥</span>
+                            <strong>{t.duel.title}</strong>
+                            <small>{t.duel.blurb}</small>
+                        </button>
                         <button
                             type="button"
                             className="game-picker__card game-picker__card--surprise"

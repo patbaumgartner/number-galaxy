@@ -1,4 +1,14 @@
-/* Two players — the setup screen, the handover and the shared result. */
+/* Two players — the home tile, the setup screen, the handover and the shared result. */
+
+/* Tinted apart from the four games because it is the one card a child cannot
+   act on alone: it needs somebody else to sit down. Gold rather than the
+   Surprise card's pink, so the two special cards stay tellable apart. */
+.game-picker__card--duel {
+  border-color: var(--color-gold);
+  background: linear-gradient(180deg, rgba(255, 207, 0, .1), transparent);
+}
+
+.game-picker__card--duel:hover { border-color: var(--color-gold); }
 
 .duel-names {
   display: grid;

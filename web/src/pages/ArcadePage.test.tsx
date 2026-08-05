@@ -65,11 +65,4 @@ describe('ArcadePage', () => {
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/settings')
     })
 
-    it('opens a two-player round from the arcade front door', async () => {
-        const user = userEvent.setup({ delay: null })
-        renderWithRouter(<ArcadePage />)
-
-        await user.click(screen.getByRole('button', { name: /Two players/ }))
-        expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/game/two')
-    })
 })

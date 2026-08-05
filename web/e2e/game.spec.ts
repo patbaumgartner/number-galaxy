@@ -15,7 +15,7 @@ test('shows the game picker before anyone is named, and Play goes somewhere', as
     await expect(page.getByRole('heading', { name: 'Choose your game' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Math Invaders' })).toBeVisible()
 
-    await page.getByRole('button', { name: 'Play' }).click()
+    await page.getByRole('button', { name: 'Play', exact: true }).click()
     await expect(page).toHaveURL(/\/number-sense/)
 })
 
@@ -166,7 +166,7 @@ test('fires tiles with digits and moves the roving answer focus with arrows', as
 
 test('plays a two-player round without leaving a trace on either profile', async ({ page }) => {
     await seedStorage(page, { settings: untimed, player })
-    await gotoApp(page, '/game')
+    await gotoApp(page)
     await page.getByRole('button', { name: /Two players/ }).click()
 
     await page.getByLabel('Child 1').fill('Nova')

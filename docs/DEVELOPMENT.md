@@ -153,7 +153,7 @@ renders.
 
 ```bash
 npm install
-npm run dev          # http://localhost:5173/math-invaders
+npm run dev          # http://localhost:5173/number-galaxy
 ```
 
 ```bash
@@ -194,11 +194,11 @@ and `noImplicitOverride`. `any`, `@ts-ignore` and `@ts-expect-error` are not acc
 1. Install dependencies
 2. Build with Vite
 3. Publish `web/dist/` to GitHub Pages
-4. Live at [patbaumgartner.github.io/math-invaders](https://patbaumgartner.github.io/math-invaders)
+4. Live at [patbaumgartner.github.io/number-galaxy](https://patbaumgartner.github.io/number-galaxy)
 
 Two details that are easy to trip over:
 
-- **`base` is `/math-invaders/`.** Asset URLs in `index.html` must be root-absolute
+- **`base` is `/number-galaxy/`.** Asset URLs in `index.html` must be root-absolute
   (`/manifest.json`) so Vite can rewrite them with that base. A relative `manifest.json`
   resolves against the *current route* and 404s on any nested URL.
 - **GitHub Pages has no SPA rewrite.** `public/404.html` bounces deep links back through

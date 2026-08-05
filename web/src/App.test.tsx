@@ -4,7 +4,7 @@ import App from './App'
 import { store } from './store'
 import { translations } from './i18n'
 
-const BASENAME = '/math-invaders'
+const BASENAME = '/number-galaxy'
 
 function renderAt(path: string) {
     window.history.pushState({}, '', `${BASENAME}${path}`)

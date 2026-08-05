@@ -2,33 +2,33 @@
   "name": "Zahlen-Galaxie",
   "short_name": "Zahlen-Galaxie",
   "description": "Vier Mathe-Spiele für Kinder: Mengen sehen, verdoppeln, rechnen und das Einmaleins. Ohne Konto, ohne Werbung, offline.",
-  "start_url": "/math-invaders/",
-  "scope": "/math-invaders/",
+  "start_url": "/number-galaxy/",
+  "scope": "/number-galaxy/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#07001a",
   "theme_color": "#07001a",
   "icons": [
     {
-      "src": "/math-invaders/favicon.svg",
+      "src": "/number-galaxy/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "/math-invaders/icon-192.png",
+      "src": "/number-galaxy/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/math-invaders/icon-512.png",
+      "src": "/number-galaxy/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/math-invaders/icon-maskable-512.png",
+      "src": "/number-galaxy/icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

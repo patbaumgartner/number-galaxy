@@ -14,7 +14,7 @@ type StorageSeed = {
     readonly beamSettings?: unknown
 }
 
-const APP_PATH = '/math-invaders'
+const APP_PATH = '/number-galaxy'
 
 /** The default profile id, and so the prefix every seeded key hangs under. */
 const PROFILE_ID = 'me'

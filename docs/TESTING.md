@@ -131,7 +131,7 @@ the inter-event wait and cuts the UI suite runtime roughly in half.
 
 Playwright runs against the **production bundle**, not the dev server:
 `playwright.config.ts` builds the app and serves it with `vite preview` on port 4173,
-so every spec exercises the same `/math-invaders/` base path GitHub Pages serves.
+so every spec exercises the same `/number-galaxy/` base path GitHub Pages serves.
 
 Two projects run each spec: `chromium-desktop` (1280×800) and `chromium-mobile` (Pixel 7).
 

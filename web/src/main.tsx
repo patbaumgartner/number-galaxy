@@ -12,7 +12,7 @@ createRoot(document.getElementById('root')!).render(
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
     window.addEventListener('load', () => {
         navigator.serviceWorker
-            .register('/math-invaders/sw.js', { scope: '/math-invaders/' })
+            .register('/number-galaxy/sw.js', { scope: '/number-galaxy/' })
             .catch(() => { /* SW registration failed silently */ })
     })
 }

@@ -20,7 +20,7 @@ import PrintablesPage from './pages/PrintablesPage'
 
 export default function App() {
     return (
-        <BrowserRouter basename="/math-invaders">
+        <BrowserRouter basename="/number-galaxy">
             <ErrorBoundary>
                 <Routes>
                     <Route path="/" element={<HomePage />} />

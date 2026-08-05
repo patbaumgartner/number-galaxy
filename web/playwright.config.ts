@@ -5,11 +5,11 @@ import { defineConfig, devices } from '@playwright/test'
  *
  * The suite runs against the real production bundle (`vite preview`) rather
  * than the dev server, so what CI exercises is what GitHub Pages ships —
- * including the `/math-invaders/` base path the router depends on.
+ * including the `/number-galaxy/` base path the router depends on.
  */
 const PORT = 4173
 const HOST = '127.0.0.1'
-const BASE_URL = `http://${HOST}:${PORT}/math-invaders/`
+const BASE_URL = `http://${HOST}:${PORT}/number-galaxy/`
 
 export default defineConfig({
     testDir: './e2e',

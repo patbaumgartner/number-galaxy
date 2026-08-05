@@ -1,6 +1,6 @@
 # 🌌 Number Galaxy
 
-[![Deploy to GitHub Pages](https://github.com/patbaumgartner/math-invaders/actions/workflows/deploy.yml/badge.svg)](https://github.com/patbaumgartner/math-invaders/actions/workflows/deploy.yml)
+[![Deploy to GitHub Pages](https://github.com/patbaumgartner/number-galaxy/actions/workflows/deploy.yml/badge.svg)](https://github.com/patbaumgartner/number-galaxy/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 
@@ -8,7 +8,7 @@
 > to knowing 7 × 8 by heart. No account, no ads, no tracking, and it keeps working when the
 > wifi does not.
 
-**[🎮 Play now](https://patbaumgartner.github.io/math-invaders)** ·
+**[🎮 Play now](https://patbaumgartner.github.io/number-galaxy)** ·
 **[👩‍🏫 For teachers](#-for-teachers-and-parents)** ·
 **[🧭 Why it is built this way](#-why-it-is-built-this-way)** ·
 **[👀 Number Sense](#-number-sense--seeing-how-many)** ·

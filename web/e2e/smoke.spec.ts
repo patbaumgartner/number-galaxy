@@ -30,5 +30,5 @@ test('redirects a direct settings deep link through the SPA route', async ({ pag
     await seedStorage(page, { settings: english })
     await gotoApp(page, '/settings')
     await expect(page.getByRole('heading', { level: 1, name: 'Settings' })).toBeVisible()
-    await expect(page).toHaveURL(/\/math-invaders\/settings$/)
+    await expect(page).toHaveURL(/\/number-galaxy\/settings$/)
 })

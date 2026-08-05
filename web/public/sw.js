@@ -19,17 +19,17 @@ const BUILD = '__BUILD__'
 /** Replaced at build time with this release's hashed output. */
 const BUILD_ASSETS = []
 
-const CACHE_NAME = `math-invaders-${BUILD}`
+const CACHE_NAME = `number-galaxy-${BUILD}`
 
 const PRECACHE_URLS = [
-  '/math-invaders/',
-  '/math-invaders/index.html',
-  '/math-invaders/manifest.json',
-  '/math-invaders/favicon.svg',
-  '/math-invaders/icon-192.png',
-  '/math-invaders/icon-512.png',
-  '/math-invaders/icon-maskable-512.png',
-  '/math-invaders/apple-touch-icon.png',
+  '/number-galaxy/',
+  '/number-galaxy/index.html',
+  '/number-galaxy/manifest.json',
+  '/number-galaxy/favicon.svg',
+  '/number-galaxy/icon-192.png',
+  '/number-galaxy/icon-512.png',
+  '/number-galaxy/icon-maskable-512.png',
+  '/number-galaxy/apple-touch-icon.png',
   ...BUILD_ASSETS,
 ]
 
@@ -84,7 +84,7 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       fetch(request)
         .then((response) => putInCache(request, response))
-        .catch(() => fromCache(request).then((cached) => cached || fromCache('/math-invaders/')))
+        .catch(() => fromCache(request).then((cached) => cached || fromCache('/number-galaxy/')))
     )
     return
   }

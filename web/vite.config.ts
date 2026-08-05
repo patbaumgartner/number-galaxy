@@ -4,7 +4,7 @@ import { resolve } from 'node:path'
 import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 
-const BASE = '/math-invaders/'
+const BASE = '/number-galaxy/'
 
 /**
  * Stamps the built service worker with this release's identity.

@@ -1,5 +1,5 @@
 {
-  "name": "math-invaders",
+  "name": "number-galaxy",
   "version": "0.0.0",
   "private": true,
   "description": "Number Galaxy (Zahlen-Galaxie): four free, privacy-friendly maths games for children — seeing quantities, doubling on a bar model, a one-tap arcade and a times-tables trainer. No account, no ads, no tracking, works offline.",
@@ -16,14 +16,14 @@
     "pwa",
     "offline-first"
   ],
-  "homepage": "https://patbaumgartner.github.io/math-invaders",
+  "homepage": "https://patbaumgartner.github.io/number-galaxy",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/patbaumgartner/math-invaders.git",
+    "url": "git+https://github.com/patbaumgartner/number-galaxy.git",
     "directory": "web"
   },
   "bugs": {
-    "url": "https://github.com/patbaumgartner/math-invaders/issues"
+    "url": "https://github.com/patbaumgartner/number-galaxy/issues"
   },
   "license": "MIT",
   "author": "Patrick Baumgartner",

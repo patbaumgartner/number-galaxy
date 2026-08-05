@@ -30,10 +30,10 @@ This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.
 ## Getting Started
 
 1. **Fork** the repository
-2. **Clone** your fork: `git clone https://github.com/YOUR_USERNAME/math-invaders.git`
+2. **Clone** your fork: `git clone https://github.com/YOUR_USERNAME/number-galaxy.git`
 3. **Install** dependencies: `cd web && npm install`
 4. **Run** locally: `npm run dev`
-5. Open [http://localhost:5173/math-invaders](http://localhost:5173/math-invaders)
+5. Open [http://localhost:5173/number-galaxy](http://localhost:5173/number-galaxy)
 6. **Test on a phone:** open DevTools → toggle the device toolbar (or use a real device)
    and check both the one-tap answer grid and the trainer number pad
 ---
@@ -42,7 +42,7 @@ This project follows the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.
 
 ### Reporting Bugs
 
-Before filing a bug, check if it's already [reported](https://github.com/patbaumgartner/math-invaders/issues?q=label%3Abug).
+Before filing a bug, check if it's already [reported](https://github.com/patbaumgartner/number-galaxy/issues?q=label%3Abug).
 
 When filing a bug, include:
 - **Steps to reproduce** the issue

@@ -8,7 +8,7 @@ const player = { id: 'surprise-pilot', playerName: 'Nova', avatarId: '🚀', cre
  * Everything a fresh player can legally be sent to: the arcade, the home galaxy,
  * the Doubling Deck and the first Number Sense zone, which is open from the start.
  */
-const LEGAL_TARGET = /\/math-invaders\/(game\/play|times-tables\/train\/t\d+\/practice|number-beam\/drill\/(double|halve|nearDouble)|number-sense\/drill\/(subitize|tenFrame|rekenrek))\?surprise=1$/
+const LEGAL_TARGET = /\/number-galaxy\/(game\/play|times-tables\/train\/t\d+\/practice|number-beam\/drill\/(double|halve|nearDouble)|number-sense\/drill\/(subitize|tenFrame|rekenrek))\?surprise=1$/
 
 test.describe.configure({ mode: 'parallel' })
 
@@ -63,9 +63,9 @@ test('goes home from a surprise run', async ({ page }) => {
     for (let index = 0; index < 10; index += 1) await answerBeamQuestion(page)
     await page.getByRole('button', { name: 'Home' }).click()
 
-    // `navigate('/')` under the router basename lands on /math-invaders, with or
+    // `navigate('/')` under the router basename lands on /number-galaxy, with or
     // without the trailing slash depending on how the app was entered.
-    await expect(page).toHaveURL(/\/math-invaders\/?$/)
+    await expect(page).toHaveURL(/\/number-galaxy\/?$/)
     await expect(page.getByRole('heading', { level: 1, name: 'Number Galaxy' })).toBeVisible()
 })
 

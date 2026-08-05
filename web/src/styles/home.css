@@ -13,6 +13,14 @@
   text-shadow: var(--glow-score);
 }
 
+/* Sized in `em` so the mark tracks the title rather than a fixed pixel size,
+   and nudged down because a square sits optically high beside a capital. */
+.hero__logo {
+  width: 1.3em;
+  height: 1.3em;
+  vertical-align: -0.22em;
+}
+
 .hero__tagline {
   font-size: var(--text-lg);
   color: var(--text-muted);

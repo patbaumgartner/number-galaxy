@@ -10,6 +10,7 @@ import { countDueFacts } from '../timesTable/session'
 import { ttStore } from '../timesTable/ttStore'
 import PlayerSwitcher from '../components/home/PlayerSwitcher'
 import ProfileEditor from '../components/home/ProfileEditor'
+import Logo from '../components/Logo'
 
 type ProfileView = 'none' | 'switch' | 'edit'
 
@@ -126,7 +127,7 @@ export default function HomePage() {
             <main className="shell shell--home">
                 <section className="hero">
                     <h1 className="hero__title">
-                        <span aria-hidden="true">🌌</span> {t.home.appName}
+                        <Logo className="hero__logo" /> {t.home.appName}
                     </h1>
                     <p className="hero__tagline">{t.home.tagline}</p>
                 </section>

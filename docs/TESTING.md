@@ -4,11 +4,11 @@ Number Galaxy is tested in three layers, each answering a different question.
 
 | Layer | Question it answers | Runner | Count |
 |-------|--------------------|--------|-------|
-| **Domain** | Is the maths correct? | Vitest (`node`) | 385 tests · 34 files |
-| **UI** | Does the interface behave? | Vitest (`jsdom`) + Testing Library | 238 tests · 33 files |
+| **Domain** | Is the maths correct? | Vitest (`node`) | 401 tests · 36 files |
+| **UI** | Does the interface behave? | Vitest (`jsdom`) + Testing Library | 311 tests · 43 files |
 | **End-to-end** | Does the shipped bundle work? | Playwright (Chromium desktop + mobile) | 12 files, both viewports |
 
-**623 unit tests total.** Everything below runs from `web/`.
+**712 unit tests total.** Everything below runs from `web/`.
 
 ```bash
 npm test              # both Vitest projects
@@ -173,10 +173,10 @@ and **fails** below these floors:
 
 | Metric | Floor | Current |
 |--------|-------|---------|
-| Statements | 96 % | 97.0 % |
-| Branches | 94 % | 95.0 % |
-| Functions | 97 % | 98.0 % |
-| Lines | 98 % | 98.6 % |
+| Statements | 96 % | 97.4 % |
+| Branches | 94 % | 94.8 % |
+| Functions | 97 % | 97.7 % |
+| Lines | 98 % | 98.8 % |
 
 Excluded: test files, `src/test/`, and `src/main.tsx` (the bootstrap, exercised by the
 end-to-end suite instead).

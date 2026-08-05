@@ -242,7 +242,7 @@ fitting, not to grade it.
 ### Scoring and stars
 
 - **Correct answer:** 10 points × the current combo
-- **Combo:** ×2 after 3 in a row, ×3 after 6, ×4 after 10
+- **Combo:** ×2 from the 3rd correct answer in a row, ×3 from the 6th, ×4 from the 10th
 - **Wrong answer or time out:** the combo resets — the points and the mission both stay
 
 Stars come from accuracy over the whole mission: ⭐⭐⭐ at ≥ 92 %, ⭐⭐ at ≥ 80 %, ⭐ at ≥ 65 %.

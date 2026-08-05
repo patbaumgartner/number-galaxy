@@ -1,7 +1,6 @@
 import type { MissionConfig, MissionState } from './mission'
 import { createMission, scoreAnswer, advanceMission, type AnswerOutcome } from './mission'
 import type { Rng } from './rng'
-import { getPoints } from './types'
 
 /**
  * Two children, one device, taking it in turns.
@@ -30,9 +29,6 @@ export type DuelPlayer = {
 export type DuelTally = {
     readonly answered: number
     readonly correct: number
-    readonly score: number
-    readonly bestStreak: number
-    readonly streak: number
 }
 
 export type DuelState = {
@@ -52,7 +48,7 @@ export type DuelState = {
  */
 export const QUESTIONS_PER_DUEL = 16
 
-const emptyTally: DuelTally = { answered: 0, correct: 0, score: 0, bestStreak: 0, streak: 0 }
+const emptyTally: DuelTally = { answered: 0, correct: 0 }
 
 export type DuelConfig = Omit<MissionConfig, 'total'> & {
     readonly mode: DuelMode
@@ -79,46 +75,26 @@ export const turnOf = (state: DuelState): 0 | 1 =>
 
 export const duelOver = (state: DuelState): boolean => state.mission.phase === 'summary'
 
-const applyTo = (tally: DuelTally, outcome: AnswerOutcome, gained: number): DuelTally => {
-    const hit = outcome === 'correct'
-    const streak = hit ? tally.streak + 1 : 0
-    return {
-        answered: tally.answered + 1,
-        correct: tally.correct + (hit ? 1 : 0),
-        score: tally.score + gained,
-        bestStreak: Math.max(tally.bestStreak, streak),
-        streak,
-    }
-}
-
 /**
  * Records an answer against whoever's turn it was, then against the round.
  *
- * Where the points come from is the difference between the two modes, and it is
- * a fairness one. The combo multiplier climbs with a run of right answers, so a
- * shared combo hands the player who goes first a different rung of the ladder
- * from the player who goes second — two children answering everything correctly
- * finished 250 to 230 purely on turn order. Head-to-head therefore scores each
- * child on their own run. Playing together keeps the shared combo on purpose:
- * building one streak between them is the collaboration.
+ * A tally counts answers, and nothing else. Points used to be kept here too,
+ * per child and with a combo ladder, until they were found deciding a winner
+ * the children could not see — the round is settled on right answers now, and
+ * a number nobody is shown and nothing reads is a number worth deleting.
  */
 export function answerDuel(state: DuelState, outcome: AnswerOutcome, rng?: Rng): DuelState {
     const player = turnOf(state)
-    const before = state.mission.score
     const mission = scoreAnswer(state.mission, outcome, rng)
     const [first, second] = state.tallies
-    const mine = player === 0 ? first : second
-
-    const gained = state.mode === 'together'
-        ? mission.score - before
-        : outcome === 'correct' ? getPoints(mine.streak + 1) : 0
+    const hit = outcome === 'correct'
+    const count = (tally: DuelTally): DuelTally =>
+        ({ answered: tally.answered + 1, correct: tally.correct + (hit ? 1 : 0) })
 
     return {
         ...state,
         mission,
-        tallies: player === 0
-            ? [applyTo(first, outcome, gained), second]
-            : [first, applyTo(second, outcome, gained)],
+        tallies: player === 0 ? [count(first), second] : [first, count(second)],
     }
 }
 
@@ -149,8 +125,7 @@ export function duelWinner(state: DuelState): 0 | 1 | null {
 }
 
 /** The pair's shared result, which is what `together` reports instead of a winner. */
-export const duelCombined = (state: DuelState): { correct: number; answered: number; score: number } => ({
+export const duelCombined = (state: DuelState): { correct: number; answered: number } => ({
     correct: state.tallies[0].correct + state.tallies[1].correct,
     answered: state.tallies[0].answered + state.tallies[1].answered,
-    score: state.tallies[0].score + state.tallies[1].score,
 })

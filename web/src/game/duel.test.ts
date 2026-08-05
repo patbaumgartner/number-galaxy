@@ -64,10 +64,8 @@ describe('a two-player round', () => {
         state = advanceDuel(state, createRng(1))
         state = answerDuel(state, 'wrong', createRng(2))
 
-        expect(state.tallies[0].correct).toBe(1)
-        expect(state.tallies[0].score).toBeGreaterThan(0)
-        expect(state.tallies[1].correct).toBe(0)
-        expect(state.tallies[1].score).toBe(0)
+        expect(state.tallies[0]).toEqual({ answered: 1, correct: 1 })
+        expect(state.tallies[1]).toEqual({ answered: 1, correct: 0 })
     })
 
     it('ends after its own number of questions rather than a solo mission\u2019s', () => {
@@ -78,12 +76,12 @@ describe('a two-player round', () => {
         expect(QUESTIONS_PER_DUEL).toBeLessThan(25)
     })
 
-    it('keeps a streak per player, so one child\u2019s miss cannot break the other\u2019s run', () => {
+    it('books each child only their own answers, whatever the other one does', () => {
         // Player 0 answers everything right, player 1 everything wrong.
         const done = play(start(), index => index % 2 === 0)
 
-        expect(done.tallies[0].bestStreak).toBe(QUESTIONS_PER_DUEL / 2)
-        expect(done.tallies[1].bestStreak).toBe(0)
+        expect(done.tallies[0]).toEqual({ answered: QUESTIONS_PER_DUEL / 2, correct: QUESTIONS_PER_DUEL / 2 })
+        expect(done.tallies[1]).toEqual({ answered: QUESTIONS_PER_DUEL / 2, correct: 0 })
     })
 })
 
@@ -100,7 +98,7 @@ describe('playing together', () => {
 
         expect(shared.answered).toBe(QUESTIONS_PER_DUEL)
         expect(shared.correct).toBe(QUESTIONS_PER_DUEL)
-        expect(shared.score).toBe(done.tallies[0].score + done.tallies[1].score)
+        expect(shared.correct).toBe(done.tallies[0].correct + done.tallies[1].correct)
     })
 })
 
@@ -108,7 +106,7 @@ describe('playing head to head', () => {
     it('names whoever got more right', () => {
         const done = play(start('versus'), index => index % 2 === 0)
 
-        expect(done.tallies[0].score).toBeGreaterThan(done.tallies[1].score)
+        expect(done.tallies[0].correct).toBeGreaterThan(done.tallies[1].correct)
         expect(duelWinner(done)).toBe(0)
     })
 
@@ -121,14 +119,14 @@ describe('playing head to head', () => {
     it('calls a draw nobody rather than picking one', () => {
         const done = play(start('versus'), () => true)
 
-        expect(done.tallies[0].score).toBe(done.tallies[1].score)
+        expect(done.tallies[0].correct).toBe(done.tallies[1].correct)
         expect(duelWinner(done)).toBeNull()
     })
 
     it('never crowns the child holding the smaller number', () => {
-        // Points reward a streak, and the round shows a child nothing but their
-        // right answers. Five in a row used to beat six with a miss in the
-        // middle — 80 to 60 — while the screen said 5 against 6.
+        // A long run used to be worth more than a bigger total: five straight
+        // beat six with a miss in the middle, 80 points to 60, while the screen
+        // showed 5 against 6. Runs earn nothing now, so the totals decide.
         // Player 0 answers on the even questions, player 1 on the odd ones.
         const runsOfFive = [0, 2, 4, 6, 8]              // five straight, then three misses
         const sixNeverThree = [1, 3, 7, 9, 13, 15]      // six right, never three running
@@ -137,16 +135,15 @@ describe('playing head to head', () => {
         const [runner, scatterer] = streaky.tallies
 
         expect(scatterer.correct).toBeGreaterThan(runner.correct)
-        expect(runner.score).toBeGreaterThan(scatterer.score)
         expect(duelWinner(streaky)).toBe(1)
     })
 
     it('does not reward going first', () => {
-        // A shared combo multiplier put these two on different rungs of the same
-        // ladder: identical play finished 250 to 230 on turn order alone.
+        // A shared combo multiplier once put these two on different rungs of the
+        // same ladder: identical play finished 250 to 230 on turn order alone.
         const done = play(start('versus'), () => true)
 
-        expect(done.tallies[0].score).toBe(done.tallies[1].score)
+        expect(done.tallies[0]).toEqual(done.tallies[1])
     })
 })
 

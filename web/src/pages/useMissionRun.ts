@@ -46,7 +46,7 @@ const ASK_STRATEGY_SHARE = 0.12
 /** Long enough to answer if you want to, short enough to ignore. */
 const STRATEGY_MS = 3600
 
-export type Feedback = {
+type Feedback = {
     outcome: AnswerOutcome
     answer: string
     workingOut: string
@@ -56,7 +56,7 @@ export type Feedback = {
     points: number
 }
 
-export type MissionResult = {
+type MissionResult = {
     score: number
     correct: number
     total: number

@@ -3,7 +3,7 @@ import { fill, type Translations } from '../i18n'
 import type { SurpriseActions } from '../hooks'
 
 /** Both drills award the same three stars; the beam and sense types agree. */
-export type DrillStarLevel = 0 | 1 | 2 | 3
+type DrillStarLevel = 0 | 1 | 2 | 3
 
 export type DrillResult = {
     readonly correct: number

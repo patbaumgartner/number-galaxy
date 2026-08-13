@@ -11,6 +11,13 @@ on:
 permissions:
   contents: read
 
+# A pull request that is pushed to again supersedes its own run; a commit on
+# main does not, because each one is a release candidate and wants its own
+# verdict. Deploys are serialised separately, in deploy.yml.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   static:
     name: Lint, unit tests and build

@@ -1,5 +1,6 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vitest/config'
+import { BASE_PATH } from './base.ts'
 
 /**
  * Two projects, split by file extension so the rule is easy to remember:
@@ -11,6 +12,9 @@ import { defineConfig } from 'vitest/config'
  * environment would fight over, so keeping them in `node` is deliberate.
  */
 export default defineConfig({
+    // Matches the production build, so `import.meta.env.BASE_URL` is the real
+    // deploy prefix under test and the router is exercised as it ships.
+    base: BASE_PATH,
     plugins: [react()],
     test: {
         projects: [

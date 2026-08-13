@@ -28,6 +28,7 @@
   "include": [
     "src",
     "e2e",
+    "base.ts",
     "vite.config.ts",
     "vitest.config.ts",
     "playwright.config.ts"

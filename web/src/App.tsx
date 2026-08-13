@@ -20,7 +20,7 @@ import PrintablesPage from './pages/PrintablesPage'
 
 export default function App() {
     return (
-        <BrowserRouter basename="/number-galaxy">
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
             <ErrorBoundary>
                 <Routes>
                     <Route path="/" element={<HomePage />} />

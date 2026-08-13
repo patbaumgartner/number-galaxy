@@ -4,7 +4,7 @@ import App from './App'
 import { store } from './store'
 import { translations } from './i18n'
 
-const BASENAME = '/number-galaxy'
+const BASENAME = import.meta.env.BASE_URL.replace(/\/$/, '')
 
 function renderAt(path: string) {
     window.history.pushState({}, '', `${BASENAME}${path}`)

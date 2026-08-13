@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test'
 import type { Page } from '@playwright/test'
+import { BASE_PATH } from '../base.ts'
 
 type StorageSeed = {
     readonly settings?: unknown
@@ -14,7 +15,7 @@ type StorageSeed = {
     readonly beamSettings?: unknown
 }
 
-const APP_PATH = '/number-galaxy'
+const APP_PATH = BASE_PATH.replace(/\/$/, '')
 
 /** The default profile id, and so the prefix every seeded key hangs under. */
 const PROFILE_ID = 'me'

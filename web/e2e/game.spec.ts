@@ -54,55 +54,22 @@ test('shows a worked solution after a wrong answer and continues the mission', a
 })
 
 test('names the mistake when a wrong answer is a known one', async ({ page }) => {
+    // This value opens on `40 − 15` with `35` — taking the smaller digit from
+    // the larger in each column — as one tile. A constant is deliberate: app
+    // startup and StrictMode may draw from Math.random before the mission, so a
+    // seeded sequence couples this test to how many unrelated draws happened.
+    // This checks that the explanation reaches the UI; the generator itself
+    // has exhaustive unit coverage. Hunting through random missions made this
+    // one-question assertion a minute-long timer race under full-suite load.
+    await page.addInitScript(() => {
+        Math.random = () => 0.3712
+    })
     await seedStorage(page, { settings: { ...untimed, operations: ['subtraction'], rank: 'ace' }, player })
     await gotoApp(page, '/game/play')
 
-    // Take the smaller digit from the larger in each column — the documented
-    // subtraction bug — and check the game names it rather than only correcting it.
-    // Which sums a mission draws is down to Math.random, and a single run does
-    // not always offer a regrouping subtraction whose classic bug is on a tile.
-    // Play on into the next mission rather than calling that a failure.
-    for (let attempt = 0; attempt < 90; attempt += 1) {
-        const gotIt = page.locator('.equation__next')
-        if (await gotIt.count() > 0) await gotIt.click()
-
-        // Clearing a miss either brings the next question or ends the mission,
-        // and both are re-renders. Waiting for whichever landed before asking
-        // which screen this is keeps a slow machine from reading the previous
-        // one and then waiting out the clock for tiles it has already replaced.
-        await page.locator('.answer-tile:not([disabled]), .summary').first().waitFor()
-
-        const replay = page.getByRole('button', { name: 'Play again' })
-        if (await replay.count() > 0) {
-            await replay.click()
-            await expect(page.locator('.answer-tile').first()).toBeVisible()
-        }
-
-        await expect(page.locator('.answer-tile:not([disabled])').first()).toBeVisible()
-        const prompt = (await page.locator('.equation__prompt').textContent()) ?? ''
-        const match = /^(\d+) − (\d+) = \?$/.exec(prompt)
-
-        let wanted: string | null = null
-        if (match !== null) {
-            const [top, bottom] = [Number(match[1]), Number(match[2])]
-            if (top >= 10 && bottom >= 10 && top % 10 < bottom % 10) {
-                const tens = Math.abs(Math.floor(top / 10) - Math.floor(bottom / 10))
-                wanted = String(tens * 10 + Math.abs(top % 10 - bottom % 10))
-            }
-        }
-
-        // `.answer-tile__value` and not the last child: that one is the keyboard hint.
-        const values = await page.locator('.answer-tile .answer-tile__value').allTextContents()
-        const index = wanted === null ? -1 : values.indexOf(wanted)
-
-        await page.locator('.answer-tile:not([disabled])').nth(index >= 0 ? index : 0).click()
-
-        if (index >= 0) {
-            await expect(page.locator('.equation__note')).toContainText('smaller digit')
-            return
-        }
-    }
-    throw new Error('no regrouping subtraction offered its bug in three whole missions')
+    await expect(page.locator('.equation__prompt')).toHaveText('40 − 15 = ?')
+    await page.getByRole('button', { name: '35', exact: true }).click()
+    await expect(page.locator('.equation__note')).toContainText('smaller digit')
 })
 
 test('asks a missed question again later in the same mission', async ({ page }) => {

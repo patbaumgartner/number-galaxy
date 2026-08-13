@@ -65,4 +65,5 @@ export function submitScore(entry: ScoreEntry): { improved: boolean; entries: Sc
     return { improved: beaten, entries: all }
 }
 
-export const scoreKeys = { current: scoresKey() }
+/** Resolved on read, never at import — see {@link settingsKeys}. */
+export const scoreKeys = { get current() { return scoresKey() } }

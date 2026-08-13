@@ -124,4 +124,13 @@ export function saveSettings(settings: GameSettings): void {
     writeJson(settingsKey(), sanitize(settings))
 }
 
-export const settingsKeys = { current: settingsKey() }
+/**
+ * Resolved on read, never at import.
+ *
+ * Every key here hangs under the active child's prefix, and which child that
+ * is changes while the app is running. A value captured when the module first
+ * loaded names whoever happened to be active then, and goes on naming them
+ * after a switch — so a caller would read one child's settings and write
+ * another's. `progressKeys` has always done it this way; these two had not.
+ */
+export const settingsKeys = { get current() { return settingsKey() } }

@@ -171,6 +171,37 @@ describe('player', () => {
         const first = store.ensurePlayer('Ace', '🚀')
         expect(store.ensurePlayer('Someone Else', '👾').id).toBe(first.id)
     })
+
+    /**
+     * Every exported key has to name whoever is playing *now*.
+     *
+     * A tablet is shared, and switching child has to switch all of it at once.
+     * A key captured when the module loaded keeps naming the child who was
+     * active then, so a later read reaches into the wrong profile — which is
+     * exactly the composite-child problem the namespacing exists to prevent.
+     */
+    it('moves every storage key to the child who is playing now', () => {
+        store.ensurePlayer('Ace', '🚀')
+        const before = [settingsKeys.current, scoreKeys.current, progressKeys.weakness, progressKeys.bests]
+
+        const second = store.addPlayer('Blue', '👾')
+
+        const after = [settingsKeys.current, scoreKeys.current, progressKeys.weakness, progressKeys.bests]
+        expect(after).not.toEqual(before)
+        expect(after.every(key => key.includes(`u${second.id}-`))).toBe(true)
+    })
+
+    it('keeps one child\'s settings out of another\'s', () => {
+        store.ensurePlayer('Ace', '🚀')
+        store.saveSettings({ ...defaultSettings, rank: 'legend' })
+
+        const second = store.addPlayer('Blue', '👾')
+        expect(store.getSettings().rank).toBe(defaultSettings.rank)
+
+        store.selectPlayer(second.id)
+        store.saveSettings({ ...defaultSettings, rank: 'cadet' })
+        expect(store.getSettings().rank).toBe('cadet')
+    })
 })
 
 describe('progress tracking', () => {

@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest'
-import { applyAnswer, intervalForBox, isDue, isMastered, localEpochDay } from './leitner'
+import { describe, expect, it, vi } from 'vitest'
+import { applyAnswer, intervalForBox, isDue, isMastered, localEpochDay, todayEpochDay } from './leitner'
 
 describe('day-based Leitner scheduler', () => {
     it('advances correct answers through the capped boxes', () => {
@@ -45,6 +45,32 @@ describe('day-based Leitner scheduler', () => {
 
     it('derives a local epoch day from explicit clock inputs', () => {
         expect(localEpochDay(86_400_000, -120)).toBe(1)
+    })
+
+    /**
+     * The day a child is having, not the day UTC is having.
+     *
+     * An evening in Zurich is already tomorrow in UTC for two hours of every
+     * day, and one in Auckland for half of it. Reading the calendar day off the
+     * clock alone would bring facts back a day early or late for every child
+     * west or east of Greenwich, which is invisible from anywhere near it.
+     */
+    it('reads today from the local calendar rather than from UTC', () => {
+        const at = (iso: string, offsetMin: number): number => {
+            vi.setSystemTime(new Date(iso))
+            vi.spyOn(Date.prototype, 'getTimezoneOffset').mockReturnValue(offsetMin)
+            return todayEpochDay()
+        }
+        vi.useFakeTimers()
+        try {
+            // 22:30 UTC is already the next calendar day in Zurich (UTC+2)...
+            expect(at('2026-06-01T22:30:00Z', -120)).toBe(at('2026-06-02T12:00:00Z', -120))
+            // ...and still the previous one in Los Angeles (UTC-7).
+            expect(at('2026-06-02T03:00:00Z', 420)).toBe(at('2026-06-01T12:00:00Z', 420))
+        } finally {
+            vi.useRealTimers()
+            vi.restoreAllMocks()
+        }
     })
 })
 

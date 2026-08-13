@@ -7,7 +7,7 @@ import { SessionSummary } from '../../components/trainer/SessionSummary'
 import { playCorrect, playLevelUp, playWrong } from '../../sound'
 import { useSoundSetting, useSurpriseActions } from '../../hooks'
 import { store } from '../../store'
-import { applyAnswer, localEpochDay } from '../../review/leitner'
+import { applyAnswer, todayEpochDay } from '../../review/leitner'
 import { buildSpeedSession } from '../../timesTable/session'
 import { getPlanet } from '../../timesTable/tables'
 import { computeStars, ttStore } from '../../timesTable/ttStore'
@@ -21,7 +21,7 @@ export function SpeedPhase({ planetId }: { planetId: PlanetId }) {
     const surpriseActions = useSurpriseActions(t)
     const navigate = useNavigate()
     const planet = getPlanet(planetId)!
-    const [todayEpochDay] = useState(() => localEpochDay(Date.now(), new Date().getTimezoneOffset()))
+    const [today] = useState(() => todayEpochDay())
     const [session] = useState<Fact[]>(() => [...buildSpeedSession(planetId)])
     const [currentIdx, setCurrentIdx] = useState(0)
     const [padValue, setPadValue] = useState('')
@@ -99,7 +99,7 @@ export function SpeedPhase({ planetId }: { planetId: PlanetId }) {
         const ms = window.performance.now() - startTimeRef.current
         if (correct) { setCorrectsCount(prev => prev + 1); playCorrect() } else { playWrong(); setShake(true) }
         const oldEntry = ttStore.getProgress()[currentFact.key]
-        ttStore.saveFactProgress(currentFact.key, applyAnswer(oldEntry, correct, ms, todayEpochDay))
+        ttStore.saveFactProgress(currentFact.key, applyAnswer(oldEntry, correct, ms, today))
         if (currentIdx + 1 < session.length) {
             setCurrentIdx(currentIdx + 1)
         } else {

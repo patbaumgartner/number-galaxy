@@ -6,7 +6,7 @@ import TrainerFrame from '../../components/trainer/TrainerFrame'
 import { playCorrect, playLevelUp, playWrong } from '../../sound'
 import { store } from '../../store'
 import { factsForPlanet } from '../../timesTable/facts'
-import { applyAnswer, localEpochDay } from '../../review/leitner'
+import { applyAnswer, todayEpochDay } from '../../review/leitner'
 import { buildDailyMission, requeueWrong } from '../../timesTable/session'
 import { explainFact, getStrategyCard } from '../../timesTable/strategies'
 import { GALAXIES, getPlanet } from '../../timesTable/tables'
@@ -32,7 +32,7 @@ export function DailyPhase() {
     const t = translations[settings.language].tt
     const play = translations[settings.language].play
     const surpriseActions = useSurpriseActions(translations[settings.language])
-    const [today] = useState(() => localEpochDay(Date.now(), new Date().getTimezoneOffset()))
+    const [today] = useState(() => todayEpochDay())
     const [session, setSession] = useState(() => buildDailyMission(ttStore.getProgress(), ttStore.getStars(), today))
     const [index, setIndex] = useState(0)
     const [firstAttempts, setFirstAttempts] = useState<Record<FactKey, boolean>>({})

@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { canonicalKey } from '../../timesTable/facts'
-import { localEpochDay } from '../../review/leitner'
+import { todayEpochDay } from '../../review/leitner'
 import { ttStore } from '../../timesTable/ttStore'
 import { LOCATION_TEST_ID, renderWithRouter, seedFactProgress, seedLanguage, seedStars, userEvent, hudStat } from '../../test/utils'
 import { DailyPhase } from './DailyPhase'
@@ -31,7 +31,7 @@ describe('DailyPhase', () => {
     })
 
     it('runs due facts, requeues one wrong answer, reports accuracy, and exits', async () => {
-        const today = localEpochDay(Date.now(), new Date().getTimezoneOffset())
+        const today = todayEpochDay()
         seedStars({ t3: 1 })
         seedFactProgress({
             [canonicalKey(3, 1)]: { box: 1, lastDay: today, last3: [] },
@@ -53,7 +53,7 @@ describe('DailyPhase', () => {
     })
 
     it('shows strategy only when enabled', async () => {
-        const today = localEpochDay(Date.now(), new Date().getTimezoneOffset())
+        const today = todayEpochDay()
         seedStars({ t3: 1 })
         seedFactProgress({ [canonicalKey(3, 1)]: { box: 1, lastDay: today, last3: [] } })
         ttStore.saveTTSettings({ strategyCards: false })

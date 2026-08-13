@@ -1,7 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { canonicalKey } from '../timesTable/facts'
-import { localEpochDay } from '../review/leitner'
+import { todayEpochDay } from '../review/leitner'
 import { ttStore } from '../timesTable/ttStore'
 import { LOCATION_TEST_ID, renderWithRouter, seedFactProgress, seedLanguage, seedStars, userEvent } from '../test/utils'
 import TimesTablesPage from './TimesTablesPage'
@@ -55,7 +55,7 @@ describe('TimesTablesPage', () => {
         await user.click(screen.getByRole('tab', { name: /squares/i }))
         expect(screen.getByRole('tab', { name: /squares/i })).toHaveAttribute('aria-selected', 'true')
 
-        const today = localEpochDay(Date.now(), new Date().getTimezoneOffset())
+        const today = todayEpochDay()
         seedStars({ t1: 1 })
         seedFactProgress({ [canonicalKey(1, 1)]: { box: 1, lastDay: today, last3: [] } })
         const due = renderWithRouter(<TimesTablesPage />)

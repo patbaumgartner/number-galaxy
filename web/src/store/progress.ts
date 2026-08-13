@@ -1,6 +1,6 @@
 import type { Operation, QuestionForm } from '../game'
 import { parseFactKey, tuneAfter, workingMaxFor, type ArithmeticFact, type MissReason, type Rank, type RankTuning } from '../game'
-import { applyAnswer, isDue, localEpochDay, type FactProgress } from '../review/leitner'
+import { applyAnswer, isDue, todayEpochDay, type FactProgress } from '../review/leitner'
 import { readJson, writeJson } from './storage'
 import { profileKey } from './profiles'
 
@@ -236,7 +236,6 @@ export function getArcadeFacts(): ArcadeFacts {
     return stored !== null && typeof stored === 'object' && !Array.isArray(stored) ? stored : {}
 }
 
-const today = (): number => localEpochDay(Date.now(), new Date().getTimezoneOffset())
 
 /** How well a fact is known, 0 for one never met. */
 export const getFactBox = (key: string): number => (key.length === 0 ? 0 : getArcadeFacts()[key]?.box ?? 0)
@@ -245,7 +244,7 @@ export const getFactBox = (key: string): number => (key.length === 0 ? 0 : getAr
 export function recordFact(key: string, correct: boolean, ms: number): void {
     if (key.length === 0) return
     const facts = getArcadeFacts()
-    const next = applyAnswer(facts[key], correct, ms, today())
+    const next = applyAnswer(facts[key], correct, ms, todayEpochDay())
 
     // Re-inserting last makes the record its own recency list, so the oldest
     // untouched facts are the ones the cap drops.
@@ -278,7 +277,7 @@ export function getCommonMistake(): NamedMissReason | null {
 
 /** Facts the schedule says are worth revisiting today, newest first. */
 export function getDueFacts(): ArithmeticFact[] {
-    const now = today()
+    const now = todayEpochDay()
     return Object.entries(getArcadeFacts())
         .filter(([, progress]) => isDue(progress, now))
         .map(([key]) => parseFactKey(key))

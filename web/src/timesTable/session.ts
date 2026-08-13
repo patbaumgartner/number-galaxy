@@ -51,13 +51,13 @@ export const practiceSessionSize = (planetId: PlanetId): number => {
 const byPriority = (
     facts: readonly Fact[],
     progress: Record<FactKey, FactProgress>,
-    todayEpochDay: number,
+    today: number,
     rng: () => number,
 ): readonly Fact[] => {
     const due = facts
         .filter((fact) => {
             const entry = progress[fact.key]
-            return entry !== undefined && isDue(entry, todayEpochDay)
+            return entry !== undefined && isDue(entry, today)
         })
     const orderedDue = orderByBoxThenShuffle(due, progress, rng)
     const dueKeys = new Set(orderedDue.map((fact) => fact.key))
@@ -84,13 +84,13 @@ export const buildLearnSession = (planetId: PlanetId): LearnSession => {
 export const buildPracticeSession = (
     planetId: PlanetId,
     progress: Record<FactKey, FactProgress>,
-    todayEpochDay: number,
+    today: number,
     rng: () => number = Math.random,
 ): readonly Fact[] => {
     const facts = factsForPlanet(planetId)
     const size = practiceSessionSize(planetId)
 
-    return byPriority(facts, progress, todayEpochDay, rng).slice(0, size)
+    return byPriority(facts, progress, today, rng).slice(0, size)
 }
 
 export const buildSpeedSession = (
@@ -105,21 +105,21 @@ const factByKey = (): ReadonlyMap<FactKey, Fact> => {
 
 const dueFacts = (
     progress: Record<FactKey, FactProgress>,
-    todayEpochDay: number,
+    today: number,
 ): readonly Fact[] => {
     const facts = factByKey()
 
     return [...facts.values()]
         .filter((fact) => {
             const entry = progress[fact.key]
-            return entry !== undefined && isDue(entry, todayEpochDay)
+            return entry !== undefined && isDue(entry, today)
         })
 }
 
 export const buildDailyMission = (
     progress: Record<FactKey, FactProgress>,
     stars: Partial<Record<PlanetId, StarLevel>>,
-    todayEpochDay: number,
+    today: number,
     rng: () => number = Math.random,
 ): readonly Fact[] => {
     const eligiblePlanetIds = allPlanetIds.filter(planetId => {
@@ -131,7 +131,7 @@ export const buildDailyMission = (
     const eligibleFacts = eligiblePlanetIds.flatMap(factsForPlanet)
     const dueEligible = eligibleFacts.filter(fact => {
         const entry = progress[fact.key]
-        return entry !== undefined && isDue(entry, todayEpochDay)
+        return entry !== undefined && isDue(entry, today)
     })
 
     return orderByBoxThenShuffle(dueEligible, progress, rng).slice(0, 10)
@@ -146,5 +146,5 @@ export const requeueWrong = (session: readonly Fact[], factKey: FactKey): readon
 
 export const countDueFacts = (
     progress: Record<FactKey, FactProgress>,
-    todayEpochDay: number,
-): number => Math.min(dueFacts(progress, todayEpochDay).length, 10)
+    today: number,
+): number => Math.min(dueFacts(progress, today).length, 10)

@@ -4,7 +4,7 @@ import type { BeamSkill } from './beam'
 import { BEAM_STATIONS, beamStore, isStationUnlocked, type BeamStars } from './beam'
 import type { SenseSkill } from './sense'
 import { SENSE_STATIONS, isSenseStationUnlocked, senseStore, type SenseStars } from './sense'
-import { localEpochDay } from './review/leitner'
+import { todayEpochDay } from './review/leitner'
 import { countDueFacts } from './timesTable/session'
 import { GALAXIES, isPlanetUnlocked } from './timesTable/tables'
 import { ttStore } from './timesTable/ttStore'
@@ -93,7 +93,7 @@ export function surpriseRoute(target: SurpriseTarget): string {
  * while the storage reads live in one place.
  */
 export function nextSurprise(rng: Rng = defaultRng): SurpriseTarget {
-    const today = localEpochDay(Date.now(), new Date().getTimezoneOffset())
+    const today = todayEpochDay()
     return pickSurprise({
         rng,
         ttStars: ttStore.getStars(),

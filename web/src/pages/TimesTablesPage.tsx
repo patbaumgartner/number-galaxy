@@ -5,7 +5,7 @@ import TopBar from '../components/TopBar'
 import HowToPlayDialog from '../components/HowToPlayDialog'
 import { useDocumentLanguage, useModalDialog } from '../hooks'
 import { translations } from '../i18n'
-import { localEpochDay } from '../review/leitner'
+import { todayEpochDay } from '../review/leitner'
 import { countDueFacts } from '../timesTable/session'
 import { GALAXIES, getPlanet, isPlanetUnlocked, RECOMMENDED_ORDER } from '../timesTable/tables'
 import { ttStore } from '../timesTable/ttStore'
@@ -34,7 +34,7 @@ export default function TimesTablesPage() {
     const [progress] = useState(() => ttStore.getProgress())
     const [howToOpen, setHowToOpen] = useState(false)
     const [stars] = useState(() => ttStore.getStars())
-    const [today] = useState(() => localEpochDay(Date.now(), new Date().getTimezoneOffset()))
+    const [today] = useState(() => todayEpochDay())
     const dueCount = useMemo(() => countDueFacts(progress, today), [progress, today])
     const hasAnyStar = Object.values(stars).some(star => (star ?? 0) > 0)
     const nextRecommended = RECOMMENDED_ORDER.find(planetId => (stars[planetId] ?? 0) === 0)

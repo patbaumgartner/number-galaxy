@@ -25,17 +25,17 @@ export const applyAnswer = (
     progress: FactProgress | undefined,
     correct: boolean,
     ms: number,
-    todayEpochDay: number,
+    today: number,
 ): FactProgress => {
-    const baseline: FactProgress = progress ?? { box: 1, lastDay: todayEpochDay, last3: [] }
+    const baseline: FactProgress = progress ?? { box: 1, lastDay: today, last3: [] }
     const nextBox: FactProgress['box'] = correct ? nextBoxes[baseline.box] : 1
     const last3 = [...baseline.last3, { correct, ms }].slice(-3)
 
-    return { box: nextBox, lastDay: todayEpochDay, last3 }
+    return { box: nextBox, lastDay: today, last3 }
 }
 
-export const isDue = (progress: FactProgress, todayEpochDay: number): boolean =>
-    progress.lastDay + intervalForBox(progress.box) <= todayEpochDay
+export const isDue = (progress: FactProgress, today: number): boolean =>
+    progress.lastDay + intervalForBox(progress.box) <= today
 
 /**
  * Recall fast enough to count as knowing something by heart.
@@ -55,3 +55,16 @@ export const isMastered = (progress: FactProgress, thinkingTime = 1): boolean =>
 
 export const localEpochDay = (now: number, tzOffsetMin: number): number =>
     Math.floor((now - tzOffsetMin * 60_000) / 86_400_000)
+
+/**
+ * Today, where the child is sitting.
+ *
+ * A due date in this app is a local calendar day, never a UTC one: a fact
+ * revised on Tuesday evening in Zurich is due on Wednesday there, and asking
+ * UTC gets that wrong for a good part of every day. The pairing of `Date.now()`
+ * with the current offset is what makes it local, and it was written out by
+ * hand in seven places — every one of them a chance for a review schedule to
+ * quietly slip a day, in the one direction nobody would notice.
+ */
+export const todayEpochDay = (): number =>
+    localEpochDay(Date.now(), new Date().getTimezoneOffset())

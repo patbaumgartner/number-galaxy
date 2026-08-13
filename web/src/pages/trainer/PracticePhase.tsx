@@ -5,7 +5,7 @@ import { NumberPad } from '../../components/trainer/NumberPad'
 import { SessionSummary } from '../../components/trainer/SessionSummary'
 import { playCorrect, playLevelUp, playWrong } from '../../sound'
 import { store } from '../../store'
-import { applyAnswer, localEpochDay } from '../../review/leitner'
+import { applyAnswer, todayEpochDay } from '../../review/leitner'
 import { buildPracticeSession } from '../../timesTable/session'
 import { explainFact, getStrategyCard } from '../../timesTable/strategies'
 import { getPlanet } from '../../timesTable/tables'
@@ -22,9 +22,9 @@ export function PracticePhase({ planetId }: { planetId: PlanetId }) {
     const t = translations[lang]
     const surpriseActions = useSurpriseActions(t)
     const planet = getPlanet(planetId)!
-    const [todayEpochDay] = useState(() => localEpochDay(Date.now(), new Date().getTimezoneOffset()))
+    const [today] = useState(() => todayEpochDay())
     const [initialSession] = useState<Fact[]>(
-        () => [...buildPracticeSession(planetId, ttStore.getProgress(), todayEpochDay)],
+        () => [...buildPracticeSession(planetId, ttStore.getProgress(), today)],
     )
     const [session, setSession] = useState<Fact[]>(initialSession)
     const initialSessionSize = initialSession.length
@@ -95,7 +95,7 @@ export function PracticePhase({ planetId }: { planetId: PlanetId }) {
         const newIsFirstCorrect = isFirst && correct
         if (isFirst) setFirstAttempt(prev => ({ ...prev, [currentFact.key]: correct }))
         const oldEntry = ttStore.getProgress()[currentFact.key]
-        const newEntry = applyAnswer(oldEntry, correct, window.performance.now() - startTimeRef.current, todayEpochDay)
+        const newEntry = applyAnswer(oldEntry, correct, window.performance.now() - startTimeRef.current, today)
         ttStore.saveFactProgress(currentFact.key, newEntry)
         if (correct && oldEntry && newEntry.box > oldEntry.box) setLeveledUpCount(prev => prev + 1)
         else if (correct && !oldEntry && newEntry.box > 1) setLeveledUpCount(prev => prev + 1)

@@ -5,7 +5,7 @@ import { avatars } from '../constants'
 import { fill, translations } from '../i18n'
 import { useDocumentLanguage } from '../hooks'
 import { nextSurprise, surpriseRoute } from '../surprise'
-import { localEpochDay } from '../review/leitner'
+import { todayEpochDay } from '../review/leitner'
 import { countDueFacts } from '../timesTable/session'
 import { ttStore } from '../timesTable/ttStore'
 import PlayerSwitcher from '../components/home/PlayerSwitcher'
@@ -49,7 +49,7 @@ export default function HomePage() {
      * aversion aimed at a seven-year-old. What is due is a fact about the
      * material; how often a child turns up is not the game's business.
      */
-    const [today] = useState(() => localEpochDay(Date.now(), new Date().getTimezoneOffset()))
+    const [today] = useState(() => todayEpochDay())
     const dueToday = useMemo(() => {
         const stars = ttStore.getStars()
         if (!Object.values(stars).some(star => (star ?? 0) > 0)) return 0

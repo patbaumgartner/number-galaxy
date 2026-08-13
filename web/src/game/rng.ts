@@ -27,7 +27,17 @@ export function randomInt(rng: Rng, min: number, max: number): number {
     return min + Math.floor(rng() * (max - min + 1))
 }
 
+/**
+ * One of `items`, which must not be empty.
+ *
+ * An empty list would otherwise hand back `undefined` while the signature
+ * promises a `T`, and that undefined travels: it becomes a prompt reading
+ * "undefined", or a crash three frames later in whatever tried to use it.
+ * Callers narrow their own lists, so an empty one is a bug where it was built
+ * rather than something to paper over here.
+ */
 export function pick<T>(rng: Rng, items: readonly T[]): T {
+    if (items.length === 0) throw new Error('pick: nothing to choose from')
     return items[Math.floor(rng() * items.length)]
 }
 

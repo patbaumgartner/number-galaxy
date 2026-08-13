@@ -61,3 +61,14 @@ describe('random helpers', () => {
         expect(permutations).toEqual(new Set(['abc', 'acb', 'bac', 'bca', 'cab', 'cba']))
     })
 })
+
+describe('pick', () => {
+    /**
+     * The signature promises a `T`, so handing back `undefined` is a lie that
+     * travels: it becomes a prompt reading "undefined", or a crash somewhere
+     * that has long forgotten where the empty list came from.
+     */
+    it('refuses an empty list rather than returning undefined as a T', () => {
+        expect(() => pick(createRng(1), [])).toThrow(/nothing to choose from/)
+    })
+})

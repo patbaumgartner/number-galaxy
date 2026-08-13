@@ -142,6 +142,38 @@ describe('placing a number', () => {
             expect(q.beamMax).toBe(senseCapFor('placeNumber', 2))
         }
     })
+
+    /**
+     * A landmark is not an estimate.
+     *
+     * A multiple of ten is already labelled on the line and the midpoint is the
+     * line folded in half, so either can be placed without any sense of where
+     * numbers sit — which is the only thing this station measures.
+     */
+    it('never asks for a multiple of ten or for the middle of the line', () => {
+        const offered: string[] = []
+        for (const tier of SENSE_TIERS) {
+            const cap = senseCapFor('placeNumber', tier)
+            for (let seed = 0; seed < 400; seed += 1) {
+                const { value } = createSenseQuestion({ skill: 'placeNumber', tier, rng: createRng(seed) })
+                if (value % 10 === 0) offered.push(`tier ${tier}: ${value} is a labelled ten`)
+                if (value === cap / 2) offered.push(`tier ${tier}: ${value} is the midpoint of ${cap}`)
+            }
+        }
+        expect(offered).toEqual([])
+    })
+
+    it('still uses the rest of the line, rather than a narrow band of it', () => {
+        for (const tier of SENSE_TIERS) {
+            const cap = senseCapFor('placeNumber', tier)
+            const values = Array.from({ length: 400 }, (_unused, seed) =>
+                createSenseQuestion({ skill: 'placeNumber', tier, rng: createRng(seed) }).value)
+            expect(values.every(value => value >= 1 && value <= cap - 1)).toBe(true)
+            // Excluding the tens and the midpoint must thin the line, not halve it.
+            const available = cap - 1 - Math.floor((cap - 1) / 10) - (cap / 2 % 10 === 0 ? 0 : 1)
+            expect(new Set(values).size).toBeGreaterThanOrEqual(Math.min(available, 8))
+        }
+    })
 })
 
 describe('counting on', () => {

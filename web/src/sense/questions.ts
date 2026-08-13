@@ -1,4 +1,4 @@
-import { defaultRng, randomInt, type Rng } from '../game/rng'
+import { defaultRng, pick, randomInt, type Rng } from '../game/rng'
 import { patternFor } from './patterns'
 import { senseCapFor } from './stations'
 import type { SenseQuestion, SenseSkill, SenseTier } from './types'
@@ -80,10 +80,26 @@ function rekenrekDraft(rng: Rng, cap: number): Draft {
  */
 const placeTolerance = (max: number): number => Math.max(1, Math.round(max / 10))
 
+/**
+ * The places on the line worth asking about.
+ *
+ * A multiple of ten is a labelled landmark and the midpoint is the line folded
+ * in half; both can be found without any sense of the number, which is the one
+ * thing this station exists to measure. The rule was written down here from the
+ * start and never applied — a tier-0 beam offered its own midpoint in better
+ * than one question in ten.
+ */
+const placeCandidates = (cap: number): number[] => {
+    const middle = cap / 2
+    const candidates: number[] = []
+    for (let value = 1; value < cap; value += 1) {
+        if (value % 10 !== 0 && value !== middle) candidates.push(value)
+    }
+    return candidates
+}
+
 function placeNumberDraft(rng: Rng, cap: number): Draft {
-    // Never a round number, and never the middle: those can be found without any
-    // sense of the number at all.
-    const value = randomInt(rng, 1, cap - 1)
+    const value = pick(rng, placeCandidates(cap))
     return {
         prompt: String(value),
         value,

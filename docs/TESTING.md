@@ -191,12 +191,14 @@ an honest gap, so prefer adding the invariant over adding the line.
 
 ## Continuous integration
 
-[`.github/workflows/ci.yml`](../.github/workflows/ci.yml) runs two jobs on every push and
+[`.github/workflows/ci.yml`](../.github/workflows/ci.yml) runs on every push and
 pull request:
 
 - **static** — lint → coverage-gated unit tests → build (which also type-checks). Uploads
-  the coverage report.
+  the coverage report, and on `main` the Pages artefact.
 - **e2e** — installs Chromium and runs the Playwright suite. Uploads the HTML report.
+- **deploy** — needs both of the above, and only runs for a push to `main`. A commit that
+  fails lint, coverage or a browser test is never published.
 
 Both artefacts are retained for 7 days, so a red build can be inspected without
 reproducing it locally.

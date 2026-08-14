@@ -189,12 +189,18 @@ and `noImplicitOverride`. `any`, `@ts-ignore` and `@ts-expect-error` are not acc
 
 ## Deployment
 
-**Automatic on every push to `main`**, via [`deploy.yml`](../.github/workflows/deploy.yml):
+**Automatic on every push to `main`**, as the last job of
+[`ci.yml`](../.github/workflows/ci.yml):
 
-1. Install dependencies
-2. Build with Vite
-3. Publish `web/dist/` to GitHub Pages
+1. `static` installs, lints, runs the coverage-gated unit tests and builds
+2. `e2e` runs the Playwright suite against that build
+3. `deploy` needs both, so a red commit never reaches the site — and it publishes
+   the artifact `static` produced rather than a second, unchecked build
 4. Live at [patbaumgartner.github.io/number-galaxy](https://patbaumgartner.github.io/number-galaxy)
+
+Only the `deploy` job holds `pages: write` and `id-token: write`. The jobs that
+run `npm ci`, the test suites and the build have `contents: read` and nothing
+else, so a compromised dependency has no token to publish with.
 
 Two details that are easy to trip over:
 

@@ -1,6 +1,6 @@
 # 🌌 Number Galaxy
 
-[![Deploy to GitHub Pages](https://github.com/patbaumgartner/number-galaxy/actions/workflows/deploy.yml/badge.svg)](https://github.com/patbaumgartner/number-galaxy/actions/workflows/deploy.yml)
+[![CI](https://github.com/patbaumgartner/number-galaxy/actions/workflows/ci.yml/badge.svg)](https://github.com/patbaumgartner/number-galaxy/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 

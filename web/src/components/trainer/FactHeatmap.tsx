@@ -36,6 +36,20 @@ export default function FactHeatmap({ progress, view }: FactHeatmapProps) {
     }
     const label = (a: number, b: number, state: CellState): string =>
         fill(t.heatmapCell, { a, b, answer: a * b, state: stateLabel[state] })
+
+    // Without this the grid is 144 coloured squares and no key to them: a
+    // screen reader hears the state in every cell's name, and the child looking
+    // at it has to guess what pink means.
+    const legend = (
+        <ul className="heatmap-legend">
+            {(['unseen', 'learning', 'due', 'mastered'] as const).map(state => (
+                <li key={state} className="heatmap-legend__key">
+                    <span className={`heatmap-swatch heatmap-cell-${state}`} aria-hidden="true" />
+                    {stateLabel[state]}
+                </li>
+            ))}
+        </ul>
+    )
     // Read once, so all 144 cells are dated the same day even if the render
     // happens to straddle midnight.
     const today = todayEpochDay()
@@ -62,6 +76,7 @@ export default function FactHeatmap({ progress, view }: FactHeatmapProps) {
                         )
                     })}
                 </div>
+                {legend}
             </div>
         )
     }
@@ -99,6 +114,7 @@ export default function FactHeatmap({ progress, view }: FactHeatmapProps) {
                     </div>
                 ))}
             </div>
+            {legend}
         </div>
     )
 }

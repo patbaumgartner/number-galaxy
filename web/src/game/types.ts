@@ -57,7 +57,16 @@ export type Question = {
      * needs no translation and stays readable in all four languages.
      */
     workingOut: string
-    /** The pair of numbers behind it, for the review schedule. Empty for remainders. */
+    /**
+     * The pair of numbers behind it, for the review schedule.
+     *
+     * Empty for remainders and for chains, and deliberately so for the second:
+     * `(7 + 5) − 3` is two facts and one outcome, and there is no way to tell
+     * from a wrong answer which step went wrong. Dropping a box on a guess
+     * about that would put a signal in the schedule describing an event that
+     * may not have happened — the same reason a two-player round records
+     * nothing.
+     */
     factKey: string
     /** The kind of route it wants, so help can demonstrate that kind on other numbers. */
     route: Route

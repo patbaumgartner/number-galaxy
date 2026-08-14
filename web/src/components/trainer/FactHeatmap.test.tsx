@@ -89,4 +89,27 @@ describe('FactHeatmap', () => {
         expect(screen.getByLabelText(/^3 times 7 equals 21,/)).toHaveClass('heatmap-cell-learning')
         expect(screen.getByLabelText(/^7 times 3 equals 21,/)).toHaveClass('heatmap-cell-learning')
     })
+
+    /**
+     * 144 coloured squares and nothing saying what the colours mean. The
+     * accessible names carry the state for a screen-reader user, but the child
+     * or teacher looking at the map had only the colours and no key to them —
+     * and this map is offered as "the fastest way to see what is actually
+     * stuck".
+     */
+    it.each(['core', 'extended', 'squares'] as const)('gives the %s view a key to its colours', view => {
+        render(<FactHeatmap view={view} progress={{}} />)
+
+        expect(screen.getByText('not started yet')).toBeInTheDocument()
+        expect(screen.getByText('still learning')).toBeInTheDocument()
+        expect(screen.getByText('to go over today')).toBeInTheDocument()
+        expect(screen.getByText('known by heart')).toBeInTheDocument()
+    })
+
+    it('says the same in the chosen language', () => {
+        seedLanguage('fr')
+        render(<FactHeatmap view="core" progress={{}} />)
+
+        expect(screen.getByText('à revoir aujourd’hui')).toBeInTheDocument()
+    })
 })

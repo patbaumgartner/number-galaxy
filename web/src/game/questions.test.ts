@@ -420,4 +420,36 @@ describe('pickForm and shaky shapes', () => {
             pickForm(createRng(index + 1), 'ace', 'addition', { missingLeft: 1 })).filter(form => form === 'missingLeft').length
         expect(withNoHistory).toBe(withPerfect)
     })
+
+    /**
+     * A chain is two facts and one outcome. A wrong answer to `(7 + 5) − 3`
+     * does not say which of the two steps went wrong, so recording it against
+     * either would put a signal in the review schedule describing something
+     * that may not have happened. Empty is the honest answer, and it is a
+     * decision rather than an omission — which is why it is written down here.
+     */
+    it('gives a chain no fact key, because it is two facts and one answer', () => {
+        let chains = 0
+        for (let seed = 1; seed <= 300; seed += 1) {
+            const question = createQuestion({
+                language: 'en', operation: 'addition', rank: 'supernova', form: 'chain', rng: createRng(seed),
+            })
+            if (question.form !== 'chain') continue
+            chains += 1
+            expect(question.factKey).toBe('')
+        }
+        expect(chains).toBeGreaterThan(0)
+    })
+
+    it('gives every other shape a fact key the schedule can use', () => {
+        const shapes = ['direct', 'missingLeft', 'missingRight'] as const
+        for (const form of shapes) {
+            for (let seed = 1; seed <= 60; seed += 1) {
+                const question = createQuestion({
+                    language: 'en', operation: 'multiplication', rank: 'ace', form, rng: createRng(seed),
+                })
+                expect(question.factKey, `${form}/${seed}`).not.toBe('')
+            }
+        }
+    })
 })

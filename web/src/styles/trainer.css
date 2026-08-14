@@ -72,6 +72,11 @@
 .heatmap-cell-learning { background: var(--color-pink); }
 .heatmap-cell-due { background: var(--color-gold); }
 .heatmap-cell-mastered { background: var(--color-success); }
+.heatmap-legend { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); margin: var(--space-3) 0 0; padding: 0; list-style: none; color: var(--text-muted); font-size: var(--text-sm); }
+.heatmap-legend__key { display: flex; align-items: center; gap: var(--space-2); }
+/* No background of its own: the state class beside it supplies one, and a
+   colour declared here would win on order and grey the whole key out. */
+.heatmap-swatch { flex: none; width: 16px; height: 16px; border-radius: var(--radius-sm); }
 
 .trainer-header { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); }
 .trainer-header h2 { margin: 0; font-size: var(--text-xl); }

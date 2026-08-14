@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { createRng } from './rng'
-import { createEquation, type BinaryOperation } from './equations'
+import { createEquation, type BinaryOperation, type Equation } from './equations'
 import { storyFor } from './stories'
 import { createQuestion } from './questions'
 import type { Language } from './types'
@@ -8,7 +8,56 @@ import type { Language } from './types'
 const LANGUAGES: Language[] = ['de', 'it', 'en', 'fr']
 const BINARY: BinaryOperation[] = ['addition', 'subtraction', 'multiplication', 'division']
 
+/** The same numbers every time, so a pinned sentence is about the words. */
+const sum = (symbol: Equation['symbol']): Equation => ({ left: 12, right: 5, result: 17, symbol })
+
 describe('dressing a sum in the situation it came from', () => {
+    /**
+     * The prose itself, put where a reviewer has to read it.
+     *
+     * French and Italian agree adjectives, past participles and pronouns with
+     * the noun, and the templates carry those agreements as fixed text —
+     * `bleues`, `chacune`, `partagées`, `divise`, `Quante`. When the noun lists
+     * held both genders they were wrong more often than right: a child read
+     * "Il y a 7 pommes rouges et 5 bleus", "12 autocollants sont partagées" and
+     * "Combien Mia en a-t-il de plus ?".
+     *
+     * Nothing here can check grammar. What it can do is show every sentence the
+     * generator can produce in the diff, so a change to the wording or to a
+     * noun has to be read rather than assumed. Every line below has been
+     * checked for agreement.
+     */
+    it.each([
+        ['de', 0, 'Mia hat 12 Murmeln und bekommt 5 dazu. Wie viele sind es jetzt?'],
+        ['en', 0, 'Mia has 12 marbles and gets 5 more. How many now?'],
+        ['fr', 0, 'Mia a 12 billes et en reçoit 5 de plus. Combien maintenant ?'],
+        ['it', 0, 'Mia ha 12 biglie e ne riceve 5 in più. Quante sono adesso?'],
+    ])('writes a %s join story', (language, seed, expected) => {
+        expect(storyFor(() => seed, language as Language, 'addition', sum('+'))).toBe(expected)
+    })
+
+    it.each([
+        ['fr', 'partWhole', 'addition', 'Il y a 12 cartes rouges et 5 bleues. Combien en tout ?'],
+        ['fr', 'compare', 'subtraction', 'Elias a 12 cartes, Léa en a 5. Elias en a combien de plus ?'],
+        ['fr', 'measuring', 'division', '12 cartes sont mises par 5 dans des trousses. Combien de trousses faut-il ?'],
+        ['it', 'partWhole', 'addition', 'Ci sono 12 gomme rosse e 5 blu. Quante sono in tutto?'],
+        ['it', 'compare', 'subtraction', 'Elia ha 12 gomme, Lea ne ha 5. Quante ne ha in più Elia?'],
+        ['it', 'measuring', 'division', '12 gomme vanno a 5 per borse. Quante borse servono?'],
+    ])('agrees every word in the %s %s story', (language, _type, operation, expected) => {
+        // The last of everything: the second story type, and the last noun and
+        // person in each list, so a different set of words is exercised.
+        expect(storyFor(() => 0.99, language as Language, operation as BinaryOperation, sum('+'))).toBe(expected)
+    })
+
+    it.each([
+        ['fr', 'grouping', 'multiplication', '12 boîtes avec 5 billes dans chacune. Combien de billes en tout ?'],
+        ['fr', 'sharing', 'division', '12 billes sont partagées entre 5 enfants. Combien pour chaque enfant ?'],
+        ['it', 'grouping', 'multiplication', '12 scatole con 5 biglie ciascuna. Quante biglie sono?'],
+        ['it', 'sharing', 'division', '12 biglie vengono divise fra 5 bambini. Quante ne riceve ogni bambino?'],
+    ])('agrees every word in the %s %s story too', (language, _type, operation, expected) => {
+        expect(storyFor(() => 0, language as Language, operation as BinaryOperation, sum('+'))).toBe(expected)
+    })
+
     it('writes a story in every language, for every operation', () => {
         const missing: string[] = []
         for (const language of LANGUAGES) {

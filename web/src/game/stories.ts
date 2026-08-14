@@ -32,7 +32,20 @@ const STORY_TYPES: Record<BinaryOperation, readonly StoryType[]> = {
 }
 
 type Words = {
-    /** Plural nouns, chosen so no template ever needs a gendered article. */
+    /**
+     * Plural nouns, and in French and Italian all of one grammatical gender.
+     *
+     * The templates do not only avoid gendered articles — they carry gendered
+     * adjectives, past participles and pronouns too: `bleues`, `chacune`,
+     * `partagées`, `divise`, `Quante`. Mixing genders in these lists makes
+     * those disagree with whatever noun is drawn, so every one of them is
+     * feminine and the agreements are correct by construction rather than by
+     * luck. Adding a masculine noun here breaks sentences in a language the
+     * type system cannot check; add a feminine one.
+     *
+     * German needs no such rule — a plural adjective with no article takes `-e`
+     * whatever the gender — and English has no agreement at all.
+     */
     readonly things: readonly string[]
     readonly holders: readonly string[]
     readonly people: readonly string[]
@@ -82,23 +95,25 @@ const WORDS: Record<Language, Words> = {
         },
     },
     fr: {
-        things: ['billes', 'autocollants', 'pommes', 'cailloux'],
-        holders: ['boîtes', 'paniers', 'sacs'],
+        things: ['billes', 'gommettes', 'pommes', 'cartes'],
+        holders: ['boîtes', 'corbeilles', 'trousses'],
         people: ['Mia', 'Jonas', 'Léa', 'Elias'],
-        colours: ['rouges', 'bleus'],
+        // `rouge` is the same in both genders; `bleu` is not, and every noun
+        // above is feminine.
+        colours: ['rouges', 'bleues'],
         line: {
             join: p => `${p.person} a ${p.a} ${p.thing} et en reçoit ${p.b} de plus. Combien maintenant ?`,
             partWhole: p => `Il y a ${p.a} ${p.thing} ${p.colours[0]} et ${p.b} ${p.colours[1]}. Combien en tout ?`,
             separate: p => `${p.person} a ${p.a} ${p.thing} et en donne ${p.b}. Combien en reste-t-il ?`,
-            compare: p => `${p.person} a ${p.a} ${p.thing}, ${p.other} en a ${p.b}. Combien ${p.person} en a-t-il de plus ?`,
+            compare: p => `${p.person} a ${p.a} ${p.thing}, ${p.other} en a ${p.b}. ${p.person} en a combien de plus ?`,
             grouping: p => `${p.a} ${p.holder} avec ${p.b} ${p.thing} dans chacune. Combien de ${p.thing} en tout ?`,
             sharing: p => `${p.a} ${p.thing} sont partagées entre ${p.b} enfants. Combien pour chaque enfant ?`,
             measuring: p => `${p.a} ${p.thing} sont mises par ${p.b} dans des ${p.holder}. Combien de ${p.holder} faut-il ?`,
         },
     },
     it: {
-        things: ['biglie', 'adesivi', 'mele', 'sassi'],
-        holders: ['scatole', 'cesti', 'sacchetti'],
+        things: ['biglie', 'figurine', 'mele', 'gomme'],
+        holders: ['scatole', 'ceste', 'borse'],
         people: ['Mia', 'Jonas', 'Lea', 'Elia'],
         colours: ['rosse', 'blu'],
         line: {

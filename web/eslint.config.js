@@ -55,11 +55,22 @@ export default defineConfig([
     {
         files: ['**/*.{ts,tsx}'],
         extends: [
+            js.configs.recommended,
             reactHooks.configs.flat.recommended,
             reactRefresh.configs.vite,
         ],
         plugins: { '@stylistic': stylistic },
-        rules: stylisticRules,
+        rules: {
+            ...stylisticRules,
+            // The two recommended rules a TypeScript file must not be judged by
+            // here. ESLint reads this project through Babel, which strips the
+            // types without understanding them, so an interface member or a
+            // type-only import looks like an undeclared or unused name — 1500
+            // false positives and nothing true. `tsc` already answers both
+            // questions properly, via `noUnusedLocals` and `noUnusedParameters`.
+            'no-undef': 'off',
+            'no-unused-vars': 'off',
+        },
         languageOptions: {
             parser: babelParser,
             parserOptions: {

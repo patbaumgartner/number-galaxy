@@ -188,6 +188,7 @@ export default function GamePage() {
 
             {result && (
                 <MissionSummary
+                    language={settings.language}
                     score={result.score}
                     correct={result.correct}
                     total={result.total}

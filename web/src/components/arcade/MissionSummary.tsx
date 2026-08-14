@@ -1,7 +1,7 @@
 import type { Translations } from '../../i18n'
 import type { SurpriseActions } from '../../hooks'
 import { useModalDialog } from '../../hooks'
-import { SHOW_SPEED_ABOVE, STRUGGLED_BELOW } from '../../game'
+import { SHOW_SPEED_ABOVE, STRUGGLED_BELOW, type Language } from '../../game'
 
 const CONFETTI_PIECES = 16
 
@@ -21,6 +21,8 @@ type MissionSummaryProps = {
     /** False at the lowest rank, where there are no smaller numbers to offer. */
     canEase: boolean
     labels: Translations['summary']
+    /** Formats the one decimal on this screen: Swiss children are taught the comma. */
+    language: Language
     onPlayAgain: () => void
     onEasier: () => void
     onChangeMission: () => void
@@ -28,6 +30,9 @@ type MissionSummaryProps = {
     /** Set when the picker chose this game, not the player. */
     surprise?: SurpriseActions | undefined
 }
+
+const seconds = (ms: number, language: Language): string =>
+    new Intl.NumberFormat(language, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(ms / 1000)
 
 export default function MissionSummary({
     score,
@@ -41,6 +46,7 @@ export default function MissionSummary({
     runs,
     canEase,
     labels,
+    language,
     surprise,
     onPlayAgain,
     onEasier,
@@ -113,7 +119,7 @@ export default function MissionSummary({
                     {showSpeed && (
                         <div className="summary__stat">
                             <dt>{labels.fastest}</dt>
-                            <dd>{(fastestMs / 1000).toFixed(1)}s</dd>
+                            <dd>{seconds(fastestMs, language)}s</dd>
                         </div>
                     )}
                 </dl>

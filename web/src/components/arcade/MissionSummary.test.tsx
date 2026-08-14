@@ -20,6 +20,7 @@ function renderSummary(overrides: Partial<SummaryProps> = {}) {
         stars: 2,
         bestStreak: 6,
         fastestMs: 1234,
+        language: 'en',
         newRecord: false,
         newPersonalBest: false,
         runs: 1,
@@ -154,4 +155,16 @@ describe('speed and stopping', () => {
         rerenderSummary({ runs: 2 })
         expect(screen.getByText(labels.stopHint)).toBeInTheDocument()
     })
+
+    /**
+     * The one decimal a child reads on this screen. `toFixed` always writes a
+     * point; German, French and Italian primary maths is taught with the comma,
+     * and Swiss pupils are marked on using it.
+     */
+    it.each([['en', '1.6s'], ['de', '1,6s'], ['fr', '1,6s'], ['it', '1,6s']])(
+        'writes the fastest answer with %s decimal punctuation', (language, shown) => {
+            renderSummary({ fastestMs: 1567, language, correct: 10, total: 10 })
+
+            expect(screen.getByText(shown)).toBeInTheDocument()
+        })
 })

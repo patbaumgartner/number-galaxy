@@ -30,6 +30,13 @@ describe('DailyPhase', () => {
         expect(screen.getByText('All caught up!')).toBeInTheDocument()
     })
 
+    /**
+     * Two due facts make a two-question mission. It used to make a four-question
+     * one: `1 × 3` is reached from the ×1 planet and the ×3 planet, `2 × 3` from
+     * ×2 and ×3, and the mission concatenated the planets instead of keying by
+     * fact. This test asserted the 4 it saw, which is how the duplicate outlived
+     * a suite that covers this file.
+     */
     it('runs due facts, requeues one wrong answer, reports accuracy, and exits', async () => {
         const today = todayEpochDay()
         seedStars({ t3: 1 })
@@ -39,14 +46,15 @@ describe('DailyPhase', () => {
         })
         const user = userEvent.setup({ delay: null })
         renderWithRouter(<DailyPhase />)
-        expect(hudStat('Question')).toBe('1/4')
+        expect(hudStat('Question')).toBe('1/2')
         await submit(user, 999)
         expect(screen.getByRole('dialog')).toBeInTheDocument()
         await user.click(screen.getByRole('button', { name: 'OK' }))
-        expect(hudStat('Question')).toBe('2/4')
+        // The miss is queued to come back, which is the third question.
+        expect(hudStat('Question')).toBe('2/3')
         await submit(user, answer())
         expect(screen.getByText('🔥 1')).toBeInTheDocument()
-        for (let index = 0; index < 2; index += 1) await submit(user, answer())
+        await submit(user, answer())
         expect(screen.getByText(/accuracy:/i)).toBeInTheDocument()
         await user.click(screen.getAllByRole('button', { name: /back to map/i }).at(-1)!)
         expect(screen.getByTestId(LOCATION_TEST_ID)).toHaveTextContent('/times-tables')

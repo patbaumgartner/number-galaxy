@@ -78,4 +78,40 @@ describe('times-table sessions', () => {
 
         expect(countDueFacts(progress, 1)).toBe(buildDailyMission(progress, { t5: 1 }, 1, fixedRng).length)
     })
+
+    /**
+     * A fact belongs to both of its tables — `2 × 3` is on the ×2 planet and on
+     * the ×3 planet, under the one canonical key `2x3`. The mission gathers its
+     * candidates by concatenating every eligible planet's facts, so a child who
+     * has touched both planets had that fact put in front of them twice.
+     *
+     * The cost is not the repetition. `DailyPhase` counts what was right by
+     * unique fact key and divides by the session's length, so a duplicate makes
+     * a flawless run score 50% — and the star is awarded from that accuracy. A
+     * child answered every question correctly and was told they had not.
+     */
+    it('offers a fact shared by two planets only once', () => {
+        const shared = factsForPlanet('t2').find((fact) => fact.key === '2x3')
+
+        expect(shared).toBeDefined()
+        if (shared === undefined) return
+        expect(factsForPlanet('t3').some((fact) => fact.key === shared.key)).toBe(true)
+
+        const mission = buildDailyMission({ [shared.key]: dueProgress(1) }, {}, 1, fixedRng)
+
+        expect(mission.map((fact) => fact.key)).toEqual([shared.key])
+    })
+
+    it('never repeats a fact, however many planets a child has touched', () => {
+        const touched = ['t2', 't3', 't4', 't6', 't12'] as const
+        const progress = Object.fromEntries(
+            touched.flatMap(factsForPlanet).map((fact) => [fact.key, dueProgress(1)]),
+        )
+
+        const mission = buildDailyMission(progress, {}, 1, fixedRng)
+
+        expect(new Set(mission.map((fact) => fact.key)).size).toBe(mission.length)
+        // And the count the child is shown still describes the mission they get.
+        expect(countDueFacts(progress, 1)).toBe(mission.length)
+    })
 })

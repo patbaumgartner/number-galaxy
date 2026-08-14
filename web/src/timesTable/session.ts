@@ -98,8 +98,8 @@ export const buildSpeedSession = (
     rng: () => number = Math.random,
 ): readonly Fact[] => shuffle(factsForPlanet(planetId), rng)
 
-const factByKey = (): ReadonlyMap<FactKey, Fact> => {
-    const facts = allPlanetIds.flatMap(factsForPlanet)
+const factByKey = (planetIds: readonly PlanetId[]): ReadonlyMap<FactKey, Fact> => {
+    const facts = planetIds.flatMap(factsForPlanet)
     return new Map(facts.map((fact) => [fact.key, fact]))
 }
 
@@ -107,7 +107,7 @@ const dueFacts = (
     progress: Record<FactKey, FactProgress>,
     today: number,
 ): readonly Fact[] => {
-    const facts = factByKey()
+    const facts = factByKey(allPlanetIds)
 
     return [...facts.values()]
         .filter((fact) => {
@@ -128,7 +128,12 @@ export const buildDailyMission = (
         return hasStars || hasProgress
     })
 
-    const eligibleFacts = eligiblePlanetIds.flatMap(factsForPlanet)
+    // By key, not by planet: a fact sits on both of its tables, so `2 × 3` is
+    // reached from ×2 and from ×3 under the one canonical key. Concatenating
+    // the planets asked a child who had touched both to answer it twice, and
+    // `DailyPhase` scores a run by unique key over the session's length — so
+    // the repeat capped a flawless mission at 50% and cost it its star.
+    const eligibleFacts = [...factByKey(eligiblePlanetIds).values()]
     const dueEligible = eligibleFacts.filter(fact => {
         const entry = progress[fact.key]
         return entry !== undefined && isDue(entry, today)

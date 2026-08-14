@@ -1,7 +1,7 @@
 import type { Operation, QuestionForm } from '../game'
 import { parseFactKey, tuneAfter, workingMaxFor, type ArithmeticFact, type MissReason, type Rank, type RankTuning } from '../game'
 import { applyAnswer, isDue, todayEpochDay, type FactProgress } from '../review/leitner'
-import { readJson, writeJson } from './storage'
+import { isBooleanArray, isNumber, isRecord, readEntries, readJson, writeJson } from './storage'
 import { profileKey } from './profiles'
 
 export type SpacedRepetitionEntry = { interval: number; due: number }
@@ -84,7 +84,7 @@ export function computeBadge(history: boolean[]): BadgeTier {
 }
 
 export function getWeakness(): Record<string, number> {
-    return readJson<Record<string, number>>(weaknessKey(), {})
+    return readEntries(weaknessKey(), (value): value is number => isNumber(value) && value >= 0)
 }
 
 export function recordAnswer(operation: Operation, correct: boolean, questionIndex: number): void {
@@ -101,8 +101,11 @@ export function recordAnswer(operation: Operation, correct: boolean, questionInd
     updateSpacedRepetition(operation, correct, questionIndex)
 }
 
+const isSchedule = (value: unknown): value is SpacedRepetitionEntry =>
+    isRecord(value) && isNumber(value.interval) && isNumber(value.due)
+
 export function getSpacedRepetition(): SpacedRepetitionData {
-    return readJson<SpacedRepetitionData>(srKey(), {})
+    return readEntries(srKey(), isSchedule)
 }
 
 /** SM-2 flavoured: mastery pushes an operation out, a miss pulls it right back. */
@@ -119,7 +122,8 @@ function updateSpacedRepetition(operation: Operation, correct: boolean, question
 }
 
 export function getSkillStats(): SkillStats {
-    return readJson<SkillStats>(skillKey(), {})
+    return readEntries(skillKey(), (value): value is { history: boolean[] } =>
+        isRecord(value) && isBooleanArray(value.history))
 }
 
 /**
@@ -181,8 +185,8 @@ export function leadingStrategy(operation: Operation): Strategy | null {
 export type RankTunings = Partial<Record<Rank, RankTuning>>
 
 function getTunings(): RankTunings {
-    const stored = readJson<RankTunings>(tuningKey(), {})
-    return stored !== null && typeof stored === 'object' && !Array.isArray(stored) ? stored : {}
+    return readEntries(tuningKey(), (value): value is RankTuning =>
+        isRecord(value) && isNumber(value.max) && isBooleanArray(value.history))
 }
 
 /** The ceiling this rank is currently working at, inside the rank's own. */
@@ -196,8 +200,7 @@ export function recordRankAnswer(rank: Rank, correct: boolean): void {
 export type FormStats = Partial<Record<QuestionForm, boolean[]>>
 
 export function getFormStats(): FormStats {
-    const stored = readJson<FormStats>(formStatsKey(), {})
-    return stored !== null && typeof stored === 'object' && !Array.isArray(stored) ? stored : {}
+    return readEntries(formStatsKey(), isBooleanArray)
 }
 
 export function recordForm(form: QuestionForm, correct: boolean): void {
@@ -231,9 +234,15 @@ export function recordMiss(entry: MissRecord): void {
 
 export type ArcadeFacts = Record<string, FactProgress>
 
+const isFactProgress = (value: unknown): value is FactProgress =>
+    isRecord(value)
+    && isNumber(value.box) && value.box >= 1 && value.box <= 5
+    && isNumber(value.lastDay)
+    && Array.isArray(value.last3)
+    && value.last3.every(answer => isRecord(answer) && typeof answer.correct === 'boolean' && isNumber(answer.ms))
+
 export function getArcadeFacts(): ArcadeFacts {
-    const stored = readJson<ArcadeFacts>(arcadeFactsKey(), {})
-    return stored !== null && typeof stored === 'object' && !Array.isArray(stored) ? stored : {}
+    return readEntries(arcadeFactsKey(), isFactProgress)
 }
 
 

@@ -37,10 +37,30 @@ const sameSlot = (a: ScoreEntry, b: ScoreEntry) =>
     a.rank === b.rank &&
     a.timed === b.timed
 
+/**
+ * Stars, as a number of stars that can actually be drawn.
+ *
+ * The board renders them by repetition, and `String.repeat` throws a
+ * `RangeError` on a negative or absurd count — so one row holding `stars: -3`
+ * took the entire Hall of Fame down with it and left a crash screen where a
+ * child's personal bests had been.
+ *
+ * Repaired rather than dropped. A damaged star count is no reason to throw away
+ * the score, the accuracy and the streak stored beside it, all of which are
+ * still perfectly readable.
+ */
+const drawableStars = (value: unknown): number =>
+    typeof value === 'number' && Number.isFinite(value)
+        ? Math.min(3, Math.max(0, Math.round(value)))
+        : 0
+
 export function loadScores(): ScoreEntry[] {
     const entries = readJson<ScoreEntry[]>(scoresKey(), [])
     if (!Array.isArray(entries)) return []
-    return entries.filter(entry => entry && typeof entry.score === 'number').sort(byScore)
+    return entries
+        .filter(entry => entry && typeof entry.score === 'number')
+        .map(entry => ({ ...entry, stars: drawableStars(entry.stars) }))
+        .sort(byScore)
 }
 
 export function submitScore(entry: ScoreEntry): { improved: boolean; entries: ScoreEntry[] } {

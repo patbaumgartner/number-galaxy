@@ -67,6 +67,35 @@ export function readRecord(key: string): Record<string, unknown> {
     return isRecord(stored) ? stored : {}
 }
 
+/** A finite number, which is what every count and interval in this app is. */
+export const isNumber = (value: unknown): value is number =>
+    typeof value === 'number' && Number.isFinite(value)
+
+export const isBooleanArray = (value: unknown): value is boolean[] =>
+    Array.isArray(value) && value.every(entry => typeof entry === 'boolean')
+
+/**
+ * A stored map, less any entry that is no longer the right shape.
+ *
+ * `readRecord` only promises an object. Every store then read straight through
+ * it into the entries, and half a dozen of them assumed those were still what
+ * they wrote: `{ addition: { history: 7 } }` reached a spread and threw, a null
+ * fact reached the review schedule, a rank tuning holding an object for its
+ * history took the mission down. The error boundary caught each one, which
+ * means the child got a crash screen and an app that stayed broken until
+ * somebody found Delete all data.
+ *
+ * Dropping the bad entry rather than the whole map is the point: one damaged
+ * fact should cost that fact's history, not every fact's.
+ */
+export function readEntries<T>(key: string, isValid: (value: unknown) => value is T): Record<string, T> {
+    const kept: Record<string, T> = {}
+    for (const [name, value] of Object.entries(readRecord(key))) {
+        if (isValid(value)) kept[name] = value
+    }
+    return kept
+}
+
 export function hasKey(key: string): boolean {
     const storage = available()
     if (!storage) return false

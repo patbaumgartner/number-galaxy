@@ -108,6 +108,63 @@ describe('settings', () => {
 
 
 
+    /**
+     * Every store validated the object it read and then trusted whatever was
+     * inside it. Driving the built app in Chromium against these exact values,
+     * five of them reached the error boundary: a crash screen, and an app that
+     * stayed broken until somebody found Delete all data.
+     *
+     * The damaged entry is dropped, not the map — one ruined fact should cost
+     * that fact's history and no more.
+     */
+    it.each([
+        ['a skill history that is not a list', () => progressKeys.skills, { addition: { history: 7 } }],
+        ['a weakness count that is a string', () => progressKeys.weakness, { addition: 'lots' }],
+        ['a weakness count that is negative', () => progressKeys.weakness, { addition: -5 }],
+        ['a review schedule that is null', () => progressKeys.spacedRepetition, { addition: null }],
+        ['a review schedule missing its interval', () => progressKeys.spacedRepetition, { addition: { due: 3 } }],
+        ['a rank tuning whose history is an object', () => progressKeys.tuning, { rookie: { max: 10, history: {} } }],
+        ['a form history that is a number', () => progressKeys.formStats, { direct: 3 }],
+        ['a fact that is null', () => progressKeys.arcadeFacts, { 'addition:7:8': null }],
+        ['a fact whose last3 is a string', () => progressKeys.arcadeFacts, { 'addition:7:8': { box: 2, lastDay: 0, last3: 'no' } }],
+        ['a fact in an impossible box', () => progressKeys.arcadeFacts, { 'addition:7:8': { box: 99, lastDay: 0, last3: [] } }],
+    ])('drops %s rather than handing it on', (_name, key, stored) => {
+        storage.setItem(key(), JSON.stringify(stored))
+
+        expect(store.getSkillStats()).toEqual({})
+        expect(store.getWeakness()).toEqual({})
+        expect(store.getSpacedRepetition()).toEqual({})
+        expect(store.getFormAccuracy()).toEqual({})
+        expect(store.getArcadeFacts()).toEqual({})
+        // And the writes that read-modify-write those maps still go through.
+        expect(() => store.recordAnswer('addition', true, 1)).not.toThrow()
+        expect(() => store.recordForm('direct', true)).not.toThrow()
+        expect(() => store.recordRankAnswer('rookie', true)).not.toThrow()
+        expect(() => store.recordFact('addition:7:8', true, 900)).not.toThrow()
+    })
+
+    it('keeps the sound entries beside a broken one', () => {
+        storage.setItem(progressKeys.weakness, JSON.stringify({ addition: 3, division: 'lots' }))
+
+        expect(store.getWeakness()).toEqual({ addition: 3 })
+    })
+
+    /**
+     * The board draws stars by repetition, and `String.repeat` throws on a
+     * negative count — so one row of `stars: -3` took the whole Hall of Fame
+     * down. The row is repaired rather than dropped: its score, accuracy and
+     * streak are all still perfectly readable.
+     */
+    it.each([[-3, 0], [1e9, 3], [Number.NaN, 0], [2.4, 2], [2, 2]])(
+        'draws a stored star count of %s as %s', (stored, drawn) => {
+            storage.setItem(scoreKeys.current, JSON.stringify([{ ...entry({ score: 10 }), stars: stored }]))
+
+            const [stored_] = store.getScores()
+            expect(stored_.stars).toBe(drawn)
+            expect(() => '★'.repeat(stored_.stars) + '☆'.repeat(3 - stored_.stars)).not.toThrow()
+            expect(stored_.score).toBe(10)
+        })
+
     it('repairs corrupt or unknown values instead of crashing', () => {
         storage.setItem(settingsKeys.current, '{ not json')
         expect(store.getSettings()).toEqual(defaultSettings)

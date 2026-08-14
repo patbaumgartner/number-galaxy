@@ -1,6 +1,7 @@
 import type { FactKey, FactProgress } from '../../timesTable/types'
 import { cellState, VIEW_GRIDS } from '../../timesTable/heatmap'
 import { canonicalKey } from '../../timesTable/facts'
+import { todayEpochDay } from '../../review/leitner'
 import { store } from '../../store'
 
 type FactHeatmapProps = {
@@ -18,6 +19,9 @@ type FactHeatmapProps = {
 export default function FactHeatmap({ progress, view }: FactHeatmapProps) {
     const grid = VIEW_GRIDS[view]
     const { thinkingTime } = store.getSettings()
+    // Read once, so all 144 cells are dated the same day even if the render
+    // happens to straddle midnight.
+    const today = todayEpochDay()
 
     if (view === 'squares') {
         return (
@@ -25,7 +29,7 @@ export default function FactHeatmap({ progress, view }: FactHeatmapProps) {
                 <div className="heatmap-grid" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
                     {grid.cols.map((num) => {
                         const key = canonicalKey(num, num)
-                        const state = cellState(progress, key, thinkingTime)
+                        const state = cellState(progress, key, thinkingTime, today)
                         const answer = num * num
 
                         return (
@@ -62,7 +66,7 @@ export default function FactHeatmap({ progress, view }: FactHeatmapProps) {
                         <span className="heatmap-header">{r}</span>
                         {grid.cols.map(c => {
                             const key = canonicalKey(r, c)
-                            const state = cellState(progress, key, thinkingTime)
+                            const state = cellState(progress, key, thinkingTime, today)
                             const answer = r * c
 
                             return (

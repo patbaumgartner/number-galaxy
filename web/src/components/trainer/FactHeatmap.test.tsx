@@ -4,6 +4,7 @@ import FactHeatmap from './FactHeatmap'
 import { canonicalKey } from '../../timesTable/facts'
 import { VIEW_GRIDS } from '../../timesTable/heatmap'
 import type { FactKey, FactProgress } from '../../timesTable/types'
+import { todayEpochDay } from '../../review/leitner'
 import { masteredFact } from '../../test/utils'
 
 const learning: FactProgress = { box: 1, lastDay: 0, last3: [] }
@@ -11,7 +12,10 @@ const learning: FactProgress = { box: 1, lastDay: 0, last3: [] }
 function progressForStates(): Record<FactKey, FactProgress> {
     return {
         [canonicalKey(1, 1)]: learning,
-        [canonicalKey(1, 2)]: masteredFact,
+        // Answered today, so it is known and not yet round again. `masteredFact`
+        // is dated day zero, which is what makes it the overdue one.
+        [canonicalKey(1, 2)]: { ...masteredFact, lastDay: todayEpochDay() },
+        [canonicalKey(1, 4)]: masteredFact,
     }
 }
 
@@ -24,12 +28,13 @@ describe('FactHeatmap', () => {
         expect(container.querySelectorAll('.heatmap-cell')).toHaveLength(grid.rows.length * grid.cols.length)
     })
 
-    it('assigns unseen, learning, and mastered classes from fact progress', () => {
+    it('assigns a class for each of the four states from fact progress', () => {
         render(<FactHeatmap view="core" progress={progressForStates()} />)
 
         expect(screen.getByLabelText('1 times 1 equals 1')).toHaveClass('heatmap-cell-learning')
         expect(screen.getByLabelText('1 times 2 equals 2')).toHaveClass('heatmap-cell-mastered')
         expect(screen.getByLabelText('1 times 3 equals 3')).toHaveClass('heatmap-cell-unseen')
+        expect(screen.getByLabelText('1 times 4 equals 4')).toHaveClass('heatmap-cell-due')
     })
 
     it('gives every fact cell a multiplication result in its title and accessible name', () => {

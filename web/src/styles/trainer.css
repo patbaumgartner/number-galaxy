@@ -68,9 +68,9 @@
 .heatmap-grid { display: grid; gap: 3px; min-width: 320px; }
 .heatmap-header { display: grid; place-items: center; min-height: 24px; color: var(--text-muted); font-size: var(--text-sm); }
 .heatmap-cell { min-height: 24px; border-radius: var(--radius-sm); background: var(--bg-surface-highlight); }
-.heatmap-cell-unknown { background: var(--bg-surface-highlight); }
+.heatmap-cell-unseen { background: var(--bg-surface-highlight); }
 .heatmap-cell-learning { background: var(--color-pink); }
-.heatmap-cell-review { background: var(--color-gold); }
+.heatmap-cell-due { background: var(--color-gold); }
 .heatmap-cell-mastered { background: var(--color-success); }
 
 .trainer-header { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); margin-bottom: var(--space-4); }

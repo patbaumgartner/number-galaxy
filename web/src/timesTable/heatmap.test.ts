@@ -5,19 +5,51 @@ import { factsForPlanet, canonicalKey } from './facts'
 import { GALAXIES } from './tables'
 
 describe('heatmap', () => {
-    it('cellState mapping for all three states', () => {
+    const mastered = (lastDay: number): FactProgress => ({
+        box: 5,
+        lastDay,
+        last3: [
+            { correct: true, ms: 1000 },
+            { correct: true, ms: 1500 },
+            { correct: true, ms: 2000 },
+        ],
+    })
+
+    it('cellState mapping for all four states', () => {
         const progress: Record<FactKey, FactProgress> = {
             '2x3': { box: 2, lastDay: 100, last3: [{ correct: true, ms: 1000 }] },
-            '4x4': { box: 5, lastDay: 100, last3: [
-                { correct: true, ms: 1000 },
-                { correct: true, ms: 1500 },
-                { correct: true, ms: 2000 },
-            ] },
+            '4x4': mastered(100),
+            // Box 5 waits seven days, so this one came round again three days ago.
+            '5x5': mastered(90),
         }
 
-        expect(cellState(progress, '1x1')).toBe('unseen')
-        expect(cellState(progress, '2x3')).toBe('learning')
-        expect(cellState(progress, '4x4')).toBe('mastered')
+        expect(cellState(progress, '1x1', 1, 100)).toBe('unseen')
+        expect(cellState(progress, '2x3', 1, 100)).toBe('learning')
+        expect(cellState(progress, '4x4', 1, 100)).toBe('mastered')
+        expect(cellState(progress, '5x5', 1, 100)).toBe('due')
+    })
+
+    /**
+     * A box-1 fact has an interval of zero and is therefore due the instant it
+     * is answered. If due-ness were tested ahead of everything else, the map
+     * would go gold almost everywhere and never show a fact as still being
+     * learned — so `due` marks known facts that have come round again, and
+     * nothing else.
+     */
+    it('keeps a fact still being learned out of the due colour', () => {
+        const justAnswered: Record<FactKey, FactProgress> = {
+            '7x8': { box: 1, lastDay: 100, last3: [{ correct: false, ms: 4000 }] },
+        }
+
+        expect(cellState(justAnswered, '7x8', 1, 100)).toBe('learning')
+        expect(cellState(justAnswered, '7x8', 1, 200)).toBe('learning')
+    })
+
+    it('turns a known fact gold only once its interval has run out', () => {
+        const progress: Record<FactKey, FactProgress> = { '6x7': mastered(100) }
+
+        expect(cellState(progress, '6x7', 1, 106)).toBe('mastered')
+        expect(cellState(progress, '6x7', 1, 107)).toBe('due')
     })
 
     it('extended grid contains 12x25 and 11x15', () => {

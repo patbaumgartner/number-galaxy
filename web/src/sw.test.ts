@@ -151,18 +151,55 @@ describe('service worker install', () => {
      * install down with it — which leaves the app with no worker and no offline
      * support at all. One missing icon must cost that icon and nothing else.
      */
-    it('still installs when one precache entry is missing', async () => {
+    it('still installs when one optional precache entry is missing', async () => {
         const fetchImpl = vi.fn(async (input: RequestInfo | URL) => {
             const url = String(input)
             return url.endsWith('apple-touch-icon.png') ? new Response('', { status: 404 }) : ok()
         })
-        const { dispatch, cacheStorage } = loadWorker(fetchImpl as unknown as typeof fetch)
+        const { dispatch, cacheStorage, self } = loadWorker(fetchImpl as unknown as typeof fetch)
 
         await dispatch('install')
 
         const cached = await (await cacheStorage.open('number-galaxy-__BUILD__')).keys()
         expect(cached).toHaveLength(shellUrls.length - 1)
         expect(cached.some(entry => entry.url.endsWith('apple-touch-icon.png'))).toBe(false)
+        expect(self.skipWaiting).toHaveBeenCalled()
+    })
+
+    /**
+     * The failure that strands a child, and the reason the two lists exist.
+     *
+     * A worker that activates on a half-filled cache sweeps away the release
+     * that still worked, and nothing retries: the next offline start is a blank
+     * screen for good. So an install that cannot fetch the document or a bundle
+     * has to fail, leaving the working release installed and its cache whole.
+     */
+    it.each([`${BASE}index.html`, BASE])('refuses to install when %s cannot be fetched', async (broken) => {
+        const fetchImpl = vi.fn(async (input: RequestInfo | URL) =>
+            new URL(String(input), 'https://host.test').pathname === broken
+                ? new Response('', { status: 404 })
+                : ok())
+        const { dispatch, cacheStorage, self } = loadWorker(fetchImpl as unknown as typeof fetch)
+        const previous = await cacheStorage.open('number-galaxy-oldbuild')
+        await previous.put(`${BASE}index.html`, ok('the release that works'))
+
+        await expect(dispatch('install')).rejects.toThrow(/critical/)
+
+        expect(self.skipWaiting).not.toHaveBeenCalled()
+        // No half-built cache is left under this build's name for `activate` to
+        // adopt, and the previous release is untouched.
+        expect(await cacheStorage.keys()).toEqual(['number-galaxy-oldbuild'])
+        expect(await (await previous.match(`${BASE}index.html`))?.text()).toBe('the release that works')
+    })
+
+    it('refuses to install when the cache is full', async () => {
+        const { dispatch, cacheStorage, self } = loadWorker(async () => ok())
+        const cache = await cacheStorage.open('number-galaxy-__BUILD__')
+        cache.put = async () => { throw new DOMException('quota', 'QuotaExceededError') }
+
+        await expect(dispatch('install')).rejects.toThrow(/critical/)
+
+        expect(self.skipWaiting).not.toHaveBeenCalled()
     })
 })
 
@@ -175,6 +212,35 @@ describe('service worker activate', () => {
         await dispatch('activate')
 
         expect(await cacheStorage.keys()).toEqual(['number-galaxy-__BUILD__'])
+    })
+
+    /**
+     * Cache Storage is keyed by origin, not by the worker's scope, and a GitHub
+     * user site serves every project from one origin — this app sits beside its
+     * author's other Pages projects on `patbaumgartner.github.io`. Sweeping by
+     * "not this build" therefore deleted the neighbours' offline copies too,
+     * and the first they knew of it was their own app failing offline.
+     */
+    it('leaves the caches of other apps on the origin alone', async () => {
+        const { dispatch, cacheStorage } = loadWorker(async () => ok())
+        await cacheStorage.open('potensic-atom-mission-lab-v3')
+        await cacheStorage.open('workbox-precache-v2')
+        await cacheStorage.open('number-galaxy-oldbuild')
+        await cacheStorage.open('number-galaxy-__BUILD__')
+
+        await dispatch('activate')
+
+        expect((await cacheStorage.keys()).sort()).toEqual([
+            'number-galaxy-__BUILD__', 'potensic-atom-mission-lab-v3', 'workbox-precache-v2',
+        ])
+    })
+
+    it('claims the open pages before the activation is done', async () => {
+        const { dispatch, self } = loadWorker(async () => ok())
+
+        await dispatch('activate')
+
+        expect(self.clients.claim).toHaveBeenCalled()
     })
 })
 

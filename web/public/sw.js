@@ -19,7 +19,9 @@ const BUILD = '__BUILD__'
 /** Replaced at build time with this release's hashed output. */
 const BUILD_ASSETS = []
 
-const CACHE_NAME = `number-galaxy-${BUILD}`
+const CACHE_PREFIX = 'number-galaxy-'
+
+const CACHE_NAME = `${CACHE_PREFIX}${BUILD}`
 
 /**
  * Where the app is served from, read off this file's own URL.
@@ -32,9 +34,19 @@ const CACHE_NAME = `number-galaxy-${BUILD}`
  */
 const BASE = new URL('./', self.location.href).pathname
 
-const SHELL_URLS = [
-  BASE,
-  `${BASE}index.html`,
+/**
+ * The app itself: the document and every bundle it needs to render.
+ *
+ * Without all of them there is no offline app, only a blank screen — so they
+ * are precached together or not at all.
+ */
+const CRITICAL_URLS = [BASE, `${BASE}index.html`, ...BUILD_ASSETS]
+
+/**
+ * Worth having offline, but nothing renders any worse without them: the
+ * manifest and the icons a home-screen install uses.
+ */
+const OPTIONAL_URLS = [
   `${BASE}manifest.json`,
   `${BASE}favicon.svg`,
   `${BASE}icon-192.png`,
@@ -42,8 +54,6 @@ const SHELL_URLS = [
   `${BASE}icon-maskable-512.png`,
   `${BASE}apple-touch-icon.png`,
 ]
-
-const PRECACHE_URLS = [...SHELL_URLS, ...BUILD_ASSETS]
 
 /**
  * How long a navigation waits for the network before the cached app is used.
@@ -57,45 +67,74 @@ const PRECACHE_URLS = [...SHELL_URLS, ...BUILD_ASSETS]
  */
 const NAVIGATION_TIMEOUT_MS = 3000
 
+async function store(cache, url) {
+  const response = await fetch(url, { cache: 'reload' })
+  if (!response.ok) throw new Error(`${url} responded ${response.status}`)
+  await cache.put(url, response)
+}
+
 /**
- * Precaches every URL, and does not fail the install over any one of them.
+ * Fills this build's cache, and says so if the app did not fit in it.
  *
- * `cache.addAll` rejects the whole batch if a single request does, which takes
- * the install down with it and leaves the app with no worker and no offline
- * support at all. One mistyped icon should cost that icon, not the feature.
+ * The icons are allowed to fail one at a time — `cache.addAll` rejects the
+ * whole batch over any single request, and one mistyped icon should cost that
+ * icon rather than the feature. The document and the bundles are not: a cache
+ * holding some of them is not a copy of the app, and the install has to fail
+ * loudly rather than hand `activate` a half-built cache to adopt.
  */
 async function precache() {
   const cache = await caches.open(CACHE_NAME)
-  const results = await Promise.allSettled(
-    PRECACHE_URLS.map(async (url) => {
-      const response = await fetch(url, { cache: 'reload' })
-      if (!response.ok) throw new Error(`${url} responded ${response.status}`)
-      await cache.put(url, response)
-    })
-  )
 
-  const failed = results.filter((result) => result.status === 'rejected')
+  const critical = await Promise.allSettled(CRITICAL_URLS.map((url) => store(cache, url)))
+  const missing = critical.filter((result) => result.status === 'rejected')
+  if (missing.length > 0) {
+    throw new Error(`[sw] ${missing.length}/${CRITICAL_URLS.length} critical entries failed: ${missing.map((f) => f.reason).join('; ')}`)
+  }
+
+  const optional = await Promise.allSettled(OPTIONAL_URLS.map((url) => store(cache, url)))
+  const failed = optional.filter((result) => result.status === 'rejected')
   if (failed.length > 0) {
-    console.warn(`[sw] ${failed.length}/${PRECACHE_URLS.length} precache entries failed`, failed.map((f) => f.reason))
+    console.warn(`[sw] ${failed.length}/${OPTIONAL_URLS.length} optional precache entries failed`, failed.map((f) => f.reason))
   }
 }
 
+/**
+ * Takes over only once there is a whole app to take over with.
+ *
+ * `skipWaiting` used to run beside the precache rather than after it, so a
+ * school wifi that dropped halfway through an install produced a worker that
+ * activated anyway, swept away the previous release's cache, and left the
+ * child a blank screen the next time they opened it offline. Failing the
+ * install instead leaves the working release installed and its cache intact,
+ * and the browser tries again on the next visit.
+ */
+async function install() {
+  try {
+    await precache()
+  } catch (error) {
+    await caches.delete(CACHE_NAME)
+    throw error
+  }
+  await self.skipWaiting()
+}
+
 self.addEventListener('install', (event) => {
-  event.waitUntil(precache())
-  self.skipWaiting()
+  event.waitUntil(install())
 })
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys
-          .filter((key) => key !== CACHE_NAME)
-          .map((key) => caches.delete(key))
-      )
+  event.waitUntil((async () => {
+    const keys = await caches.keys()
+    // Cache Storage belongs to the origin, not to this worker's scope, and a
+    // GitHub user site puts every project on one origin. Sweeping by name
+    // alone took the offline copy of the neighbouring app with it.
+    await Promise.all(
+      keys
+        .filter((key) => key.startsWith(CACHE_PREFIX) && key !== CACHE_NAME)
+        .map((key) => caches.delete(key))
     )
-  )
-  self.clients.claim()
+    await self.clients.claim()
+  })())
 })
 
 /**
@@ -115,7 +154,10 @@ function fromCache(request) {
 function putInCache(request, response) {
   if (response && response.status === 200 && response.type === 'basic') {
     const clone = response.clone()
-    caches.open(CACHE_NAME).then((cache) => cache.put(request, clone))
+    // Refreshing the cache is best-effort: a full quota rejects the put, and
+    // without this the worker takes an unhandled rejection over a response it
+    // is about to serve perfectly well.
+    caches.open(CACHE_NAME).then((cache) => cache.put(request, clone)).catch(() => {})
   }
   return response
 }

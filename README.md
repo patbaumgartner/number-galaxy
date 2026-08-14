@@ -275,9 +275,12 @@ teacher's or parent's call when to add it.
   less often.
 - **Weakness weighting.** Repeated misses on an operation raise its odds of being drawn
   next, so practice drifts toward what is not working.
-- **A miss comes back.** Every missed question is queued and asked again a few questions
+- **A miss comes back.** A missed question is queued and asked again three questions
   later — near enough to be the same idea, far enough that the answer has to be recalled
-  rather than remembered. Each one returns at most once, so a mission is still 25 long.
+  rather than remembered. Each one returns at most once, so a mission is still 25 long —
+  which is also why a miss in the last four does not come back: the retry falls past the
+  end of the run, and stretching the run or closing the gap would each cost more than the
+  repeat is worth.
 - **Worked solutions.** Every question carries its own working, and it is a *route* rather
   than the answer restated: `55 + 6` is explained as `55 + 5 = 60 → 60 + 1 = 61`, `9 × 7` as
   `10 × 7 − 7 = 70 − 7 = 63`. It appears after a miss and **waits there until the child

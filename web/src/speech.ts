@@ -50,7 +50,7 @@ function voiceFor(language: Language): SpeechSynthesisVoice | null {
     const synth = available()
     if (synth === null) return null
 
-    let voices: SpeechSynthesisVoice[] = []
+    let voices: SpeechSynthesisVoice[]
     try {
         voices = synth.getVoices?.() ?? []
     } catch {

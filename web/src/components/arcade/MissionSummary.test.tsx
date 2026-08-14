@@ -161,7 +161,7 @@ describe('speed and stopping', () => {
      * point; German, French and Italian primary maths is taught with the comma,
      * and Swiss pupils are marked on using it.
      */
-    it.each([['en', '1.6s'], ['de', '1,6s'], ['fr', '1,6s'], ['it', '1,6s']])(
+    it.each([['en', '1.6s'], ['de', '1,6s'], ['fr', '1,6s'], ['it', '1,6s']] as const)(
         'writes the fastest answer with %s decimal punctuation', (language, shown) => {
             renderSummary({ fastestMs: 1567, language, correct: 10, total: 10 })
 

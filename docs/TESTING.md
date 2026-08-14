@@ -155,7 +155,7 @@ Two projects run each spec: `chromium-desktop` (1280×800) and `chromium-mobile`
 | `progression.spec.ts` | Rank and star progression across the arcade and the trainer |
 | `a11y.spec.ts` | Heading structure, keyboard reachability, accessible names, dialog semantics, no positive `tabindex`, and a full axe WCAG 2.1 A/AA audit of every route |
 | `responsive.spec.ts` | No horizontal overflow, adequate touch targets, and top-bar labels that are not flush against their button, at 360×640, 768×1024 and 1280×800 |
-| `pwa.spec.ts` | Manifest validity, service worker registration, survival across reload, the `404.html` redirect |
+| `pwa.spec.ts` | Manifest validity, service worker registration, survival across reload, the `404.html` redirect, and the Content-Security-Policy on both documents — present, and enforced against an injected inline script |
 
 ### Seeding state
 

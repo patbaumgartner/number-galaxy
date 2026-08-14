@@ -101,3 +101,34 @@ test('renders the app and plays a game with the network cut', async ({ page, con
     await expect(page.getByRole('heading', { level: 1, name: 'Settings' })).toBeVisible()
     await context.setOffline(false)
 })
+
+/**
+ * GitHub Pages serves headers nobody here can set, so the policy travels in the
+ * markup — and a `<meta>` policy is easy to lose in a build change and silent
+ * when it goes. These assert it is on both shipped documents and that it is
+ * actually enforced rather than merely present.
+ */
+test('ships a content security policy on both documents', async ({ page }) => {
+    for (const path of ['/', '/404.html']) {
+        await gotoApp(page, path)
+        const policy = await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content')
+        expect(policy, path).toContain("default-src 'none'")
+        expect(policy, path).toContain("script-src 'self' 'sha256-")
+        expect(policy, path).toContain("base-uri 'none'")
+        // Header-only, and a console error on every load if named here.
+        expect(policy, path).not.toContain('frame-ancestors')
+    }
+})
+
+test('refuses an inline script the policy did not hash', async ({ page }) => {
+    await gotoApp(page)
+
+    const ran = await page.evaluate(() => {
+        const script = document.createElement('script')
+        script.textContent = 'window.__injected = true'
+        document.head.append(script)
+        return (window as unknown as { __injected?: boolean }).__injected === true
+    })
+
+    expect(ran).toBe(false)
+})

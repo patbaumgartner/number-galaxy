@@ -52,7 +52,67 @@ function stampServiceWorker(): Plugin {
     }
 }
 
+/**
+ * Adds a Content-Security-Policy to the two documents that ship.
+ *
+ * GitHub Pages serves headers nobody here can configure, so the policy has to
+ * travel in the markup. There is no live vulnerability it closes — this app has
+ * no `dangerouslySetInnerHTML`, no `eval`, no third-party script and nothing it
+ * could inject anybody else's markup into. It is the second barrier for the day
+ * one of those stops being true, on a page holding children's names and
+ * progress.
+ *
+ * The hashes are computed from the files rather than written into them. Both
+ * documents carry one inline script — the GitHub Pages deep-link redirect — and
+ * a policy pinned to a hash someone forgot to update is a blank page, so the
+ * build derives them and fails loudly if it finds no script to hash.
+ *
+ * `style-src` has to allow inline: React writes `style` attributes for the bar
+ * widths and beam positions that are only known at runtime, which the house
+ * style already permits and which no hash can cover.
+ */
+function addContentSecurityPolicy(): Plugin {
+    const POLICY = (hash: string): string => [
+        "default-src 'none'",
+        `script-src 'self' '${hash}'`,
+        "style-src 'self' 'unsafe-inline'",
+        "img-src 'self' data:",
+        "font-src 'self'",
+        "manifest-src 'self'",
+        "worker-src 'self'",
+        "connect-src 'self'",
+        "base-uri 'none'",
+        "form-action 'none'",
+        // No `frame-ancestors`: it is header-only, and a `<meta>` policy that
+        // names it is not stricter — it is a console error on every page load.
+        // Clickjacking cover would need a response header, which GitHub Pages
+        // does not let anybody set.
+    ].join('; ')
+
+    const stamp = (path: string): void => {
+        const source = readFileSync(path, 'utf8')
+        const inline = source.match(/<script>([\s\S]*?)<\/script>/)
+        if (inline === null) throw new Error(`CSP: no inline script found in ${path}`)
+
+        const hash = `sha256-${createHash('sha256').update(inline[1], 'utf8').digest('base64')}`
+        const meta = `  <meta http-equiv="Content-Security-Policy" content="${POLICY(hash)}" />\n`
+        if (source.includes('Content-Security-Policy')) throw new Error(`CSP: ${path} already carries a policy`)
+
+        writeFileSync(path, source.replace('<head>', `<head>\n${meta}`))
+    }
+
+    return {
+        name: 'add-content-security-policy',
+        apply: 'build',
+        writeBundle(options) {
+            const dir = options.dir ?? 'dist'
+            stamp(resolve(dir, 'index.html'))
+            stamp(resolve(dir, '404.html'))
+        },
+    }
+}
+
 export default defineConfig({
     base: BASE_PATH,
-    plugins: [react(), stampServiceWorker()],
+    plugins: [react(), stampServiceWorker(), addContentSecurityPolicy()],
 })

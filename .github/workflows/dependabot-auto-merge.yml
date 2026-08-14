@@ -14,10 +14,22 @@ permissions:
   checks: read
   statuses: read
 
+# A pull request that is pushed to again supersedes its own waiter. Dependabot
+# rebases on every change to main, and without this each rebase leaves another
+# job polling the same pull request for half an hour, all of them racing to
+# merge it.
+concurrency:
+  group: automerge-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   auto-merge:
     if: github.event.pull_request.user.login == 'dependabot[bot]' && github.event.pull_request.draft == false
     runs-on: ubuntu-latest
+    # The wait-and-merge fallback below gives up after ~30 minutes. This is the
+    # backstop for a job that somehow does not, so a stuck waiter cannot sit on
+    # a runner for the six-hour default.
+    timeout-minutes: 40
     steps:
       - name: Approve, wait for checks, and merge
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
@@ -178,6 +190,20 @@ jobs:
                 const names = failedChecks.map((run) => run.name).join(", ") || combined.state;
                 await block(`failing checks (${names})`);
                 return;
+              }
+
+              // Nothing has registered a check run yet. That is not the same as
+              // everything having passed, but the two are identical to the test
+              // below — an empty list has no pending entries — so a poll that
+              // lands in the gap merges a pull request nothing has verified.
+              // This workflow starts on the same event that starts CI and has
+              // won that race by as little as four seconds, so the gap is real.
+              // Waiting is safe: if the checks never arrive, the loop times out
+              // and blocks.
+              if (checkRuns.length === 0 && statuses.length === 0) {
+                core.info(`Waiting for checks to be registered (attempt ${attempt}/${maxAttempts}).`);
+                await sleep(intervalMs);
+                continue;
               }
 
               if (pendingChecks.length === 0 && !statusPending) {

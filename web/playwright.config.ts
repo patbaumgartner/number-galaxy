@@ -53,7 +53,13 @@ export default defineConfig({
         // polls 127.0.0.1, so the server is never seen and the wait times out.
         command: `npm run build && npx vite preview --host ${HOST} --port ${PORT} --strictPort`,
         url: BASE_URL,
-        reuseExistingServer: !process.env.CI,
+        // Never reuse a server somebody left running. This suite's whole claim
+        // is that it exercises the bundle GitHub Pages will serve, and reuse
+        // quietly drops the `npm run build` in front of it: a stale preview on
+        // this port makes every spec pass against the previous release. It
+        // reads as a green run, which is worse than a red one. With reuse off
+        // the port clash is loud, and the answer is to stop the other server.
+        reuseExistingServer: false,
         timeout: 180_000,
         stdout: 'pipe',
         stderr: 'pipe',

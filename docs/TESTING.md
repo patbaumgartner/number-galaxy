@@ -135,6 +135,11 @@ Playwright runs against the **production bundle**, not the dev server:
 `playwright.config.ts` builds the app and serves it with `vite preview` on port 4173,
 so every spec exercises the same `/number-galaxy/` base path GitHub Pages serves.
 
+It always builds first, and never reuses a server already on that port. Reuse skips
+the build, so a `vite preview` left running from an hour ago makes the whole suite
+pass against the previous release — a green run that means nothing. If the port is
+busy the run fails loudly instead; stop the other server.
+
 Two projects run each spec: `chromium-desktop` (1280×800) and `chromium-mobile` (Pixel 7).
 
 | Spec | Covers |

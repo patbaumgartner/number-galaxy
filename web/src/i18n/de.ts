@@ -1,7 +1,10 @@
 import type { Translations } from './types'
 
 export const de: Translations = {
-    nav: { home: 'Start', hallOfFame: 'Bestenliste', settings: 'Einstellungen' },
+    nav: {
+        home: 'Start', hallOfFame: 'Bestenliste', settings: 'Einstellungen',
+        starsLabel: '{n} von 3 Sternen', starsLabelOne: '{n} von 3 Sternen',
+    },
     home: {
         appName: 'Zahlen-Galaxie',
         defaultName: 'Ass',
@@ -246,6 +249,9 @@ export const de: Translations = {
         phasePractice: 'Üben',
         phaseSpeed: 'Sprint',
         heatmapTitle: 'Deine Lernkarte',
+        heatmapCell: '{a} mal {b} ist {answer}, {state}',
+        heatmapUnseen: 'noch nicht geübt', heatmapLearning: 'wird geübt',
+        heatmapDue: 'heute wiederholen', heatmapMastered: 'sitzt',
         heatmapCore: 'Basis 1–12',
         heatmapExtended: 'Erweitert 13–25',
         heatmapSquares: 'Quadrate 1–25',

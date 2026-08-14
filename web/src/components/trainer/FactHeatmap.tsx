@@ -2,6 +2,8 @@ import type { FactKey, FactProgress } from '../../timesTable/types'
 import { cellState, VIEW_GRIDS } from '../../timesTable/heatmap'
 import { canonicalKey } from '../../timesTable/facts'
 import { todayEpochDay } from '../../review/leitner'
+import { fill, translations } from '../../i18n'
+import type { CellState } from '../../timesTable/heatmap'
 import { store } from '../../store'
 
 type FactHeatmapProps = {
@@ -15,10 +17,25 @@ type FactHeatmapProps = {
  * A span with no role is generic, and a generic element takes no accessible
  * name — every one of these 144 `aria-label`s was being discarded, so the map
  * was a wall of unlabelled colour to a screen reader.
+ *
+ * The name carries the state as well as the fact. Colour is the only thing this
+ * map says, and a label reading just "7 times 8 equals 56" leaves every cell
+ * indistinguishable from every other — which is the whole map gone, for the
+ * reader who most needs it spelled out.
  */
 export default function FactHeatmap({ progress, view }: FactHeatmapProps) {
     const grid = VIEW_GRIDS[view]
-    const { thinkingTime } = store.getSettings()
+    const settings = store.getSettings()
+    const { thinkingTime } = settings
+    const t = translations[settings.language].tt
+    const stateLabel: Record<CellState, string> = {
+        unseen: t.heatmapUnseen,
+        learning: t.heatmapLearning,
+        due: t.heatmapDue,
+        mastered: t.heatmapMastered,
+    }
+    const label = (a: number, b: number, state: CellState): string =>
+        fill(t.heatmapCell, { a, b, answer: a * b, state: stateLabel[state] })
     // Read once, so all 144 cells are dated the same day even if the render
     // happens to straddle midnight.
     const today = todayEpochDay()
@@ -38,7 +55,7 @@ export default function FactHeatmap({ progress, view }: FactHeatmapProps) {
                                 role="img"
                                 className={`heatmap-cell heatmap-cell-${state}`}
                                 title={`${num}×${num} = ${answer}`}
-                                aria-label={`${num} times ${num} equals ${answer}`}
+                                aria-label={label(num, num, state)}
                             >
                                 {num}²
                             </span>
@@ -75,7 +92,7 @@ export default function FactHeatmap({ progress, view }: FactHeatmapProps) {
                                     role="img"
                                     className={`heatmap-cell heatmap-cell-${state}`}
                                     title={`${r}×${c} = ${answer}`}
-                                    aria-label={`${r} times ${c} equals ${answer}`}
+                                    aria-label={label(r, c, state)}
                                 />
                             )
                         })}

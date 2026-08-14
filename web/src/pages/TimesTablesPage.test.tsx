@@ -25,7 +25,7 @@ describe('TimesTablesPage', () => {
         expect(planetButton('×1')).toBeEnabled()
         expect(screen.getByRole('button', { name: /1²–12²/i })).toBeDisabled()
         expect(screen.getAllByText(/Earn ⭐⭐ on 5 Home Galaxy planets/i)).toHaveLength(2)
-        expect(screen.getByLabelText('1 stars')).toBeInTheDocument()
+        expect(screen.getByLabelText('1 of 3 stars')).toBeInTheDocument()
         expect(container.querySelector('.trainer-planet__next')?.parentElement).toHaveTextContent('×2')
     })
 

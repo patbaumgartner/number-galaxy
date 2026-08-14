@@ -3,7 +3,11 @@ import type { SenseSkill, SenseZoneId } from '../sense'
 import type { MissReason, Operation, Rank } from '../game'
 
 export type Translations = {
-    nav: { home: string; hallOfFame: string; settings: string }
+    nav: {
+        home: string; hallOfFame: string; settings: string
+        /** Read out beside the ⭐ row, which is a picture to everyone else. */
+        starsLabel: string; starsLabelOne: string
+    }
     home: {
         appName: string
         defaultName: string
@@ -194,6 +198,9 @@ export type Translations = {
         lockedHintSquares: string; lockedHintShortcuts: string; lockedHintDeep: string; lockedHintSpeed: string
         phaseLearn: string; phasePractice: string; phaseSpeed: string
         heatmapTitle: string; heatmapCore: string; heatmapExtended: string; heatmapSquares: string
+        /** The 169 map cells, whose colour is the only thing a sighted user gets. */
+        heatmapCell: string
+        heatmapUnseen: string; heatmapLearning: string; heatmapDue: string; heatmapMastered: string
         trainExit: string; summaryAccuracy: string; summaryStreak: string; summaryLeveledUp: string
         summaryPracticeBtn: string; summaryTime: string; summaryNewBest: string; summaryStarsEarnedOne: string; summaryStarsEarned: string
         summarySpeedUnlocked: string; summaryMastered: string; summaryKeepPracticing: string

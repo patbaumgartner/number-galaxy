@@ -49,7 +49,7 @@ describe('DailyPhase', () => {
         expect(hudStat('Question')).toBe('1/2')
         await submit(user, 999)
         expect(screen.getByRole('dialog')).toBeInTheDocument()
-        await user.click(screen.getByRole('button', { name: 'OK' }))
+        await user.click(screen.getByRole('button', { name: 'Got it' }))
         // The miss is queued to come back, which is the third question.
         expect(hudStat('Question')).toBe('2/3')
         await submit(user, answer())
@@ -73,7 +73,7 @@ describe('DailyPhase', () => {
         renderWithRouter(<DailyPhase />)
         await user.click(screen.getByRole('button', { name: /help/i }))
         expect(screen.getByRole('dialog')).toBeInTheDocument()
-        await user.click(screen.getByRole('button', { name: 'OK' }))
+        await user.click(screen.getByRole('button', { name: 'Got it' }))
         expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     })
 })

@@ -57,7 +57,7 @@ describe('NumberBeamPage', () => {
         beamStore.updateBest('double', 0.9)
         renderWithRouter(<NumberBeamPage />)
 
-        expect(screen.getByLabelText('2 stars')).toBeInTheDocument()
+        expect(screen.getByLabelText('2 of 3 stars')).toBeInTheDocument()
         expect(screen.getByText('Best 90%')).toBeInTheDocument()
     })
 

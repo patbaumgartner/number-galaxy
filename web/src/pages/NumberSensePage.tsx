@@ -4,7 +4,7 @@ import TopBar from '../components/TopBar'
 import HowToPlayDialog from '../components/HowToPlayDialog'
 import { SENSE_ZONES, isSenseZoneUnlocked, nextRecommendedSenseStation, senseStore } from '../sense'
 import { store } from '../store'
-import { fill, translations } from '../i18n'
+import { fill, plural, translations } from '../i18n'
 import { useDocumentLanguage } from '../hooks'
 
 export default function NumberSensePage() {
@@ -67,7 +67,7 @@ export default function NumberSensePage() {
                                         >
                                             <span className="beam-station__emoji" aria-hidden="true">{station.emoji}</span>
                                             <strong>{t.sense.skills[station.id]}</strong>
-                                            <span aria-label={`${level} stars`}>{'⭐'.repeat(level)}</span>
+                                            <span aria-label={plural(level, t.nav.starsLabelOne, t.nav.starsLabel)}>{'⭐'.repeat(level)}</span>
                                             {best !== undefined && (
                                                 <small>{fill(t.beam.best, { percent: Math.round(best * 100) })}</small>
                                             )}

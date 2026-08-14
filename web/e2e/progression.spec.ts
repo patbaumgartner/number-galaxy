@@ -7,6 +7,9 @@ const mapTitle = /Times Tables|Einmaleins/
 const practice = /Practice|Üben/
 const speed = /Speed Run|Sprint/
 const backToMap = /Back to map|Zurück zur Karte/
+// This spec seeds nothing, so it runs in the default language like the rest of
+// its assertions. The star row is labelled for screen readers in both.
+const starsLabel = (n: number) => new RegExp(`^${n} (of 3 stars|von 3 Sternen)$`)
 
 const planetButton = (page: Page, factor: number) =>
     page.getByRole('button', { name: new RegExp(`^×${factor}\\b`) })
@@ -65,7 +68,7 @@ test('earns the Times Tables unlock ladder through play', async ({ page }, testI
     await expect(page.locator('.summary-stars')).toContainText(/1 (star|Stern)/)
     await expect(page.locator('.summary-stars')).toContainText(/Speed Run unlocked|Sprint freigeschaltet/)
     await returnToMap(page)
-    await expect(two.locator('[aria-label="1 stars"]')).toBeVisible()
+    await expect(two.getByLabel(starsLabel(1))).toBeVisible()
     await two.click()
     await expect(page.getByRole('dialog').getByRole('button', { name: speed })).toBeEnabled()
     await page.keyboard.press('Escape')
@@ -78,7 +81,7 @@ test('earns the Times Tables unlock ladder through play', async ({ page }, testI
     await expect(page.getByText(/New best time|Neue Bestzeit/)).toHaveCount(0)
     await expect(page.locator('.summary-stars')).toContainText(/2 (star|Stern)/)
     await returnToMap(page)
-    await expect(two.locator('[aria-label="2 stars"]')).toBeVisible()
+    await expect(two.getByLabel(starsLabel(2))).toBeVisible()
 
     for (const factor of [1, 3, 4]) await earnTwoStars(page, planetButton(page, factor))
     await expect(squaresButton(page)).toBeDisabled()
@@ -98,7 +101,7 @@ test('earns the Times Tables unlock ladder through play', async ({ page }, testI
     await expect(page.locator('.summary-stars')).toContainText(/3 (star|Stern)/)
     await expect(page.locator('.summary-stars')).toContainText(/Planet mastered|Planet gemeistert/)
     await returnToMap(page)
-    await expect(two.locator('[aria-label="3 stars"]')).toBeVisible()
+    await expect(two.getByLabel(starsLabel(3))).toBeVisible()
 
     // Deep Space alone is seeded because replaying all eleven 2-star tables is too slow.
     await page.evaluate((key) => {

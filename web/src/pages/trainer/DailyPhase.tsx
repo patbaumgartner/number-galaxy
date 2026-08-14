@@ -145,12 +145,12 @@ export function DailyPhase() {
                 total={session.length}
             />
             {showStrategy && (
-                <Dialog title={strategyCard.title} onClose={() => setShowStrategy(false)}>
+                <Dialog title={strategyCard.title} close={t.learnCardDismiss} onClose={() => setShowStrategy(false)}>
                     {strategyCard.lines.map(line => <p key={line}>{line}</p>)}
                 </Dialog>
             )}
             {explanation !== null ? (
-                <Dialog title={explanation} onClose={dismissExplanation}><p>{explanation}</p></Dialog>
+                <Dialog title={explanation} close={t.learnCardDismiss} onClose={dismissExplanation}><p>{explanation}</p></Dialog>
             ) : (
                 <section className="panel practice-card">
                     <p className="question-header" aria-hidden="true">{planet?.emoji}</p>
@@ -164,18 +164,19 @@ export function DailyPhase() {
 
 type DialogProps = {
     readonly title: string
+    readonly close: string
     readonly children: ReactNode
     readonly onClose: () => void
 }
 
-function Dialog({ title, children, onClose }: DialogProps) {
+function Dialog({ title, close, children, onClose }: DialogProps) {
     const dialog = useModalDialog<HTMLDivElement>(onClose)
     return (
         <div className="overlay" role="dialog" aria-modal="true" aria-label={title} ref={dialog}>
             <section className="overlay__card">
                 <h2>{title}</h2>
                 {children}
-                <button type="button" className="btn btn--primary" autoFocus onClick={onClose}>OK</button>
+                <button type="button" className="btn btn--primary" autoFocus onClick={onClose}>{close}</button>
             </section>
         </div>
     )

@@ -1,11 +1,11 @@
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import FactHeatmap from './FactHeatmap'
 import { canonicalKey } from '../../timesTable/facts'
 import { VIEW_GRIDS } from '../../timesTable/heatmap'
 import type { FactKey, FactProgress } from '../../timesTable/types'
 import { todayEpochDay } from '../../review/leitner'
-import { masteredFact } from '../../test/utils'
+import { masteredFact, seedLanguage } from '../../test/utils'
 
 const learning: FactProgress = { box: 1, lastDay: 0, last3: [] }
 
@@ -20,6 +20,37 @@ function progressForStates(): Record<FactKey, FactProgress> {
 }
 
 describe('FactHeatmap', () => {
+    beforeEach(() => seedLanguage('en'))
+
+    /**
+     * The cells say nothing but their colour, so the accessible name is the
+     * whole map for anyone not reading it by eye. It used to be
+     * `"7 times 8 equals 56"` — hardcoded English in a four-language app, and
+     * identical for a fact never seen and one known by heart, which is the one
+     * distinction the map exists to draw.
+     */
+    it('names each cell in the chosen language, and says what state it is in', () => {
+        seedLanguage('de')
+        render(<FactHeatmap view="core" progress={progressForStates()} />)
+
+        expect(screen.getByLabelText('1 mal 1 ist 1, wird geübt')).toBeInTheDocument()
+        expect(screen.getByLabelText('1 mal 2 ist 2, sitzt')).toBeInTheDocument()
+        expect(screen.getByLabelText('1 mal 3 ist 3, noch nicht geübt')).toBeInTheDocument()
+        expect(screen.getByLabelText('1 mal 4 ist 4, heute wiederholen')).toBeInTheDocument()
+    })
+
+    it('distinguishes the four states in its labels, not only in its colours', () => {
+        render(<FactHeatmap view="core" progress={progressForStates()} />)
+
+        const named = (n: number) => screen.getByLabelText(new RegExp(`^1 times ${n} `)).getAttribute('aria-label')
+        expect([named(1), named(2), named(3), named(4)]).toEqual([
+            '1 times 1 equals 1, still learning',
+            '1 times 2 equals 2, known by heart',
+            '1 times 3 equals 3, not started yet',
+            '1 times 4 equals 4, to go over today',
+        ])
+    })
+
     it.each(['core', 'extended'] as const)('renders headers and a fact cell for every %s grid coordinate', view => {
         const { container } = render(<FactHeatmap view={view} progress={{}} />)
         const grid = VIEW_GRIDS[view]
@@ -31,16 +62,16 @@ describe('FactHeatmap', () => {
     it('assigns a class for each of the four states from fact progress', () => {
         render(<FactHeatmap view="core" progress={progressForStates()} />)
 
-        expect(screen.getByLabelText('1 times 1 equals 1')).toHaveClass('heatmap-cell-learning')
-        expect(screen.getByLabelText('1 times 2 equals 2')).toHaveClass('heatmap-cell-mastered')
-        expect(screen.getByLabelText('1 times 3 equals 3')).toHaveClass('heatmap-cell-unseen')
-        expect(screen.getByLabelText('1 times 4 equals 4')).toHaveClass('heatmap-cell-due')
+        expect(screen.getByLabelText(/^1 times 1 equals 1,/)).toHaveClass('heatmap-cell-learning')
+        expect(screen.getByLabelText(/^1 times 2 equals 2,/)).toHaveClass('heatmap-cell-mastered')
+        expect(screen.getByLabelText(/^1 times 3 equals 3,/)).toHaveClass('heatmap-cell-unseen')
+        expect(screen.getByLabelText(/^1 times 4 equals 4,/)).toHaveClass('heatmap-cell-due')
     })
 
     it('gives every fact cell a multiplication result in its title and accessible name', () => {
         render(<FactHeatmap view="core" progress={{}} />)
 
-        const fact = screen.getByLabelText('3 times 4 equals 12')
+        const fact = screen.getByLabelText(/^3 times 4 equals 12,/)
         expect(fact).toHaveAttribute('title', '3×4 = 12')
     })
 
@@ -48,14 +79,14 @@ describe('FactHeatmap', () => {
         render(<FactHeatmap view="squares" progress={{}} />)
 
         expect(screen.getByText('7²')).toBeInTheDocument()
-        expect(screen.getByLabelText('7 times 7 equals 49')).toHaveAttribute('title', '7×7 = 49')
+        expect(screen.getByLabelText(/^7 times 7 equals 49,/)).toHaveAttribute('title', '7×7 = 49')
         expect(screen.getAllByText(/²$/)).toHaveLength(25)
     })
 
     it('uses the canonical fact key so commutative cells share progress', () => {
         render(<FactHeatmap view="core" progress={{ [canonicalKey(3, 7)]: learning }} />)
 
-        expect(screen.getByLabelText('3 times 7 equals 21')).toHaveClass('heatmap-cell-learning')
-        expect(screen.getByLabelText('7 times 3 equals 21')).toHaveClass('heatmap-cell-learning')
+        expect(screen.getByLabelText(/^3 times 7 equals 21,/)).toHaveClass('heatmap-cell-learning')
+        expect(screen.getByLabelText(/^7 times 3 equals 21,/)).toHaveClass('heatmap-cell-learning')
     })
 })

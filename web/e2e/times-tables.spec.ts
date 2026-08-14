@@ -81,9 +81,10 @@ test('offers and completes a due daily mission', async ({ page }) => {
 test('switches mastery-map tabs and colours seeded fact cells', async ({ page }) => {
     await seedStorage(page, { settings, player, ttProgress: { '1x2': { box: 5, lastDay: 50000, last3: [{ correct: true, ms: 100 }, { correct: true, ms: 100 }, { correct: true, ms: 100 }] } } })
     await gotoApp(page, '/times-tables')
-    await expect(page.locator('[aria-label="1 times 2 equals 2"]')).toHaveClass(/heatmap-cell-mastered/)
+    // The state is part of the name, not only of the colour.
+    await expect(page.locator('[aria-label="1 times 2 equals 2, known by heart"]')).toHaveClass(/heatmap-cell-mastered/)
     await page.getByRole('tab', { name: 'Extended 13–25' }).click()
-    await expect(page.locator('[aria-label="13 times 12 equals 156"]')).toBeVisible()
+    await expect(page.locator('[aria-label^="13 times 12 equals 156,"]')).toBeVisible()
     await page.getByRole('tab', { name: 'Squares 1–25' }).click()
-    await expect(page.locator('[aria-label="1 times 1 equals 1"]')).toBeVisible()
+    await expect(page.locator('[aria-label^="1 times 1 equals 1,"]')).toBeVisible()
 })

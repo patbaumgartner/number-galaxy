@@ -33,7 +33,7 @@ describe('NumberSensePage', () => {
         seedSenseStars('subitize', 2)
         renderWithRouter(<NumberSensePage />)
 
-        expect(screen.getByLabelText('2 stars')).toBeInTheDocument()
+        expect(screen.getByLabelText('2 of 3 stars')).toBeInTheDocument()
     })
 
     it('marks the next station to try, and stops marking it once starred', () => {

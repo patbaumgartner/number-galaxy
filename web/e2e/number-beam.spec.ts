@@ -109,7 +109,7 @@ test('plays a full drill entirely on the beam, earning and keeping a star', asyn
 
     await summary.getByRole('button', { name: 'Back to map' }).click()
     await page.reload()
-    await expect(page.locator(station('Double')).getByLabel('1 stars')).toBeVisible()
+    await expect(page.locator(station('Double')).getByLabel('1 of 3 stars')).toBeVisible()
     await expect(page.locator(station('Double'))).toContainText('Best 100%')
 })
 

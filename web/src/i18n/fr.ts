@@ -1,7 +1,10 @@
 import type { Translations } from './types'
 
 export const fr: Translations = {
-    nav: { home: 'Accueil', hallOfFame: 'Meilleurs scores', settings: 'Réglages' },
+    nav: {
+        home: 'Accueil', hallOfFame: 'Meilleurs scores', settings: 'Réglages',
+        starsLabel: '{n} étoiles sur 3', starsLabelOne: '{n} étoile sur 3',
+    },
     home: {
         appName: 'Galaxie des nombres',
         defaultName: 'As',
@@ -248,6 +251,9 @@ export const fr: Translations = {
         phasePractice: 'S’entraîner',
         phaseSpeed: 'Sprint',
         heatmapTitle: 'Carte de maîtrise',
+        heatmapCell: '{a} fois {b} égale {answer}, {state}',
+        heatmapUnseen: 'pas encore vu', heatmapLearning: 'en cours',
+        heatmapDue: 'à revoir aujourd’hui', heatmapMastered: 'su par cœur',
         heatmapCore: 'Base 1–12',
         heatmapExtended: 'Étendu 13–25',
         heatmapSquares: 'Carrés 1–25',

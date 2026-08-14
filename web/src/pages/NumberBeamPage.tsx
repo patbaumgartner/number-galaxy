@@ -4,7 +4,7 @@ import TopBar from '../components/TopBar'
 import HowToPlayDialog from '../components/HowToPlayDialog'
 import { BEAM_ZONES, beamStore, isZoneUnlocked, nextRecommendedStation } from '../beam'
 import { store } from '../store'
-import { fill, translations } from '../i18n'
+import { fill, plural, translations } from '../i18n'
 import { useDocumentLanguage } from '../hooks'
 
 export default function NumberBeamPage() {
@@ -62,7 +62,7 @@ export default function NumberBeamPage() {
                                             <span className="beam-station__sample" aria-hidden="true">
                                                 {station.sample.prompt}
                                             </span>
-                                            <span aria-label={`${level} stars`}>{'⭐'.repeat(level)}</span>
+                                            <span aria-label={plural(level, t.nav.starsLabelOne, t.nav.starsLabel)}>{'⭐'.repeat(level)}</span>
                                             {best !== undefined && (
                                                 <small>{fill(t.beam.best, { percent: Math.round(best * 100) })}</small>
                                             )}

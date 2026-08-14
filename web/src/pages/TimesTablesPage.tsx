@@ -4,7 +4,7 @@ import FactHeatmap from '../components/trainer/FactHeatmap'
 import TopBar from '../components/TopBar'
 import HowToPlayDialog from '../components/HowToPlayDialog'
 import { useDocumentLanguage, useModalDialog } from '../hooks'
-import { translations } from '../i18n'
+import { plural, translations } from '../i18n'
 import { todayEpochDay } from '../review/leitner'
 import { countDueFacts } from '../timesTable/session'
 import { GALAXIES, getPlanet, isPlanetUnlocked, RECOMMENDED_ORDER } from '../timesTable/tables'
@@ -28,6 +28,7 @@ export default function TimesTablesPage() {
     const settings = store.getSettings()
     const t = translations[settings.language].tt
     const home = translations[settings.language].home
+    const nav = translations[settings.language].nav
     useDocumentLanguage(settings.language)
     const [activePlanet, setActivePlanet] = useState<PlanetId | null>(null)
     const [heatmapView, setHeatmapView] = useState<'core' | 'extended' | 'squares'>('core')
@@ -96,7 +97,7 @@ export default function TimesTablesPage() {
                                         >
                                             <span aria-hidden="true">{planet.emoji}</span>
                                             <strong>{planet.label}</strong>
-                                            <span aria-label={`${starLevel} stars`}>{'⭐'.repeat(starLevel)}</span>
+                                            <span aria-label={plural(starLevel, nav.starsLabelOne, nav.starsLabel)}>{'⭐'.repeat(starLevel)}</span>
                                             {planet.id === nextRecommended && <span className="trainer-planet__next">●</span>}
                                             {!unlocked && <small>{text.lockedHint}</small>}
                                         </button>

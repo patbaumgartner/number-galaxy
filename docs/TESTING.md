@@ -4,11 +4,11 @@ Number Galaxy is tested in three layers, each answering a different question.
 
 | Layer | Question it answers | Runner | Size |
 |-------|--------------------|--------|------|
-| **Domain** | Is the maths correct? | Vitest (`node`) | 38 files |
+| **Domain** | Is the maths correct? | Vitest (`node`) | 39 files |
 | **UI** | Does the interface behave? | Vitest (`jsdom`) + Testing Library | 43 files |
 | **End-to-end** | Does the shipped bundle work? | Playwright (Chromium desktop + mobile) | 12 files, both viewports |
 
-**81 unit-test files**, run as two Vitest projects. Everything below runs from `web/`.
+**82 unit-test files**, run as two Vitest projects. Everything below runs from `web/`.
 
 ```bash
 npm test              # both Vitest projects
@@ -68,6 +68,7 @@ What each area locks down:
 - **`timesTable/`** — Leitner scheduling, session building, planet unlocking, star awards and strategy cards.
 - **`translations`** — full key parity across `de`/`it`/`en`/`fr`, equal array lengths, and matching `{placeholder}` sets.
 - **`docs`** — that this page still describes the suite it documents: the file counts above, a row for every end-to-end spec, and coverage floors matching the ones the config enforces.
+- **`dependencies`** — that `dependabot.yml` still matches `package.json`: no group pattern that matches nothing, and no two packages pinning each other while updating in separate pull requests.
 
 ---
 

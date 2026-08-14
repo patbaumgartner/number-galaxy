@@ -456,6 +456,12 @@ was the point.
 solutions are written in pure maths notation (`12 − 7 = 5`) and read identically in every
 language.
 
+**The first run opens in the device's language**, if it is one of those four, and in
+German otherwise. Ticino and the Romandie sit in the same country and the same curriculum
+as the German-speaking cantons, and an Italian-speaking six-year-old should not need an
+adult to find Settings before the first question. A language chosen in Settings is
+remembered and is never overruled by the device.
+
 **No child is addressed as a boy.** German, French and Italian all inflect roles, and the
 masculine is the easy default — so the rank ladder used to greet every player as *Pilot*,
 *Débutant* and *Bambino 1*. Each language now uses whatever neutral form it actually has:
@@ -485,7 +491,7 @@ they run simplest first — the same order as the home screen.
 | 🏅 Show points while playing | 🛸 Arcade | On / Off | On |
 | Strategy cards | ✖️ Trainer | On / Off | On |
 | Trainer progress | ✖️ Trainer | Reset | — |
-| Language | ⚙️ All games | German · Italian · English · French | German |
+| Language | ⚙️ All games | German · Italian · English · French | The device's, else German |
 | 🧠 Thinking time | ⚙️ All games | Normal · More · Most | Normal |
 | 🔤 Easier reading | ⚙️ All games | On / Off | Off |
 | 🖨 To print | ⚙️ All games | — | — |

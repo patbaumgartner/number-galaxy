@@ -115,8 +115,36 @@ function sanitize(value: Partial<GameSettings>): GameSettings {
     }
 }
 
+/**
+ * The language to open in, before anyone has chosen one.
+ *
+ * German is the default because most of this app's children are in
+ * German-speaking Switzerland — but Ticino and the Romandie are in the same
+ * country and the same curriculum, and handing an Italian- or French-speaking
+ * six-year-old a German screen means an adult has to find Settings before the
+ * child can start. That is a gate, and this app's one promise is that there
+ * isn't one.
+ *
+ * Only ever chooses between languages the app already speaks, and only on a
+ * device that has never stored a choice; anything unrecognised is German
+ * exactly as before.
+ */
+function preferredLanguage(): Language {
+    const requested = typeof navigator === 'undefined'
+        ? []
+        : [...(navigator.languages ?? []), navigator.language]
+
+    for (const tag of requested) {
+        const spoken = LANGUAGES.find(language => language === String(tag ?? '').toLowerCase().split('-')[0])
+        if (spoken !== undefined) return spoken
+    }
+    return defaultSettings.language
+}
+
 export function loadSettings(): GameSettings {
-    if (!hasKey(settingsKey())) return { ...defaultSettings, operations: [...defaultSettings.operations] }
+    if (!hasKey(settingsKey())) {
+        return { ...defaultSettings, language: preferredLanguage(), operations: [...defaultSettings.operations] }
+    }
     return sanitize(readJson<Partial<GameSettings>>(settingsKey(), {}))
 }
 

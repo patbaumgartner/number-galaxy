@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import type { ScoreEntry } from './index'
 import {
     RULESET_VERSION,
@@ -55,9 +55,52 @@ const entry = (overrides: Partial<ScoreEntry> = {}): ScoreEntry => ({
     ...overrides,
 })
 
+/** Whatever locale the machine running the suite happens to have. */
+const speaking = (...tags: string[]) => {
+    Object.defineProperty(globalThis, 'navigator', {
+        value: { language: tags[0], languages: tags },
+        configurable: true,
+        writable: true,
+    })
+}
+
 describe('settings', () => {
+    afterEach(() => speaking('de-CH'))
+
     it('falls back to defaults when nothing is stored', () => {
+        speaking('de-CH')
         expect(store.getSettings()).toEqual(defaultSettings)
+    })
+
+    /**
+     * A first run opens in the device's language when the app speaks it.
+     *
+     * German stays the answer for everything else, including a device asking
+     * for a language this app does not have. Ticino and the Romandie sit in the
+     * same country and the same curriculum as the German-speaking cantons, and
+     * an Italian-speaking six-year-old should not need an adult to find
+     * Settings before the first question.
+     */
+    it.each([
+        [['it-CH'], 'it'],
+        [['fr-CH', 'de-CH'], 'fr'],
+        [['en-GB'], 'en'],
+        [['de-DE'], 'de'],
+        // Unsupported, and unsupported-then-supported.
+        [['rm-CH'], 'de'],
+        [['pt-BR', 'it-IT'], 'it'],
+        [[], 'de'],
+    ])('opens in %s as %s', (tags, expected) => {
+        speaking(...tags)
+        expect(store.getSettings().language).toBe(expected)
+    })
+
+    it('never overrules a language the child has already chosen', () => {
+        speaking('de-CH')
+        store.saveSettings({ ...defaultSettings, language: 'fr' })
+
+        speaking('it-CH')
+        expect(store.getSettings().language).toBe('fr')
     })
 
 

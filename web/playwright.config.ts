@@ -28,6 +28,11 @@ export default defineConfig({
     expect: { timeout: 10_000 },
     use: {
         baseURL: BASE_URL,
+        // The device the whole suite runs on. A first visit with nothing stored
+        // opens in the device's own language, so without pinning this the
+        // default-language assertions would pass on a Swiss laptop and fail on
+        // a runner set to English. Specs that want another language seed it.
+        locale: 'de-CH',
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',

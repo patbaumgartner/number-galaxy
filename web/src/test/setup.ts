@@ -81,6 +81,18 @@ if (typeof window !== 'undefined') {
     window.scrollTo = vi.fn() as unknown as typeof window.scrollTo
 }
 
+/**
+ * The device this suite pretends to be running on.
+ *
+ * A first run with nothing stored now opens in the device's own language when
+ * the app speaks it, so without this the default language of every unseeded
+ * test would be whatever locale the machine happened to have — German on a
+ * Swiss laptop, English on a CI runner. Pinning it makes the primary audience
+ * the baseline and takes the environment out of the assertion.
+ */
+Object.defineProperty(globalThis.navigator, 'languages', { configurable: true, value: ['de-CH', 'de'] })
+Object.defineProperty(globalThis.navigator, 'language', { configurable: true, value: 'de-CH' })
+
 beforeEach(() => {
     window.localStorage.clear()
     createdOscillators.length = 0

@@ -151,6 +151,7 @@ We use [Conventional Commits](https://www.conventionalcommits.org/):
 | `style:` | Formatting, no logic change |
 | `refactor:` | Code change, no feature/fix |
 | `test:` | Adding/updating tests |
+| `ci:` | Workflows, automation, the release pipeline |
 | `chore:` | Build, deps, tooling |
 
 **Examples:**

@@ -11,6 +11,16 @@ type NumberPadProps = {
     readonly maxLength?: number
 }
 
+/**
+ * The pad a child types an answer on.
+ *
+ * Every key is held with `aria-disabled` rather than `disabled` while an answer
+ * is being marked. `disabled` blurs the button it lands on, so submitting an
+ * answer from the keyboard threw the child out of the pad and back to the top
+ * of the page — once per fact, for a whole planet. The handlers below already
+ * refuse to act while disabled, so the attribute is the only thing that has to
+ * change.
+ */
 export function NumberPad({ value, onChange, onSubmit, disabled, maxLength = 3 }: NumberPadProps) {
     const t = translations[store.getSettings().language]
 
@@ -68,7 +78,7 @@ export function NumberPad({ value, onChange, onSubmit, disabled, maxLength = 3 }
                         key={digit}
                         className="numpad-btn"
                         onClick={() => handleDigit(digit.toString())}
-                        disabled={disabled}
+                        aria-disabled={disabled}
                     >
                         {digit}
                     </button>
@@ -76,7 +86,7 @@ export function NumberPad({ value, onChange, onSubmit, disabled, maxLength = 3 }
                 <button
                     className="numpad-btn numpad-btn-action"
                     onClick={handleBackspace}
-                    disabled={disabled}
+                    aria-disabled={disabled}
                     aria-label={t.tt.padDelete}
                 >
                     ⌫
@@ -84,14 +94,14 @@ export function NumberPad({ value, onChange, onSubmit, disabled, maxLength = 3 }
                 <button
                     className="numpad-btn"
                     onClick={() => handleDigit('0')}
-                    disabled={disabled}
+                    aria-disabled={disabled}
                 >
                     0
                 </button>
                 <button
                     className="numpad-btn numpad-btn-action"
                     onClick={handleSubmit}
-                    disabled={disabled || value === ''}
+                    aria-disabled={disabled === true || value === ''}
                     aria-label={t.tt.padSubmit}
                 >
                     ✓

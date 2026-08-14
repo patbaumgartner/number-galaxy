@@ -352,7 +352,7 @@
   transform: scale(0.96);
 }
 
-.answer-tile:disabled {
+.answer-tile[aria-disabled='true'] {
   opacity: 0.8;
   cursor: not-allowed;
   transform: none;

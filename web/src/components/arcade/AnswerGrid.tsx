@@ -30,6 +30,13 @@ function tileState(index: number, firedIndex: number | null, revealIndex: number
  * There is no aim step: touching a tile fires at it. Enter and Space are left
  * to the browser's native button activation — adding a global handler for them
  * on top would fire the same answer twice.
+ *
+ * The tiles are held with `aria-disabled` rather than `disabled`, and keyed by
+ * position rather than by the number they show. Both exist to keep the same
+ * four DOM nodes under the keyboard for a whole mission: `disabled` blurs the
+ * element it lands on, and a key built from the option remounts the tile as
+ * soon as the next question changes the number. Either one drops the child back
+ * to the top of the page after every single answer.
  */
 export default function AnswerGrid({
     options,
@@ -81,16 +88,16 @@ export default function AnswerGrid({
                 const state = tileState(index, firedIndex, revealIndex)
                 return (
                     <button
-                        key={`${option}-${index}`}
+                        key={index}
                         ref={element => { tiles.current[index] = element }}
                         type="button"
                         className={`answer-tile answer-tile--${state}`}
                         // Roving tabindex: one stop for the whole grid, arrows move within it.
                         tabIndex={index === focusIndex ? 0 : -1}
-                        disabled={disabled}
+                        aria-disabled={disabled}
                         aria-label={optionLabel(option)}
                         onFocus={() => setFocusIndex(index)}
-                        onClick={() => onFire(index)}
+                        onClick={() => { if (!disabled) onFire(index) }}
                     >
                         <span className="answer-tile__alien" aria-hidden="true">
                             {ALIENS[index % ALIENS.length]}

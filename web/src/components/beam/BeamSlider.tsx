@@ -35,6 +35,11 @@ function ticksFor(max: number, step: number): number[] {
  * position as a unitless custom property the stylesheet can offset by half a
  * thumb width. The −/+ buttons exist because a fingertip on a phone cannot
  * reliably land on a single unit.
+ *
+ * Everything here is held with `aria-disabled` rather than `disabled`, because
+ * `disabled` blurs whatever it lands on: a child answering from the keyboard
+ * would be dropped out of the beam by their own answer, every question, and
+ * have to walk back to it from the top of the page.
  */
 export default function BeamSlider({
     max,
@@ -47,6 +52,7 @@ export default function BeamSlider({
     onFire,
 }: BeamSliderProps) {
     const position = max === 0 ? 0 : value / max
+    const change = (next: number) => { if (!disabled) onChange(clamp(next, max)) }
 
     return (
         <div className="beam">
@@ -62,9 +68,9 @@ export default function BeamSlider({
                     max={max}
                     step={step}
                     value={value}
-                    disabled={disabled}
+                    aria-disabled={disabled}
                     aria-label={labels.move}
-                    onChange={event => onChange(Number(event.target.value))}
+                    onChange={event => change(Number(event.target.value))}
                 />
             </div>
 
@@ -79,20 +85,25 @@ export default function BeamSlider({
                     type="button"
                     className="btn btn--ghost beam__nudge"
                     aria-label={labels.less}
-                    disabled={disabled || value <= 0}
-                    onClick={() => onChange(clamp(value - step, max))}
+                    aria-disabled={disabled || value <= 0}
+                    onClick={() => change(value - step)}
                 >
                     −
                 </button>
-                <button type="button" className="btn btn--primary beam__fire" disabled={disabled} onClick={onFire}>
+                <button
+                    type="button"
+                    className="btn btn--primary beam__fire"
+                    aria-disabled={disabled}
+                    onClick={() => { if (!disabled) onFire() }}
+                >
                     {labels.fire} {value}
                 </button>
                 <button
                     type="button"
                     className="btn btn--ghost beam__nudge"
                     aria-label={labels.more}
-                    disabled={disabled || value >= max}
-                    onClick={() => onChange(clamp(value + step, max))}
+                    aria-disabled={disabled || value >= max}
+                    onClick={() => change(value + step)}
                 >
                     +
                 </button>

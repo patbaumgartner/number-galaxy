@@ -199,7 +199,7 @@
   background: var(--bg-surface-highlight);
 }
 
-.beam__range:disabled { opacity: .5; }
+.beam__range[aria-disabled='true'] { opacity: .5; }
 
 .beam__ticks {
   display: flex;

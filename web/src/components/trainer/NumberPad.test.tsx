@@ -45,7 +45,7 @@ describe('NumberPad', () => {
     it('submits what was typed, and refuses to submit nothing', async () => {
         const user = userEvent.setup({ delay: null })
         const empty = setup({ value: '' })
-        expect(screen.getByRole('button', { name: 'Submit' })).toBeDisabled()
+        expect(screen.getByRole('button', { name: 'Submit' })).toHaveAttribute('aria-disabled', 'true')
         empty.unmount()
 
         const typed = setup({ value: '7' })
@@ -109,5 +109,25 @@ describe('NumberPad', () => {
         await user.click(screen.getByRole('button', { name: '3' }))
         await user.click(screen.getByRole('button', { name: 'Delete' }))
         expect(onChange).not.toHaveBeenCalled()
+        screen.getAllByRole('button').forEach(key => expect(key).toHaveAttribute('aria-disabled', 'true'))
+    })
+
+    /**
+     * `aria-disabled` rather than `disabled`, for one reason: `disabled` blurs
+     * the control it lands on. The pad locks the moment an answer is submitted,
+     * so a child typing from a keyboard or a switch was thrown out of the pad by
+     * their own answer, once for every fact on the planet.
+     */
+    it('leaves focus on the key that was pressed while the answer is marked', () => {
+        const onChange = vi.fn()
+        const onSubmit = vi.fn()
+        const { rerender } = render(<NumberPad value="7" onChange={onChange} onSubmit={onSubmit} />)
+        const submit = screen.getByRole('button', { name: 'Submit' })
+        submit.focus()
+        expect(submit).toHaveFocus()
+
+        rerender(<NumberPad value="7" onChange={onChange} onSubmit={onSubmit} disabled />)
+        expect(submit).toHaveFocus()
+        expect(document.activeElement).not.toBe(document.body)
     })
 })

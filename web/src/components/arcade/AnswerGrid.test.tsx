@@ -79,7 +79,7 @@ describe('AnswerGrid', () => {
         expect(tiles.filter(tile => tile.tabIndex === 0)).toEqual([tiles[3]])
     })
 
-    it('disables tiles and makes keyboard shortcuts inert while disabled', async () => {
+    it('refuses the tap, the digit and the arrow while an answer is being marked', async () => {
         const user = userEvent.setup({ delay: null })
         const onFire = renderGrid({ disabled: true })
 
@@ -87,9 +87,62 @@ describe('AnswerGrid', () => {
         fireEvent.keyDown(window, { key: '1' })
         fireEvent.keyDown(window, { key: 'ArrowRight' })
 
-        screen.getAllByRole('button').forEach(tile => expect(tile).toBeDisabled())
+        screen.getAllByRole('button').forEach(tile => expect(tile).toHaveAttribute('aria-disabled', 'true'))
         expect(onFire).not.toHaveBeenCalled()
         expect(screen.getByRole('button', { name: 'Answer 12' })).toHaveAttribute('tabindex', '0')
+    })
+
+    /**
+     * The tiles are held with `aria-disabled` and keyed by position for one
+     * reason, and it is this: a child playing from the keyboard must not be
+     * thrown out of the grid by their own answer. `disabled` blurs the element
+     * it lands on, and a key containing the option remounts the tile when the
+     * next question changes the number — either one puts focus on `<body>` and
+     * makes the child tab back through the whole page, 25 times a mission.
+     */
+    it('leaves focus on the tile the child fired, through the marking and the next question', () => {
+        const { rerender } = render(
+            <AnswerGrid
+                options={options}
+                disabled={false}
+                firedIndex={null}
+                revealIndex={null}
+                groupLabel="Answer choices"
+                optionLabel={option => `Answer ${option}`}
+                onFire={vi.fn()}
+            />,
+        )
+        const fired = screen.getByRole('button', { name: 'Answer 18' })
+        fired.focus()
+        expect(fired).toHaveFocus()
+
+        const grid = (
+            <AnswerGrid
+                options={options}
+                disabled={true}
+                firedIndex={2}
+                revealIndex={2}
+                groupLabel="Answer choices"
+                optionLabel={option => `Answer ${option}`}
+                onFire={vi.fn()}
+            />
+        )
+        rerender(grid)
+        expect(fired).toHaveFocus()
+
+        rerender(
+            <AnswerGrid
+                options={['30', '33', '36', '39']}
+                disabled={false}
+                firedIndex={null}
+                revealIndex={null}
+                groupLabel="Answer choices"
+                optionLabel={option => `Answer ${option}`}
+                onFire={vi.fn()}
+            />,
+        )
+        expect(screen.getByRole('button', { name: 'Answer 36' })).toHaveFocus()
+        expect(document.activeElement).not.toBe(document.body)
     })
 
     it('marks fired and revealed answers with their visual outcome states', () => {

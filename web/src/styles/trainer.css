@@ -108,8 +108,8 @@
 .numpad-display { display: grid; place-items: center; min-height: 64px; border: 1px solid var(--color-cyan); border-radius: var(--radius-md); font-size: var(--text-2xl); font-variant-numeric: tabular-nums; }
 .numpad-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); }
 .numpad-btn { min-height: 52px; border: 1px solid var(--border-highlight); border-radius: var(--radius-sm); background: var(--bg-surface-elevated); }
-.numpad-btn:hover:not(:disabled) { background: var(--bg-surface-highlight); }
-.numpad-btn:disabled { opacity: .45; cursor: not-allowed; }
+.numpad-btn:hover:not([aria-disabled='true']) { background: var(--bg-surface-highlight); }
+.numpad-btn[aria-disabled='true'] { opacity: .45; cursor: not-allowed; }
 .numpad-btn-action { color: var(--color-cyan); }
 
 @media (max-width: 375px) {

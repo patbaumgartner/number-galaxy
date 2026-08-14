@@ -50,7 +50,41 @@ function domino(left: number, right: number): readonly Dot[] {
     ]
 }
 
-export type Pattern = { readonly dots: readonly Dot[]; readonly columns: number }
+export type Pattern = {
+    readonly dots: readonly Dot[]
+    readonly columns: number
+    /**
+     * The groups the dots are actually drawn in.
+     *
+     * Published rather than left implicit because the caller has to say out loud
+     * what the child is looking at. The picture and its explanation used to be
+     * derived from the count separately, and disagreed for every quantity from
+     * six up: a glance drawn as `6 + 6` was explained as `5 + 7`, which is a
+     * split no die can show and one the child cannot find on the screen.
+     */
+    readonly parts: readonly number[]
+}
+
+/**
+ * How a domino splits a quantity.
+ *
+ * Five first, because five is the group that makes a quantity readable and the
+ * one the explanation names — "7 is 5 and 2". Twelve is the exception: its
+ * other half would be seven, which is not a die face, so it is drawn as the
+ * double six that a child already knows.
+ */
+function dominoParts(count: number): readonly [number, number] {
+    const left = count - 5 <= MAX_DIE ? 5 : MAX_DIE
+    return [left, count - left]
+}
+
+/** Rows of five, and whatever is left over in the last one. */
+function fiveWiseParts(count: number): readonly number[] {
+    return Array.from(
+        { length: Math.ceil(count / 5) },
+        (_unused, index) => Math.min(5, count - index * 5),
+    )
+}
 
 /**
  * How `count` should be shown, given how big it is.
@@ -61,9 +95,9 @@ export type Pattern = { readonly dots: readonly Dot[]; readonly columns: number 
  */
 export function patternFor(count: number, preferDomino: boolean): Pattern {
     if (preferDomino && count > MAX_DIE && count <= MAX_DIE * 2) {
-        const left = MAX_DIE
-        return { dots: domino(left, count - left), columns: 7 }
+        const [left, right] = dominoParts(count)
+        return { dots: domino(left, right), columns: 7, parts: [left, right] }
     }
-    if (count <= MAX_DIE) return { dots: DIE[count], columns: 3 }
-    return { dots: fiveWise(count), columns: 5 }
+    if (count <= MAX_DIE) return { dots: DIE[count], columns: 3, parts: [count] }
+    return { dots: fiveWise(count), columns: 5, parts: fiveWiseParts(count) }
 }

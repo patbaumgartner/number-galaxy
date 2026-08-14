@@ -188,6 +188,50 @@ describe('counting on', () => {
 })
 
 describe('the arrangements themselves', () => {
+    /**
+     * The picture and the sentence under it have to be the same decomposition.
+     *
+     * They were computed independently from the same number and disagreed: a
+     * glance was drawn as `6 + n` and always explained as `5 + (n − 5)`. A child
+     * shown two die faces of six and six was told "5 + 7 = 12" — a split that is
+     * not in front of them, and cannot be, because seven is not a die face.
+     */
+    it('explains a glance with the groups the picture is actually drawn in', () => {
+        const problems: string[] = []
+
+        for (const tier of SENSE_TIERS) {
+            for (let seed = 1; seed < 200; seed += 1) {
+                const q = createSenseQuestion({ skill: 'subitize', tier, rng: createRng(seed) })
+                const visual = q.visual
+                if (visual.kind !== 'dots') continue
+
+                const drawn = [0, 1]
+                    .map(group => visual.dots.filter(dot => dot.group === group).length)
+                    .filter(size => size > 0)
+                const said = q.workingOut.includes('+')
+                    ? (q.workingOut.split('=')[0] ?? '').split('+').map(part => Number(part.trim()))
+                    : [Number(q.workingOut)]
+
+                const sorted = (values: readonly number[]) => [...values].sort((a, b) => a - b).join('+')
+                if (sorted(said) !== sorted(drawn)) {
+                    problems.push(`${q.value} is drawn as ${sorted(drawn)} but explained as "${q.workingOut}"`)
+                }
+            }
+        }
+
+        expect([...new Set(problems)]).toEqual([])
+    })
+
+    it('only ever splits a glance into halves a die can show', () => {
+        for (let count = 1; count <= 12; count += 1) {
+            for (const part of patternFor(count, true).parts) {
+                expect(part).toBeGreaterThanOrEqual(1)
+                expect(part).toBeLessThanOrEqual(6)
+            }
+            expect(patternFor(count, true).parts.reduce((sum, part) => sum + part, 0)).toBe(count)
+        }
+    })
+
     it('uses a die face for anything a die can show', () => {
         for (let count = 1; count <= 6; count += 1) {
             expect(patternFor(count, false).dots).toHaveLength(count)

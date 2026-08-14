@@ -38,7 +38,7 @@ export default function SensePlayPage() {
     // Zero has no arrangement to recognise, and `patternFor` only speaks for
     // counts it can draw as a die face or in fives. An empty grid is the honest
     // picture of none.
-    const pattern = value === 0 ? { dots: [], columns: 3 } : patternFor(value, value > 6)
+    const pattern = value === 0 ? { dots: [], columns: 3, parts: [] } : patternFor(value, value > 6)
 
     return (
         <div className="page beam-page">

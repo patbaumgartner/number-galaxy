@@ -21,7 +21,7 @@ function beamFor(value: number, step: number, cap: number, rng: Rng): number {
 
 function subitizeDraft(rng: Rng, cap: number): Draft {
     const value = randomInt(rng, 1, cap)
-    const { dots, columns } = patternFor(value, cap > 6)
+    const { dots, columns, parts } = patternFor(value, cap > 6)
     return {
         prompt: '?',
         value,
@@ -29,7 +29,10 @@ function subitizeDraft(rng: Rng, cap: number): Draft {
         beamMax: beamFor(value, 1, cap, rng),
         beamStep: 1,
         tolerance: 0,
-        workingOut: dots.length > 5 ? `5 + ${value - 5} = ${value}` : `${value}`,
+        // Read off the arrangement rather than recomputed from the value: the
+        // child is being told what is in front of them, so the two cannot be
+        // allowed to disagree.
+        workingOut: parts.length > 1 ? `${parts.join(' + ')} = ${value}` : `${value}`,
         visual: { kind: 'dots', dots, columns, brief: true },
     }
 }

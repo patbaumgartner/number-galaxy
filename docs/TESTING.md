@@ -2,13 +2,13 @@
 
 Number Galaxy is tested in three layers, each answering a different question.
 
-| Layer | Question it answers | Runner | Count |
-|-------|--------------------|--------|-------|
-| **Domain** | Is the maths correct? | Vitest (`node`) | 401 tests · 36 files |
-| **UI** | Does the interface behave? | Vitest (`jsdom`) + Testing Library | 311 tests · 43 files |
+| Layer | Question it answers | Runner | Size |
+|-------|--------------------|--------|------|
+| **Domain** | Is the maths correct? | Vitest (`node`) | 38 files |
+| **UI** | Does the interface behave? | Vitest (`jsdom`) + Testing Library | 43 files |
 | **End-to-end** | Does the shipped bundle work? | Playwright (Chromium desktop + mobile) | 12 files, both viewports |
 
-**712 unit tests total.** Everything below runs from `web/`.
+**81 unit-test files**, run as two Vitest projects. Everything below runs from `web/`.
 
 ```bash
 npm test              # both Vitest projects
@@ -67,6 +67,7 @@ What each area locks down:
 - **`sense/`** — every station × tier across many seeds: the quantity asked for is the quantity drawn, a placing question marks a near miss correct while an exact one does not, arrangements stay ones a child meets elsewhere, and zone unlocking and the star ladder hold.
 - **`timesTable/`** — Leitner scheduling, session building, planet unlocking, star awards and strategy cards.
 - **`translations`** — full key parity across `de`/`it`/`en`/`fr`, equal array lengths, and matching `{placeholder}` sets.
+- **`docs`** — that this page still describes the suite it documents: the file counts above, a row for every end-to-end spec, and coverage floors matching the ones the config enforces.
 
 ---
 
@@ -144,6 +145,7 @@ Two projects run each spec: `chromium-desktop` (1280×800) and `chromium-mobile`
 | `times-tables.spec.ts` | Galaxy map and locks, phase chooser, Learn end to end, Practice earning a star, Speed Run gating and timing, Daily Mission, heatmap tabs |
 | `surprise.spec.ts` | Surprise never offers locked content, marks the run, ends it with another surprise and a way home, leaves a chosen run's ending untouched, and survives a reload |
 | `number-beam.spec.ts` | Station map and zone locks, a full ten-question drill answered entirely on the beam with the tile grid asserted absent, dragging/nudging/arrow-keying the alien, the bar revealing its numbers after a miss, hiding the bar, resetting beam progress |
+| `number-sense.spec.ts` | Zone locks and a deep link to a locked station, the brief glance and 👁 Look again, a full ten-question drill answered on the beam, and Explore numbers asking nothing at all |
 | `progression.spec.ts` | Rank and star progression across the arcade and the trainer |
 | `a11y.spec.ts` | Heading structure, keyboard reachability, accessible names, dialog semantics, no positive `tabindex`, and a full axe WCAG 2.1 A/AA audit of every route |
 | `responsive.spec.ts` | No horizontal overflow, adequate touch targets, and top-bar labels that are not flush against their button, at 360×640, 768×1024 and 1280×800 |

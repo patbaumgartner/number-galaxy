@@ -120,8 +120,14 @@ export async function answerCurrentQuestion(page: Page): Promise<void> {
     if (await gotIt.count() > 0) await gotIt.click()
 
     // Wait for whichever input the next question brings before choosing a branch:
-    // during feedback the previous question's disabled tiles are still on screen.
-    await expect(page.locator('.answer-tile:not([disabled]), .numpad-btn:not([disabled])').first()).toBeVisible()
+    // during feedback the previous question's controls are still on screen, held
+    // by `aria-disabled` rather than `disabled` so a keyboard keeps its place.
+    // Playwright's own actionability check does not read `aria-disabled`, so the
+    // wait has to be explicit — without it a click lands during the feedback
+    // pause, is refused, and the question never advances.
+    await expect(page.locator(
+        '.answer-tile:not([aria-disabled="true"]), .numpad-btn:not([aria-disabled="true"])',
+    ).first()).toBeVisible()
 
     // The prompt has no accessible name; this stable component class is its public UI hook.
     const prompt = page.locator('.equation__prompt')
@@ -193,10 +199,12 @@ export const calculateBeamAnswer = (prompt: string): number => {
 
 /** Slides the alien to the answer and lands it. Every beam question works this way. */
 export async function answerBeamQuestion(page: Page): Promise<void> {
-    // Feedback disables the controls between questions, so the next question is
+    // Feedback holds the controls between questions, so the next question is
     // only really on screen once the beam accepts a click again. This component
-    // class is the control's only stable handle.
-    await expect(page.locator('.beam__fire:not([disabled])')).toBeVisible()
+    // class is the control's only stable handle, and `aria-disabled` is the
+    // state to read: Playwright's actionability check does not consider it, so
+    // a click would otherwise land in the pause and be refused.
+    await expect(page.locator('.beam__fire:not([aria-disabled="true"])')).toBeVisible()
 
     const prompt = page.locator('.equation__prompt')
     await expect(prompt).toBeVisible()

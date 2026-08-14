@@ -1,4 +1,4 @@
-# Contributing to Math Invaders
+# Contributing to Number Galaxy
 
 Thank you for taking the time to contribute! 🎮⚡
 
@@ -82,7 +82,7 @@ The game supports German, Italian, English and French. To add another:
 8. Run `npm test` — `i18n/translations.test.ts` also checks key parity, array
    lengths and `{placeholder}` parity across every language, so a missing key
    fails the build
-9. Check every screen in the new language, including Settings and all three games
+9. Check every screen in the new language, including Settings and all four games
 10. Submit a PR titled `feat: add [language] translation`
 
 ### Submitting Code
@@ -128,8 +128,8 @@ npm run lint && npm run typecheck && npm test && npm run build && npm run test:e
 - **CSS** use the design tokens in `src/styles/tokens.css`; no class in the markup
   without a matching rule, and no static inline styles — `style` is for values only
   known at runtime, such as a bar's width or a slider's position
-- **Domain logic stays out of components** — `game/`, `store/` and `timesTable/` contain
-  no React, which is what makes them cheap to test exhaustively
+- **Domain logic stays out of components** — `game/`, `beam/`, `sense/`, `timesTable/`
+  and `store/` contain no React, which is what makes them cheap to test exhaustively
 - **Randomness is injected**, never called directly, so tests can replay a seed
 - **Accessibility:** every interactive element needs an accessible name, a visible focus
   ring, and a touch target of at least 44×44 px; modal dialogs must trap focus and close
@@ -162,4 +162,4 @@ docs: update gameplay screenshots
 
 ---
 
-Thank you for making Math Invaders better! 🚀
+Thank you for making Number Galaxy better! 🚀

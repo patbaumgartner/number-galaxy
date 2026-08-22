@@ -7,9 +7,10 @@
     <script>
         // Single Page Apps for GitHub Pages
         // https://github.com/rafgraph/spa-github-pages
-        // 1 segment: a project site is served from /<repo>/, which has to stay
-        // in the URL for the app to be found. A user or org site would use 0.
-        var pathSegmentsToKeep = 1;
+        // 0 segments: the app is served from the root of the custom domain
+        // (galaxy.patbaumgartner.com). A repository-named project site under
+        // /<repo>/ would use 1, keeping the repo segment in the URL.
+        var pathSegmentsToKeep = 0;
         var l = window.location;
         l.replace(
             l.protocol +

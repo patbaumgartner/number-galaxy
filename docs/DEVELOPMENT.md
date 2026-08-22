@@ -196,7 +196,7 @@ and `noImplicitOverride`. `any`, `@ts-ignore` and `@ts-expect-error` are not acc
 2. `e2e` runs the Playwright suite against that build
 3. `deploy` needs both, so a red commit never reaches the site — and it publishes
    the artifact `static` produced rather than a second, unchecked build
-4. Live at [patbaumgartner.github.io/number-galaxy](https://patbaumgartner.github.io/number-galaxy)
+4. Live at [galaxy.patbaumgartner.com](https://galaxy.patbaumgartner.com)
 
 Only the `deploy` job holds `pages: write` and `id-token: write`. The jobs that
 run `npm ci`, the test suites and the build have `contents: read` and nothing
@@ -204,8 +204,9 @@ else, so a compromised dependency has no token to publish with.
 
 Two details that are easy to trip over:
 
-- **`base` is `/number-galaxy/`.** Asset URLs in `index.html` must be root-absolute
-  (`/manifest.json`) so Vite can rewrite them with that base. A relative `manifest.json`
-  resolves against the *current route* and 404s on any nested URL.
+- **`base` is `/`** (the app lives at the root of galaxy.patbaumgartner.com, declared once
+  in `web/base.ts`). Asset URLs in `index.html` must be root-absolute (`/manifest.json`)
+  so Vite can rewrite them with that base. A relative `manifest.json` resolves against
+  the *current route* and 404s on any nested URL.
 - **GitHub Pages has no SPA rewrite.** `public/404.html` bounces deep links back through
   `index.html`, which is why a direct link to a drill works at all.

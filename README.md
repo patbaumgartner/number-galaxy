@@ -8,7 +8,7 @@
 > to knowing 7 × 8 by heart. No account, no ads, no tracking, and it keeps working when the
 > wifi does not.
 
-**[🎮 Play now](https://patbaumgartner.github.io/number-galaxy)** ·
+**[🎮 Play now](https://galaxy.patbaumgartner.com)** ·
 **[👩‍🏫 For teachers](#-for-teachers-and-parents)** ·
 **[🧭 Why it is built this way](#-why-it-is-built-this-way)** ·
 **[👀 Number Sense](#-number-sense--seeing-how-many)** ·

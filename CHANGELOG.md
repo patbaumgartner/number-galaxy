@@ -306,6 +306,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   restoration to the control that opened it.
 
 ### Fixed
+- **A dependency merged by the bot never reached the site.** Auto-merged
+  Dependabot pull requests land on `main` with the workflow token, whose pushes
+  start no workflows — so those commits got no CI verdict on `main` and were
+  never deployed until the next human push. The auto-merge workflow now
+  dispatches CI itself after merging, which tests the merged commit and
+  publishes it. Dependabot's commit subjects also stop doubling their scope
+  (`chore(deps-dev)(deps-dev):` → `chore(deps-dev):`).
 - **A "How to play" title still said Times Tables Galaxy** in all four languages,
   which the rename had missed.
 - **The README credited the tables trainer with word problems it does not have.**

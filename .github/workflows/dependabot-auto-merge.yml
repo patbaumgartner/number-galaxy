@@ -13,6 +13,8 @@ permissions:
   pull-requests: write
   checks: read
   statuses: read
+  # To dispatch CI on main after the merge — see dispatchCi below.
+  actions: write
 
 # A pull request that is pushed to again supersedes its own waiter. Dependabot
 # rebases on every change to main, and without this each rebase leaves another
@@ -98,6 +100,28 @@ jobs:
               }
             }
 
+            // A merge made with GITHUB_TOKEN fires no `on: push` run — the
+            // commit lands on main with no verdict and the Pages deploy never
+            // happens. `workflow_dispatch` is the documented exception, so the
+            // merged branch is handed to CI here. A failed dispatch fails this
+            // run loudly: the alternative is a silently stale site.
+            async function dispatchCi(ref) {
+              try {
+                await github.rest.actions.createWorkflowDispatch({
+                  owner,
+                  repo,
+                  workflow_id: "ci.yml",
+                  ref,
+                });
+                core.info(`Dispatched CI on ${ref}.`);
+              } catch (error) {
+                core.setFailed(
+                  `Merged, but dispatching CI on ${ref} failed: ${error.message}. ` +
+                  "Run the CI workflow on main by hand so the merge is tested and deployed."
+                );
+              }
+            }
+
             // 1. Approve the pull request (idempotent).
             try {
               await github.rest.pulls.createReview({
@@ -146,13 +170,17 @@ jobs:
                 { pullRequestId: query.repository.pullRequest.id, mergeMethod: mergeMethod.toUpperCase() }
               );
               core.info(`Native auto-merge enabled (${mergeMethod}); GitHub will merge when required checks pass.`);
-              return;
+              // Fall through to the polling loop rather than returning: the
+              // native merge is made with GITHUB_TOKEN too, so somebody still
+              // has to see it land and dispatch CI — the loop's merged check
+              // does exactly that.
             } catch (error) {
               const message = error.errors?.map((entry) => entry.message).join("; ") || error.message || "";
               core.info(`Native auto-merge unavailable (${message}); falling back to wait-and-merge.`);
             }
 
-            // 4. Fallback for repositories without branch protection: wait for checks, then merge directly.
+            // 4. Wait for checks, then merge directly (unless the native
+            //    auto-merge above gets there first) and hand the result to CI.
             const maxAttempts = 60; // ~30 minutes at 30s intervals.
             const intervalMs = 30000;
 
@@ -160,6 +188,7 @@ jobs:
               const { data: pr } = await github.rest.pulls.get({ owner, repo, pull_number: prNumber });
               if (pr.merged) {
                 core.info("Pull request already merged.");
+                await dispatchCi(pr.base.ref);
                 return;
               }
               if (pr.state !== "open") {
@@ -220,6 +249,7 @@ jobs:
                   });
                   await clearBlock();
                   core.info(`Merged pull request #${prNumber} using ${mergeMethod}.`);
+                  await dispatchCi(pr.base.ref);
                   return;
                 } catch (error) {
                   core.info(`Merge attempt ${attempt} failed: ${error.message}; retrying.`);

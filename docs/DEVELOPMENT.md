@@ -198,6 +198,11 @@ and `noImplicitOverride`. `any`, `@ts-ignore` and `@ts-expect-error` are not acc
    the artifact `static` produced rather than a second, unchecked build
 4. Live at [galaxy.patbaumgartner.com](https://galaxy.patbaumgartner.com)
 
+Auto-merged Dependabot commits are the one exception to "every push": they are
+made with the workflow token, whose pushes start no workflows. The auto-merge
+workflow dispatches `ci.yml` on `main` after merging, so those commits are
+tested and deployed through the same three jobs.
+
 Only the `deploy` job holds `pages: write` and `id-token: write`. The jobs that
 run `npm ci`, the test suites and the build have `contents: read` and nothing
 else, so a compromised dependency has no token to publish with.

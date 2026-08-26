@@ -202,7 +202,9 @@ pull request:
 - **static** — lint → coverage-gated unit tests → build (which also type-checks). Uploads
   the coverage report, and on `main` the Pages artefact.
 - **e2e** — installs Chromium and runs the Playwright suite. Uploads the HTML report.
-- **deploy** — needs both of the above, and only runs for a push to `main`. A commit that
+- **deploy** — needs both of the above, and only runs on `main`: for a push, or
+  for the dispatch the Dependabot auto-merge workflow sends after merging
+  (token-made pushes start no workflows on their own). A commit that
   fails lint, coverage or a browser test is never published.
 
 Both artefacts are retained for 7 days, so a red build can be inspected without

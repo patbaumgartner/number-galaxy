@@ -5,13 +5,9 @@ updates:
   schedule:
     interval: weekly
     day: monday
-    time: "06:00"
+    time: 06:00
     timezone: Europe/Zurich
   open-pull-requests-limit: 10
-  # Packages that constrain each other's versions have to arrive in one pull
-  # request. `@vitest/coverage-v8` pins `vitest` to an exact version, so a lone
-  # patch bump of either leaves an unsatisfiable tree; the React stack and the
-  # ESLint toolchain are looser but fail the same way on a major.
   groups:
     react:
       patterns:
@@ -46,16 +42,12 @@ updates:
       patterns:
       - typescript
       - '@types/*'
-      # Order between groups is not something to rely on, so the two `@types`
-      # packages that belong with React say so here rather than by position.
       exclude-patterns:
       - '@types/react'
       - '@types/react-dom'
   labels:
   - dependencies
   - npm
-  # `include: scope` appends the "(deps)" / "(deps-dev)" scope itself; a
-  # prefix that named it too produced "chore(deps-dev)(deps-dev): …".
   commit-message:
     prefix: chore
     include: scope
@@ -64,7 +56,7 @@ updates:
   schedule:
     interval: weekly
     day: monday
-    time: "06:00"
+    time: 06:00
     timezone: Europe/Zurich
   open-pull-requests-limit: 5
   labels:
@@ -73,3 +65,7 @@ updates:
   commit-message:
     prefix: ci
     include: scope
+groups:
+  multi-step-actions:
+    patterns:
+    - github/codeql-action/*

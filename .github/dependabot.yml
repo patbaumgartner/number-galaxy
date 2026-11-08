@@ -65,7 +65,7 @@ updates:
   commit-message:
     prefix: ci
     include: scope
-groups:
-  multi-step-actions:
-    patterns:
-    - github/codeql-action/*
+  groups:
+    multi-step-actions:
+      patterns:
+      - github/codeql-action/*
